@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/open-withholding/schema/employee-input.schema.json",
+  "title": "Employee input record",
+  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 — org URL in $id is a placeholder.",
+  "type": "object",
+  "required": ["pay_frequency", "gross_wages"],
+  "additionalProperties": false,
+  "properties": {
+    "pay_frequency": {
+      "enum": ["weekly", "biweekly", "semimonthly", "monthly", "quarterly", "semiannually", "annually", "daily"]
+    },
+    "gross_wages": { "$ref": "#/$defs/money" },
+    "pretax_deductions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "amount"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "description": "Must exist in /taxability; unknown types are a hard error" },
+          "amount": { "$ref": "#/$defs/money" }
+        }
+      },
+      "default": []
+    },
+    "ytd": {
+      "type": "object",
+      "description": "Required for wage-base caps (SS, SUI, SDI) and the Additional Medicare threshold",
+      "additionalProperties": false,
+      "properties": {
+        "social_security_wages": { "$ref": "#/$defs/money" },
+        "medicare_wages": { "$ref": "#/$defs/money" },
+        "sui_wages": { "$ref": "#/$defs/money" },
+        "sdi_wages": { "$ref": "#/$defs/money" }
+      }
+    },
+    "federal": {
+      "type": "object",
+      "required": ["w4_version", "filing_status"],
+      "additionalProperties": false,
+      "properties": {
+        "w4_version": { "enum": [2020, "pre_2020"] },
+        "filing_status": {
+          "enum": ["single", "married_joint", "head_of_household"],
+          "description": "single covers Married Filing Separately; married_joint covers Qualifying Surviving Spouse (Pub 15-T table headings)"
+        },
+        "step2_checkbox": { "type": "boolean", "default": false },
+        "step3_credits": { "$ref": "#/$defs/money", "default": "0" },
+        "step4a_other_income": { "$ref": "#/$defs/money", "default": "0" },
+        "step4b_deductions": { "$ref": "#/$defs/money", "default": "0" },
+        "step4c_extra": { "$ref": "#/$defs/money", "default": "0" },
+        "allowances": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "pre_2020 W-4 only"
+        }
+      }
+    },
+    "state": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["jurisdiction"],
+        "additionalProperties": false,
+        "properties": {
+          "jurisdiction": { "$ref": "#/$defs/jurisdiction" },
+          "filing_status": {
+            "type": "string",
+            "description": "Per-state enum; each state's parameter file defines its legal statuses"
+          },
+          "allowances": { "type": "integer", "minimum": 0, "default": 0 },
+          "additional_withholding": { "$ref": "#/$defs/money", "default": "0" }
+        }
+      }
+    },
+    "locals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["jurisdiction"],
+        "additionalProperties": false,
+        "properties": {
+          "jurisdiction": { "$ref": "#/$defs/jurisdiction" },
+          "resident": { "type": "boolean", "default": true }
+        }
+      }
+    },
+    "employer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sui_jurisdiction": { "$ref": "#/$defs/jurisdiction" },
+        "sui_experience_rate": {
+          "$ref": "#/$defs/rate",
+          "description": "Always user-entered from the state rate notice; never data"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "money": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,2})?$",
+      "description": "Exact decimal as string; engine parses with Decimal"
+    },
+    "rate": {
+      "type": "string",
+      "pattern": "^0(\\.\\d{1,6})?$|^1(\\.0{1,6})?$"
+    },
+    "jurisdiction": {
+      "type": "string",
+      "pattern": "^US(-[A-Z]{2})?(-[A-Z0-9-]+)?$"
+    }
+  }
+}

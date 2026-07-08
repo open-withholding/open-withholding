@@ -1,0 +1,17 @@
+# ILLUSTRATIVE golden case against the fictional US-ZZ fixture. Real golden
+# cases in /tests/golden are transcribed from published worked examples.
+source: { document: "FIXTURE — fictional ZZ guide", page: 1, example: 1 }
+as_of: 2026-06-15
+input:
+  pay_frequency: biweekly
+  gross_wages: "2400.00"
+  pretax_deductions:
+    - { type: 401k_traditional, amount: "120.00" }
+    - { type: hsa_cafeteria,    amount: "50.00" }
+  state:
+    - jurisdiction: US-ZZ
+      filing_status: single
+      allowances: 1
+      additional_withholding: "0"
+expect:
+  state_withholding: "85.67"

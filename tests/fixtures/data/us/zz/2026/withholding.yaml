@@ -1,0 +1,30 @@
+# ILLUSTRATIVE FIXTURE — US-ZZ is a fictional bracket state. Numbers are the
+# placeholder examples from DESIGN.md §3.2, not any real jurisdiction.
+schema_version: "0.1"
+jurisdiction: US-ZZ
+tax: state_income_withholding
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — fictional state withholding guide"
+  url: "https://example.gov/fixtures/zz-withholding.pdf"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: annualized_percentage
+rounding: { to: "0.01", mode: nearest }
+params:
+  standard_deduction:
+    single: "2440"
+    married: "4880"
+  allowance_amount: "1000"
+  credit_per_allowance: null
+  brackets:
+    single:
+      - { over: "0",    rate: "0.0110" }
+      - { over: "3324", rate: "0.0220" }
+      - { over: "8280", rate: "0.0450", base: "145.596" }
+    married:
+      - { over: "0",     rate: "0.0110" }
+      - { over: "6648",  rate: "0.0220" }
+      - { over: "16560", rate: "0.0450" }

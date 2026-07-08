@@ -1,0 +1,54 @@
+# Pre-tax deduction taxability matrix: which deduction types reduce which
+# wage bases, per jurisdiction.
+#
+# STATUS: DRAFT — STRUCTURE ONLY, NOT CITATION-BACKED.
+# The entries below reflect widely-known general treatments but none carries
+# the required source citation yet. Before the first data release, every
+# state_override (and each federal row) must gain a `sources` entry pointing
+# at the controlling publication, and this matrix gets its own golden tests.
+# CI will treat `status: draft_uncited` as a release blocker.
+status: draft_uncited
+
+deduction_types:
+  401k_traditional:
+    federal_income: reduces
+    fica: does_not_reduce
+    futa: does_not_reduce
+    state_income_default: reduces
+    state_overrides:
+      US-PA: does_not_reduce   # TODO citation: PA DOR employer withholding guide
+      US-NJ: does_not_reduce   # TODO citation: NJ-WT
+  403b_traditional:
+    federal_income: reduces
+    fica: does_not_reduce
+    futa: does_not_reduce
+    state_income_default: reduces
+    state_overrides:
+      US-PA: does_not_reduce   # TODO citation
+      US-NJ: does_not_reduce   # TODO citation
+  401k_roth:
+    federal_income: does_not_reduce
+    fica: does_not_reduce
+    futa: does_not_reduce
+    state_income_default: does_not_reduce
+    state_overrides: {}
+  hsa_cafeteria:
+    federal_income: reduces
+    fica: reduces
+    futa: reduces
+    state_income_default: reduces
+    state_overrides:
+      US-CA: does_not_reduce   # TODO citation: CA DE 44
+      US-NJ: does_not_reduce   # TODO citation: NJ-WT
+  fsa_health:
+    federal_income: reduces
+    fica: reduces
+    futa: reduces
+    state_income_default: reduces
+    state_overrides: {}
+  cafeteria_health_premium:
+    federal_income: reduces
+    fica: reduces
+    futa: reduces
+    state_income_default: reduces
+    state_overrides: {}

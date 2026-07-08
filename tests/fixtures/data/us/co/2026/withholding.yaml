@@ -1,0 +1,20 @@
+# ILLUSTRATIVE FIXTURE — CO-shaped flat-rate-with-allowance file using the
+# placeholder numbers from DESIGN.md §3.2, not real Colorado rates.
+schema_version: "0.1"
+jurisdiction: US-CO
+tax: state_income_withholding
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — illustrative DR 1098 stand-in"
+  url: "https://example.gov/fixtures/dr1098.pdf"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: flat_rate_with_annual_allowance
+rounding: { to: "0.01", mode: nearest }
+params:
+  rate: "0.0440"
+  filing_status:
+    single:  { annual_allowance: "4500" }
+    married: { annual_allowance: "9000" }

@@ -1,0 +1,53 @@
+# ILLUSTRATIVE FIXTURE — every number here is fake. Real federal parameters
+# enter /data only through the pipeline with Pub 15-T citations.
+schema_version: "0.1"
+jurisdiction: US
+tax: federal_income_withholding
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — illustrative Pub 15-T stand-in"
+  url: "https://example.gov/fixtures/p15t.pdf"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: federal_percentage_2020
+rounding: { to: "0.01", mode: nearest }
+params:
+  wage_adjustment:
+    single: "8600"
+    married_joint: "12900"
+    head_of_household: "8600"
+  brackets:
+    standard:
+      single:
+        - { over: "0",      rate: "0.00" }
+        - { over: "5000",   rate: "0.10" }
+        - { over: "45000",  rate: "0.20", base: "4000.00" }
+        - { over: "100000", rate: "0.30" }
+      married_joint:
+        - { over: "0",      rate: "0.00" }
+        - { over: "10000",  rate: "0.10" }
+        - { over: "90000",  rate: "0.20", base: "8000.00" }
+        - { over: "200000", rate: "0.30" }
+      head_of_household:
+        - { over: "0",      rate: "0.00" }
+        - { over: "7500",   rate: "0.10" }
+        - { over: "60000",  rate: "0.20" }
+        - { over: "150000", rate: "0.30" }
+    step2_checkbox:
+      single:
+        - { over: "0",      rate: "0.00" }
+        - { over: "2500",   rate: "0.10" }
+        - { over: "22500",  rate: "0.20" }
+        - { over: "50000",  rate: "0.30" }
+      married_joint:
+        - { over: "0",      rate: "0.00" }
+        - { over: "5000",   rate: "0.10" }
+        - { over: "45000",  rate: "0.20" }
+        - { over: "100000", rate: "0.30" }
+      head_of_household:
+        - { over: "0",      rate: "0.00" }
+        - { over: "3750",   rate: "0.10" }
+        - { over: "30000",  rate: "0.20" }
+        - { over: "75000",  rate: "0.30" }

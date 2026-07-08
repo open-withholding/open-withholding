@@ -1,0 +1,19 @@
+# ILLUSTRATIVE golden case against the fake federal fixture (not Pub 15-T).
+source: { document: "FIXTURE — illustrative Pub 15-T stand-in", page: 1, example: 1 }
+as_of: 2026-06-15
+input:
+  pay_frequency: biweekly
+  gross_wages: "2400.00"
+  pretax_deductions:
+    - { type: 401k_traditional, amount: "120.00" }
+    - { type: hsa_cafeteria,    amount: "50.00" }
+  federal:
+    w4_version: 2020
+    filing_status: married_joint
+    step2_checkbox: false
+    step3_credits: "2000"
+    step4a_other_income: "0"
+    step4b_deductions: "0"
+    step4c_extra: "0"
+expect:
+  federal_withholding: "58.00"

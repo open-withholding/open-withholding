@@ -1,0 +1,23 @@
+# Registry of watched government sources. One entry per publication the
+# watcher polls (daily; hourly Nov-Jan). See pipeline/README.md and
+# DESIGN.md §8.1 for field semantics.
+#
+# The two entries below are the initial real targets; more are added as
+# jurisdictions come online.
+
+- id: us-federal-p15t
+  landing: "https://www.irs.gov/forms-pubs/about-publication-15-t"
+  document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15t.pdf"
+  check: [etag, content_hash]
+  expected_window: "12-01..01-15"   # staleness alerting, not gating
+  maps_to:
+    - data/us/federal/{year}/withholding.yaml
+
+- id: us-co-dr1098
+  landing: "https://tax.colorado.gov/withholding-tax-guidance"
+  discovery: link_scan              # find the current PDF link on the landing page
+  link_pattern: "DR ?1098"
+  check: [content_hash]
+  expected_window: "11-15..01-15"
+  maps_to:
+    - data/us/co/{year}/withholding.yaml

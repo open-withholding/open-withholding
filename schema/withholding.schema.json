@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/open-withholding/schema/withholding.schema.json",
+  "title": "Withholding parameter file",
+  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 — org URL in $id is a placeholder.",
+  "type": "object",
+  "required": ["schema_version", "jurisdiction", "tax", "effective_from", "source", "method", "params"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "jurisdiction": {
+      "type": "string",
+      "pattern": "^US(-[A-Z]{2})?(-[A-Z0-9-]+)?$",
+      "description": "US, US-<state>, or US-<state>-<local id> (e.g. US-PA-PSD-700102)"
+    },
+    "tax": {
+      "enum": ["federal_income_withholding", "state_income_withholding", "local_income_withholding"]
+    },
+    "effective_from": { "type": "string", "format": "date" },
+    "effective_to": { "type": ["string", "null"], "format": "date" },
+    "supersedes": { "type": ["string", "null"], "description": "Repo-relative path of the file this replaces" },
+    "source": {
+      "type": "object",
+      "required": ["document", "url", "retrieved", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "document": { "type": "string", "minLength": 3 },
+        "url": { "type": "string", "format": "uri" },
+        "retrieved": { "type": "string", "format": "date" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "notes": { "type": "string" }
+      }
+    },
+    "method": {
+      "type": "string",
+      "description": "Registered method name; params validated against the matching $defs entry",
+      "enum": [
+        "flat_rate",
+        "flat_rate_with_annual_allowance",
+        "annualized_percentage",
+        "annualized_percentage_with_credits",
+        "federal_percentage_2020",
+        "federal_percentage_pre2020",
+        "wage_bracket_lookup",
+        "custom"
+      ]
+    },
+    "custom_implementation": {
+      "type": "string",
+      "description": "Required iff method == custom; e.g. custom/us_ct"
+    },
+    "params": { "type": "object" },
+    "rounding": {
+      "type": "object",
+      "required": ["to", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "to": { "$ref": "#/$defs/money", "description": "Round to nearest multiple, e.g. \"1.00\" or \"0.01\"" },
+        "mode": { "enum": ["nearest", "up", "down", "half_even"] },
+        "intermediate": { "enum": ["none", "annual"], "default": "none" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "method": { "const": "flat_rate" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["rate"],
+            "additionalProperties": false,
+            "properties": { "rate": { "$ref": "#/$defs/rate" } }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "flat_rate_with_annual_allowance" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["rate", "filing_status"],
+            "additionalProperties": false,
+            "properties": {
+              "rate": { "$ref": "#/$defs/rate" },
+              "filing_status": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "type": "object",
+                  "required": ["annual_allowance"],
+                  "properties": { "annual_allowance": { "$ref": "#/$defs/money" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "annualized_percentage" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["brackets"],
+            "additionalProperties": false,
+            "properties": {
+              "standard_deduction": { "$ref": "#/$defs/perStatusMoney" },
+              "allowance_amount": { "$ref": "#/$defs/moneyOrNull" },
+              "credit_per_allowance": { "$ref": "#/$defs/moneyOrNull" },
+              "brackets": {
+                "type": "object",
+                "minProperties": 1,
+                "description": "Keyed by this jurisdiction's filing-status enum",
+                "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "federal_percentage_2020" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["wage_adjustment", "brackets"],
+            "additionalProperties": false,
+            "properties": {
+              "wage_adjustment": {
+                "$ref": "#/$defs/perStatusMoney",
+                "description": "Worksheet 1A line 1g amounts per filing status, applied when the Step 2 checkbox is NOT checked"
+              },
+              "brackets": {
+                "type": "object",
+                "required": ["standard", "step2_checkbox"],
+                "additionalProperties": false,
+                "properties": {
+                  "standard": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                  },
+                  "step2_checkbox": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "custom" } } },
+      "then": { "required": ["custom_implementation"] }
+    }
+  ],
+  "$defs": {
+    "money": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d{1,2})?$",
+      "description": "Exact decimal as string; engine parses with Decimal"
+    },
+    "moneyOrNull": { "anyOf": [{ "$ref": "#/$defs/money" }, { "type": "null" }] },
+    "decimal": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?$",
+      "description": "Exact non-negative decimal, unbounded precision (cumulative bracket bases can carry sub-cent digits)"
+    },
+    "rate": {
+      "type": "string",
+      "pattern": "^0(\\.\\d{1,6})?$|^1(\\.0{1,6})?$",
+      "description": "Decimal fraction as string, 0..1, e.g. \"0.0440\""
+    },
+    "perStatusMoney": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/money" }
+    },
+    "bracketTable": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Rows ordered by ascending `over`; first row must have over == 0. Monotonicity and any precomputed `base` values are verified by the loader, not the schema.",
+      "items": {
+        "type": "object",
+        "required": ["over", "rate"],
+        "additionalProperties": false,
+        "properties": {
+          "over": { "$ref": "#/$defs/money" },
+          "rate": { "$ref": "#/$defs/rate" },
+          "base": { "anyOf": [{ "$ref": "#/$defs/decimal" }, { "type": "null" }] }
+        }
+      }
+    }
+  }
+}
