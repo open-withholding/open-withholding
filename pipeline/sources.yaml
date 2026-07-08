@@ -30,6 +30,140 @@
   maps_to:
     - data/us/mo/{year}/withholding.yaml
 
+- id: us-vt-gb1210
+  document: "GB-1210, Vermont Income Tax Withholding Instructions, Tables and Charts"
+  jurisdiction: US-VT
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://tax.vermont.gov/business/withholding"
+  document_url_pattern: "https://tax.vermont.gov/sites/tax/files/documents/GB-1210-{year}.pdf"
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/vt/{year}/withholding.yaml
+
+- id: us-hi-bookleta
+  document: "Booklet A, Hawaii Employer's Tax Guide"
+  jurisdiction: US-HI
+  tax: state_income_withholding
+  method: annualized_percentage
+  # Rev. {yy} booklet governs wages paid in {yy+1} (Rev. 2025 -> 2026 wages).
+  landing: "https://tax.hawaii.gov/forms/a1_b1_5whhold/"
+  discovery: link_scan
+  link_pattern: '\d{2}BkltA\.pdf'
+  check: [content_hash]
+  maps_to:
+    - data/us/hi/{year}/withholding.yaml
+
+- id: us-ga-employers-guide
+  document: "Georgia Employer's Withholding Tax Guide"
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  method: annualized_percentage
+  # Drupal slug changes with every mid-year revision; always link-scan.
+  landing: "https://dor.georgia.gov/employers-tax-guide"
+  discovery: link_scan
+  link_pattern: '20\d{2}-employers-tax-guide[^"]*download'
+  check: [content_hash]
+  maps_to:
+    - data/us/ga/{year}/withholding.yaml
+
+- id: us-nm-fyi104
+  document: "FYI-104, New Mexico Withholding Tax"
+  jurisdiction: US-NM
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.tax.newmexico.gov/businesses/wage-withholding-tax/"
+  # Canonical publication path, revised in place annually.
+  document_url_pattern: "https://realfile.tax.newmexico.gov/FYI-104.pdf"
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/nm/{year}/withholding.yaml
+
+- id: us-id-epb00744
+  document: "EPB00744, Idaho Table for Percentage Computation Method of Withholding"
+  jurisdiction: US-ID
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://tax.idaho.gov/taxes/income-tax/withholding/computing/"
+  # Redirector always resolves to the latest dated revision; ID revises
+  # mid-year as needed, so never cache the dated wp-content target.
+  document_url_pattern: "https://tax.idaho.gov/document-mngr/pubs_EPB00744"
+  check: [content_hash]
+  maps_to:
+    - data/us/id/{year}/withholding.yaml
+
+- id: us-ky-formula
+  document: "42A003(TCF), Kentucky Withholding Tax Formula"
+  jurisdiction: US-KY
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://revenue.ky.gov/Software-Developer/Pages/default.aspx"
+  # KY renames this file differently every year (2024: 42A003(TCF).pdf;
+  # 2025: Withholding Computer Formula.pdf; 2026: {year} Withholding
+  # Formula.pdf) and no page reliably links the current one. The watcher's
+  # url_404/stale alerts are the safety net when 2027 breaks this pattern.
+  document_url_pattern: "https://revenue.ky.gov/Forms/{year}%20Withholding%20Formula.pdf"
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/ky/{year}/withholding.yaml
+
+- id: us-nc-30
+  document: "NC-30, North Carolina Income Tax Withholding Tables and Instructions for Employers"
+  jurisdiction: US-NC
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.ncdor.gov/taxes-forms/withholding-tax/withholding-tax-forms-and-instructions"
+  # Drupal alias without a year; currently serves the latest edition.
+  document_url_pattern: "https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open"
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/nc/{year}/withholding.yaml
+
+- id: us-va-instructions
+  document: "Virginia Income Tax Withholding Guide for Employers"
+  jurisdiction: US-VA
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.tax.virginia.gov/withholding-tax"
+  # Stable path, revised in place. Formula p.21: $8,750 standard deduction
+  # (all employees), $930 personal exemptions (E1) -> allowance_amount,
+  # $800 age/blindness exemptions (E2) -> secondary_allowance_amount.
+  document_url_pattern: "https://www.tax.virginia.gov/sites/default/files/vatax-pdf/employer-withholding-instructions.pdf"
+  check: [etag, content_hash]
+  maps_to:
+    - data/us/va/{year}/withholding.yaml
+
+- id: us-mi-446
+  document: "Form 446, Michigan Income Tax Withholding Guide"
+  jurisdiction: US-MI
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.michigan.gov/taxes/business-taxes/withholding/calendar-year-tax-information"
+  document_url_pattern: "https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY{year}/446_Withholding-Guide_{year}.pdf"
+  check: [content_hash]
+  expected_window: "12-01..02-15"
+  maps_to:
+    - data/us/mi/{year}/withholding.yaml
+
+- id: us-wv-it1002a
+  document: "IT-100.2.A, West Virginia Tables for Percentage Method of Withholding"
+  jurisdiction: US-WV
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://tax.wv.gov/business/withholding/pages/withholdingtaxforms.aspx"
+  # Stable path, revised in place (successor to the legacy IT-100.1.A).
+  # Two schedule sets (two-earner default / optional one-earner) model as
+  # filing statuses. If the tables prove per-period rather than annual,
+  # this joins Kansas in needing a per-period method — triage will tell.
+  document_url_pattern: "https://tax.wv.gov/Documents/Withholding/it100.2a.pdf"
+  check: [etag, content_hash]
+  maps_to:
+    - data/us/wv/{year}/withholding.yaml
+
 - id: us-il-700t
   document: "Booklet IL-700-T, Illinois Withholding Income Tax Tables"
   jurisdiction: US-IL
