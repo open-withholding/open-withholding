@@ -1,0 +1,33 @@
+schema_version: '0.1'
+jurisdiction: US-NC
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: NC-30, North Carolina Income Tax Withholding Tables and Instructions for Employers (2026)
+  url: https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open
+  retrieved: '2026-07-08'
+  sha256: 56a00f942c48c51019c3b78d72da1f1cc04969890678c107fe9d0386c5d655be
+  notes: 'NC-30 percentage method. Withholding rate is the individual income tax rate PLUS 0.1% per the
+    NC-30 (2026: 3.99% + 0.1% = 4.09%) — not an extraction error. Both transcribed examples reproduce;
+    NC''s whole-dollar rounding absorbs the cent-level drift of its per-period printed worksheets.'
+method: annualized_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    single_married_surviving_spouse: '12750'
+    head_of_household: '19125'
+  allowance_amount: '2500'
+  credit_per_allowance: null
+  brackets:
+    single_married_surviving_spouse:
+    - over: '0'
+      rate: '0.0409'
+      base: '0'
+    head_of_household:
+    - over: '0'
+      rate: '0.0409'
+      base: '0'
