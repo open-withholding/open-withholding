@@ -1,11 +1,15 @@
 # Registry of watched government sources. One entry per publication the
-# watcher polls (daily; hourly Nov-Jan). See pipeline/README.md and
-# DESIGN.md §8.1 for field semantics.
+# watcher polls (daily; hourly Nov-Jan) and the extractor consumes. See
+# pipeline/README.md and DESIGN.md §8.1 for field semantics.
 #
-# The two entries below are the initial real targets; more are added as
-# jurisdictions come online.
+# jurisdiction/tax/method tell the extractor what to transcribe; the model
+# never chooses them. More entries are added as jurisdictions come online.
 
 - id: us-federal-p15t
+  document: "Publication 15-T, Federal Income Tax Withholding Methods"
+  jurisdiction: US
+  tax: federal_income_withholding
+  method: federal_percentage_2020
   landing: "https://www.irs.gov/forms-pubs/about-publication-15-t"
   document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15t.pdf"
   check: [etag, content_hash]
@@ -14,6 +18,10 @@
     - data/us/federal/{year}/withholding.yaml
 
 - id: us-co-dr1098
+  document: "DR 1098, Colorado Withholding Worksheet for Employers"
+  jurisdiction: US-CO
+  tax: state_income_withholding
+  method: flat_rate_with_annual_allowance
   landing: "https://tax.colorado.gov/withholding-tax-guidance"
   discovery: link_scan              # find the current PDF link on the landing page
   link_pattern: "DR ?1098"

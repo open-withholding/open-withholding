@@ -10,6 +10,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+pipeline = ["anthropic>=0.116"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]

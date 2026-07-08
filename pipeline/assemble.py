@@ -1,0 +1,231 @@
+"""Turn LLM extraction/verification output into repo artifacts.
+
+Pure functions, no network and no LLM: everything here is unit-testable. The
+model's per-filing-status arrays become the data files' keyed mappings, the
+envelope is stamped from the registry + retrieval metadata, and worked
+examples become golden-test fixtures.
+"""
+
+from __future__ import annotations
+
+import datetime as dt
+from pathlib import PurePosixPath
+
+WITHHOLDING_TAXES = (
+    "federal_income_withholding",
+    "state_income_withholding",
+    "local_income_withholding",
+)
+
+
+def data_path(jurisdiction: str, year: int) -> PurePosixPath:
+    """Repo-relative path for a jurisdiction-year withholding file."""
+    parts = jurisdiction.split("-")
+    if jurisdiction == "US":
+        return PurePosixPath(f"data/us/federal/{year}/withholding.yaml")
+    if len(parts) == 2:
+        return PurePosixPath(f"data/us/{parts[1].lower()}/{year}/withholding.yaml")
+    local_id = "-".join(parts[2:]).lower()
+    return PurePosixPath(f"data/us/{parts[1].lower()}/{year}/locals/{local_id}.yaml")
+
+
+def golden_slug(jurisdiction: str) -> str:
+    """Filename prefix for golden cases: US -> us-federal, US-CO -> us-co."""
+    return "us-federal" if jurisdiction == "US" else jurisdiction.lower()
+
+
+def _status_map(entries: list[dict], value_key: str = "amount") -> dict:
+    return {e["filing_status"]: e[value_key] for e in entries}
+
+
+def _bracket_map(entries: list[dict]) -> dict:
+    out = {}
+    for e in entries:
+        rows = []
+        for row in e["rows"]:
+            cleaned = {"over": row["over"], "rate": row["rate"]}
+            if row.get("base") is not None:
+                cleaned["base"] = row["base"]
+            rows.append(cleaned)
+        out[e["filing_status"]] = rows
+    return out
+
+
+def _transform_params(method: str, params: dict) -> dict:
+    if method == "flat_rate":
+        return {"rate": params["rate"]}
+    if method == "flat_rate_with_annual_allowance":
+        return {
+            "rate": params["rate"],
+            "filing_status": {
+                fs: {"annual_allowance": amount}
+                for fs, amount in _status_map(params["allowances"]).items()
+            },
+        }
+    if method == "annualized_percentage":
+        out: dict = {}
+        if params.get("standard_deduction"):
+            out["standard_deduction"] = _status_map(params["standard_deduction"])
+        out["allowance_amount"] = params.get("allowance_amount")
+        out["credit_per_allowance"] = params.get("credit_per_allowance")
+        out["brackets"] = _bracket_map(params["brackets"])
+        return out
+    if method == "federal_percentage_2020":
+        return {
+            "wage_adjustment": _status_map(params["wage_adjustment"]),
+            "brackets": {
+                "standard": _bracket_map(params["brackets_standard"]),
+                "step2_checkbox": _bracket_map(params["brackets_step2_checkbox"]),
+            },
+        }
+    raise ValueError(f"no transform for method {method!r}")
+
+
+def assemble_parameter_file(
+    *,
+    jurisdiction: str,
+    tax: str,
+    method: str,
+    extraction: dict,
+    source: dict,
+    schema_version: str = "0.1",
+    supersedes: str | None = None,
+) -> dict:
+    """Build the full parameter-file mapping ready for validation and YAML dump.
+
+    `source` must already carry document/url/retrieved/sha256 from the
+    retrieval step — provenance never comes from the model."""
+    return {
+        "schema_version": schema_version,
+        "jurisdiction": jurisdiction,
+        "tax": tax,
+        "effective_from": extraction["effective_from"],
+        "effective_to": None,
+        **({"supersedes": supersedes} if supersedes else {}),
+        "source": source,
+        "method": method,
+        "rounding": extraction["rounding"],
+        "params": _transform_params(method, extraction["params"]),
+    }
+
+
+def _money(value, default: str = "0") -> str:
+    return default if value is None else value
+
+
+def assemble_golden_case(
+    *,
+    jurisdiction: str,
+    tax: str,
+    example: dict,
+    as_of: str,
+    document: str,
+) -> dict:
+    """One verification-pass worked example -> one golden case mapping."""
+    record: dict = {
+        "pay_frequency": example["pay_frequency"],
+        "gross_wages": example["gross_wages"],
+    }
+    if tax == "federal_income_withholding":
+        record["federal"] = {
+            "w4_version": 2020,
+            "filing_status": example["filing_status"],
+            "step2_checkbox": bool(example.get("step2_checkbox")),
+            "step3_credits": _money(example.get("step3_credits")),
+            "step4a_other_income": _money(example.get("step4a_other_income")),
+            "step4b_deductions": _money(example.get("step4b_deductions")),
+            "step4c_extra": _money(example.get("step4c_extra")),
+        }
+        expect_key = "federal_withholding"
+    elif tax == "state_income_withholding":
+        record["state"] = [
+            {
+                "jurisdiction": jurisdiction,
+                "filing_status": example["filing_status"],
+                "allowances": example.get("allowances") or 0,
+                "additional_withholding": _money(example.get("additional_withholding")),
+            }
+        ]
+        expect_key = "state_withholding"
+    elif tax == "local_income_withholding":
+        record["locals"] = [{"jurisdiction": jurisdiction, "resident": True}]
+        expect_key = "local_withholding"
+    else:
+        raise ValueError(f"no golden mapping for tax {tax!r}")
+
+    return {
+        "source": {
+            "document": document,
+            "page": example["page"],
+            "example": example["description"],
+        },
+        "as_of": as_of,
+        "input": record,
+        "expect": {expect_key: example["expected_withholding"]},
+    }
+
+
+def default_as_of(effective_from: str) -> str:
+    """Mid-effective-year date used to select the candidate file in goldens."""
+    start = dt.date.fromisoformat(str(effective_from))
+    return dt.date(start.year, 6, 15).isoformat() if start.month == 1 else str(effective_from)
+
+
+def build_pr_body(
+    *,
+    source_id: str,
+    jurisdiction: str,
+    tax: str,
+    method: str,
+    source: dict,
+    extraction: dict,
+    verification: dict,
+    golden_paths: list[str],
+    golden_ok: bool,
+    prev_path: str | None,
+) -> str:
+    checks = verification.get("checks", [])
+    confirmed = sum(1 for c in checks if c["confirmed"])
+    unconfirmed = [c for c in checks if not c["confirmed"]]
+    lines = [
+        f"## `{source_id}`: {jurisdiction} {tax.replace('_', ' ')}",
+        "",
+        f"- **Method:** `{method}`",
+        f"- **Classification:** {extraction['classification']}",
+        f"- **Effective from:** {extraction['effective_from']}",
+        f"- **Source:** [{source['document']}]({source['url']}) — retrieved {source['retrieved']}",
+        f"- **Archived PDF sha256:** `{source['sha256']}`",
+        f"- **Supersedes:** `{prev_path}`" if prev_path else "- **Supersedes:** none (first edition in repo)",
+        "",
+        "### Extraction citations",
+        "",
+        *(f"- {c['what']} — p.{c['page']}" for c in extraction.get("citations", [])),
+        "",
+        "### Independent verification (separate context)",
+        "",
+        f"- {confirmed}/{len(checks)} values confirmed against the document",
+    ]
+    for c in unconfirmed:
+        lines.append(f"- ⚠️ **UNCONFIRMED** `{c['path']}` = `{c['candidate_value']}` — {c['note'] or 'no note'}")
+    lines += [
+        "",
+        "### Golden tests (transcribed from this document's worked examples)",
+        "",
+        *(f"- `{p}`" for p in golden_paths),
+        "",
+        f"- Engine reproduces every example: **{'PASS' if golden_ok else 'FAIL'}**",
+        "",
+        "### Extractor notes",
+        "",
+        extraction.get("notes", "").strip() or "(none)",
+        "",
+        "### Reviewer checklist",
+        "",
+        "- [ ] Spot-checked 2–3 parameter values against the linked PDF pages",
+        "- [ ] Golden tests are transcribed from THIS edition (source document/year matches)",
+        "- [ ] Rounding block matches what the worked examples actually do",
+        "- [ ] `supersedes` / `effective_to` handled on the prior file if this is a revision",
+        "",
+        "🤖 Extracted by the pipeline; every number above requires human review before merge.",
+    ]
+    return "\n".join(lines)

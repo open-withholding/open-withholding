@@ -1,0 +1,193 @@
+"""The assemble layer is what turns model output into repo artifacts — it
+must produce files the loader accepts and golden cases the runner accepts."""
+
+import datetime as dt
+from decimal import Decimal
+from pathlib import Path, PurePosixPath
+
+import pytest
+
+from engine.golden import GoldenCase, run_golden_case
+from engine.loader import load_parameter_dict
+from pipeline import assemble
+
+SOURCE = {
+    "document": "FIXTURE doc (2026)",
+    "url": "https://example.gov/x.pdf",
+    "retrieved": "2026-07-07",
+    "sha256": "0" * 64,
+}
+
+
+def test_data_path_and_slug():
+    assert assemble.data_path("US", 2026) == PurePosixPath("data/us/federal/2026/withholding.yaml")
+    assert assemble.data_path("US-CO", 2026) == PurePosixPath("data/us/co/2026/withholding.yaml")
+    assert assemble.data_path("US-PA-PSD-700102", 2026) == PurePosixPath(
+        "data/us/pa/2026/locals/psd-700102.yaml"
+    )
+    assert assemble.golden_slug("US") == "us-federal"
+    assert assemble.golden_slug("US-PA-PSD-700102") == "us-pa-psd-700102"
+
+
+def test_flat_rate_with_allowance_transform_loads():
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "rate": "0.0440",
+            "allowances": [
+                {"filing_status": "single", "amount": "4500"},
+                {"filing_status": "married", "amount": "9000"},
+            ],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-CO",
+        tax="state_income_withholding",
+        method="flat_rate_with_annual_allowance",
+        extraction=extraction,
+        source=SOURCE,
+    )
+    pf = load_parameter_dict(raw)  # full schema + loader validation
+    assert pf.params["filing_status"]["married"]["annual_allowance"] == "9000"
+
+
+def test_federal_transform_none_bases_dropped():
+    rows = [
+        {"over": "0", "rate": "0.00", "base": None},
+        {"over": "5000", "rate": "0.10", "base": "0"},
+    ]
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "wage_adjustment": [{"filing_status": "single", "amount": "8600"}],
+            "brackets_standard": [{"filing_status": "single", "rows": rows}],
+            "brackets_step2_checkbox": [{"filing_status": "single", "rows": rows}],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US",
+        tax="federal_income_withholding",
+        method="federal_percentage_2020",
+        extraction=extraction,
+        source=SOURCE,
+    )
+    first_row = raw["params"]["brackets"]["standard"]["single"][0]
+    assert "base" not in first_row  # null base omitted, declared base kept
+    assert raw["params"]["brackets"]["standard"]["single"][1]["base"] == "0"
+    load_parameter_dict(raw)
+
+
+def test_bad_extraction_is_rejected_by_loader():
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "standard_deduction": None,
+            "allowance_amount": None,
+            "credit_per_allowance": None,
+            "brackets": [
+                {
+                    "filing_status": "single",
+                    "rows": [
+                        {"over": "0", "rate": "0.01", "base": None},
+                        {"over": "1000", "rate": "0.02", "base": "99"},  # wrong base
+                    ],
+                }
+            ],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ",
+        tax="state_income_withholding",
+        method="annualized_percentage",
+        extraction=extraction,
+        source=SOURCE,
+    )
+    with pytest.raises(Exception, match="recomputed cumulative"):
+        load_parameter_dict(raw)
+
+
+def _example(**overrides):
+    base = {
+        "page": 7,
+        "description": "Example 1",
+        "pay_frequency": "biweekly",
+        "gross_wages": "2400.00",
+        "filing_status": "single",
+        "allowances": 1,
+        "step2_checkbox": None,
+        "step3_credits": None,
+        "step4a_other_income": None,
+        "step4b_deductions": None,
+        "step4c_extra": None,
+        "additional_withholding": None,
+        "expected_withholding": "97.98",
+    }
+    return {**base, **overrides}
+
+
+def test_state_golden_case_runs_against_candidate(taxability):
+    # CO-shaped candidate; the DESIGN §3.2 numbers give 97.98 for this input.
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "rate": "0.0440",
+            "allowances": [{"filing_status": "single", "amount": "4500"}],
+        },
+    }
+    pf = load_parameter_dict(
+        assemble.assemble_parameter_file(
+            jurisdiction="US-CO",
+            tax="state_income_withholding",
+            method="flat_rate_with_annual_allowance",
+            extraction=extraction,
+            source=SOURCE,
+        )
+    )
+    golden = assemble.assemble_golden_case(
+        jurisdiction="US-CO",
+        tax="state_income_withholding",
+        example=_example(allowances=0),
+        as_of=assemble.default_as_of("2026-01-01"),
+        document=SOURCE["document"],
+    )
+    case = GoldenCase(
+        path=Path("<candidate>"),
+        source=golden["source"],
+        as_of=dt.date.fromisoformat(golden["as_of"]),
+        input_record=golden["input"],
+        expect=golden["expect"],
+    )
+    results = run_golden_case(case, [pf], taxability)
+    assert results and all(r.ok for r in results)
+    assert results[0].actual == Decimal("97.98")
+
+
+def test_federal_golden_case_shape():
+    golden = assemble.assemble_golden_case(
+        jurisdiction="US",
+        tax="federal_income_withholding",
+        example=_example(
+            filing_status="married_joint", step2_checkbox=False, step3_credits="2000"
+        ),
+        as_of="2026-06-15",
+        document=SOURCE["document"],
+    )
+    federal = golden["input"]["federal"]
+    assert federal["w4_version"] == 2020
+    assert federal["step3_credits"] == "2000"
+    assert federal["step4a_other_income"] == "0"  # nulls default to "0"
+    assert golden["expect"] == {"federal_withholding": "97.98"}
+
+
+def test_default_as_of():
+    assert assemble.default_as_of("2026-01-01") == "2026-06-15"
+    # mid-year revision: as_of must fall inside the new file's window
+    assert assemble.default_as_of("2026-07-01") == "2026-07-01"

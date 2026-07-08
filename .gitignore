@@ -6,3 +6,6 @@ venv/
 *.egg-info/
 dist/
 build/
+archive/*
+!archive/README.md
+pipeline/out/

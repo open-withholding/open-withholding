@@ -19,3 +19,18 @@ jobs:
         run: python tools/validate_data.py
       - name: Run engine and golden tests
         run: pytest -q
+
+  data-golden-guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install "PyYAML>=6"
+      - name: Require golden tests for changed data
+        run: python tools/check_data_golden.py "origin/${{ github.base_ref }}"
