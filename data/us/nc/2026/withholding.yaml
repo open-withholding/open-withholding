@@ -8,7 +8,9 @@ source:
   url: https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open
   retrieved: '2026-07-08'
   sha256: 56a00f942c48c51019c3b78d72da1f1cc04969890678c107fe9d0386c5d655be
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'NC-30 percentage method. Withholding rate is the individual income tax rate PLUS 0.1% per the
+    NC-30 (2026: 3.99% + 0.1% = 4.09%) — not an extraction error. Both transcribed examples reproduce;
+    NC''s whole-dollar rounding absorbs the cent-level drift of its per-period printed worksheets.'
 method: annualized_percentage
 rounding:
   to: '1.00'
