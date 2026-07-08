@@ -61,3 +61,23 @@ def test_undated_ambiguity_fails_loud():
 def test_match_on_anchor_text():
     links = [("https://x.gov/f/8813", "DR 1098 2024 Withholding Worksheet (PDF)")]
     assert select_document_url(links, PATTERN.replace(r"\.pdf", ""), 2026) == "https://x.gov/f/8813"
+
+
+def test_cms_mirrors_of_same_basename_resolve():
+    # revenue.nebraska.gov links one booklet under two path prefixes.
+    links = [
+        ("https://x.gov/sites/default/files/doc/2026cir_en_whole.pdf", "Circular EN"),
+        ("https://x.gov/sites/x.gov/files/doc/2026cir_en_whole.pdf", "Circular EN"),
+    ]
+    url = select_document_url(links, r"20\d{2}cir_en_whole\.pdf", 2026)
+    assert url == "https://x.gov/sites/default/files/doc/2026cir_en_whole.pdf"
+
+
+def test_distinct_basenames_still_ambiguous():
+    links = [
+        ("https://x.gov/a/guide_2026.pdf", ""),
+        ("https://x.gov/b/tables_2026.pdf", ""),
+    ]
+    import pytest as _pytest
+    with _pytest.raises(DiscoveryError, match="ambiguous"):
+        select_document_url(links, r"20\d{2}", 2026)

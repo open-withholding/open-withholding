@@ -95,6 +95,13 @@ def select_document_url(
         best = [h for y, h in dated if y == best_year]
         if len(best) == 1:
             return best[0]
+        candidates = best
+    # CMS mirrors: the same document linked under multiple path prefixes
+    # (observed on revenue.nebraska.gov: /sites/default/files/... and
+    # /sites/revenue.nebraska.gov/files/... for one filename). One shared
+    # basename means one document — pick deterministically.
+    if len({h.rsplit("/", 1)[-1].lower() for h in candidates}) == 1:
+        return sorted(candidates)[0]
     raise DiscoveryError(
         f"{landing}: {link_pattern!r} is ambiguous — candidates: "
         + ", ".join(sorted(matches))
