@@ -1,0 +1,24 @@
+schema_version: '0.1'
+jurisdiction: US-MI
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Form 446, Michigan Income Tax Withholding Guide (2026)
+  url: https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY2026/446_Withholding-Guide_2026.pdf
+  retrieved: '2026-07-08'
+  sha256: 5cfe50e6842338649de7f97027f39659d830bb87e64e0c5834cf8e61b3a91b04
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '5900'
+  credit_per_allowance: null
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.0425'
+      base: '0'
