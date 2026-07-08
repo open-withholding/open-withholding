@@ -8,7 +8,11 @@ source:
   url: https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf
   retrieved: '2026-07-08'
   sha256: f8f05eda8025bc8b80b7dee5fa9a69af04e2c32b3320386ace7027b5fc6d635e
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Automated payroll method, p.4: flat 4.95% on wages less annualized exemptions. allowance_amount
+    = IL-W-4 Line 1 ($2,925); secondary_allowance_amount = Line 2 ($1,000). Single ''all'' bracket table
+    — Illinois has no filing statuses. The booklet''s wage-bracket tables embed bracket-midpoint rounding
+    and are intentionally not encoded (the p.3 table example yields $8.38 where the formula gives $8.33).
+    Booklet is revised in place at a stable URL; effective January 1, 2026 per the cover.'
 method: annualized_percentage
 rounding:
   to: '0.01'
