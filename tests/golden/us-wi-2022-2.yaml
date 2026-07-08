@@ -1,0 +1,16 @@
+source:
+  document: Publication W-166, Wisconsin Withholding Tax Guide (2022)
+  page: 26
+  example: 'Example 2: single employee, weekly wage $500, three withholding exemptions. AGE $26,000; deduction
+    $5,715.60; minus 3x$400 = net wage $19,084.40; tax $451.70 + 4.65% of $6,324.40 = $745.78; /52 = $14.34.'
+as_of: '2022-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '500'
+  state:
+  - jurisdiction: US-WI
+    filing_status: single
+    allowances: 3
+    additional_withholding: '0'
+expect:
+  state_withholding: '14.34'

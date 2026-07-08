@@ -1,0 +1,14 @@
+source:
+  document: Publication W-166, Wisconsin Withholding Tax Guide (2022)
+  page: 26
+  example: 'maintainer-constructed cross-year pin: identical inputs to printed
+    Example 1 but as_of 2026-06-15 — the 2022-effective file serves current
+    paychecks via effective dating.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '350.00'
+  state:
+  - { jurisdiction: US-WI, filing_status: single, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '7.59'

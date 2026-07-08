@@ -1,0 +1,17 @@
+source:
+  document: Publication W-166, Wisconsin Withholding Tax Guide (2022)
+  page: 27
+  example: 'Example 3: married employee, biweekly wage $1,000, three withholding exemptions. AGE $26,000;
+    deduction $9,406.40; minus 3x$400 = net wage $15,393.60; tax $451.70 + 4.65% of $2,633.60 = $574.16;
+    /26 = $22.08.'
+as_of: '2022-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1000'
+  state:
+  - jurisdiction: US-WI
+    filing_status: married
+    allowances: 3
+    additional_withholding: '0'
+expect:
+  state_withholding: '22.08'
