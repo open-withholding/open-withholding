@@ -1,0 +1,16 @@
+source:
+  document: Publication W-166, Wisconsin Withholding Tax Guide (2022)
+  page: 26
+  example: 'Example 1: single employee, weekly wage $350, one withholding exemption. AGE $18,200; deduction
+    $6,651.60; minus 1x$400 exemption = net wage $11,148.40; tax 3.54% = $394.65; /52 = $7.59.'
+as_of: '2022-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '350'
+  state:
+  - jurisdiction: US-WI
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '7.59'

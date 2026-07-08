@@ -1,0 +1,41 @@
+schema_version: '0.1'
+jurisdiction: US-WI
+tax: state_income_withholding
+effective_from: '2022-01-01'
+effective_to: null
+source:
+  document: Publication W-166, Wisconsin Withholding Tax Guide (2022)
+  url: https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf
+  retrieved: '2026-07-08'
+  sha256: c400ce62d7a945f111d01f42e541415d27c3cae45eb30f3fbf25ac5220949fb7
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage_phaseout
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  deduction_phaseout:
+    single:
+      maximum: '6702'
+      phase_start: '17780'
+      phase_rate: '0.12'
+    married:
+      maximum: '9461'
+      phase_start: '25727'
+      phase_rate: '0.20'
+  exemption_amount: '400'
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.0354'
+      base: '0'
+    - over: '12760'
+      rate: '0.0465'
+      base: '451.70'
+    - over: '25520'
+      rate: '0.0530'
+      base: '1045.04'
+    - over: '280950'
+      rate: '0.0765'
+      base: '14582.83'
