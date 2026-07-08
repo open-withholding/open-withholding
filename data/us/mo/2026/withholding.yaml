@@ -1,0 +1,111 @@
+schema_version: '0.1'
+jurisdiction: US-MO
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Form 4282, Employer's Tax Guide (2026)
+  url: https://dor.mo.gov/forms/4282_2026.pdf
+  retrieved: '2026-07-08'
+  sha256: 9b24eaa6b065f8bb932bdd2038960c3da20e19ba69cf9e3e98614600468fc93e
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '1'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    Single: '16100'
+    Married and Spouse Works: '16100'
+    Married Filing Separate: '16100'
+    Married and Spouse Does Not Work: '32200'
+    Head of Household: '24150'
+  allowance_amount: null
+  credit_per_allowance: null
+  brackets:
+    Single:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    Married and Spouse Works:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    Married Filing Separate:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    Married and Spouse Does Not Work:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    Head of Household:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
