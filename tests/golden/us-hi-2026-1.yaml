@@ -4,7 +4,8 @@ source:
   example: 'Single employee with only one job, paid $500 a week, claims three withholding allowances.
     Annualized method: $500 x 52 = $26,000 annual; subtract 3 x $1,144 = $3,432 and extra allowance $4,350,
     leaving $18,218 subject to withholding. Tax on first $14,400 = $288.00 plus $3,818 x 5.5% = $209.99,
-    annual = $497.99; weekly = $497.99/52 = $9.58.'
+    annual = $497.99; weekly = $497.99/52 = $9.58. (the single-one-job extra allowance is claimed: secondary_allowances
+    1)'
 as_of: '2026-06-15'
 input:
   pay_frequency: weekly
@@ -14,5 +15,6 @@ input:
     filing_status: single
     allowances: 3
     additional_withholding: '0'
+    secondary_allowances: 1
 expect:
   state_withholding: '9.58'
