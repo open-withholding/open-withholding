@@ -1,0 +1,25 @@
+schema_version: '0.1'
+jurisdiction: US-IL
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Booklet IL-700-T, Illinois Withholding Income Tax Tables (2026)
+  url: https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf
+  retrieved: '2026-07-08'
+  sha256: f8f05eda8025bc8b80b7dee5fa9a69af04e2c32b3320386ace7027b5fc6d635e
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '2925'
+  secondary_allowance_amount: '1000'
+  credit_per_allowance: null
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.0495'
+      base: '0'
