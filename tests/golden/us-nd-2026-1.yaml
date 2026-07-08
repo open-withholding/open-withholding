@@ -1,0 +1,15 @@
+source:
+  document: North Dakota Income Tax Withholding Rates & Instructions (2026)
+  page: 45
+  example: 'maintainer-constructed from the p.45 Single percentage table; mirrors the
+    p.46 example inputs but NOT its stale output (printed $734/$14 derives from the
+    2025 threshold $55,975 — see repo issue #13): weekly $1,800 single -> annual
+    93,600; (93,600-57,625) x 1.95% = 701.51; / 52 = 13.49 -> $13 nearest dollar'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1800.00'
+  state:
+  - { jurisdiction: US-ND, filing_status: single, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '13.00'

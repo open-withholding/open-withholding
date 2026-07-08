@@ -1,0 +1,13 @@
+source:
+  document: North Dakota Income Tax Withholding Rates & Instructions (2026)
+  page: 45
+  example: 'maintainer-constructed: MFJ biweekly $4,000 -> annual 104,000;
+    (104,000-57,500) x 1.95% = 906.75; / 26 = 34.88 -> $35 nearest dollar'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '4000.00'
+  state:
+  - { jurisdiction: US-ND, filing_status: married_joint, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '35.00'
