@@ -1,0 +1,19 @@
+source:
+  document: Publication 15-T, Federal Income Tax Withholding Methods (2026)
+  page: 12
+  example: maintainer-constructed via Worksheet 1A (publication prints no percentage-method example);
+    hand-computed independently of the engine — MFJ biweekly $2,000, no steps
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  federal:
+    w4_version: 2020
+    filing_status: married_joint
+    step2_checkbox: false
+    step3_credits: '0'
+    step4a_other_income: '0'
+    step4b_deductions: '0'
+    step4c_extra: '0'
+expect:
+  federal_withholding: '76.15'
