@@ -44,11 +44,17 @@ All arithmetic in Decimal. Let `r(x)` = apply the envelope rounding rule.
    If annual_taxable < 0, set 0.
 
 4. annual_tax      = bracket(annual_taxable)
-   where bracket(x): find last row with over ≤ x; tax = Σ over completed
-   brackets of (bracket_width × rate) + (x − row.over) × row.rate.
-   (Equivalently, most guides print base_tax + rate × excess; the schema
-   permits an optional precomputed `base` per row, which MUST be validated
-   at load time against the recomputed cumulative sum.)
+   where bracket(x): find last row with over ≤ x; tax = row.base
+   + (x − row.over) × row.rate. When the guide prints a base column, the
+   printed value is row.base — the guide's worked examples use it, so the
+   engine must too. When no base is printed, row.base is the cumulative sum
+   over completed brackets of (bracket_width × rate).
+   (The loader validates any printed base against the recomputed cumulative
+   sum within a small tolerance, not exact equality: agencies round printed
+   thresholds but derive base columns from unrounded amounts — e.g.
+   Pub 15-T 2026 prints the checkbox-single boundary as $108,938 for a true
+   half-of-MFJ boundary of $108,937.50, making the printed base $20,512.00
+   where the printed-threshold sum gives $20,512.12.)
 
 5. if CPA: annual_tax = max(0, annual_tax − A × CPA)
 

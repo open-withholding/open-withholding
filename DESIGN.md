@@ -297,8 +297,11 @@ All arithmetic in Decimal. Let `r(x)` = apply the envelope rounding rule.
    where bracket(x): find last row with over ≤ x; tax = Σ over completed
    brackets of (bracket_width × rate) + (x − row.over) × row.rate.
    (Equivalently, most guides print base_tax + rate × excess; the schema
-   permits an optional precomputed `base` per row, which MUST be validated
-   at load time against the recomputed cumulative sum.)
+   permits an optional printed `base` per row. A printed base is
+   authoritative — worked examples use it — and is validated at load time
+   against the recomputed cumulative sum within a small tolerance, because
+   agencies round printed thresholds while deriving base columns from
+   unrounded amounts. Learned from Pub 15-T 2026, checkbox-single table.)
 
 5. if CPA: annual_tax = max(0, annual_tax − A × CPA)
 

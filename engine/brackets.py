@@ -1,9 +1,13 @@
 """Bracket tables: parse, validate, and evaluate.
 
 Rows carry `over` (lower bound) only; upper bounds are implied by the next
-row. A precomputed `base` per row is permitted by the schema but MUST match
-the recomputed cumulative sum — a mismatch means a transcription error and
-the file is rejected at load time.
+row. A printed `base` per row is AUTHORITATIVE when present — guides'
+worked examples compute base + rate x excess from the printed column, so the
+engine must too. The recomputed cumulative sum is a transcription check, with
+a small tolerance: agencies round printed thresholds but derive the base
+column from unrounded amounts (e.g. Pub 15-T 2026 halves the MFJ checkbox
+table, printing threshold $108,938 for a true boundary of $108,937.50 and a
+base of $20,512.00 where the printed-threshold sum gives $20,512.12).
 """
 
 from __future__ import annotations
@@ -14,12 +18,18 @@ from decimal import Decimal
 from engine.errors import DataError
 from engine.money import ZERO, D
 
+# Max |declared base - recomputed cumulative| before a file is rejected.
+# Threshold rounding accounts for < ~$0.20 of drift; real transcription
+# errors are typically dollars. Golden tests remain the backstop for
+# sub-dollar mistakes in brackets that worked examples exercise.
+BASE_TOLERANCE = Decimal("1.00")
+
 
 @dataclass(frozen=True)
 class BracketRow:
     over: Decimal
     rate: Decimal
-    base: Decimal  # cumulative tax on income below `over`
+    base: Decimal  # tax on income below `over`; printed value wins when declared
 
 
 def parse_table(rows: list[dict], *, context: str = "brackets") -> tuple[BracketRow, ...]:
@@ -43,15 +53,18 @@ def parse_table(rows: list[dict], *, context: str = "brackets") -> tuple[Bracket
                     f"({over} follows {prev_over})"
                 )
             cumulative += (over - prev_over) * prev_rate
+        base = cumulative
         declared = row.get("base")
         if declared is not None:
             declared = D(declared, context=f"{where}.base")
-            if declared != cumulative:
+            if abs(declared - cumulative) > BASE_TOLERANCE:
                 raise DataError(
-                    f"{where}: declared base {declared} != recomputed cumulative {cumulative}; "
+                    f"{where}: declared base {declared} is {abs(declared - cumulative)} from "
+                    f"the recomputed cumulative {cumulative} (tolerance {BASE_TOLERANCE}); "
                     f"transcription error"
                 )
-        parsed.append(BracketRow(over=over, rate=rate, base=cumulative))
+            base = declared  # printed value is what the guide's examples use
+        parsed.append(BracketRow(over=over, rate=rate, base=base))
         prev_over, prev_rate = over, rate
     return tuple(parsed)
 

@@ -27,12 +27,21 @@ def test_tax_for_matches_hand_computation():
     assert tax_for(table, Decimal("54540")) == Decimal("2227.296")
 
 
-def test_declared_base_must_match():
+def test_declared_base_is_authoritative_within_tolerance():
+    # Pub 15-T-style drift: printed thresholds are rounded, printed bases
+    # derive from unrounded boundaries. The printed base wins.
     rows = [dict(ROWS[0]), dict(ROWS[1]), dict(ROWS[2])]
-    rows[2]["base"] = "145.596"
-    parse_table(rows)  # correct base accepted
-    rows[2]["base"] = "145.60"
-    with pytest.raises(DataError, match="recomputed cumulative"):
+    rows[2]["base"] = "145.60"  # 0.004 from the recomputed 145.596
+    table = parse_table(rows)
+    assert table[2].base == Decimal("145.60")
+    # tax computed FROM the printed base, matching the guide's examples
+    assert tax_for(table, Decimal("54540")) == Decimal("145.60") + Decimal("46260") * Decimal("0.045")
+
+
+def test_declared_base_beyond_tolerance_rejected():
+    rows = [dict(ROWS[0]), dict(ROWS[1]), dict(ROWS[2])]
+    rows[2]["base"] = "150"  # 4.40 off — a real transcription error
+    with pytest.raises(DataError, match="tolerance"):
         parse_table(rows)
 
 
