@@ -8,7 +8,11 @@ source:
   url: https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf
   retrieved: '2026-07-08'
   sha256: c400ce62d7a945f111d01f42e541415d27c3cae45eb30f3fbf25ac5220949fb7
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Pub W-166 ''Alternate Method of Withholding'' (formula method): deduction phase-out, $400/exemption,
+    single four-bracket schedule for all statuses. Wisconsin''s withholding tables took effect 2022-01-01
+    and have not changed since; the booklet text is revised periodically (this copy reflects laws as of
+    2026-01-15) but the parameters date to 2022 — hence the effective date. All three printed examples
+    transcribed as golden tests and reproduced.'
 method: annualized_percentage_phaseout
 rounding:
   to: '0.01'
