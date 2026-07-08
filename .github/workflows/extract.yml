@@ -77,7 +77,19 @@ jobs:
           path: pipeline/out/
           retention-days: 90
 
+      - name: Check for a candidate
+        id: candidate
+        # A cosmetic re-issue produces no PR body — nothing to propose.
+        run: |
+          if [ -f "pipeline/out/${{ inputs.source_id }}-${{ inputs.year }}-pr.md" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "No candidate PR body — cosmetic re-issue or nothing extracted."
+          fi
+
       - name: Open candidate PR
+        if: steps.candidate.outputs.exists == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.app-token.outputs.token }}
