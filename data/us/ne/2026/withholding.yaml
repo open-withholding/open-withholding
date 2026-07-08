@@ -8,7 +8,10 @@ source:
   url: https://revenue.nebraska.gov/sites/default/files/doc/business/Cir_En_2025/2026cir_en_whole.pdf
   retrieved: '2026-07-08'
   sha256: b6a3985ee03873aa1d16c1e9267c6de0acd8598a6e59db6b388dce649c1f3991
-  notes: Extracted by pipeline; pages per PR body
+  notes: Percentage method annual table and $2,440 withholding allowance verified against the booklet
+    (allowances are claimed on Nebraska Form W-4N). Printed cumulative bases are authoritative (within
+    recomputation tolerance). The whole-booklet PDF prints no computation example and specifies no rounding;
+    cents encoded. Golden cases are maintainer-constructed.
 method: annualized_percentage
 rounding:
   to: '0.01'

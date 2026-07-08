@@ -1,0 +1,15 @@
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2026)
+  page: 0
+  example: 'maintainer-constructed (booklet prints no computation example),
+    hand-computed independently of the engine: single, biweekly $1,700, 1 allowance
+    -> annual 44,200 - 2,440 = 41,760; base 1,343.55 + (41,760-40,130) x 4.48% =
+    1,416.57; / 26 = 54.48'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1700.00'
+  state:
+  - { jurisdiction: US-NE, filing_status: single, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '54.48'
