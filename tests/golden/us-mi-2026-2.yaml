@@ -1,0 +1,13 @@
+source:
+  document: Form 446, Michigan Income Tax Withholding Guide (2026)
+  page: 1
+  example: 'maintainer-constructed: weekly $1,000, no exemptions -> 52,000 x
+    4.25% = 2,210.00; / 52 = $42.50 exactly'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1000.00'
+  state:
+  - { jurisdiction: US-MI, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '42.50'

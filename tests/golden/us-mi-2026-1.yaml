@@ -1,0 +1,13 @@
+source:
+  document: Form 446, Michigan Income Tax Withholding Guide (2026)
+  page: 1
+  example: 'maintainer-constructed (guide prints no formula example): biweekly
+    $2,500, 2 exemptions -> 65,000 - 11,800 = 53,200 x 4.25% = 2,261.00; / 26 = 86.96'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2500.00'
+  state:
+  - { jurisdiction: US-MI, allowances: 2, additional_withholding: '0' }
+expect:
+  state_withholding: '86.96'
