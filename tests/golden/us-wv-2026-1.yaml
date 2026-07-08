@@ -1,0 +1,14 @@
+source:
+  document: IT-100.2.A, West Virginia Tables for Percentage Method of Withholding (2026)
+  page: 2
+  example: 'maintainer-constructed from Table 5 ANNUAL, Two Earner schedule (the
+    default): biweekly $2,000, 1 exemption -> 52,000 - 2,000 = 50,000; 1,462.88 +
+    (50,000-45,000) x 4.58% = 1,691.88; / 26 = 65.07'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  state:
+  - { jurisdiction: US-WV, filing_status: married_both_working_two_jobs, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '65.07'
