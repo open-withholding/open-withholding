@@ -191,3 +191,40 @@ def test_default_as_of():
     assert assemble.default_as_of("2026-01-01") == "2026-06-15"
     # mid-year revision: as_of must fall inside the new file's window
     assert assemble.default_as_of("2026-07-01") == "2026-07-01"
+
+
+def test_prose_filing_status_labels_normalized_to_snake_case():
+    # MO's extractor returned the guide's prose labels (PR #8); the backstop
+    # normalizes params keys and golden inputs identically.
+    from pipeline.assemble import snake
+
+    assert snake("Married and Spouse Works") == "married_and_spouse_works"
+    assert snake("Head of Household") == "head_of_household"
+    assert snake("married_joint") == "married_joint"  # idempotent
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "1.00", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "rate": "0.0440",
+            "allowances": [{"filing_status": "Married and Spouse Works", "amount": "9000"}],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ",
+        tax="state_income_withholding",
+        method="flat_rate_with_annual_allowance",
+        extraction=extraction,
+        source=SOURCE,
+    )
+    assert list(raw["params"]["filing_status"]) == ["married_and_spouse_works"]
+
+    golden = assemble.assemble_golden_case(
+        jurisdiction="US-ZZ",
+        tax="state_income_withholding",
+        example=_example(filing_status="Married and Spouse Works"),
+        as_of="2026-06-15",
+        document="doc",
+    )
+    assert golden["input"]["state"][0]["filing_status"] == "married_and_spouse_works"

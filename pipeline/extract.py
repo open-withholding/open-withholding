@@ -57,6 +57,11 @@ Rules:
   into `base`; otherwise set base to null.
 - The `rounding` block must describe what the document's worked examples
   actually do, not what seems reasonable.
+- Filing-status keys are machine identifiers: concise lower_snake_case
+  (e.g. single, married_spouse_works, head_of_household), never the
+  document's prose labels. When a prior edition's parameter file is
+  provided, reuse its filing-status keys VERBATIM — key stability across
+  years is part of the dataset's contract.
 - Cite the page for every parameter group you transcribe.
 """
 
