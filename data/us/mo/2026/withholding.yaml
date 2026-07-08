@@ -1,0 +1,114 @@
+schema_version: '0.1'
+jurisdiction: US-MO
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Form 4282, Employer's Tax Guide (2026)
+  url: https://dor.mo.gov/forms/4282_2026.pdf
+  retrieved: '2026-07-08'
+  sha256: 9b24eaa6b065f8bb932bdd2038960c3da20e19ba69cf9e3e98614600468fc93e
+  notes: Formula and annual percentage table pp.12-13; worked example p.13 demonstrates final rounding
+    to the whole dollar. Filing-status keys are snake_case forms of the guide's Form MO W-4 statuses (maintainer
+    normalization; the extractor returned the prose labels). Standard deductions mirror the federal amounts
+    per the guide.
+method: annualized_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    single: '16100'
+    married_spouse_works: '16100'
+    married_filing_separate: '16100'
+    married_spouse_does_not_work: '32200'
+    head_of_household: '24150'
+  allowance_amount: null
+  credit_per_allowance: null
+  brackets:
+    single:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    married_spouse_works:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    married_filing_separate:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    married_spouse_does_not_work:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'
+    head_of_household:
+    - over: '0'
+      rate: '0.0000'
+    - over: '1348'
+      rate: '0.0200'
+    - over: '2696'
+      rate: '0.0250'
+    - over: '4044'
+      rate: '0.0300'
+    - over: '5392'
+      rate: '0.0350'
+    - over: '6740'
+      rate: '0.0400'
+    - over: '8088'
+      rate: '0.0450'
+    - over: '9436'
+      rate: '0.0470'

@@ -1,0 +1,17 @@
+source:
+  document: Form 4282, Employer's Tax Guide (2026)
+  page: 13
+  example: 'Missouri Withholding Formula Example: married employee (spouse works), annual gross taxable
+    income $35,000, annual standard deduction $16,100, Missouri taxable income $18,900, monthly payroll.
+    Tax = $707.81 annual / 12 = $59.00 per month.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '2916.67'
+  state:
+  - jurisdiction: US-MO
+    filing_status: married_spouse_works
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '59.00'

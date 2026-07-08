@@ -1,0 +1,18 @@
+source:
+  document: Form 4282, Employer's Tax Guide (2026)
+  page: 13
+  example: 'maintainer-constructed to cover a second filing status (guide prints one
+    example); hand-computed via the p.12 formula independently of the engine: single,
+    biweekly $1,500 -> annual 39,000 - 16,100 = 22,900; 262.86 + (22,900-9,436) x
+    0.047 = 895.67 annual; / 26 = 34.45 -> $34.00 (nearest dollar)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1500.00'
+  state:
+  - jurisdiction: US-MO
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '34.00'
