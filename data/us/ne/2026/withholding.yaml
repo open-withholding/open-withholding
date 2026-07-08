@@ -1,0 +1,67 @@
+schema_version: '0.1'
+jurisdiction: US-NE
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2026)
+  url: https://revenue.nebraska.gov/sites/default/files/doc/business/Cir_En_2025/2026cir_en_whole.pdf
+  retrieved: '2026-07-08'
+  sha256: b6a3985ee03873aa1d16c1e9267c6de0acd8598a6e59db6b388dce649c1f3991
+  notes: Percentage method annual table and $2,440 withholding allowance verified against the booklet
+    (allowances are claimed on Nebraska Form W-4N). Printed cumulative bases are authoritative (within
+    recomputation tolerance). The whole-booklet PDF prints no computation example and specifies no rounding;
+    cents encoded. Golden cases are maintainer-constructed.
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '2440.00'
+  credit_per_allowance: null
+  brackets:
+    single:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '3430'
+      rate: '0.0226'
+      base: '0'
+    - over: '6710'
+      rate: '0.0322'
+      base: '74.13'
+    - over: '21810'
+      rate: '0.0421'
+      base: '560.35'
+    - over: '31610'
+      rate: '0.0435'
+      base: '972.93'
+    - over: '40130'
+      rate: '0.0448'
+      base: '1343.55'
+    - over: '75370'
+      rate: '0.0460'
+      base: '2922.30'
+    married:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '8190'
+      rate: '0.0226'
+      base: '0'
+    - over: '13010'
+      rate: '0.0322'
+      base: '108.93'
+    - over: '32400'
+      rate: '0.0421'
+      base: '733.29'
+    - over: '50400'
+      rate: '0.0435'
+      base: '1491.09'
+    - over: '62530'
+      rate: '0.0448'
+      base: '2018.75'
+    - over: '82920'
+      rate: '0.0460'
+      base: '2932.22'
