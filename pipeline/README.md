@@ -37,6 +37,31 @@ Stages (each visible in the output):
 
 **Never auto-merge.** The human merge is the trust product.
 
+## Running in GitHub Actions (bot-authored PRs)
+
+`.github/workflows/extract.yml` runs the same extractor via manual dispatch
+and opens the PR as the pipeline's **GitHub App bot**, so history visibly
+separates "pipeline proposed" (bot author) from "human reviewed and merged"
+(maintainer). One-time setup:
+
+1. **Create a GitHub App** (Settings → Developer settings → GitHub Apps →
+   New): name it something like `open-withholding-pipeline`; disable the
+   webhook; repository permissions **Contents: read & write**, **Pull
+   requests: read & write**, **Issues: read & write** (triage reports);
+   installable only on your account.
+2. After creating: note the **App ID**, then **generate a private key**
+   (downloads a `.pem`).
+3. **Install the app** on this repository (app page → Install App).
+4. **Repo secrets** (Settings → Secrets and variables → Actions):
+   `PIPELINE_APP_ID`, `PIPELINE_APP_PRIVATE_KEY` (the full `.pem` contents),
+   and `ANTHROPIC_API_KEY`.
+5. Dispatch the workflow (Actions → Extract → Run workflow) with a
+   `source_id` and `year`.
+
+Failures upload the triage report as an artifact and open a GitHub issue as
+the bot. The archived source PDF is kept as a 90-day build artifact — a
+stopgap until the durable sha256-keyed archive (DESIGN §8.4) exists.
+
 ## Registry
 
 `sources.yaml` — one entry per watched publication. `jurisdiction`, `tax`,

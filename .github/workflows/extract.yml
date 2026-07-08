@@ -1,0 +1,110 @@
+# Manually-dispatched extraction: runs pipeline/extract.py for one source
+# document and opens a PR authored by the pipeline's GitHub App bot — so the
+# repo history visibly separates "the pipeline proposed this" (bot) from "a
+# human reviewed and merged it" (maintainer). Never auto-merges.
+#
+# One-time setup this workflow depends on (see pipeline/README.md):
+#   - a GitHub App (contents: rw, pull requests: rw, issues: rw) installed
+#     on this repo
+#   - secrets: PIPELINE_APP_ID, PIPELINE_APP_PRIVATE_KEY, ANTHROPIC_API_KEY
+
+name: Extract
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_id:
+        description: "Source id from pipeline/sources.yaml (e.g. us-federal-p15t)"
+        required: true
+      year:
+        description: "Publication year (e.g. 2026)"
+        required: true
+      no_examples_ok:
+        description: "Publication prints no applicable worked examples"
+        type: boolean
+        default: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install "PyYAML>=6" "jsonschema>=4" "anthropic>=0.116"
+
+      - name: Mint app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.PIPELINE_APP_ID }}
+          private-key: ${{ secrets.PIPELINE_APP_PRIVATE_KEY }}
+
+      - name: Resolve bot identity
+        id: bot
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          echo "id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+
+      - name: Run extractor
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python pipeline/extract.py "${{ inputs.source_id }}" \
+            --year "${{ inputs.year }}" \
+            ${{ inputs.no_examples_ok && '--no-examples-ok' || '' }}
+
+      - name: Preserve archived source PDF
+        # Stopgap until the durable sha256-keyed archive exists (DESIGN §8.4):
+        # keep the exact bytes we extracted from as a build artifact.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-archive-${{ inputs.source_id }}-${{ inputs.year }}
+          path: archive/
+          retention-days: 90
+
+      - name: Preserve extractor output (PR body / triage)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extractor-out-${{ inputs.source_id }}-${{ inputs.year }}
+          path: pipeline/out/
+          retention-days: 90
+
+      - name: Open candidate PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: data/${{ inputs.source_id }}-${{ inputs.year }}
+          title: "${{ inputs.source_id }}: ${{ inputs.year }} extraction"
+          body-path: pipeline/out/${{ inputs.source_id }}-${{ inputs.year }}-pr.md
+          commit-message: "${{ inputs.source_id }}: ${{ inputs.year }} extraction"
+          add-paths: |
+            data/**
+            tests/golden/**
+          committer: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.bot.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
+          author: "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.bot.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>"
+
+      - name: Open triage issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          TRIAGE="pipeline/out/${{ inputs.source_id }}-${{ inputs.year }}-triage.md"
+          if [ -f "$TRIAGE" ]; then
+            gh issue create \
+              --title "Triage: ${{ inputs.source_id }} ${{ inputs.year }} extraction failed" \
+              --body-file "$TRIAGE" \
+              --repo "$GITHUB_REPOSITORY"
+          else
+            gh issue create \
+              --title "Extraction failed before triage: ${{ inputs.source_id }} ${{ inputs.year }}" \
+              --body "See run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+              --repo "$GITHUB_REPOSITORY"
+          fi
