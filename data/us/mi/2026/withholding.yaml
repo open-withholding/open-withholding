@@ -8,7 +8,9 @@ source:
   url: https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY2026/446_Withholding-Guide_2026.pdf
   retrieved: '2026-07-08'
   sha256: 5cfe50e6842338649de7f97027f39659d830bb87e64e0c5834cf8e61b3a91b04
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Form 446 guide: flat 4.25% on wages less $5,900 per exemption (MI-W4), single ''all'' schedule
+    — Michigan has no filing statuses. Guide prints no formula example; golden cases are maintainer-constructed.
+    Wage-bracket tables are the separate 446-T and intentionally not encoded.'
 method: annualized_percentage
 rounding:
   to: '0.01'
