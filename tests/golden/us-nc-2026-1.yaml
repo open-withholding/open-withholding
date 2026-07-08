@@ -1,0 +1,17 @@
+source:
+  document: NC-30, North Carolina Income Tax Withholding Tables and Instructions for Employers (2026)
+  page: 19
+  example: 'Unmarried employee paid $450.00 weekly, single with two withholding allowances, computed via
+    Percentage Method (weekly formula: standard deduction $245.19, allowances 2 x $48.08 = $96.16, net
+    $108.65 x .0409).'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '450.00'
+  state:
+  - jurisdiction: US-NC
+    filing_status: single_married_surviving_spouse
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '4.00'
