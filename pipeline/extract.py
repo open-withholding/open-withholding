@@ -79,9 +79,13 @@ golden tests. Copy the example's inputs and final withholding amount exactly
 as printed. For each example's filing_status, use EXACTLY the filing-status
 key spelled in the candidate parameter file (not the document's prose). If
 an example states only annual wages, divide by the pay periods to per-period
-wages (rounded to the cent). If an example uses a mechanism outside the
-schema (supplemental wages, nonresident aliens, pre-2020 W-4s for a
-federal_percentage_2020 candidate), skip it and mention that in a check note.
+wages (rounded to the cent). Skip an example and mention it in a check note
+when it uses a mechanism outside the schema (supplemental wages, nonresident
+aliens, pre-2020 W-4s for a federal_percentage_2020 candidate) — or when it
+is computed by LOOKING UP a wage-bracket table instead of the formula:
+table lookups embed bracket-midpoint rounding that the formula parameters
+cannot and should not reproduce. Only formula/percentage-method computations
+become golden tests.
 """
 
 
