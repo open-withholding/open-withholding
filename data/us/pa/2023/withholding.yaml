@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-PA
+tax: state_income_withholding
+effective_from: '2023-01-01'
+effective_to: null
+source:
+  document: REV-415, Employer Withholding Information Guide (2023)
+  url: https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf
+  retrieved: '2026-07-08'
+  sha256: e64161ea109692f79d6642b5cbc7b56bf67483ad78b7ee369e57b14b5cd9c7e1
+  notes: Extracted by pipeline; pages per PR body
+method: flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0307'
