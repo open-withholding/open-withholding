@@ -234,11 +234,17 @@ def main() -> int:
 
     method_spec = (REPO_ROOT / "methods" / f"{method}.md").read_text()
     prev_path = find_prev_file(jurisdiction, tax)
-    prev_note = ""
     if prev_path:
         prev_note = (
             "\n\nThe prior edition's parameter file (for shape reference only — every "
-            "number must come from the attached document):\n\n" + prev_path.read_text()
+            "number must come from the attached document). Classify parameter_change or "
+            "cosmetic_reissue RELATIVE TO THIS FILE:\n\n" + prev_path.read_text()
+        )
+    else:
+        prev_note = (
+            "\n\nThere is no prior edition in the dataset — this is the first import of "
+            "this source, so classify it new_year_edition regardless of the document's "
+            "own revision date."
         )
 
     client = anthropic.Anthropic()
@@ -260,6 +266,10 @@ def main() -> int:
         extraction_schema(method),
     )
     print(f"      classification: {extraction['classification']}")
+    if extraction["classification"] == "cosmetic_reissue" and prev_path is None:
+        # A first import can't be cosmetic — there's nothing to be identical to.
+        print("      overriding to new_year_edition: no prior edition exists in the dataset")
+        extraction["classification"] = "new_year_edition"
     if extraction["classification"] == "cosmetic_reissue":
         (OUT_DIR / f"{args.source_id}-{args.year}-cosmetic.json").write_text(json.dumps(extraction, indent=2))
         print("      cosmetic re-issue — no parameter change; nothing to PR. Details in pipeline/out/.")
