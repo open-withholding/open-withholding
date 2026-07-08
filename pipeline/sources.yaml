@@ -30,6 +30,58 @@
   maps_to:
     - data/us/mo/{year}/withholding.yaml
 
+- id: us-ks-kw100
+  document: "KW-100, Kansas Withholding Tax Guide"
+  jurisdiction: US-KS
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.ksrevenue.gov/bustaxtypeswh.html"
+  # Stable URL, revised in place when parameters change.
+  document_url_pattern: "https://www.ksrevenue.gov/pdf/kw100.pdf"
+  check: [etag, content_hash]
+  maps_to:
+    - data/us/ks/{year}/withholding.yaml
+
+- id: us-ne-cir-en
+  document: "Circular EN, Nebraska Income Tax Withholding"
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://revenue.nebraska.gov/businesses/circular-en-nebraska-income-tax-withholding-wages-pensions-and-annuities-and-gambling"
+  discovery: link_scan
+  # Year-versioned CMS path (e.g. .../Cir_En_2025/2026cir_en_whole.pdf);
+  # the pattern targets the whole booklet, not the per-frequency table PDFs.
+  link_pattern: '20\d{2}cir_en_whole\.pdf'
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ne/{year}/withholding.yaml
+
+- id: us-pa-rev415
+  document: "REV-415, Employer Withholding Information Guide"
+  jurisdiction: US-PA
+  tax: state_income_withholding
+  method: flat_rate
+  landing: "https://www.pa.gov/agencies/revenue.html"
+  # Stable dam path; PA's flat rate has not changed since 2004.
+  document_url_pattern: "https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf"
+  check: [etag, content_hash]
+  maps_to:
+    - data/us/pa/{year}/withholding.yaml
+
+- id: us-nd-rates
+  document: "North Dakota Income Tax Withholding Rates & Instructions"
+  jurisdiction: US-ND
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.tax.nd.gov/business/income-tax-withholding"
+  discovery: link_scan
+  link_pattern: '20\d{2}-income-tax-withholding-rates-booklet\.pdf'
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/nd/{year}/withholding.yaml
+
 - id: us-co-dr1098
   document: "DR 1098, Colorado Withholding Worksheet for Employers"
   jurisdiction: US-CO
