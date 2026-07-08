@@ -1,0 +1,8 @@
+source: { document: "DR 1098, Colorado Withholding Worksheet for Employers (2025)", page: 1, example: "maintainer-constructed (worksheet prints no example); hand-computed via DR 1098 Steps 1-2 independently of the engine — MFJ monthly $6,000 with $20 DR 0004 line 3; as_of 2026 pins cross-year effectiveness" }
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '6000.00'
+  state:
+    - { jurisdiction: US-CO, filing_status: married_joint, additional_withholding: '20.00' }
+expect: { state_withholding: '247.33' }

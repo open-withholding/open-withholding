@@ -1,0 +1,8 @@
+source: { document: "DR 1098, Colorado Withholding Worksheet for Employers (2025)", page: 1, example: "maintainer-constructed (worksheet prints no example); hand-computed via DR 1098 Steps 1-2 independently of the engine — single biweekly $2,400" }
+as_of: '2025-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2400.00'
+  state:
+    - { jurisdiction: US-CO, filing_status: single, additional_withholding: '0' }
+expect: { state_withholding: '97.14' }

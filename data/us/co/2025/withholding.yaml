@@ -1,0 +1,33 @@
+schema_version: '0.1'
+jurisdiction: US-CO
+tax: state_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+source:
+  document: DR 1098, Colorado Withholding Worksheet for Employers (2025)
+  url: https://tax.colorado.gov/sites/tax/files/documents/DR_1098_2024.pdf
+  retrieved: '2026-07-08'
+  sha256: 997533571c53b9cb226627105fcdf4161de2430a0871c00d8518ef38d644a324
+  notes: 'Worksheet p.1 (revision 11/12/24). Line 2a keys off IRS W-4 Step 1(c):
+    $10,000 if married filing jointly or qualifying surviving spouse, else $5,000;
+    filing-status keys mirror the federal enum (QSS within married_joint, MFS within
+    single), so single and head_of_household both carry the "otherwise" $5,000.
+    The document states no explicit effective date; 2025-01-01 is the maintainer''s
+    reading of the 11/12/24 revision (in force for 2025 wages and still current).
+    DR 0004 Line 2 custom allowance amounts are an employee election not yet
+    modeled (see repo issue tracker). No worked examples printed; golden cases are
+    maintainer-constructed. Cross-check available: the DR 1098 Withholding
+    Calculator linked from tax.colorado.gov/DR1098.'
+method: flat_rate_with_annual_allowance
+rounding:
+  to: '0.01'
+  mode: nearest
+params:
+  rate: '0.044'
+  filing_status:
+    married_joint:
+      annual_allowance: '10000'
+    single:
+      annual_allowance: '5000'
+    head_of_household:
+      annual_allowance: '5000'
