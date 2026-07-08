@@ -8,7 +8,13 @@ source:
   url: https://tax.wv.gov/Documents/Withholding/it100.2a.pdf
   retrieved: '2026-07-08'
   sha256: c103bacc00f5d3c6c02ce3831c76d328e3ada5ee8af3746a48100b9001ee68b2
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Encoded from Table 5 (ANNUAL) of each schedule — printed in the document and transcribed exactly,
+    incl. bases. Statuses: married_both_working_two_jobs = the ''Two Earner/Two or More Jobs'' schedule
+    (the default when the employee has not certified one-earner status on WV/IT-104); single_hoh_married_one_income
+    = the optional ''One Earner/One Job'' schedule. The document''s per-period tables (weekly etc.) carry
+    per-period-rounded thresholds/bases and can differ from the annualized computation by a cent or two
+    per period; no worked examples are printed, so the annual table governs this encoding. Exemption:
+    $2,000/yr (annual table), consistent with the per-period amounts ($38.46 weekly).'
 method: annualized_percentage
 rounding:
   to: '0.01'

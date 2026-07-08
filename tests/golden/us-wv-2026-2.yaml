@@ -1,0 +1,14 @@
+source:
+  document: IT-100.2.A, West Virginia Tables for Percentage Method of Withholding (2026)
+  page: 4
+  example: 'maintainer-constructed from Table 5 ANNUAL, One Earner schedule:
+    monthly $4,500, 2 exemptions -> 54,000 - 4,000 = 50,000; 1,106.50 +
+    (50,000-40,000) x 4.22% = 1,528.50; / 12 = 127.38'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '4500.00'
+  state:
+  - { jurisdiction: US-WV, filing_status: single_hoh_married_one_income, allowances: 2, additional_withholding: '0' }
+expect:
+  state_withholding: '127.38'
