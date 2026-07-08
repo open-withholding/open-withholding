@@ -1,0 +1,73 @@
+schema_version: '0.1'
+jurisdiction: US-HI
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Booklet A, Hawaii Employer's Tax Guide (2026)
+  url: https://files.hawaii.gov/tax/news/pubs/25BkltA.pdf
+  retrieved: '2026-07-08'
+  sha256: e819a8a48ed9f273014afe0046bc461152228953b545a9aad90e5f7378d3c051
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    single: '4350'
+    married: '4350'
+  allowance_amount: '1144'
+  credit_per_allowance: null
+  brackets:
+    single:
+    - over: '0'
+      rate: '0.0140'
+      base: '0'
+    - over: '9600'
+      rate: '0.0320'
+      base: '134.00'
+    - over: '14400'
+      rate: '0.0550'
+      base: '288.00'
+    - over: '19200'
+      rate: '0.0640'
+      base: '552.00'
+    - over: '24000'
+      rate: '0.0680'
+      base: '859.00'
+    - over: '36000'
+      rate: '0.0720'
+      base: '1675.00'
+    - over: '48000'
+      rate: '0.0760'
+      base: '2539.00'
+    - over: '125000'
+      rate: '0.0790'
+      base: '8391.00'
+    married:
+    - over: '0'
+      rate: '0.0140'
+      base: '0'
+    - over: '19200'
+      rate: '0.0320'
+      base: '269.00'
+    - over: '28800'
+      rate: '0.0550'
+      base: '576.00'
+    - over: '38400'
+      rate: '0.0640'
+      base: '1104.00'
+    - over: '48000'
+      rate: '0.0680'
+      base: '1718.00'
+    - over: '72000'
+      rate: '0.0720'
+      base: '3350.00'
+    - over: '96000'
+      rate: '0.0760'
+      base: '5078.00'
+    - over: '250000'
+      rate: '0.0790'
+      base: '16782.00'
