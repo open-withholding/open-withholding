@@ -23,7 +23,6 @@ import datetime as dt
 import hashlib
 import json
 import sys
-import urllib.request
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -35,7 +34,7 @@ from engine.errors import EngineError  # noqa: E402
 from engine.golden import GoldenCase, run_golden_case  # noqa: E402
 from engine.loader import load_parameter_dict  # noqa: E402
 from engine.taxability import TaxabilityMatrix  # noqa: E402
-from pipeline import assemble  # noqa: E402
+from pipeline import assemble, discover  # noqa: E402
 from pipeline.schemas import VERIFICATION_SCHEMA, extraction_schema  # noqa: E402
 
 ARCHIVE_DIR = REPO_ROOT / "archive"
@@ -89,26 +88,26 @@ def load_source(source_id: str) -> dict:
     raise SystemExit(f"source id {source_id!r} not in pipeline/sources.yaml")
 
 
-def fetch_pdf(source: dict, year: int, pdf_path: str | None) -> bytes:
+def fetch_pdf(source: dict, year: int, pdf_path: str | None) -> tuple[bytes, str]:
+    """Returns (pdf bytes, the URL they came from)."""
     if pdf_path:
         data = Path(pdf_path).expanduser().read_bytes()
+        url = source.get("document_url_pattern", source["landing"]).replace("{year}", str(year))
+    elif source.get("document_url_pattern"):
+        url = source["document_url_pattern"].replace("{year}", str(year))
+        data = discover.fetch(url)
+    elif source.get("discovery") == "link_scan":
+        url = discover.discover_document_url(source["landing"], source["link_pattern"], year)
+        print(f"      discovered {url}")
+        data = discover.fetch(url)
     else:
-        url = source.get("document_url_pattern")
-        if not url:
-            raise SystemExit(
-                f"{source['id']} has no document_url_pattern (link_scan discovery is not "
-                f"implemented yet) — download the PDF and pass --pdf"
-            )
-        url = url.replace("{year}", str(year))
-        request = urllib.request.Request(url, headers={"User-Agent": "open-withholding/0.1"})
-        with urllib.request.urlopen(request, timeout=120) as resp:
-            data = resp.read()
+        raise SystemExit(f"{source['id']} has neither document_url_pattern nor link_scan discovery")
     if not data.startswith(b"%PDF"):
-        raise ExtractionFailure("retrieved bytes are not a PDF (content_type_anomaly)")
-    return data
+        raise ExtractionFailure(f"{url}: retrieved bytes are not a PDF (content_type_anomaly)")
+    return data, url
 
 
-def archive_pdf(data: bytes, source: dict, year: int) -> str:
+def archive_pdf(data: bytes, source: dict, year: int, url: str) -> str:
     sha = hashlib.sha256(data).hexdigest()
     ARCHIVE_DIR.mkdir(exist_ok=True)
     (ARCHIVE_DIR / f"{sha}.pdf").write_bytes(data)
@@ -117,7 +116,7 @@ def archive_pdf(data: bytes, source: dict, year: int) -> str:
             {
                 "source_id": source["id"],
                 "year": year,
-                "url": source.get("document_url_pattern", source["landing"]),
+                "url": url,
                 "retrieved": dt.date.today().isoformat(),
                 "sha256": sha,
             },
@@ -223,11 +222,11 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     print(f"[1/5] fetching + archiving {args.source_id} ...")
-    pdf = fetch_pdf(source, args.year, args.pdf)
-    sha = archive_pdf(pdf, source, args.year)
+    pdf, pdf_url = fetch_pdf(source, args.year, args.pdf)
+    sha = archive_pdf(pdf, source, args.year, pdf_url)
     source_block = {
-        "document": f"{source['document']} ({args.year})",
-        "url": source.get("document_url_pattern", source["landing"]).replace("{year}", str(args.year)),
+        "document": source["document"],
+        "url": pdf_url,
         "retrieved": dt.date.today().isoformat(),
         "sha256": sha,
     }
@@ -265,6 +264,15 @@ def main() -> int:
         (OUT_DIR / f"{args.source_id}-{args.year}-cosmetic.json").write_text(json.dumps(extraction, indent=2))
         print("      cosmetic re-issue — no parameter change; nothing to PR. Details in pipeline/out/.")
         return 0
+
+    # Layout follows the document's own effective date, not the requested
+    # year: agencies don't reissue when nothing changed (CO's current DR 1098
+    # is the 2024 edition), and effective-dating resolves later paychecks.
+    effective_year = int(str(extraction["effective_from"])[:4])
+    if effective_year != args.year:
+        print(f"      note: document is effective {extraction['effective_from']} — "
+              f"filing under {effective_year}, not {args.year}")
+    source_block["document"] = f"{source_block['document']} ({effective_year})"
 
     param_dict = assemble.assemble_parameter_file(
         jurisdiction=jurisdiction,
@@ -335,9 +343,9 @@ def main() -> int:
 
     print(f"[5/5] writing candidate files ...")
     slug = assemble.golden_slug(jurisdiction)
-    data_file = assemble.data_path(jurisdiction, args.year)
+    data_file = assemble.data_path(jurisdiction, effective_year)
     golden_paths = [
-        f"tests/golden/{slug}-{args.year}-{i + 1}.yaml" for i in range(len(golden_dicts))
+        f"tests/golden/{slug}-{effective_year}-{i + 1}.yaml" for i in range(len(golden_dicts))
     ]
     target_root = OUT_DIR / f"{args.source_id}-{args.year}" if args.dry_run else REPO_ROOT
     (target_root / data_file).parent.mkdir(parents=True, exist_ok=True)
@@ -365,7 +373,7 @@ def main() -> int:
     for rel in golden_paths:
         print(f"      {rel}")
     print(f"      PR body: {pr_file.relative_to(REPO_ROOT)}")
-    branch = f"data/{slug}-{args.year}"
+    branch = f"data/{slug}-{effective_year}"
     print(
         f"\nNext (human): review the diff, then:\n"
         f"  git checkout -b {branch} && git add data tests/golden && "

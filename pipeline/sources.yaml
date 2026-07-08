@@ -22,9 +22,13 @@
   jurisdiction: US-CO
   tax: state_income_withholding
   method: flat_rate_with_annual_allowance
-  landing: "https://tax.colorado.gov/withholding-tax-guidance"
-  discovery: link_scan              # find the current PDF link on the landing page
-  link_pattern: "DR ?1098"
+  # Stable form page; the PDF itself lives at a CMS path that moves per
+  # edition (currently DR_1098_2024.pdf — CO hasn't reissued since 2024).
+  # The year in the pattern keeps the *employee* worksheet PDF (undated
+  # filename) from matching.
+  landing: "https://tax.colorado.gov/DR1098"
+  discovery: link_scan              # find the current edition's PDF link
+  link_pattern: 'DR[_ ]?1098[_ ]?20\d{2}.*\.pdf'
   check: [content_hash]
   expected_window: "11-15..01-15"
   maps_to:
