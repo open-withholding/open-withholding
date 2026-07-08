@@ -1,0 +1,52 @@
+schema_version: '0.1'
+jurisdiction: US-WV
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: IT-100.2.A, West Virginia Tables for Percentage Method of Withholding (2026)
+  url: https://tax.wv.gov/Documents/Withholding/it100.2a.pdf
+  retrieved: '2026-07-08'
+  sha256: c103bacc00f5d3c6c02ce3831c76d328e3ada5ee8af3746a48100b9001ee68b2
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '2000'
+  credit_per_allowance: null
+  brackets:
+    married_both_working_two_jobs:
+    - over: '0'
+      rate: '0.0211'
+      base: '0'
+    - over: '7500'
+      rate: '0.0281'
+      base: '158.25'
+    - over: '18750'
+      rate: '0.0316'
+      base: '474.38'
+    - over: '30000'
+      rate: '0.0422'
+      base: '829.88'
+    - over: '45000'
+      rate: '0.0458'
+      base: '1462.88'
+    single_hoh_married_one_income:
+    - over: '0'
+      rate: '0.0211'
+      base: '0'
+    - over: '10000'
+      rate: '0.0281'
+      base: '211.00'
+    - over: '25000'
+      rate: '0.0316'
+      base: '632.50'
+    - over: '40000'
+      rate: '0.0422'
+      base: '1106.50'
+    - over: '60000'
+      rate: '0.0458'
+      base: '1950.50'
