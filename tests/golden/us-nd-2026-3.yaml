@@ -1,0 +1,13 @@
+source:
+  document: North Dakota Income Tax Withholding Rates & Instructions (2026)
+  page: 45
+  example: 'maintainer-constructed: head of household monthly $8,000 -> annual
+    96,000; (96,000-78,475) x 1.95% = 341.74; / 12 = 28.48 -> $28 nearest dollar'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '8000.00'
+  state:
+  - { jurisdiction: US-ND, filing_status: head_of_household, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '28.00'

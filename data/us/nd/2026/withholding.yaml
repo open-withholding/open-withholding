@@ -1,0 +1,56 @@
+schema_version: '0.1'
+jurisdiction: US-ND
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: North Dakota Income Tax Withholding Rates & Instructions (2026)
+  url: https://www.tax.nd.gov/sites/www/files/documents/forms/individual/2026-iit/2026-income-tax-withholding-rates-booklet.pdf
+  retrieved: '2026-07-08'
+  sha256: b265477a04e5932a79efc5bbc1be6db812febbe018a4f8b7018b7a72553f0415
+  notes: 'Annual Percentage Method Tables for 2020+ W-4s, p.45; worksheet divides the annual amount by
+    pay periods and rounds to the nearest whole dollar (p.45 step 5). KNOWN PUBLICATION DEFECT, adjudicated
+    in repo issue #13 and reported to withhold@nd.gov: the booklet''s p.46 worked example ($734 annual
+    for $93,600 single) and its wage-bracket tables were computed from the 2025 parameters (single threshold
+    $55,975 per the 2025 edition) and were not updated to this table ($57,625). The percentage tables
+    here are internally consistent (each printed 2.50% base recomputes exactly) and are encoded as printed.
+    Golden cases are maintainer-constructed FROM THESE TABLES and intentionally do not match the stale
+    printed example.'
+method: annualized_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+params:
+  allowance_amount: null
+  credit_per_allowance: null
+  brackets:
+    married_joint:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '57500'
+      rate: '0.0195'
+      base: '0'
+    - over: '168525'
+      rate: '0.025'
+      base: '2164.99'
+    head_of_household:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '78475'
+      rate: '0.0195'
+      base: '0'
+    - over: '289675'
+      rate: '0.025'
+      base: '4118.40'
+    single:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '57625'
+      rate: '0.0195'
+      base: '0'
+    - over: '258450'
+      rate: '0.025'
+      base: '3916.09'
