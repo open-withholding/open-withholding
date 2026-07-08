@@ -8,17 +8,20 @@ source:
   url: https://files.hawaii.gov/tax/news/pubs/25BkltA.pdf
   retrieved: '2026-07-08'
   sha256: e819a8a48ed9f273014afe0046bc461152228953b545a9aad90e5f7378d3c051
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Part 1, Annualized Income Tax Withholding (p.20): $1,144 per regular HW-4 withholding allowance
+    (allowance_amount). The $4,350 ''extra lump sum withholding allowance'' is NOT a standard deduction
+    — it is subtracted only when the employee claims that allowance on Form HW-4 (single with one job);
+    encoded as secondary_allowance_amount with secondary_allowances 0 or 1 as employee input. CORRECTION:
+    the original merge subtracted it unconditionally, under-withholding for non-claimers. Rev. 2025 booklet
+    governs wages paid from 2026-01-01.'
 method: annualized_percentage
 rounding:
   to: '0.01'
   mode: nearest
   intermediate: none
 params:
-  standard_deduction:
-    single: '4350'
-    married: '4350'
   allowance_amount: '1144'
+  secondary_allowance_amount: '4350'
   credit_per_allowance: null
   brackets:
     single:

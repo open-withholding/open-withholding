@@ -1,0 +1,18 @@
+source:
+  document: Booklet A, Hawaii Employer's Tax Guide (2026)
+  page: 20
+  example: 'maintainer-constructed: single biweekly $2,000, 1 allowance, extra lump-sum allowance NOT
+    claimed -> 52,000 - 1,144 = 50,856; base at 48,000 (2,539.00) + 2,856 x 7.6% = 2,756.06; / 26 = 106.00
+    (hand-computation initially had 50,848; corrected after engine cross-check)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  state:
+  - jurisdiction: US-HI
+    filing_status: single
+    allowances: 1
+    secondary_allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '106.00'
