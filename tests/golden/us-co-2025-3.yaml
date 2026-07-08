@@ -1,0 +1,8 @@
+source: { document: "DR 1098, Colorado Withholding Worksheet for Employers (2025)", page: 1, example: "maintainer-constructed (worksheet prints no example); hand-computed via DR 1098 Steps 1-2 independently of the engine — HoH weekly $1,500" }
+as_of: '2025-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1500.00'
+  state:
+    - { jurisdiction: US-CO, filing_status: head_of_household, additional_withholding: '0' }
+expect: { state_withholding: '61.77' }
