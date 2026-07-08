@@ -9,6 +9,7 @@ examples become golden-test fixtures.
 from __future__ import annotations
 
 import datetime as dt
+import re
 from pathlib import PurePosixPath
 
 WITHHOLDING_TAXES = (
@@ -34,8 +35,37 @@ def golden_slug(jurisdiction: str) -> str:
     return "us-federal" if jurisdiction == "US" else jurisdiction.lower()
 
 
+# Connector words carry no meaning in a status key: "married and spouse
+# works" and "married spouse works" are the same status. "of" is kept —
+# head_of_household is the established spelling everywhere.
+_CONNECTORS = {"and", "or"}
+
+# Spelling variants of the same concept converge on one canonical key,
+# matching the keys already merged in the dataset (federal, CO). Semantic
+# distinctions are per-jurisdiction and are NEVER merged here — this table
+# only collapses different spellings, not different meanings.
+_ALIASES = {
+    "married_filing_jointly": "married_joint",
+    "married_filing_joint": "married_joint",
+    "married_filing_jointly_qualifying_surviving_spouse": "married_joint",
+    "head_of_household_hoh": "head_of_household",
+}
+
+
+def snake(label: str) -> str:
+    """Filing-status keys are machine identifiers, not prose. Extraction is
+    prompted to emit snake_case (reusing the prior edition's keys when one
+    exists); this is the deterministic backstop for prose labels like
+    "Married and Spouse Works". Idempotent on already-canonical keys."""
+    words = [
+        w for w in re.sub(r"[^a-z0-9]+", " ", label.lower()).split() if w not in _CONNECTORS
+    ]
+    key = "_".join(words)
+    return _ALIASES.get(key, key)
+
+
 def _status_map(entries: list[dict], value_key: str = "amount") -> dict:
-    return {e["filing_status"]: e[value_key] for e in entries}
+    return {snake(e["filing_status"]): e[value_key] for e in entries}
 
 
 def _bracket_map(entries: list[dict]) -> dict:
@@ -47,7 +77,7 @@ def _bracket_map(entries: list[dict]) -> dict:
             if row.get("base") is not None:
                 cleaned["base"] = row["base"]
             rows.append(cleaned)
-        out[e["filing_status"]] = rows
+        out[snake(e["filing_status"])] = rows
     return out
 
 
@@ -129,7 +159,7 @@ def assemble_golden_case(
     if tax == "federal_income_withholding":
         record["federal"] = {
             "w4_version": 2020,
-            "filing_status": example["filing_status"],
+            "filing_status": snake(example["filing_status"]),
             "step2_checkbox": bool(example.get("step2_checkbox")),
             "step3_credits": _money(example.get("step3_credits")),
             "step4a_other_income": _money(example.get("step4a_other_income")),
@@ -141,7 +171,7 @@ def assemble_golden_case(
         record["state"] = [
             {
                 "jurisdiction": jurisdiction,
-                "filing_status": example["filing_status"],
+                "filing_status": snake(example["filing_status"]),
                 "allowances": example.get("allowances") or 0,
                 "additional_withholding": _money(example.get("additional_withholding")),
             }
