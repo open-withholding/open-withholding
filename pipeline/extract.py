@@ -71,9 +71,12 @@ Also transcribe EVERY worked example in the document that exercises this
 withholding method (percentage/formula method for the stated filing statuses)
 into the structured worked_examples format — these become the dataset's
 golden tests. Copy the example's inputs and final withholding amount exactly
-as printed. If an example uses a mechanism outside the schema (supplemental
-wages, nonresident aliens, pre-2020 W-4s for a federal_percentage_2020
-candidate), skip it and mention that in a check note.
+as printed. For each example's filing_status, use EXACTLY the filing-status
+key spelled in the candidate parameter file (not the document's prose). If
+an example states only annual wages, divide by the pay periods to per-period
+wages (rounded to the cent). If an example uses a mechanism outside the
+schema (supplemental wages, nonresident aliens, pre-2020 W-4s for a
+federal_percentage_2020 candidate), skip it and mention that in a check note.
 """
 
 

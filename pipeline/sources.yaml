@@ -17,6 +17,19 @@
   maps_to:
     - data/us/federal/{year}/withholding.yaml
 
+- id: us-mo-4282
+  document: "Form 4282, Employer's Tax Guide"
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://dor.mo.gov/taxation/business/tax-types/withholding/"
+  # Stable year-versioned pattern (verified for 2025 and 2026).
+  document_url_pattern: "https://dor.mo.gov/forms/4282_{year}.pdf"
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/mo/{year}/withholding.yaml
+
 - id: us-co-dr1098
   document: "DR 1098, Colorado Withholding Worksheet for Employers"
   jurisdiction: US-CO
