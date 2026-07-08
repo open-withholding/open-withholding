@@ -207,13 +207,22 @@ def build_pr_body(
     ]
     for c in unconfirmed:
         lines.append(f"- ⚠️ **UNCONFIRMED** `{c['path']}` = `{c['candidate_value']}` — {c['note'] or 'no note'}")
+    lines += ["", "### Golden tests", ""]
+    if golden_paths:
+        lines += [
+            "Transcribed from this document's worked examples:",
+            "",
+            *(f"- `{p}`" for p in golden_paths),
+            "",
+            f"- Engine reproduces every example: **{'PASS' if golden_ok else 'FAIL'}**",
+        ]
+    else:
+        lines += [
+            "⚠️ **This publication prints no applicable worked examples.** "
+            "Maintainer-constructed golden cases (noted as such in their `source`) are "
+            "required before merge; the data-golden-guard CI job enforces this.",
+        ]
     lines += [
-        "",
-        "### Golden tests (transcribed from this document's worked examples)",
-        "",
-        *(f"- `{p}`" for p in golden_paths),
-        "",
-        f"- Engine reproduces every example: **{'PASS' if golden_ok else 'FAIL'}**",
         "",
         "### Extractor notes",
         "",

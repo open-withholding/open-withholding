@@ -207,6 +207,13 @@ def main() -> int:
     parser.add_argument(
         "--dry-run", action="store_true", help="Write candidates to pipeline/out/ only"
     )
+    parser.add_argument(
+        "--no-examples-ok",
+        action="store_true",
+        help="Accept a publication that prints no applicable worked examples: write the "
+        "candidate without golden fixtures. The data-golden-guard CI job still blocks the "
+        "PR until maintainer-constructed cases (noted as such) are added.",
+    )
     args = parser.parse_args()
 
     import anthropic
@@ -307,18 +314,24 @@ def main() -> int:
                 "verification could not confirm: "
                 + "; ".join(f"{c['path']}={c['candidate_value']} ({c['note']})" for c in unconfirmed)
             )
-        run_mechanical_validation(param_dict, golden_dicts, taxability)
+        if not golden_dicts and args.no_examples_ok:
+            load_parameter_dict(param_dict)  # schema + bracket validation still gates
+            print("      schema OK; no worked examples in publication (--no-examples-ok); "
+                  "maintainer-constructed golden cases required before merge")
+        else:
+            run_mechanical_validation(param_dict, golden_dicts, taxability)
+            print(f"      schema OK; {len(golden_dicts)} golden case(s) reproduced by the engine")
     except (ExtractionFailure, EngineError) as exc:
         triage = OUT_DIR / f"{args.source_id}-{args.year}-triage.md"
         triage.write_text(
             f"# Triage: {args.source_id} {args.year}\n\n**Failure:** {exc}\n\n"
             f"## Candidate\n\n```yaml\n{candidate_yaml}```\n\n"
+            f"## Extraction\n\n```json\n{json.dumps(extraction, indent=2)}\n```\n\n"
             f"## Verification\n\n```json\n{json.dumps(verification, indent=2)}\n```\n"
         )
         print(f"      FAILED — triage report written to {triage.relative_to(REPO_ROOT)}")
         print(f"      {exc}")
         return 1
-    print(f"      schema OK; {len(golden_dicts)} golden case(s) reproduced by the engine")
 
     print(f"[5/5] writing candidate files ...")
     slug = assemble.golden_slug(jurisdiction)
