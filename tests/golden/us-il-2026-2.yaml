@@ -1,0 +1,14 @@
+source:
+  document: Booklet IL-700-T, Illinois Withholding Income Tax Tables (2026)
+  page: 4
+  example: 'maintainer-constructed second case (booklet prints one formula
+    example): biweekly $1,200, no allowances -> 31,200 x 0.0495 = 1,544.40
+    annual; / 26 = $59.40 exactly'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1200.00'
+  state:
+  - { jurisdiction: US-IL, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '59.40'

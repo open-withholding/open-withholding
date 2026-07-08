@@ -1,0 +1,17 @@
+source:
+  document: Booklet IL-700-T, Illinois Withholding Income Tax Tables (2026)
+  page: 4
+  example: 'Automated payroll method example: Alice paid $800 weekly, 2 allowances on Line 1 and 2 on
+    Line 2; exemptions 7850/52=150.96, taxable 649.04, x .0495 = 32.13'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '800'
+  state:
+  - jurisdiction: US-IL
+    filing_status: all
+    allowances: 2
+    additional_withholding: '0'
+    secondary_allowances: 2
+expect:
+  state_withholding: '32.13'
