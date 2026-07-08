@@ -97,9 +97,24 @@ def _transform_params(method: str, params: dict) -> dict:
         if params.get("standard_deduction"):
             out["standard_deduction"] = _status_map(params["standard_deduction"])
         out["allowance_amount"] = params.get("allowance_amount")
+        if params.get("secondary_allowance_amount") is not None:
+            out["secondary_allowance_amount"] = params["secondary_allowance_amount"]
         out["credit_per_allowance"] = params.get("credit_per_allowance")
         out["brackets"] = _bracket_map(params["brackets"])
         return out
+    if method == "annualized_percentage_phaseout":
+        return {
+            "deduction_phaseout": {
+                snake(e["filing_status"]): {
+                    "maximum": e["maximum"],
+                    "phase_start": e["phase_start"],
+                    "phase_rate": e["phase_rate"],
+                }
+                for e in params["deduction_phaseout"]
+            },
+            "exemption_amount": params.get("exemption_amount"),
+            "brackets": _bracket_map(params["brackets"]),
+        }
     if method == "federal_percentage_2020":
         return {
             "wage_adjustment": _status_map(params["wage_adjustment"]),
@@ -168,14 +183,15 @@ def assemble_golden_case(
         }
         expect_key = "federal_withholding"
     elif tax == "state_income_withholding":
-        record["state"] = [
-            {
-                "jurisdiction": jurisdiction,
-                "filing_status": snake(example["filing_status"]),
-                "allowances": example.get("allowances") or 0,
-                "additional_withholding": _money(example.get("additional_withholding")),
-            }
-        ]
+        election = {
+            "jurisdiction": jurisdiction,
+            "filing_status": snake(example["filing_status"]),
+            "allowances": example.get("allowances") or 0,
+            "additional_withholding": _money(example.get("additional_withholding")),
+        }
+        if example.get("secondary_allowances"):
+            election["secondary_allowances"] = example["secondary_allowances"]
+        record["state"] = [election]
         expect_key = "state_withholding"
     elif tax == "local_income_withholding":
         record["locals"] = [{"jurisdiction": jurisdiction, "resident": True}]

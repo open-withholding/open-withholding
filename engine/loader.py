@@ -63,7 +63,11 @@ class ParameterFile:
 
 def _validate_and_parse_brackets(method: str, params: dict) -> dict[str, tuple[BracketRow, ...]]:
     tables: dict[str, tuple[BracketRow, ...]] = {}
-    if method in ("annualized_percentage", "annualized_percentage_with_credits"):
+    if method in (
+        "annualized_percentage",
+        "annualized_percentage_phaseout",
+        "annualized_percentage_with_credits",
+    ):
         for status, rows in params.get("brackets", {}).items():
             tables[status] = parse_table(rows, context=f"params.brackets.{status}")
     elif method == "federal_percentage_2020":

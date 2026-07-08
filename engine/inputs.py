@@ -84,6 +84,7 @@ class StateElection:
     jurisdiction: str
     filing_status: str | None = None
     allowances: int = 0
+    secondary_allowances: int = 0  # second allowance kind (e.g. IL-W-4 Line 2)
     additional_withholding: Decimal = ZERO
 
     @classmethod
@@ -92,13 +93,17 @@ class StateElection:
         jurisdiction = raw.get("jurisdiction")
         if not jurisdiction:
             raise InputError("state entries require a jurisdiction")
-        allowances = raw.get("allowances", 0)
-        if not isinstance(allowances, int) or allowances < 0:
-            raise InputError(f"{ctx}.allowances must be an integer >= 0, got {allowances!r}")
+        counts = {}
+        for key in ("allowances", "secondary_allowances"):
+            value = raw.get(key, 0)
+            if not isinstance(value, int) or value < 0:
+                raise InputError(f"{ctx}.{key} must be an integer >= 0, got {value!r}")
+            counts[key] = value
         return cls(
             jurisdiction=jurisdiction,
             filing_status=raw.get("filing_status"),
-            allowances=allowances,
+            allowances=counts["allowances"],
+            secondary_allowances=counts["secondary_allowances"],
             additional_withholding=_money(raw, "additional_withholding", context=ctx),
         )
 

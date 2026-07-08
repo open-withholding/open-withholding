@@ -7,7 +7,6 @@ from __future__ import annotations
 from decimal import Decimal
 
 from engine.brackets import tax_for
-from engine.errors import InputError
 from engine.methods.common import clamp0, per_status
 from engine.money import ZERO, D
 
@@ -27,21 +26,26 @@ def compute(ctx) -> Decimal:
         if params.get("allowance_amount") is not None
         else ZERO
     )
+    secondary_allowance_amount = (
+        D(params["secondary_allowance_amount"], context="params.secondary_allowance_amount")
+        if params.get("secondary_allowance_amount") is not None
+        else ZERO
+    )
     credit_per_allowance = (
         D(params["credit_per_allowance"], context="params.credit_per_allowance")
         if params.get("credit_per_allowance") is not None
         else None
     )
-    if status is None or status not in ctx.bracket_tables:
-        raise InputError(
-            f"annualized_percentage: filing_status {status!r} not one of "
-            f"{sorted(ctx.bracket_tables)}"
-        )
-    table = ctx.bracket_tables[status]
+    table = per_status(ctx.bracket_tables, status, context="annualized_percentage")
 
     # Steps 2-3: annualize, subtract deduction and allowances, clamp.
     annual_wages = ctx.taxable_wages * ctx.pay_periods
-    annual_taxable = clamp0(annual_wages - standard_deduction - ctx.allowances * allowance_amount)
+    annual_taxable = clamp0(
+        annual_wages
+        - standard_deduction
+        - ctx.allowances * allowance_amount
+        - ctx.secondary_allowances * secondary_allowance_amount
+    )
 
     # Step 4 (+ optional intermediate rounding, worked-examples permitting).
     annual_tax = tax_for(table, annual_taxable)

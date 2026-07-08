@@ -37,6 +37,7 @@ class MethodContext:
     bracket_tables: dict[str, tuple[BracketRow, ...]]
     filing_status: str | None
     allowances: int
+    secondary_allowances: int
     additional_withholding: Decimal
     federal: FederalElection | None
 
@@ -57,6 +58,7 @@ def compute_withholding(
         param_file.jurisdiction,
     )
 
+    secondary = 0
     if param_file.tax == "federal_income_withholding":
         if employee.federal is None:
             raise InputError("federal withholding requested but input has no federal block")
@@ -68,6 +70,7 @@ def compute_withholding(
         election = employee.state_election(param_file.jurisdiction)
         filing_status = election.filing_status
         allowances = election.allowances
+        secondary = election.secondary_allowances
         additional = election.additional_withholding
         federal = None
     else:  # local
@@ -84,6 +87,7 @@ def compute_withholding(
         bracket_tables=param_file.bracket_tables,
         filing_status=filing_status,
         allowances=allowances,
+        secondary_allowances=secondary,
         additional_withholding=additional,
         federal=federal,
     )
