@@ -35,12 +35,33 @@ def golden_slug(jurisdiction: str) -> str:
     return "us-federal" if jurisdiction == "US" else jurisdiction.lower()
 
 
+# Connector words carry no meaning in a status key: "married and spouse
+# works" and "married spouse works" are the same status. "of" is kept —
+# head_of_household is the established spelling everywhere.
+_CONNECTORS = {"and", "or"}
+
+# Spelling variants of the same concept converge on one canonical key,
+# matching the keys already merged in the dataset (federal, CO). Semantic
+# distinctions are per-jurisdiction and are NEVER merged here — this table
+# only collapses different spellings, not different meanings.
+_ALIASES = {
+    "married_filing_jointly": "married_joint",
+    "married_filing_joint": "married_joint",
+    "married_filing_jointly_qualifying_surviving_spouse": "married_joint",
+    "head_of_household_hoh": "head_of_household",
+}
+
+
 def snake(label: str) -> str:
     """Filing-status keys are machine identifiers, not prose. Extraction is
     prompted to emit snake_case (reusing the prior edition's keys when one
     exists); this is the deterministic backstop for prose labels like
-    "Married and Spouse Works". Idempotent on already-snake keys."""
-    return re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
+    "Married and Spouse Works". Idempotent on already-canonical keys."""
+    words = [
+        w for w in re.sub(r"[^a-z0-9]+", " ", label.lower()).split() if w not in _CONNECTORS
+    ]
+    key = "_".join(words)
+    return _ALIASES.get(key, key)
 
 
 def _status_map(entries: list[dict], value_key: str = "amount") -> dict:

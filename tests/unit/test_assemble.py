@@ -198,8 +198,9 @@ def test_prose_filing_status_labels_normalized_to_snake_case():
     # normalizes params keys and golden inputs identically.
     from pipeline.assemble import snake
 
-    assert snake("Married and Spouse Works") == "married_and_spouse_works"
-    assert snake("Head of Household") == "head_of_household"
+    assert snake("Married and Spouse Works") == "married_spouse_works"  # connectors dropped
+    assert snake("Head of Household") == "head_of_household"  # "of" kept
+    assert snake("Married Filing Jointly or Qualifying Surviving Spouse") == "married_joint"
     assert snake("married_joint") == "married_joint"  # idempotent
 
     extraction = {
@@ -218,7 +219,7 @@ def test_prose_filing_status_labels_normalized_to_snake_case():
         extraction=extraction,
         source=SOURCE,
     )
-    assert list(raw["params"]["filing_status"]) == ["married_and_spouse_works"]
+    assert list(raw["params"]["filing_status"]) == ["married_spouse_works"]
 
     golden = assemble.assemble_golden_case(
         jurisdiction="US-ZZ",
@@ -227,4 +228,4 @@ def test_prose_filing_status_labels_normalized_to_snake_case():
         as_of="2026-06-15",
         document="doc",
     )
-    assert golden["input"]["state"][0]["filing_status"] == "married_and_spouse_works"
+    assert golden["input"]["state"][0]["filing_status"] == "married_spouse_works"
