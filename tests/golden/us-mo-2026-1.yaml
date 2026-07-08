@@ -10,7 +10,7 @@ input:
   gross_wages: '2916.67'
   state:
   - jurisdiction: US-MO
-    filing_status: Married and Spouse Works
+    filing_status: married_spouse_works
     allowances: 0
     additional_withholding: '0'
 expect:
