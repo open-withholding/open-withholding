@@ -70,6 +70,12 @@
             "description": "Per-state enum; each state's parameter file defines its legal statuses"
           },
           "allowances": { "type": "integer", "minimum": 0, "default": 0 },
+          "secondary_allowances": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Second allowance kind where the state defines one (e.g. IL-W-4 Line 2)"
+          },
           "additional_withholding": { "$ref": "#/$defs/money", "default": "0" }
         }
       }

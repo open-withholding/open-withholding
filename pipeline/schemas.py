@@ -86,15 +86,60 @@ _PARAMS_BY_METHOD = {
     "annualized_percentage": {
         "type": "object",
         "additionalProperties": False,
-        "required": ["standard_deduction", "allowance_amount", "credit_per_allowance", "brackets"],
+        "required": [
+            "standard_deduction",
+            "allowance_amount",
+            "secondary_allowance_amount",
+            "credit_per_allowance",
+            "brackets",
+        ],
         "properties": {
             "standard_deduction": {
                 "anyOf": [PER_STATUS_AMOUNT, {"type": "null"}],
                 "description": "Per filing status, or null if this state has none",
             },
             "allowance_amount": DECIMAL_OR_NULL,
+            "secondary_allowance_amount": {
+                **DECIMAL_OR_NULL,
+                "description": "Per second-kind allowance where the state defines one "
+                "(e.g. IL-W-4 Line 2 at $1,000); null otherwise",
+            },
             "credit_per_allowance": DECIMAL_OR_NULL,
-            "brackets": PER_STATUS_BRACKETS,
+            "brackets": {
+                **PER_STATUS_BRACKETS,
+                "description": "One entry per filing status. A state with one schedule for "
+                "all employees (no filing statuses) uses a single entry with "
+                "filing_status \"all\".",
+            },
+        },
+    },
+    "annualized_percentage_phaseout": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["deduction_phaseout", "exemption_amount", "brackets"],
+        "properties": {
+            "deduction_phaseout": {
+                "type": "array",
+                "description": "Per filing status: the deduction equals `maximum` until annual wages "
+                "reach `phase_start`, then shrinks by `phase_rate` per dollar above it, floored at 0",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["filing_status", "maximum", "phase_start", "phase_rate"],
+                    "properties": {
+                        "filing_status": {"type": "string"},
+                        "maximum": DECIMAL,
+                        "phase_start": DECIMAL,
+                        "phase_rate": DECIMAL,
+                    },
+                },
+            },
+            "exemption_amount": DECIMAL_OR_NULL,
+            "brackets": {
+                **PER_STATUS_BRACKETS,
+                "description": "One entry per filing status; a single schedule for all "
+                "statuses uses one entry with filing_status \"all\"",
+            },
         },
     },
     "federal_percentage_2020": {
@@ -162,6 +207,7 @@ WORKED_EXAMPLE = {
         "gross_wages",
         "filing_status",
         "allowances",
+        "secondary_allowances",
         "step2_checkbox",
         "step3_credits",
         "step4a_other_income",
@@ -179,6 +225,10 @@ WORKED_EXAMPLE = {
         "gross_wages": DECIMAL,
         "filing_status": {"type": "string"},
         "allowances": {"type": ["integer", "null"]},
+        "secondary_allowances": {
+            "type": ["integer", "null"],
+            "description": "Second allowance kind where the state defines one; null otherwise",
+        },
         "step2_checkbox": {"type": ["boolean", "null"], "description": "Federal only; null otherwise"},
         "step3_credits": DECIMAL_OR_NULL,
         "step4a_other_income": DECIMAL_OR_NULL,

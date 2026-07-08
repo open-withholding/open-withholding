@@ -30,6 +30,34 @@
   maps_to:
     - data/us/mo/{year}/withholding.yaml
 
+- id: us-il-700t
+  document: "Booklet IL-700-T, Illinois Withholding Income Tax Tables"
+  jurisdiction: US-IL
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://tax.illinois.gov/forms/withholding/currentyear.html"
+  # Stable currentyear path, revised in place. Two allowance kinds:
+  # Line 1 -> allowance_amount, Line 2 -> secondary_allowance_amount;
+  # single 'all' bracket table (IL has no filing statuses).
+  document_url_pattern: "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf"
+  check: [etag, content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/il/{year}/withholding.yaml
+
+- id: us-wi-w166
+  document: "Publication W-166, Wisconsin Withholding Tax Guide"
+  jurisdiction: US-WI
+  tax: state_income_withholding
+  method: annualized_percentage_phaseout
+  landing: "https://www.revenue.wi.gov/Pages/HTML/withhold.aspx"
+  # Stable URL, revised in place. The 'alternate method' section is the
+  # normative formula; its three worked examples become goldens.
+  document_url_pattern: "https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf"
+  check: [etag, content_hash]
+  maps_to:
+    - data/us/wi/{year}/withholding.yaml
+
 - id: us-ks-kw100
   document: "KW-100, Kansas Withholding Tax Guide"
   jurisdiction: US-KS

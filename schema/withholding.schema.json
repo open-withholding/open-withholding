@@ -38,6 +38,7 @@
         "flat_rate",
         "flat_rate_with_annual_allowance",
         "annualized_percentage",
+        "annualized_percentage_phaseout",
         "annualized_percentage_with_credits",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
@@ -110,11 +111,51 @@
             "properties": {
               "standard_deduction": { "$ref": "#/$defs/perStatusMoney" },
               "allowance_amount": { "$ref": "#/$defs/moneyOrNull" },
+              "secondary_allowance_amount": {
+                "$ref": "#/$defs/moneyOrNull",
+                "description": "Per second-kind allowance (e.g. IL-W-4 Line 2), where the jurisdiction defines one"
+              },
               "credit_per_allowance": { "$ref": "#/$defs/moneyOrNull" },
               "brackets": {
                 "type": "object",
                 "minProperties": 1,
                 "description": "Keyed by this jurisdiction's filing-status enum",
+                "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "annualized_percentage_phaseout" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["deduction_phaseout", "brackets"],
+            "additionalProperties": false,
+            "properties": {
+              "deduction_phaseout": {
+                "type": "object",
+                "minProperties": 1,
+                "description": "Keyed by filing status; deduction = maximum until phase_start, then shrinks by phase_rate per dollar, floored at 0",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": ["maximum", "phase_start", "phase_rate"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "maximum": { "$ref": "#/$defs/money" },
+                    "phase_start": { "$ref": "#/$defs/money" },
+                    "phase_rate": { "$ref": "#/$defs/rate" }
+                  }
+                }
+              },
+              "exemption_amount": { "$ref": "#/$defs/moneyOrNull" },
+              "brackets": {
+                "type": "object",
+                "minProperties": 1,
+                "description": "Keyed by filing status; a single schedule for all statuses uses the key \"all\"",
                 "additionalProperties": { "$ref": "#/$defs/bracketTable" }
               }
             }
