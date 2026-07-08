@@ -1,0 +1,13 @@
+source:
+  document: REV-415, Employer Withholding Information Guide (2023)
+  page: 1
+  example: 'maintainer-constructed: weekly $900 x 3.07% = $27.63; as_of 2026 pins
+    that the 2023-effective file serves current paychecks via effective dating.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '900.00'
+  state:
+  - { jurisdiction: US-PA, additional_withholding: '0' }
+expect:
+  state_withholding: '27.63'

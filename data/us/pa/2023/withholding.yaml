@@ -1,0 +1,21 @@
+schema_version: '0.1'
+jurisdiction: US-PA
+tax: state_income_withholding
+effective_from: '2023-01-01'
+effective_to: null
+source:
+  document: REV-415, Employer Withholding Information Guide (2023)
+  url: https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf
+  retrieved: '2026-07-08'
+  sha256: e64161ea109692f79d6642b5cbc7b56bf67483ad78b7ee369e57b14b5cd9c7e1
+  notes: Flat 3.07% on PA taxable compensation (rate unchanged since 2004; this revision effective 2023).
+    The guide prints no computation example (trivially flat) and specifies no rounding; cents encoded.
+    PA compensation includes elective 401(k)/403(b) deferrals (see the guide's compensation section) —
+    reflected in /taxability's US-PA override and exercised by golden case 1. Golden cases are maintainer-constructed.
+method: flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0307'

@@ -1,0 +1,17 @@
+source:
+  document: REV-415, Employer Withholding Information Guide (2023)
+  page: 1
+  example: 'maintainer-constructed (guide prints no computation example): biweekly
+    $2,000 gross with $150 pre-tax 401(k) — PA compensation is NOT reduced by
+    elective deferrals, so taxable stays $2,000; x 3.07% = $61.40. Exercises the
+    /taxability US-PA override.'
+as_of: '2023-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  pretax_deductions:
+  - { type: 401k_traditional, amount: '150.00' }
+  state:
+  - { jurisdiction: US-PA, additional_withholding: '0' }
+expect:
+  state_withholding: '61.40'
