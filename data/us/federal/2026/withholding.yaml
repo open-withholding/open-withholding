@@ -8,12 +8,14 @@ source:
   url: https://www.irs.gov/pub/irs-pdf/p15t.pdf
   retrieved: '2026-07-08'
   sha256: 31b3e2428628e8d2e40f6266c2c8f1b9b0b6ccd24607895f9b3be3d9d306d3fb
-  notes: Extracted by pipeline; pages per PR body
+  notes: Worksheet 1A p.10; annual percentage tables p.12. Rounding per p.9 is optional ('you may round
+    the tax for the pay period to the nearest dollar'); this file encodes cents — consumers apply dollar
+    rounding downstream if desired. Publication prints no percentage-method worked example; golden cases
+    are maintainer-constructed.
 method: federal_percentage_2020
 rounding:
-  to: '1.00'
+  to: '0.01'
   mode: nearest
-  intermediate: none
 params:
   wage_adjustment:
     single: '8600'
