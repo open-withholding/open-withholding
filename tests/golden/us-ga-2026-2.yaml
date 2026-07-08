@@ -1,0 +1,17 @@
+source:
+  document: Georgia Employer's Withholding Tax Guide (2026)
+  page: 49
+  example: 'Table F Example #2: single person filing Head of Household, bi-weekly payroll paid $935.00,
+    two children. Standard deduction 576.92 (HOH bi-weekly), less dependent allowance 192.31 x 2 = 384.62;
+    wages subject 0.00; 0.00 x 0.0499 = 0.00.'
+as_of: '2026-05-11'
+input:
+  pay_frequency: biweekly
+  gross_wages: '935.00'
+  state:
+  - jurisdiction: US-GA
+    filing_status: head_of_household
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '0.00'

@@ -1,0 +1,17 @@
+source:
+  document: Georgia Employer's Withholding Tax Guide (2026)
+  page: 48
+  example: 'Table E Example #1: married person, spouse does not work, semi-monthly payroll paid $2,000.00,
+    one child. Standard deduction 1,250.00 (MFJ semi-monthly), less dependent allowance 208.33 x 1 = wages
+    subject 541.67; 541.67 x 0.0499 = 27.03.'
+as_of: '2026-05-11'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '2000.00'
+  state:
+  - jurisdiction: US-GA
+    filing_status: married_joint
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '27.03'

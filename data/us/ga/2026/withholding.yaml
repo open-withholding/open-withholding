@@ -1,0 +1,41 @@
+schema_version: '0.1'
+jurisdiction: US-GA
+tax: state_income_withholding
+effective_from: '2026-05-11'
+effective_to: null
+source:
+  document: Georgia Employer's Withholding Tax Guide (2026)
+  url: https://dor.georgia.gov/document/document-document/2026-employers-tax-guide-updated-june-2026/download
+  retrieved: '2026-07-08'
+  sha256: 79ca8b41119eb2bd27755863899c8d627ee507d575e760adfb2398bcb06a3483
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    married_joint: '30000'
+    single: '15000'
+    head_of_household: '15000'
+    married_filing_separate: '15000'
+  allowance_amount: '5000'
+  credit_per_allowance: null
+  brackets:
+    married_joint:
+    - over: '0'
+      rate: '0.0499'
+      base: '0'
+    single:
+    - over: '0'
+      rate: '0.0499'
+      base: '0'
+    head_of_household:
+    - over: '0'
+      rate: '0.0499'
+      base: '0'
+    married_filing_separate:
+    - over: '0'
+      rate: '0.0499'
+      base: '0'
