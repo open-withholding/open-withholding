@@ -1,0 +1,15 @@
+source:
+  document: 42A003(TCF), Kentucky Withholding Tax Formula (2026)
+  page: 1
+  example: 'maintainer-constructed CORRECTION of the publication''s defective
+    bi-weekly example (prints stale intermediate $35,730 and final "$47"):
+    wages $1,500 bi-weekly -> annual 39,000 - 3,360 = 35,640 x 3.5% = 1,247.40;
+    / 26 = 47.98 (see source.notes and repo issue #27)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1500.00'
+  state:
+  - { jurisdiction: US-KY, additional_withholding: '0' }
+expect:
+  state_withholding: '47.98'
