@@ -99,6 +99,8 @@ def _transform_params(method: str, params: dict) -> dict:
         out["allowance_amount"] = params.get("allowance_amount")
         if params.get("secondary_allowance_amount") is not None:
             out["secondary_allowance_amount"] = params["secondary_allowance_amount"]
+        if params.get("percent_deduction") is not None:
+            out["percent_deduction"] = params["percent_deduction"]
         out["credit_per_allowance"] = params.get("credit_per_allowance")
         out["brackets"] = _bracket_map(params["brackets"])
         return out
@@ -125,6 +127,8 @@ def _transform_params(method: str, params: dict) -> dict:
             out["allowance_amounts_per_period"] = {
                 e["frequency"]: e["amount"] for e in params["allowance_amounts_per_period"]
             }
+        if params.get("allowance_cliff_annual_wages") is not None:
+            out["allowance_cliff_annual_wages"] = params["allowance_cliff_annual_wages"]
         out["brackets"] = {
             e["frequency"]: _bracket_map(e["tables"]) for e in params["frequencies"]
         }

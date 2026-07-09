@@ -33,7 +33,17 @@ def compute(ctx) -> Decimal:
 
     # Step 2: allowance reduction — annual amounts divided per period
     # (cent-rounded, as the worksheets print it), plus any printed
-    # per-period allowance value.
+    # per-period allowance value. A jurisdiction with an allowance cliff
+    # (Rhode Island: exemptions become exactly $0 once annualized wages
+    # exceed a threshold) zeroes the whole reduction above it.
+    cliff = params.get("allowance_cliff_annual_wages")
+    if cliff is not None and ctx.taxable_wages * ctx.pay_periods > D(
+        cliff, context="params.allowance_cliff_annual_wages"
+    ):
+        net = ctx.taxable_wages
+        period_tax = tax_for(table, net)
+        return ctx.rounding.apply(period_tax) + ctx.additional_withholding
+
     reduction = ZERO
     annual = ZERO
     if params.get("standard_deduction"):
