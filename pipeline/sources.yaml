@@ -30,6 +30,85 @@
   maps_to:
     - data/us/mo/{year}/withholding.yaml
 
+- id: us-mn-wh-inst
+  document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
+  jurisdiction: US-MN
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.revenue.state.mn.us/withholding-tax"
+  discovery: link_scan
+  # Upload-month directory varies per year; occasional _0 dedup suffixes.
+  link_pattern: '/sites/default/files/\d{4}-\d{2}/wh[-_]inst[-_]?\d{2}(_\d+)?\.pdf'
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/mn/{year}/withholding.yaml
+
+- id: us-oh-computer-formula
+  document: "Ohio Employer Withholding: Optional Computer Formula"
+  jurisdiction: US-OH
+  tax: state_income_withholding
+  method: annualized_percentage
+  # Landing is JS-rendered (no hrefs for curl); the DAM URL keeps its _2025
+  # name but is revised IN PLACE (current: Rev. 09/25, eff. 2025-10-01; OH
+  # reissues around Oct 1, not Jan 1 — DOT bulletin says these tables
+  # continue through 2026). Watcher: content_hash + probe newer-year names.
+  landing: "https://tax.ohio.gov/business/ohio-business-taxes/employer-withholding/employer-withholding-tables"
+  document_url_pattern: "https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025%20Withholding%20Tables/WHT_OptionalComputerFormula_2025.pdf"
+  check: [content_hash]
+  expected_window: "09-15..10-31"
+  maps_to:
+    - data/us/oh/{year}/withholding.yaml
+
+- id: us-ok-ow2
+  document: "Packet OW-2, Oklahoma Income Tax Withholding Tables"
+  jurisdiction: US-OK
+  tax: state_income_withholding
+  method: per_period_percentage
+  landing: "https://oklahoma.gov/tax/reporting-resources/publications.html"
+  document_url_pattern: "https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-{year}.pdf"
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/ok/{year}/withholding.yaml
+
+- id: us-mt-employer-guide
+  document: "Montana Employer and Information Agent Guide with Tax Tables"
+  jurisdiction: US-MT
+  tax: state_income_withholding
+  method: per_period_percentage
+  # Stable URL revised in place. Known doc defect: rounding text says
+  # "round UP" but every worked example rounds to nearest — examples decide.
+  landing: "https://revenue.mt.gov/publications/montana-employer-and-information-agent-guide"
+  document_url_pattern: "https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf"
+  check: [etag, content_hash]
+  maps_to:
+    - data/us/mt/{year}/withholding.yaml
+
+- id: us-la-r1306
+  document: "R-1306, Louisiana Withholding Tables and Formulas"
+  jurisdiction: US-LA
+  tax: state_income_withholding
+  method: per_period_percentage
+  landing: "https://revenue.louisiana.gov/tax-policy/tax-manuals"
+  document_url_pattern: "https://dam.ldr.la.gov/taxforms/1306-1-{yy}.pdf"
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/la/{year}/withholding.yaml
+
+- id: us-me-wh-tab
+  document: "Maine Withholding Tables for Individual Income Tax"
+  jurisdiction: US-ME
+  tax: state_income_withholding
+  method: annualized_percentage_phaseout
+  landing: "https://www.maine.gov/revenue/tax-return-forms/employment-tax-returns-2026"
+  document_url_pattern: "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/{yy}_wh_tab_instr.pdf"
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/me/{year}/withholding.yaml
+
 - id: us-vt-gb1210
   document: "GB-1210, Vermont Income Tax Withholding Instructions, Tables and Charts"
   jurisdiction: US-VT
