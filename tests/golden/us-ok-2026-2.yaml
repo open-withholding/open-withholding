@@ -1,0 +1,16 @@
+source:
+  document: Packet OW-2, Oklahoma Income Tax Withholding Tables (2026)
+  page: 0
+  example: 'maintainer-constructed from the printed WEEKLY/Single table: $900, 1 allowance -> 900 - 19.23
+    = 880.77; table arithmetic 29.99 -> $30 (mandatory dollar rounding)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '900.00'
+  state:
+  - jurisdiction: US-OK
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '30.00'
