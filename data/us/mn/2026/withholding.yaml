@@ -1,0 +1,52 @@
+schema_version: '0.1'
+jurisdiction: US-MN
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Minnesota Income Tax Withholding Instruction Booklet and Tax Tables (2026)
+  url: https://www.revenue.state.mn.us/sites/default/files/2025-12/wh-inst-26.pdf
+  retrieved: '2026-07-09'
+  sha256: 47c22acd256bcb85fe6fd49a8012835acc5e97b1ebaec99362e6a154e1795da9
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '5300'
+  credit_per_allowance: null
+  brackets:
+    single:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '4700'
+      rate: '0.0535'
+      base: '0'
+    - over: '38010'
+      rate: '0.0680'
+      base: '1782.09'
+    - over: '114130'
+      rate: '0.0785'
+      base: '6958.25'
+    - over: '207850'
+      rate: '0.0985'
+      base: '14315.27'
+    married:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '14700'
+      rate: '0.0535'
+      base: '0'
+    - over: '63400'
+      rate: '0.0680'
+      base: '2605.45'
+    - over: '208180'
+      rate: '0.0785'
+      base: '12450.49'
+    - over: '352630'
+      rate: '0.0985'
+      base: '23789.82'
