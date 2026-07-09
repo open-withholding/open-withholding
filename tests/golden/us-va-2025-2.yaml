@@ -1,0 +1,15 @@
+source:
+  document: Virginia Income Tax Withholding Guide for Employers (2025)
+  page: 21
+  example: 'maintainer-constructed, exercising E2 and cross-year effective
+    dating: monthly $5,000, 2 personal exemptions + 1 age exemption ->
+    60,000 - 8,750 - 1,860 - 800 = 48,590; 720 + 5.75% x 31,590 = 2,536.43
+    -> annual rounded to 2,536 -> / 12 = 211.33'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '5000.00'
+  state:
+  - { jurisdiction: US-VA, allowances: 2, secondary_allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '211.33'

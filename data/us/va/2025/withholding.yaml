@@ -8,7 +8,10 @@ source:
   url: https://www.tax.virginia.gov/sites/default/files/vatax-pdf/employer-withholding-instructions.pdf
   retrieved: '2026-07-09'
   sha256: 52203efabfc3d5314be57279712c01066d0fadf3b98c0f66a63189aba55097c5
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Formula p.21 (Rev. 05/25, effective 2025): single ''all'' schedule — Virginia has no filing
+    statuses. $8,750 standard deduction; allowance_amount = personal exemptions E1 ($930); secondary_allowance_amount
+    = age/blindness exemptions E2 ($800). Rounding per the p.22 example: annual tax to whole dollars (intermediate_to
+    1.00), final per-period amount to cents — first file using mixed-granularity rounding.'
 method: annualized_percentage
 rounding:
   to: '0.01'
