@@ -1,0 +1,16 @@
+source:
+  document: Maine Withholding Tables for Individual Income Tax (2026)
+  page: 7
+  example: 'Example 3: Married employee paid $4,500/week, 2 allowances; deduction phaseout applies; percentage
+    method yields $257/week'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '4500'
+  state:
+  - jurisdiction: US-ME
+    filing_status: married
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '257'

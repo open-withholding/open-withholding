@@ -1,0 +1,48 @@
+schema_version: '0.1'
+jurisdiction: US-ME
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Maine Withholding Tables for Individual Income Tax (2026)
+  url: https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/26_wh_tab_instr.pdf
+  retrieved: '2026-07-09'
+  sha256: bdccd833d649038512ab189cf1ce18990892def812fb495735fde3b152f7bfee
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage_phaseout
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  deduction_phaseout:
+    single:
+      maximum: '12450'
+      phase_start: '102250'
+      phase_rate: '0.166'
+    married:
+      maximum: '27750'
+      phase_start: '204550'
+      phase_rate: '0.185'
+  exemption_amount: '5300'
+  brackets:
+    single:
+    - over: '0'
+      rate: '0.0580'
+      base: '0'
+    - over: '27400'
+      rate: '0.0675'
+      base: '1589'
+    - over: '64850'
+      rate: '0.0715'
+      base: '4117'
+    married:
+    - over: '0'
+      rate: '0.0580'
+      base: '0'
+    - over: '54850'
+      rate: '0.0675'
+      base: '3181'
+    - over: '129750'
+      rate: '0.0715'
+      base: '8237'
