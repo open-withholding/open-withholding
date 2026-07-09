@@ -1,0 +1,16 @@
+source:
+  document: Virginia Income Tax Withholding Guide for Employers (2025)
+  page: 22
+  example: John claims exemptions for himself, his spouse, and their three children (5 personal exemptions).
+    Paid semi-monthly, gross wages $2,649.
+as_of: '2025-07-02'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '2649'
+  state:
+  - jurisdiction: US-VA
+    filing_status: all
+    allowances: 5
+    additional_withholding: '0'
+expect:
+  state_withholding: '109.50'
