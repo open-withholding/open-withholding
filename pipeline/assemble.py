@@ -140,6 +140,9 @@ def assemble_parameter_file(
 
     `source` must already carry document/url/retrieved/sha256 from the
     retrieval step — provenance never comes from the model."""
+    rounding = dict(extraction["rounding"])
+    if rounding.get("intermediate_to") is None:
+        rounding.pop("intermediate_to", None)
     return {
         "schema_version": schema_version,
         "jurisdiction": jurisdiction,
@@ -149,7 +152,7 @@ def assemble_parameter_file(
         **({"supersedes": supersedes} if supersedes else {}),
         "source": source,
         "method": method,
-        "rounding": extraction["rounding"],
+        "rounding": rounding,
         "params": _transform_params(method, extraction["params"]),
     }
 

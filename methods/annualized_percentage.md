@@ -78,7 +78,10 @@ All arithmetic in Decimal. Let `r(x)` = apply the envelope rounding rule.
 - Rounding is applied **once, at step 7**, unless the jurisdiction's guide
   demonstrates intermediate rounding in its worked examples, in which case
   the YAML sets `rounding.intermediate: annual` and step 4's result is
-  rounded before step 6. **The worked examples decide.** When a guide's
+  rounded before step 6 — at `rounding.intermediate_to` granularity when the
+  guide rounds the annual amount more coarsely than the final one (Virginia
+  rounds the annual tax to whole dollars, the per-period result to cents).
+  **The worked examples decide.** When a guide's
   example cannot be reproduced, the transcription or the sequencing is
   wrong — never ship a file whose golden tests fail.
 - Division in step 6 is exact Decimal division; only `r()` rounds.

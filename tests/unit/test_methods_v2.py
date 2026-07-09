@@ -158,3 +158,38 @@ def test_phaseout_extraction_transform_loads():
     )
     pf = load_parameter_dict(raw)
     assert pf.params["deduction_phaseout"]["single"]["phase_rate"] == "0.12"
+
+
+def test_va_shaped_intermediate_dollar_rounding(taxability):
+    # VA p.22 example: 5 exemptions, semimonthly $2,649 -> T=50,176;
+    # annual tax 720 + 5.75% x 33,176 = 2,627.62 -> rounded to 2,628 ->
+    # / 24 = 109.50 exactly (the printed W value).
+    va = _pf(
+        "US-VA",
+        "annualized_percentage",
+        {
+            "standard_deduction": {"all": "8750"},
+            "allowance_amount": "930",
+            "secondary_allowance_amount": "800",
+            "credit_per_allowance": None,
+            "brackets": {
+                "all": [
+                    {"over": "0", "rate": "0.02"},
+                    {"over": "3000", "rate": "0.03", "base": "60"},
+                    {"over": "5000", "rate": "0.05", "base": "120"},
+                    {"over": "17000", "rate": "0.0575", "base": "720"},
+                ]
+            },
+        },
+    )
+    # override rounding to the VA shape
+    from engine.money import Rounding
+    import dataclasses
+    va = dataclasses.replace(
+        va,
+        rounding=Rounding.from_dict(
+            {"to": "0.01", "mode": "nearest", "intermediate": "annual", "intermediate_to": "1.00"}
+        ),
+    )
+    emp = _employee("semimonthly", "2649.00", jurisdiction="US-VA", allowances=5)
+    assert compute_withholding(va, emp, taxability) == Decimal("109.50")

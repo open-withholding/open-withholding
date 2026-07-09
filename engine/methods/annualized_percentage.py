@@ -50,7 +50,7 @@ def compute(ctx) -> Decimal:
     # Step 4 (+ optional intermediate rounding, worked-examples permitting).
     annual_tax = tax_for(table, annual_taxable)
     if ctx.rounding.intermediate == "annual":
-        annual_tax = ctx.rounding.apply(annual_tax)
+        annual_tax = ctx.rounding.apply_intermediate(annual_tax)
 
     # Step 5: per-allowance credits.
     if credit_per_allowance is not None:
