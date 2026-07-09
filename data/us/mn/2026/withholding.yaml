@@ -8,7 +8,10 @@ source:
   url: https://www.revenue.state.mn.us/sites/default/files/2025-12/wh-inst-26.pdf
   retrieved: '2026-07-09'
   sha256: 47c22acd256bcb85fe6fd49a8012835acc5e97b1ebaec99362e6a154e1795da9
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Computer Formula p.34: annualize (daily factor 360), subtract $5,300 per W-4MN allowance, four
+    brackets per status with printed cumulative bases; standard deduction embedded in the zero-to-first-breakpoint
+    band. The booklet prints no numeric example (step list only) — golden cases are maintainer-constructed
+    from the printed rate chart. Dollar rounding is permissive (''you may round''); cents encoded.'
 method: annualized_percentage
 rounding:
   to: '1.00'
