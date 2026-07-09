@@ -1,0 +1,33 @@
+schema_version: '0.1'
+jurisdiction: US-OH
+tax: state_income_withholding
+effective_from: '2025-10-01'
+effective_to: null
+source:
+  document: 'Ohio Employer Withholding: Optional Computer Formula (2025)'
+  url: https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025%20Withholding%20Tables/WHT_OptionalComputerFormula_2025.pdf
+  retrieved: '2026-07-09'
+  sha256: 25fbf2b0905f52025f3306a1a4dcad3d2bf515a33afa110368533ed05910d405
+  notes: 'Optional Computer Formula (Rev. 09/25, effective 2025-10-01): annualized, $650/yr per exemption,
+    three brackets with printed bases. The historical 1.032 multiplier is GONE — baked into these withholding-specific
+    rates per the current formula. Ohio reissues around Oct 1 and the Feb 2026 DOT bulletin confirms these
+    tables continue through 2026 (cross-year pin in golden 2). No examples printed; goldens maintainer-constructed.'
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '650'
+  credit_per_allowance: null
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.01775'
+      base: '0'
+    - over: '26050'
+      rate: '0.02990'
+      base: '462.39'
+    - over: '100000'
+      rate: '0.03640'
+      base: '2673.50'

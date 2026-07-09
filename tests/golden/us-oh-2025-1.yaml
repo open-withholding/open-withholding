@@ -1,0 +1,15 @@
+source:
+  document: 'Ohio Employer Withholding: Optional Computer Formula (2025)'
+  page: 1
+  example: 'maintainer-constructed (no examples printed): biweekly $1800.00, 1 exemption(s) -> TW 46150.00;
+    formula arithmetic -> 40.90; as_of 2026 pins cross-year effectiveness per the DOT bulletin'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1800.00'
+  state:
+  - jurisdiction: US-OH
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '40.90'

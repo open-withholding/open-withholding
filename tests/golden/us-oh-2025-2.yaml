@@ -1,0 +1,15 @@
+source:
+  document: 'Ohio Employer Withholding: Optional Computer Formula (2025)'
+  page: 1
+  example: 'maintainer-constructed (no examples printed): monthly $12000.00, 0 exemption(s) -> TW 144000.00;
+    formula arithmetic -> 356.26'
+as_of: '2025-11-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '12000.00'
+  state:
+  - jurisdiction: US-OH
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '356.26'
