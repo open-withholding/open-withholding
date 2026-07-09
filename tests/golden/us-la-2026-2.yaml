@@ -1,0 +1,16 @@
+source:
+  document: R-1306, Louisiana Withholding Tables and Formulas (2026)
+  page: 2
+  example: 'Example 2: Taxpayer claiming ''2'' in block A of L-4, paid $4,600 bi-weekly. Married-Joint
+    formula W=(S-(25750/N))*.0309'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '4600'
+  state:
+  - jurisdiction: US-LA
+    filing_status: married_joint
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '111.54'

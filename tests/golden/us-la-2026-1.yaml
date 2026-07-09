@@ -1,0 +1,15 @@
+source:
+  document: R-1306, Louisiana Withholding Tables and Formulas (2026)
+  page: 2
+  example: 'Example 1: Taxpayer claiming ''1'' in block A of L-4, paid $700 weekly. Single formula W=(S-(12875/N))*.0309'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '700'
+  state:
+  - jurisdiction: US-LA
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '13.98'
