@@ -64,8 +64,16 @@ def compute(ctx) -> Decimal:
     # Step 3: net wage for table purposes.
     net = clamp0(ctx.taxable_wages - reduction)
 
-    # Steps 4-5: per-period bracket tax, elected credit, round, add extra.
+    # Steps 4-5: per-period bracket tax, credits, round, add extra.
     period_tax = tax_for(table, net)
+    if params.get("credit_per_allowance") is not None:
+        annual_credit = ctx.allowances * D(
+            params["credit_per_allowance"], context="params.credit_per_allowance"
+        )
+        period_tax = clamp0(
+            period_tax
+            - (annual_credit / ctx.pay_periods).quantize(CENT, rounding=ROUND_HALF_UP)
+        )
     if ctx.elected_annual_amount is not None:
         if params.get("elected_amount_treatment") != "tax_credit":
             raise InputError(

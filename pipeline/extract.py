@@ -116,7 +116,10 @@ def fetch_pdf(source: dict, year: int, pdf_path: str | None) -> tuple[bytes, str
         url = _substitute_year(source["document_url_pattern"], year)
         data = discover.fetch(url, insecure=source.get("insecure_tls", False))
     elif source.get("discovery") == "link_scan":
-        url = discover.discover_document_url(source["landing"], source["link_pattern"], year)
+        url = discover.discover_document_url(
+            source["landing"], source["link_pattern"], year,
+            insecure=source.get("insecure_tls", False),
+        )
         print(f"      discovered {url}")
         data = discover.fetch(url, insecure=source.get("insecure_tls", False))
     else:

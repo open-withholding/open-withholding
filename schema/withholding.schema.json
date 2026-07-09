@@ -222,6 +222,10 @@
                 "$ref": "#/$defs/moneyOrNull",
                 "description": "ANNUAL per-allowance amount, divided with standard_deduction"
               },
+              "credit_per_allowance": {
+                "$ref": "#/$defs/moneyOrNull",
+                "description": "ANNUAL per-allowance tax credit, prorated per period (IA legacy W-4s: $40/allowance)"
+              },
               "elected_amount_treatment": {
                 "enum": ["tax_credit"],
                 "description": "How the input's elected_annual_amount is consumed (IA W-4 dollars, prorated per period, subtracted from tax)"

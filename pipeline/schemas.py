@@ -96,6 +96,7 @@ _PARAMS_BY_METHOD = {
             "standard_deduction",
             "allowance_amount",
             "secondary_allowance_amount",
+            "elected_amount_treatment",
             "percent_deduction",
             "credit_per_allowance",
             "brackets",
@@ -110,6 +111,11 @@ _PARAMS_BY_METHOD = {
                 **DECIMAL_OR_NULL,
                 "description": "Per second-kind allowance where the state defines one "
                 "(e.g. IL-W-4 Line 2 at $1,000); null otherwise",
+            },
+            "elected_amount_treatment": {
+                "anyOf": [{"enum": ["wage_reduction"]}, {"type": "null"}],
+                "description": "\"wage_reduction\" when the document subtracts an "
+                "employee-entered dollar amount from wages (MS 89-350); null otherwise",
             },
             "percent_deduction": {
                 "anyOf": [
@@ -189,6 +195,8 @@ _PARAMS_BY_METHOD = {
             "allowance_amount",
             "allowance_amounts_per_period",
             "allowance_cliff_annual_wages",
+            "credit_per_allowance",
+            "elected_amount_treatment",
             "frequencies",
         ],
         "properties": {
@@ -206,6 +214,17 @@ _PARAMS_BY_METHOD = {
                 **DECIMAL_OR_NULL,
                 "description": "Annualized-wage threshold above which one allowance is worth "
                 "exactly $0 (RI cliff), or null",
+            },
+            "credit_per_allowance": {
+                **DECIMAL_OR_NULL,
+                "description": "ANNUAL per-allowance tax credit prorated per period "
+                "(IA legacy W-4 path: $40/allowance), or null",
+            },
+            "elected_amount_treatment": {
+                "anyOf": [{"enum": ["tax_credit"]}, {"type": "null"}],
+                "description": "\"tax_credit\" when the document subtracts an "
+                "employee-entered dollar amount from TAX, prorated (IA W-4 line W); "
+                "null otherwise",
             },
             "allowance_amounts_per_period": {
                 "anyOf": [
@@ -320,6 +339,7 @@ WORKED_EXAMPLE = {
         "step4b_deductions",
         "step4c_extra",
         "additional_withholding",
+        "elected_annual_amount",
         "expected_withholding",
     ],
     "properties": {
@@ -341,6 +361,11 @@ WORKED_EXAMPLE = {
         "step4b_deductions": DECIMAL_OR_NULL,
         "step4c_extra": DECIMAL_OR_NULL,
         "additional_withholding": DECIMAL_OR_NULL,
+        "elected_annual_amount": {
+            **DECIMAL_OR_NULL,
+            "description": "Employee-entered dollar amount where the example uses one "
+            "(IA W-4 allowance dollars, MS 89-350 exemption); null otherwise",
+        },
         "expected_withholding": {
             **DECIMAL,
             "description": "The FINAL amount the publication's example arrives at, INCLUDING "

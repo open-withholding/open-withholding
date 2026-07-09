@@ -118,8 +118,10 @@ def select_document_url(
     )
 
 
-def discover_document_url(landing: str, link_pattern: str, year: int) -> str:
-    html = fetch(landing).decode("utf-8", errors="replace")
+def discover_document_url(
+    landing: str, link_pattern: str, year: int, *, insecure: bool = False
+) -> str:
+    html = fetch(landing, insecure=insecure).decode("utf-8", errors="replace")
     return select_document_url(
         extract_links(html, landing), link_pattern, year, landing=landing
     )
