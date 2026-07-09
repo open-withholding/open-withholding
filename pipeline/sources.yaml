@@ -58,6 +58,50 @@
   maps_to:
     - data/us/ri/{year}/withholding.yaml
 
+- id: us-az-a4
+  document: "Arizona Form A-4, Employee's Arizona Withholding Election"
+  jurisdiction: US-AZ
+  tax: state_income_withholding
+  method: elective_flat_rate
+  landing: "https://azdor.gov/forms/withholding-forms/arizona-withholding-percentage-election"
+  # The published rate elections are printed on the form itself; the A-4i
+  # employer instructions (same landing) carry the 2.0% no-election default.
+  document_url_pattern: "https://azdor.gov/sites/default/files/document/FORMS_WITHHOLDING_{year}_A-4_f.pdf"
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/az/{year}/withholding.yaml
+
+- id: us-ia-formula
+  document: "Iowa Individual Income Tax Withholding Formula"
+  jurisdiction: US-IA
+  tax: state_income_withholding
+  method: per_period_percentage
+  landing: "https://revenue.iowa.gov/taxes/tax-guidance/withholding-tax/iowa-withholding-tax-information"
+  # Drupal media node re-pointed to each year's file; tables doc is media/52.
+  document_url_pattern: "https://revenue.iowa.gov/media/53/download?inline="
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/ia/{year}/withholding.yaml
+
+- id: us-ms-89-700
+  document: "Pub 89-700, Mississippi Withholding Income Tax Tables and Employer Instructions"
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://www.dor.ms.gov/business/withholding-tax"
+  discovery: link_scan
+  # Ad-hoc revised-date suffixes; a guessable STALE sibling exists at
+  # /files/business/89700251.pdf (2024 rates) — always scan the landing.
+  link_pattern: '89700\d{3}[a-z0-9.]*\.pdf'
+  # dor.ms.gov serves an incomplete TLS chain; hash archive + review still gate.
+  insecure_tls: true
+  check: [content_hash]
+  expected_window: "12-01..02-15"
+  maps_to:
+    - data/us/ms/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN

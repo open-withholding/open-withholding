@@ -51,10 +51,21 @@ def compute(ctx) -> Decimal:
                 annual_wages * D(pd["rate"], context="percent_deduction.rate"),
                 D(pd["cap"], context="percent_deduction.cap"),
             )
+    elected_reduction = ZERO
+    if ctx.elected_annual_amount is not None:
+        if params.get("elected_amount_treatment") != "wage_reduction":
+            from engine.errors import InputError
+
+            raise InputError(
+                "input carries elected_annual_amount but this jurisdiction's "
+                "method does not consume one"
+            )
+        elected_reduction = ctx.elected_annual_amount
     annual_taxable = clamp0(
         annual_wages
         - standard_deduction
         - percent_deduction
+        - elected_reduction
         - ctx.allowances * allowance_amount
         - ctx.secondary_allowances * secondary_allowance_amount
     )

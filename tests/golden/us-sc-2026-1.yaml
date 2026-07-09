@@ -1,0 +1,17 @@
+source:
+  document: WH-1603F, Formula for Computing South Carolina Withholding Tax (2026)
+  page: 1
+  example: 'Standard Deduction example: $750 per week, 3 allowances. Annual gross $39,000; personal allowance
+    $15,000; standard deduction $3,900; taxable income $20,100; annual tax $549.90; divided by 52 weeks
+    = $10.58 per week.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '750'
+  state:
+  - jurisdiction: US-SC
+    filing_status: all
+    allowances: 3
+    additional_withholding: '0'
+expect:
+  state_withholding: '10.58'

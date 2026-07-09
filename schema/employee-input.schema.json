@@ -76,7 +76,15 @@
             "default": 0,
             "description": "Second allowance kind where the state defines one (e.g. IL-W-4 Line 2)"
           },
-          "additional_withholding": { "$ref": "#/$defs/money", "default": "0" }
+          "additional_withholding": { "$ref": "#/$defs/money", "default": "0" },
+          "elected_rate": {
+            "$ref": "#/$defs/rate",
+            "description": "Employee-elected withholding rate where the state offers one (AZ Form A-4)"
+          },
+          "elected_annual_amount": {
+            "$ref": "#/$defs/money",
+            "description": "Employee-entered annual dollar amount where the state's certificate takes one (MS 89-350 exemption; IA W-4 allowance dollars)"
+          }
         }
       }
     },

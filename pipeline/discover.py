@@ -32,9 +32,19 @@ class DiscoveryError(Exception):
     pass
 
 
-def fetch(url: str, *, timeout: int = 120) -> bytes:
+def fetch(url: str, *, timeout: int = 120, insecure: bool = False) -> bytes:
+    """`insecure` disables TLS verification for the handful of agencies that
+    serve incomplete certificate chains (dor.ms.gov). The sha256 archive and
+    human review still gate what the bytes are used for."""
     request = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
-    with urllib.request.urlopen(request, timeout=timeout) as resp:
+    context = None
+    if insecure:
+        import ssl
+
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+    with urllib.request.urlopen(request, timeout=timeout, context=context) as resp:
         return resp.read()
 
 

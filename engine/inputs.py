@@ -86,6 +86,8 @@ class StateElection:
     allowances: int = 0
     secondary_allowances: int = 0  # second allowance kind (e.g. IL-W-4 Line 2)
     additional_withholding: Decimal = ZERO
+    elected_rate: Decimal | None = None  # AZ A-4 style employee-elected rate
+    elected_annual_amount: Decimal | None = None  # MS/IA employee-entered dollars
 
     @classmethod
     def from_dict(cls, raw: dict) -> "StateElection":
@@ -99,12 +101,22 @@ class StateElection:
             if not isinstance(value, int) or value < 0:
                 raise InputError(f"{ctx}.{key} must be an integer >= 0, got {value!r}")
             counts[key] = value
+        elected_rate = None
+        if raw.get("elected_rate") is not None:
+            elected_rate = D(raw["elected_rate"], context=f"{ctx}.elected_rate")
+            if not (ZERO <= elected_rate <= Decimal("1")):
+                raise InputError(f"{ctx}.elected_rate must be within 0..1")
+        elected_amount = None
+        if raw.get("elected_annual_amount") is not None:
+            elected_amount = _money(raw, "elected_annual_amount", None, context=ctx)
         return cls(
             jurisdiction=jurisdiction,
             filing_status=raw.get("filing_status"),
             allowances=counts["allowances"],
             secondary_allowances=counts["secondary_allowances"],
             additional_withholding=_money(raw, "additional_withholding", context=ctx),
+            elected_rate=elected_rate,
+            elected_annual_amount=elected_amount,
         )
 
 

@@ -117,6 +117,13 @@ def _transform_params(method: str, params: dict) -> dict:
             "exemption_amount": params.get("exemption_amount"),
             "brackets": _bracket_map(params["brackets"]),
         }
+    if method == "elective_flat_rate":
+        return {
+            "allowed_rates": params["allowed_rates"],
+            "zero_rate_allowed": params["zero_rate_allowed"],
+            **({"default_rate": params["default_rate"]}
+               if params.get("default_rate") is not None else {}),
+        }
     if method == "per_period_percentage":
         out = {}
         if params.get("standard_deduction"):

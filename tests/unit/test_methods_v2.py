@@ -419,3 +419,75 @@ def test_ri_below_cliff_exemptions_apply(taxability):
     # 59.18 + 4.75% x 424.70 = 79.35
     emp = _employee("weekly", "2195.00", jurisdiction="US-RI", allowances=10)
     assert compute_withholding(RI, emp, taxability) == Decimal("79.35")
+
+
+# --- elected amounts: AZ rate election, IA credit, MS wage reduction -------
+
+AZ = _pf(
+    "US-AZ",
+    "elective_flat_rate",
+    {"allowed_rates": ["0.005", "0.010", "0.015", "0.020", "0.025", "0.030", "0.035"],
+     "zero_rate_allowed": True, "default_rate": "0.020"},
+)
+
+
+def test_az_elected_rate(taxability):
+    emp = _employee("biweekly", "2000.00", jurisdiction="US-AZ", elected_rate="0.025")
+    assert compute_withholding(AZ, emp, taxability) == Decimal("50.00")
+
+
+def test_az_default_when_no_election(taxability):
+    emp = _employee("biweekly", "2000.00", jurisdiction="US-AZ")
+    assert compute_withholding(AZ, emp, taxability) == Decimal("40.00")
+
+
+def test_az_unpublished_rate_fails_loud(taxability):
+    emp = _employee("biweekly", "2000.00", jurisdiction="US-AZ", elected_rate="0.04")
+    with pytest.raises(InputError, match="published"):
+        compute_withholding(AZ, emp, taxability)
+
+
+def test_ia_shaped_elected_credit(taxability):
+    # IA formula shape: per-period status deduction, flat 3.8%, W dollars
+    # prorated and subtracted from TAX: monthly 5,000, D=13,000/12=1,083.33;
+    # T2 = 3,916.67 x .038 = 148.83; W=520 -> 43.33; T3 = 105.50
+    ia = _pp(
+        "US-ZZ",
+        {
+            "standard_deduction": {"all": "13000"},
+            "elected_amount_treatment": "tax_credit",
+            "brackets": {"monthly": {"all": [{"over": "0", "rate": "0.038"}]}},
+        },
+    )
+    emp = _employee("monthly", "5000.00", jurisdiction="US-ZZ", elected_annual_amount="520.00")
+    assert compute_withholding(ia, emp, taxability) == Decimal("105.50")
+
+
+def test_ms_shaped_elected_wage_reduction(taxability):
+    # MS fallback shape: annualize - elected exemption dollars - std ded ->
+    # 0% to 10,000 + 4%: monthly 4,000 -> 48,000 - 6,000 - 2,300 = 39,700;
+    # 4% x 29,700 = 1,188; /12 = 99.00
+    ms = _pf(
+        "US-ZZ",
+        "annualized_percentage",
+        {
+            "standard_deduction": {"single": "2300"},
+            "allowance_amount": None,
+            "credit_per_allowance": None,
+            "elected_amount_treatment": "wage_reduction",
+            "brackets": {"single": [
+                {"over": "0", "rate": "0"},
+                {"over": "10000", "rate": "0.04"},
+            ]},
+        },
+    )
+    emp = _employee("monthly", "4000.00", jurisdiction="US-ZZ",
+                    filing_status="single", elected_annual_amount="6000.00")
+    assert compute_withholding(ms, emp, taxability) == Decimal("99.00")
+
+
+def test_elected_amount_without_treatment_fails_loud(taxability):
+    emp = _employee("weekly", "750.00", jurisdiction="US-SC", allowances=1,
+                    elected_annual_amount="1000.00")
+    with pytest.raises(InputError, match="does not consume"):
+        compute_withholding(SC, emp, taxability)

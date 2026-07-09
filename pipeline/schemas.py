@@ -169,6 +169,18 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "elective_flat_rate": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["allowed_rates", "zero_rate_allowed", "default_rate"],
+        "properties": {
+            "allowed_rates": {"type": "array", "items": DECIMAL,
+                              "description": "The published rate elections, as decimals"},
+            "zero_rate_allowed": {"type": "boolean"},
+            "default_rate": {**DECIMAL_OR_NULL,
+                             "description": "Rate applied when no election is filed, or null"},
+        },
+    },
     "per_period_percentage": {
         "type": "object",
         "additionalProperties": False,

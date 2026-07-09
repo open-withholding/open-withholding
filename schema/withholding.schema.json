@@ -41,6 +41,7 @@
         "annualized_percentage_phaseout",
         "annualized_percentage_with_credits",
         "per_period_percentage",
+        "elective_flat_rate",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
         "wage_bracket_lookup",
@@ -120,6 +121,10 @@
                 "$ref": "#/$defs/moneyOrNull",
                 "description": "Per second-kind allowance (e.g. IL-W-4 Line 2), where the jurisdiction defines one"
               },
+              "elected_amount_treatment": {
+                "enum": ["wage_reduction"],
+                "description": "How the input's elected_annual_amount is consumed (MS 89-350 exemption dollars reduce wages)"
+              },
               "percent_deduction": {
                 "type": "object",
                 "description": "Percentage-of-annual-wages deduction with a cap, optionally gated on claiming at least one allowance (SC)",
@@ -180,6 +185,27 @@
       }
     },
     {
+      "if": { "properties": { "method": { "const": "elective_flat_rate" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["allowed_rates"],
+            "additionalProperties": false,
+            "properties": {
+              "allowed_rates": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "$ref": "#/$defs/rate" }
+              },
+              "zero_rate_allowed": { "type": "boolean", "default": false },
+              "default_rate": { "anyOf": [{ "$ref": "#/$defs/rate" }, { "type": "null" }] }
+            }
+          }
+        }
+      }
+    },
+    {
       "if": { "properties": { "method": { "const": "per_period_percentage" } } },
       "then": {
         "properties": {
@@ -195,6 +221,10 @@
               "allowance_amount": {
                 "$ref": "#/$defs/moneyOrNull",
                 "description": "ANNUAL per-allowance amount, divided with standard_deduction"
+              },
+              "elected_amount_treatment": {
+                "enum": ["tax_credit"],
+                "description": "How the input's elected_annual_amount is consumed (IA W-4 dollars, prorated per period, subtracted from tax)"
               },
               "allowance_cliff_annual_wages": {
                 "$ref": "#/$defs/moneyOrNull",
