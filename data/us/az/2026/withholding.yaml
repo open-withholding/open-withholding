@@ -1,0 +1,30 @@
+schema_version: '0.1'
+jurisdiction: US-AZ
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Arizona Form A-4, Employee's Arizona Withholding Election (2026)
+  url: https://azdor.gov/sites/default/files/document/FORMS_WITHHOLDING_2026_A-4_f.pdf
+  retrieved: '2026-07-09'
+  sha256: 80a6c71c702824d80d9505575257bb052574a5b1cef17dd3da486c7bfe6b4b54
+  notes: 'Form A-4 (2026): employee elects one of the printed percentages (0.5%-3.5% in half-point steps),
+    0% with an annual no-liability certification, or the 2.0% employer default when no A-4 is filed within
+    5 days (default per the A-4i employer instructions on the same landing page). No allowances; flat
+    on gross taxable wages. Form prints no computation example (trivial multiplication); goldens maintainer-constructed.'
+method: elective_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowed_rates:
+  - '0.005'
+  - '0.010'
+  - '0.015'
+  - '0.020'
+  - '0.025'
+  - '0.030'
+  - '0.035'
+  zero_rate_allowed: true
+  default_rate: '0.020'
