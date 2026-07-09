@@ -1,0 +1,17 @@
+source:
+  document: FYI-104, New Mexico Withholding Tax (2026)
+  page: 3
+  example: 'Married employee with taxable wages of $1,000.00 weekly plus $20.00 additional withholding
+    requested. Weekly Table 1 (b): $12.77 + 4.3% of excess over $790 = $12.77 + $9.03 = $21.80; plus $20.00
+    additional = $41.80.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1000.00'
+  state:
+  - jurisdiction: US-NM
+    filing_status: married
+    allowances: 0
+    additional_withholding: '20.00'
+expect:
+  state_withholding: '41.80'
