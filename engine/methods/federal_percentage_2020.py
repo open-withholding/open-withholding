@@ -46,7 +46,7 @@ def compute(ctx) -> Decimal:
         )
     annual_tentative = tax_for(ctx.bracket_tables[key], aawa)
     if ctx.rounding.intermediate == "annual":
-        annual_tentative = ctx.rounding.apply(annual_tentative)
+        annual_tentative = ctx.rounding.apply_intermediate(annual_tentative)
     tentative_period = annual_tentative / ctx.pay_periods
 
     # Step 3 — credits (lines 3a..3c).

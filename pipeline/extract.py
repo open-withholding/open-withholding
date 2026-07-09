@@ -76,7 +76,9 @@ Also transcribe EVERY worked example in the document that exercises this
 withholding method (percentage/formula method for the stated filing statuses)
 into the structured worked_examples format — these become the dataset's
 golden tests. Copy the example's inputs and final withholding amount exactly
-as printed. For each example's filing_status, use EXACTLY the filing-status
+as printed — expected_withholding is the example's FINAL total (including any
+additional withholding it adds), never an intermediate line. For each
+example's filing_status, use EXACTLY the filing-status
 key spelled in the candidate parameter file (not the document's prose). If
 an example states only annual wages, divide by the pay periods to per-period
 wages (rounded to the cent). Skip an example and mention it in a check note

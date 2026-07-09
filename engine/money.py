@@ -49,11 +49,16 @@ def D(value: object, *, context: str = "value") -> Decimal:
 @dataclass(frozen=True)
 class Rounding:
     """The envelope `rounding` block. Default: round to the cent, half up,
-    no intermediate rounding."""
+    no intermediate rounding.
+
+    `intermediate_to` lets the intermediate (annualized) rounding use a
+    different granularity than the final rounding — Virginia's worksheet
+    rounds the annual tax to whole dollars, then divides to a cents result."""
 
     to: Decimal = CENT
     mode: str = "nearest"
     intermediate: str = "none"  # none | annual
+    intermediate_to: Decimal | None = None  # defaults to `to`
 
     @classmethod
     def from_dict(cls, raw: dict | None) -> "Rounding":
@@ -68,9 +73,22 @@ class Rounding:
         intermediate = raw.get("intermediate", "none")
         if intermediate not in ("none", "annual"):
             raise DataError(f"rounding.intermediate {intermediate!r} not one of ['annual', 'none']")
-        return cls(to=to, mode=mode, intermediate=intermediate)
+        intermediate_to = None
+        if raw.get("intermediate_to") is not None:
+            intermediate_to = D(raw["intermediate_to"], context="rounding.intermediate_to")
+            if intermediate_to <= ZERO:
+                raise DataError(f"rounding.intermediate_to must be positive, got {intermediate_to}")
+        return cls(to=to, mode=mode, intermediate=intermediate, intermediate_to=intermediate_to)
+
+    def _round(self, amount: Decimal, granularity: Decimal) -> Decimal:
+        multiples = (amount / granularity).to_integral_value(rounding=_MODES[self.mode])
+        return (multiples * granularity).quantize(CENT)
 
     def apply(self, amount: Decimal) -> Decimal:
         """Round to the nearest multiple of `to` using `mode`."""
-        multiples = (amount / self.to).to_integral_value(rounding=_MODES[self.mode])
-        return (multiples * self.to).quantize(CENT)
+        return self._round(amount, self.to)
+
+    def apply_intermediate(self, amount: Decimal) -> Decimal:
+        """Round an intermediate (annualized) amount, at `intermediate_to`
+        granularity when set, else `to`."""
+        return self._round(amount, self.intermediate_to or self.to)

@@ -19,6 +19,6 @@ def compute(ctx) -> Decimal:
     annual_taxable = clamp0(annual_wages - allowance)
     annual_tax = annual_taxable * rate
     if ctx.rounding.intermediate == "annual":
-        annual_tax = ctx.rounding.apply(annual_tax)
+        annual_tax = ctx.rounding.apply_intermediate(annual_tax)
     period_tax = annual_tax / ctx.pay_periods
     return ctx.rounding.apply(period_tax) + ctx.additional_withholding

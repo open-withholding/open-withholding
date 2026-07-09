@@ -58,7 +58,11 @@
       "properties": {
         "to": { "$ref": "#/$defs/money", "description": "Round to nearest multiple, e.g. \"1.00\" or \"0.01\"" },
         "mode": { "enum": ["nearest", "up", "down", "half_even"] },
-        "intermediate": { "enum": ["none", "annual"], "default": "none" }
+        "intermediate": { "enum": ["none", "annual"], "default": "none" },
+        "intermediate_to": {
+          "$ref": "#/$defs/money",
+          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` — e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
+        }
       }
     }
   },

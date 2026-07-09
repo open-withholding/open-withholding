@@ -53,13 +53,19 @@ PER_STATUS_AMOUNT = {
 ROUNDING = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["to", "mode", "intermediate"],
+    "required": ["to", "mode", "intermediate", "intermediate_to"],
     "properties": {
-        "to": {**DECIMAL, "description": "Round to nearest multiple, e.g. \"1.00\" or \"0.01\""},
+        "to": {**DECIMAL, "description": "Round the FINAL per-period amount to this multiple, e.g. \"1.00\" or \"0.01\""},
         "mode": {"enum": ["nearest", "up", "down", "half_even"]},
         "intermediate": {
             "enum": ["none", "annual"],
             "description": "\"annual\" ONLY if the guide's worked examples demonstrably round the annualized tax before dividing by pay periods",
+        },
+        "intermediate_to": {
+            **DECIMAL_OR_NULL,
+            "description": "Granularity of the intermediate (annual) rounding when it differs "
+            "from the final `to` (e.g. VA: annual tax to \"1.00\", final to \"0.01\"); "
+            "null when intermediate is none or uses the same granularity",
         },
     },
 }
@@ -237,7 +243,8 @@ WORKED_EXAMPLE = {
         "additional_withholding": DECIMAL_OR_NULL,
         "expected_withholding": {
             **DECIMAL,
-            "description": "The withholding amount the publication's example arrives at",
+            "description": "The FINAL amount the publication's example arrives at, INCLUDING "
+            "any additional withholding the example adds — the total actually withheld",
         },
     },
 }

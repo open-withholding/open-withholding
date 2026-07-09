@@ -42,7 +42,7 @@ def compute(ctx) -> Decimal:
     # Step 5 (+ optional intermediate rounding, worked-examples permitting).
     annual_tax = tax_for(table, annual_net)
     if ctx.rounding.intermediate == "annual":
-        annual_tax = ctx.rounding.apply(annual_tax)
+        annual_tax = ctx.rounding.apply_intermediate(annual_tax)
 
     # Steps 6-7: de-annualize, round once, add extra withholding.
     period_tax = annual_tax / ctx.pay_periods

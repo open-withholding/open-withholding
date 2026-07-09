@@ -49,3 +49,19 @@ def test_invalid_rounding_blocks_rejected():
         Rounding.from_dict({"to": "0", "mode": "nearest"})
     with pytest.raises(DataError):
         Rounding.from_dict({"to": "1.00", "mode": "nearest", "intermediate": "period"})
+
+
+def test_intermediate_to_differs_from_final():
+    from engine.money import Rounding
+
+    # VA-shaped: annual tax to whole dollars, final to cents.
+    r = Rounding.from_dict(
+        {"to": "0.01", "mode": "nearest", "intermediate": "annual", "intermediate_to": "1.00"}
+    )
+    assert r.apply_intermediate(Decimal("2627.62")) == Decimal("2628.00")
+    assert r.apply(Decimal("2628") / 24) == Decimal("109.50")
+    # without intermediate_to, intermediate rounding uses `to`
+    r2 = Rounding.from_dict({"to": "0.01", "mode": "nearest", "intermediate": "annual"})
+    assert r2.apply_intermediate(Decimal("2627.62")) == Decimal("2627.62")
+    with pytest.raises(DataError):
+        Rounding.from_dict({"to": "0.01", "mode": "nearest", "intermediate_to": "0"})
