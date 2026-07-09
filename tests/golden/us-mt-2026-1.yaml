@@ -1,0 +1,15 @@
+source:
+  document: Montana Employer and Information Agent Guide with Tax Tables (2026)
+  page: 19
+  example: 'Example 1: box 1a, $1,375 semi-monthly (Single/MFS/MFJ both working)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1375'
+  state:
+  - jurisdiction: US-MT
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '33'

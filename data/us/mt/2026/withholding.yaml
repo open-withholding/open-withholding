@@ -1,0 +1,208 @@
+schema_version: '0.1'
+jurisdiction: US-MT
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Montana Employer and Information Agent Guide with Tax Tables (2026)
+  url: https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf
+  retrieved: '2026-07-09'
+  sha256: be5e53a31b7175ed17fd2457ef40dff1224e4e9737ac18248f1434c6d4b578eb
+  notes: 'W = A + B x (G - C) formulas per period x status, transcribed with printed bases; all nine printed
+    examples reproduce. KNOWN DOC DEFECT (reported-worthy): the definitions box says amounts ''must be
+    rounded UP to the nearest dollar'' but every worked example rounds to NEAREST (33.088->33, 114.48->114,
+    7.755->8) — the examples decide (nearest). MW-4 conveys status only; standard deduction is embedded
+    in the 0% bracket.'
+method: per_period_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  brackets:
+    monthly:
+      single:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '1342'
+        rate: '0.047'
+        base: '0'
+      - over: '5300'
+        rate: '0.0565'
+        base: '187'
+      married_jointly:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '2683'
+        rate: '0.047'
+        base: '0'
+      - over: '10600'
+        rate: '0.0565'
+        base: '372'
+      head_of_household:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '2013'
+        rate: '0.047'
+        base: '0'
+      - over: '7950'
+        rate: '0.0565'
+        base: '280'
+    semimonthly:
+      single:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '671'
+        rate: '0.047'
+        base: '0'
+      - over: '2650'
+        rate: '0.0565'
+        base: '94'
+      married_jointly:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '1342'
+        rate: '0.047'
+        base: '0'
+      - over: '5300'
+        rate: '0.0565'
+        base: '187'
+      head_of_household:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '1006'
+        rate: '0.047'
+        base: '0'
+      - over: '3975'
+        rate: '0.0565'
+        base: '140'
+    biweekly:
+      single:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '619'
+        rate: '0.047'
+        base: '0'
+      - over: '2446'
+        rate: '0.0565'
+        base: '86'
+      married_jointly:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '1238'
+        rate: '0.047'
+        base: '0'
+      - over: '4892'
+        rate: '0.0565'
+        base: '172'
+      head_of_household:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '929'
+        rate: '0.047'
+        base: '0'
+      - over: '3669'
+        rate: '0.0565'
+        base: '129'
+    weekly:
+      single:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '310'
+        rate: '0.047'
+        base: '0'
+      - over: '1223'
+        rate: '0.0565'
+        base: '43'
+      married_jointly:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '619'
+        rate: '0.047'
+        base: '0'
+      - over: '2446'
+        rate: '0.0565'
+        base: '86'
+      head_of_household:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '464'
+        rate: '0.047'
+        base: '0'
+      - over: '1835'
+        rate: '0.0565'
+        base: '65'
+    daily:
+      single:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '62'
+        rate: '0.047'
+        base: '0'
+      - over: '245'
+        rate: '0.0565'
+        base: '9'
+      married_jointly:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '124'
+        rate: '0.047'
+        base: '0'
+      - over: '489'
+        rate: '0.0565'
+        base: '18'
+      head_of_household:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '93'
+        rate: '0.047'
+        base: '0'
+      - over: '367'
+        rate: '0.0565'
+        base: '13'
+    annually:
+      single:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '16100'
+        rate: '0.047'
+        base: '0'
+      - over: '63600'
+        rate: '0.0565'
+        base: '2233'
+      married_jointly:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '32200'
+        rate: '0.047'
+        base: '0'
+      - over: '127200'
+        rate: '0.0565'
+        base: '4465'
+      head_of_household:
+      - over: '0'
+        rate: '0.0'
+        base: '0'
+      - over: '24150'
+        rate: '0.047'
+        base: '0'
+      - over: '95400'
+        rate: '0.0565'
+        base: '3349'
