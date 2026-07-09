@@ -1,0 +1,55 @@
+schema_version: '0.1'
+jurisdiction: US-LA
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: R-1306, Louisiana Withholding Tables and Formulas (2026)
+  url: https://dam.ldr.la.gov/taxforms/1306-1-26.pdf
+  retrieved: '2026-07-09'
+  sha256: 894da1932daa836b9817ccb1515ba81913838cb2957f7948368c4e67a2daab27
+  notes: 'R-1306 formula p.1: per-period flat 3.09% (2026 — rate is an annual variable, 2025 was 3.00%)
+    on wages less SD/N, SD keyed by L-4 box code (0/1/2). Encoded as per_period_percentage: the cent-rounded
+    SD/N division matches the printed arithmetic exactly; both printed examples reproduce. Statuses are
+    the L-4 claim codes.'
+method: per_period_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    no_standard_deduction: '0'
+    single: '12875'
+    married_joint: '25750'
+  brackets:
+    daily:
+      all:
+      - over: '0'
+        rate: '0.0309'
+        base: '0'
+    weekly:
+      all:
+      - over: '0'
+        rate: '0.0309'
+        base: '0'
+    biweekly:
+      all:
+      - over: '0'
+        rate: '0.0309'
+        base: '0'
+    semimonthly:
+      all:
+      - over: '0'
+        rate: '0.0309'
+        base: '0'
+    monthly:
+      all:
+      - over: '0'
+        rate: '0.0309'
+        base: '0'
+    annually:
+      all:
+      - over: '0'
+        rate: '0.0309'
+        base: '0'
