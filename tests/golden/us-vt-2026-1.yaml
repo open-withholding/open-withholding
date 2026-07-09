@@ -1,0 +1,17 @@
+source:
+  document: GB-1210, Vermont Income Tax Withholding Instructions, Tables and Charts (2026)
+  page: 8
+  example: Employee paid $1800 each week, W-4VT claims two withholding allowances and married status;
+    computed from WEEKLY/Married table. Allowances 2 x $103.85 = $207.70; wages after allowances $1592.30;
+    tax $0.00 + 3.35% of amount over $226 = $45.77.
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1800'
+  state:
+  - jurisdiction: US-VT
+    filing_status: married
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '45.77'
