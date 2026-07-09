@@ -1,0 +1,16 @@
+source:
+  document: Maine Withholding Tables for Individual Income Tax (2026)
+  page: 7
+  example: 'Example 1: Single employee paid $300/week, 2 allowances; annualized income negative so withholding
+    is zero'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '300'
+  state:
+  - jurisdiction: US-ME
+    filing_status: single
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '0'
