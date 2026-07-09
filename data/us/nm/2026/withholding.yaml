@@ -8,7 +8,10 @@ source:
   url: https://realfile.tax.newmexico.gov/FYI-104.pdf
   retrieved: '2026-07-09'
   sha256: 400f141e3cc28d352712cd0cb94f80d7c2dc1c40463fcdcf31561247b5889a82
-  notes: Extracted by pipeline; pages per PR body
+  notes: FYI-104 withholding tax tables, transcribed per payroll period (printed bases authoritative;
+    rows are the annual amounts divided per period with per-row rounding, so per_period_percentage reproduces
+    the p.2-3 example exactly where an annualized computation is 2 cents off). No allowances — NM uses
+    the federal W-4 without a state certificate.
 method: per_period_percentage
 rounding:
   to: '0.01'

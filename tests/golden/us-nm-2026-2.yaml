@@ -1,0 +1,15 @@
+source:
+  document: FYI-104, New Mexico Withholding Tax (2026)
+  page: 0
+  example: 'maintainer-constructed from the printed WEEKLY/Single table: $800 weekly taxable -> table
+    arithmetic gives 22.46'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '800.00'
+  state:
+  - jurisdiction: US-NM
+    filing_status: single
+    additional_withholding: '0'
+expect:
+  state_withholding: '22.46'
