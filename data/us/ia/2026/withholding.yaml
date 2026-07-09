@@ -1,0 +1,127 @@
+schema_version: '0.1'
+jurisdiction: US-IA
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Iowa Individual Income Tax Withholding Formula (2026)
+  url: https://revenue.iowa.gov/media/53/download?inline=
+  retrieved: '2026-07-09'
+  sha256: 690911fa64266dffe9b21eac207220c18762dd4d02a4ca4807eb8ff02c8ca0e2
+  notes: 'Iowa Withholding Formula eff. 2026-01-01 (Nov 2025 release): per-period flat 3.8% on wages less
+    the per-status deduction (statuses cover BOTH regimes: 2024+ IA W-4 marital statuses, plus the legacy
+    pre-2024 single/married path). Employee-entered W-4 allowance dollars are a prorated TAX credit (elected_amount_treatment:
+    tax_credit); the legacy path uses $40/allowance credits (credit_per_allowance). All TEN printed examples
+    (pp.4-6) transcribed as goldens and reproduced — the largest publication-derived golden set in the
+    dataset.'
+method: per_period_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    other_married_spouse_earns: '13000'
+    head_of_household: '19500'
+    married_joint_spouse_no_income_surviving_spouse: '26000'
+    single_pre2024: '13000'
+    married_pre2024: '26000'
+  credit_per_allowance: '40'
+  elected_amount_treatment: tax_credit
+  brackets:
+    daily:
+      other_married_spouse_earns:
+      - over: '0'
+        rate: '0.038'
+      head_of_household:
+      - over: '0'
+        rate: '0.038'
+      married_joint_spouse_no_income_surviving_spouse:
+      - over: '0'
+        rate: '0.038'
+      single_pre2024:
+      - over: '0'
+        rate: '0.038'
+      married_pre2024:
+      - over: '0'
+        rate: '0.038'
+    weekly:
+      other_married_spouse_earns:
+      - over: '0'
+        rate: '0.038'
+      head_of_household:
+      - over: '0'
+        rate: '0.038'
+      married_joint_spouse_no_income_surviving_spouse:
+      - over: '0'
+        rate: '0.038'
+      single_pre2024:
+      - over: '0'
+        rate: '0.038'
+      married_pre2024:
+      - over: '0'
+        rate: '0.038'
+    biweekly:
+      other_married_spouse_earns:
+      - over: '0'
+        rate: '0.038'
+      head_of_household:
+      - over: '0'
+        rate: '0.038'
+      married_joint_spouse_no_income_surviving_spouse:
+      - over: '0'
+        rate: '0.038'
+      single_pre2024:
+      - over: '0'
+        rate: '0.038'
+      married_pre2024:
+      - over: '0'
+        rate: '0.038'
+    semimonthly:
+      other_married_spouse_earns:
+      - over: '0'
+        rate: '0.038'
+      head_of_household:
+      - over: '0'
+        rate: '0.038'
+      married_joint_spouse_no_income_surviving_spouse:
+      - over: '0'
+        rate: '0.038'
+      single_pre2024:
+      - over: '0'
+        rate: '0.038'
+      married_pre2024:
+      - over: '0'
+        rate: '0.038'
+    monthly:
+      other_married_spouse_earns:
+      - over: '0'
+        rate: '0.038'
+      head_of_household:
+      - over: '0'
+        rate: '0.038'
+      married_joint_spouse_no_income_surviving_spouse:
+      - over: '0'
+        rate: '0.038'
+      single_pre2024:
+      - over: '0'
+        rate: '0.038'
+      married_pre2024:
+      - over: '0'
+        rate: '0.038'
+    annually:
+      other_married_spouse_earns:
+      - over: '0'
+        rate: '0.038'
+      head_of_household:
+      - over: '0'
+        rate: '0.038'
+      married_joint_spouse_no_income_surviving_spouse:
+      - over: '0'
+        rate: '0.038'
+      single_pre2024:
+      - over: '0'
+        rate: '0.038'
+      married_pre2024:
+      - over: '0'
+        rate: '0.038'

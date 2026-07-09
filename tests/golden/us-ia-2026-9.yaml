@@ -1,0 +1,15 @@
+source:
+  document: Iowa Individual Income Tax Withholding Formula (2026)
+  page: 6
+  example: 'Example 9: Monthly wages $5,000.00, ''Single'' on 2023-or-earlier IA W-4, 1 allowance'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '5000.00'
+  state:
+  - jurisdiction: US-IA
+    filing_status: single_pre2024
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '145.50'
