@@ -102,13 +102,18 @@ def load_source(source_id: str) -> dict:
     raise SystemExit(f"source id {source_id!r} not in pipeline/sources.yaml")
 
 
+def _substitute_year(pattern: str, year: int) -> str:
+    """{year} -> 2026, {yy} -> 26 (LA's 1306-1-{yy}.pdf, ME's {yy}_wh_tab_instr.pdf)."""
+    return pattern.replace("{year}", str(year)).replace("{yy}", f"{year % 100:02d}")
+
+
 def fetch_pdf(source: dict, year: int, pdf_path: str | None) -> tuple[bytes, str]:
     """Returns (pdf bytes, the URL they came from)."""
     if pdf_path:
         data = Path(pdf_path).expanduser().read_bytes()
-        url = source.get("document_url_pattern", source["landing"]).replace("{year}", str(year))
+        url = _substitute_year(source.get("document_url_pattern", source["landing"]), year)
     elif source.get("document_url_pattern"):
-        url = source["document_url_pattern"].replace("{year}", str(year))
+        url = _substitute_year(source["document_url_pattern"], year)
         data = discover.fetch(url)
     elif source.get("discovery") == "link_scan":
         url = discover.discover_document_url(source["landing"], source["link_pattern"], year)
