@@ -40,6 +40,7 @@
         "annualized_percentage",
         "annualized_percentage_phaseout",
         "annualized_percentage_with_credits",
+        "per_period_percentage",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
         "wage_bracket_lookup",
@@ -161,6 +162,51 @@
                 "minProperties": 1,
                 "description": "Keyed by filing status; a single schedule for all statuses uses the key \"all\"",
                 "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "per_period_percentage" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["brackets"],
+            "additionalProperties": false,
+            "properties": {
+              "standard_deduction": {
+                "$ref": "#/$defs/perStatusMoney",
+                "description": "ANNUAL per-status exemption, divided by the period count at computation time (cent-rounded)"
+              },
+              "allowance_amount": {
+                "$ref": "#/$defs/moneyOrNull",
+                "description": "ANNUAL per-allowance amount, divided with standard_deduction"
+              },
+              "allowance_amounts_per_period": {
+                "type": "object",
+                "description": "The printed per-period value of one allowance, keyed by frequency",
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
+              },
+              "brackets": {
+                "type": "object",
+                "minProperties": 1,
+                "description": "Per-period tables: frequency -> filing status (or 'all') -> rows",
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                  }
+                }
               }
             }
           }

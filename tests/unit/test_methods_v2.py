@@ -193,3 +193,149 @@ def test_va_shaped_intermediate_dollar_rounding(taxability):
     )
     emp = _employee("semimonthly", "2649.00", jurisdiction="US-VA", allowances=5)
     assert compute_withholding(va, emp, taxability) == Decimal("109.50")
+
+
+# --- per_period_percentage: KS/NM-shaped mechanics ------------------------
+
+def _pp(jurisdiction, params, rounding=None):
+    return load_parameter_dict(
+        {
+            "schema_version": "0.1",
+            "jurisdiction": jurisdiction,
+            "tax": "state_income_withholding",
+            "effective_from": "2026-01-01",
+            "source": SOURCE,
+            "method": "per_period_percentage",
+            "params": params,
+            "rounding": rounding or {"to": "0.01", "mode": "nearest"},
+        }
+    )
+
+
+# KS-shaped: annual status exemption + annual per-dependent divided per
+# period, per-period table, whole-dollar rounding. Mirrors KW-100's example:
+# $2,000 semimonthly, married (spouse not working), 1 dependent ->
+# (18,320 + 2,320)/24 = 860.00; net 1,140; (1,140-343) x 5.2% = 41.44 -> $41.
+KSISH = _pp(
+    "US-ZZ",
+    {
+        "standard_deduction": {"married_spouse_not_working": "18320", "single": "9160"},
+        "allowance_amount": "2320",
+        "brackets": {
+            "semimonthly": {
+                "all": [
+                    {"over": "0", "rate": "0"},
+                    {"over": "343", "rate": "0.052"},
+                ]
+            }
+        },
+    },
+    rounding={"to": "1.00", "mode": "nearest"},
+)
+
+
+def test_per_period_ks_shaped_example(taxability):
+    emp = _employee(
+        "semimonthly", "2000.00", jurisdiction="US-ZZ",
+        filing_status="married_spouse_not_working", allowances=1,
+    )
+    assert compute_withholding(KSISH, emp, taxability) == Decimal("41.00")
+
+
+def test_per_period_missing_frequency_fails_loud(taxability):
+    emp = _employee(
+        "weekly", "2000.00", jurisdiction="US-ZZ",
+        filing_status="single", allowances=0,
+    )
+    with pytest.raises(InputError, match="no printed table"):
+        compute_withholding(KSISH, emp, taxability)
+
+
+# NM-shaped: no allowances, per-period table with printed (authoritative)
+# bases, additional withholding. Mirrors FYI-104's example: $1,000 weekly
+# married -> row over $790: 12.77 + 4.3% x 210 = 21.80; + $20 = 41.80.
+# Rows are internally consistent so the printed-base check passes:
+# base at 790 = 372 x 0.032 + ... constructed to land on 12.77.
+NMISH = _pp(
+    "US-ZZ",
+    {
+        "brackets": {
+            "weekly": {
+                "married": [
+                    {"over": "0", "rate": "0"},
+                    {"over": "391", "rate": "0.032"},
+                    {"over": "790", "rate": "0.043", "base": "12.77"},
+                ],
+                "single": [
+                    {"over": "0", "rate": "0"},
+                    {"over": "150", "rate": "0.043"},
+                ],
+            }
+        },
+    },
+)
+
+
+def test_per_period_nm_shaped_example_with_additional(taxability):
+    emp = _employee(
+        "weekly", "1000.00", jurisdiction="US-ZZ",
+        filing_status="married", additional_withholding="20.00",
+    )
+    assert compute_withholding(NMISH, emp, taxability) == Decimal("41.80")
+
+
+def test_per_period_vt_shaped_printed_allowance(taxability):
+    # VT-shaped: printed per-period allowance value ($97/week), per-period
+    # table. weekly $600, 2 allowances -> net 406; (406-150) x 4.3% = 11.01.
+    vt = _pp(
+        "US-ZZ",
+        {
+            "allowance_amounts_per_period": {"weekly": "97.00"},
+            "brackets": {"weekly": {"single": [
+                {"over": "0", "rate": "0"},
+                {"over": "150", "rate": "0.043"},
+            ]}},
+        },
+    )
+    emp = _employee(
+        "weekly", "600.00", jurisdiction="US-ZZ", filing_status="single", allowances=2,
+    )
+    # 600 - 194 = 406; (406-150) x 0.043 = 11.008 -> 11.01
+    assert compute_withholding(vt, emp, taxability) == Decimal("11.01")
+
+
+def test_per_period_extraction_transform_loads():
+    from pipeline import assemble
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "1.00", "mode": "nearest", "intermediate": "none",
+                     "intermediate_to": None},
+        "params": {
+            "standard_deduction": [{"filing_status": "Single", "amount": "9160"}],
+            "allowance_amount": "2320",
+            "allowance_amounts_per_period": None,
+            "frequencies": [
+                {
+                    "frequency": "semimonthly",
+                    "tables": [
+                        {"filing_status": "Single", "rows": [
+                            {"over": "0", "rate": "0", "base": None},
+                            {"over": "171", "rate": "0.052", "base": "0"},
+                        ]}
+                    ],
+                }
+            ],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ",
+        tax="state_income_withholding",
+        method="per_period_percentage",
+        extraction=extraction,
+        source=SOURCE,
+    )
+    pf = load_parameter_dict(raw)
+    assert "semimonthly.single" in pf.bracket_tables
+    assert raw["params"]["standard_deduction"] == {"single": "9160"}

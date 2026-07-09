@@ -115,6 +115,20 @@ def _transform_params(method: str, params: dict) -> dict:
             "exemption_amount": params.get("exemption_amount"),
             "brackets": _bracket_map(params["brackets"]),
         }
+    if method == "per_period_percentage":
+        out = {}
+        if params.get("standard_deduction"):
+            out["standard_deduction"] = _status_map(params["standard_deduction"])
+        if params.get("allowance_amount") is not None:
+            out["allowance_amount"] = params["allowance_amount"]
+        if params.get("allowance_amounts_per_period"):
+            out["allowance_amounts_per_period"] = {
+                e["frequency"]: e["amount"] for e in params["allowance_amounts_per_period"]
+            }
+        out["brackets"] = {
+            e["frequency"]: _bracket_map(e["tables"]) for e in params["frequencies"]
+        }
+        return out
     if method == "federal_percentage_2020":
         return {
             "wage_adjustment": _status_map(params["wage_adjustment"]),

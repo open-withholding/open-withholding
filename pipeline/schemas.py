@@ -148,6 +148,67 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "per_period_percentage": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": [
+            "standard_deduction",
+            "allowance_amount",
+            "allowance_amounts_per_period",
+            "frequencies",
+        ],
+        "properties": {
+            "standard_deduction": {
+                "anyOf": [PER_STATUS_AMOUNT, {"type": "null"}],
+                "description": "ANNUAL per-status exemption divided by period count at "
+                "computation time (e.g. Kansas), or null",
+            },
+            "allowance_amount": {
+                **DECIMAL_OR_NULL,
+                "description": "ANNUAL per-allowance amount divided with the standard "
+                "deduction (e.g. Kansas per-dependent), or null",
+            },
+            "allowance_amounts_per_period": {
+                "anyOf": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["frequency", "amount"],
+                            "properties": {
+                                "frequency": {
+                                    "enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                             "monthly", "quarterly", "semiannually", "annually"]
+                                },
+                                "amount": DECIMAL,
+                            },
+                        },
+                    },
+                    {"type": "null"},
+                ],
+                "description": "The PRINTED per-period value of one allowance per frequency "
+                "(e.g. Vermont's table headers), or null",
+            },
+            "frequencies": {
+                "type": "array",
+                "description": "One entry per printed payroll-period table. Transcribe EVERY "
+                "frequency the document prints.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "tables"],
+                    "properties": {
+                        "frequency": {
+                            "enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                     "monthly", "quarterly", "semiannually", "annually"]
+                        },
+                        "tables": PER_STATUS_BRACKETS,
+                    },
+                },
+            },
+        },
+    },
     "federal_percentage_2020": {
         "type": "object",
         "additionalProperties": False,

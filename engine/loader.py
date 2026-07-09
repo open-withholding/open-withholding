@@ -70,11 +70,12 @@ def _validate_and_parse_brackets(method: str, params: dict) -> dict[str, tuple[B
     ):
         for status, rows in params.get("brackets", {}).items():
             tables[status] = parse_table(rows, context=f"params.brackets.{status}")
-    elif method == "federal_percentage_2020":
-        for variant, per_status in params.get("brackets", {}).items():
+    elif method in ("federal_percentage_2020", "per_period_percentage"):
+        # Two-level tables: variant/frequency -> filing status -> rows.
+        for outer, per_status in params.get("brackets", {}).items():
             for status, rows in per_status.items():
-                tables[f"{variant}.{status}"] = parse_table(
-                    rows, context=f"params.brackets.{variant}.{status}"
+                tables[f"{outer}.{status}"] = parse_table(
+                    rows, context=f"params.brackets.{outer}.{status}"
                 )
     return tables
 

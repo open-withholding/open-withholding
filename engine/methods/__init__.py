@@ -11,6 +11,7 @@ from engine.methods import (
     federal_percentage_2020,
     flat_rate,
     flat_rate_with_annual_allowance,
+    per_period_percentage,
 )
 
 REGISTRY = {
@@ -18,6 +19,7 @@ REGISTRY = {
     "flat_rate_with_annual_allowance": flat_rate_with_annual_allowance.compute,
     "annualized_percentage": annualized_percentage.compute,
     "annualized_percentage_phaseout": annualized_percentage_phaseout.compute,
+    "per_period_percentage": per_period_percentage.compute,
     "federal_percentage_2020": federal_percentage_2020.compute,
 }
 
