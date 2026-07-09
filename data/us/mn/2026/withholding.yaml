@@ -11,12 +11,13 @@ source:
   notes: 'Computer Formula p.34: annualize (daily factor 360), subtract $5,300 per W-4MN allowance, four
     brackets per status with printed cumulative bases; standard deduction embedded in the zero-to-first-breakpoint
     band. The booklet prints no numeric example (step list only) — golden cases are maintainer-constructed
-    from the printed rate chart. Dollar rounding is permissive (''you may round''); cents encoded.'
+    from the printed rate chart. MAINTAINER DECISION (ratify in review): the booklet''s rounding is permissive
+    (''you may round the amount to the nearest dollar''); cents encoded, consistent with the federal-file
+    precedent for optional rounding — the extractor''s candidate had 1.00. Consumers may round downstream.'
 method: annualized_percentage
 rounding:
-  to: '1.00'
+  to: '0.01'
   mode: nearest
-  intermediate: none
 params:
   allowance_amount: '5300'
   credit_per_allowance: null
