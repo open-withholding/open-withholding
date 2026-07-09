@@ -8,7 +8,10 @@ source:
   url: https://tax.vermont.gov/sites/tax/files/documents/GB-1210-2026.pdf
   retrieved: '2026-07-09'
   sha256: 4656760209691fdd4404f2a10fa4edf57622e24dc7dbaa10ac113f2775f9687d
-  notes: Extracted by pipeline; pages per PR body
+  notes: GB-1210 percentage-method charts, transcribed per payroll period (printed bases authoritative;
+    the per-period rows are independently rounded, which is why this file uses per_period_percentage —
+    the p.8 example is 1 cent off any annualized computation). One withholding allowance per period as
+    printed in the charts (W-4VT allowances).
 method: per_period_percentage
 rounding:
   to: '0.01'
