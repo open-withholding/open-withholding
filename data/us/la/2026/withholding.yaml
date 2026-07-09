@@ -8,7 +8,10 @@ source:
   url: https://dam.ldr.la.gov/taxforms/1306-1-26.pdf
   retrieved: '2026-07-09'
   sha256: 894da1932daa836b9817ccb1515ba81913838cb2957f7948368c4e67a2daab27
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'R-1306 formula p.1: per-period flat 3.09% (2026 — rate is an annual variable, 2025 was 3.00%)
+    on wages less SD/N, SD keyed by L-4 box code (0/1/2). Encoded as per_period_percentage: the cent-rounded
+    SD/N division matches the printed arithmetic exactly; both printed examples reproduce. Statuses are
+    the L-4 claim codes.'
 method: per_period_percentage
 rounding:
   to: '0.01'
