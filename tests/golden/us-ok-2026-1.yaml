@@ -1,0 +1,17 @@
+source:
+  document: Packet OW-2, Oklahoma Income Tax Withholding Tables (2026)
+  page: 7
+  example: Individual paid $1,825.00 semi-monthly, married, claiming two withholding allowances. Allowance
+    amount 41.67 x 2 = 83.34; net 1741.66; tax 9.10 + 4.5% of (1741.66-1129.00=612.66)=27.57, total 36.67
+    rounded to 37.00.
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1825.00'
+  state:
+  - jurisdiction: US-OK
+    filing_status: married
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '37.00'
