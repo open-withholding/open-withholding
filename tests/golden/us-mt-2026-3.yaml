@@ -1,0 +1,15 @@
+source:
+  document: Montana Employer and Information Agent Guide with Tax Tables (2026)
+  page: 19
+  example: 'Example 3: box 1a, $475 weekly (Single/MFS/MFJ both working)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '475'
+  state:
+  - jurisdiction: US-MT
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '8'

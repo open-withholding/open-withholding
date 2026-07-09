@@ -1,0 +1,15 @@
+source:
+  document: Montana Employer and Information Agent Guide with Tax Tables (2026)
+  page: 20
+  example: 'Example 1: line 1b, $1,375 semi-monthly (MFJ/Qualifying Surviving Spouse)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1375'
+  state:
+  - jurisdiction: US-MT
+    filing_status: married_jointly
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '2'

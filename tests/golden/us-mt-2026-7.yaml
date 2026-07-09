@@ -1,0 +1,15 @@
+source:
+  document: Montana Employer and Information Agent Guide with Tax Tables (2026)
+  page: 21
+  example: 'Example 1: line 1c, $1,375 semi-monthly (Head of Household)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1375'
+  state:
+  - jurisdiction: US-MT
+    filing_status: head_of_household
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '17'
