@@ -1,0 +1,16 @@
+source:
+  document: Minnesota Income Tax Withholding Instruction Booklet and Tax Tables (2026)
+  page: 34
+  example: 'maintainer-constructed from the p.34 rate chart: biweekly $2300.00 single, 1 allowance(s)
+    -> annual 54500.00; chart arithmetic 2903.41 / 26 = 111.67'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2300.00'
+  state:
+  - jurisdiction: US-MN
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '111.67'
