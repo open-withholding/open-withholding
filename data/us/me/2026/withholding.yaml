@@ -8,7 +8,12 @@ source:
   url: https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/26_wh_tab_instr.pdf
   retrieved: '2026-07-09'
   sha256: bdccd833d649038512ab189cf1ce18990892def812fb495735fde3b152f7bfee
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Percentage method pp.6-7: linear standard-deduction phase-out (single $12,450 over $102,250-$177,250;
+    married $27,750 over $204,550-$354,550 — phase_rate = SD/range), $5,300/W-4ME allowance, 3 brackets
+    with printed bases. The guide computes the phase fraction rounded to 4 decimals; the engine''s linear
+    form differs by <=$1 of deduction, absorbed by the final whole-dollar rounding (all three printed
+    examples reproduce). Withholding-purposes SD intentionally differs from the true ME standard deduction
+    per the cover note. Daily factor 260.'
 method: annualized_percentage_phaseout
 rounding:
   to: '1.00'
