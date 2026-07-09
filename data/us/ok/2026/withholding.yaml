@@ -8,7 +8,11 @@ source:
   url: https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-2026.pdf
   retrieved: '2026-07-09'
   sha256: ec4327fe6153611ce6bf60f8e5914eb75c9b6132cf3122bbaaca0ed9dab478a7
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Packet OW-2 Tables 1-8 (per-period, single/married), $1,000/yr per OK-W-4 allowance divided
+    per period, MANDATORY whole-dollar rounding (p.7 example: 36.67 -> $37). KNOWN DOC DEFECT flagged
+    upstream-worthy: the p.7 example PROSE cites ''$12.19 plus 4.5%'' where the printed table and the
+    example''s own arithmetic use $9.10 — stale text, values unaffected. Percentage formula is mandatory
+    above the last wage-bracket row.'
 method: per_period_percentage
 rounding:
   to: '1.00'
