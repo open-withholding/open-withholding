@@ -34,7 +34,7 @@
   document: "GB-1210, Vermont Income Tax Withholding Instructions, Tables and Charts"
   jurisdiction: US-VT
   tax: state_income_withholding
-  method: annualized_percentage
+  method: per_period_percentage
   landing: "https://tax.vermont.gov/business/withholding"
   document_url_pattern: "https://tax.vermont.gov/sites/tax/files/documents/GB-1210-{year}.pdf"
   check: [content_hash]
@@ -72,7 +72,7 @@
   document: "FYI-104, New Mexico Withholding Tax"
   jurisdiction: US-NM
   tax: state_income_withholding
-  method: annualized_percentage
+  method: per_period_percentage
   landing: "https://www.tax.newmexico.gov/businesses/wage-withholding-tax/"
   # Canonical publication path, revised in place annually.
   document_url_pattern: "https://realfile.tax.newmexico.gov/FYI-104.pdf"
@@ -196,7 +196,7 @@
   document: "KW-100, Kansas Withholding Tax Guide"
   jurisdiction: US-KS
   tax: state_income_withholding
-  method: annualized_percentage
+  method: per_period_percentage
   landing: "https://www.ksrevenue.gov/bustaxtypeswh.html"
   # Stable URL, revised in place when parameters change.
   document_url_pattern: "https://www.ksrevenue.gov/pdf/kw100.pdf"
