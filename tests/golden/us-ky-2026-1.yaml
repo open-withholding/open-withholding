@@ -1,0 +1,13 @@
+source:
+  document: 42A003(TCF), Kentucky Withholding Tax Formula (2026)
+  page: 1
+  example: 'Transcribed monthly example (exact in the publication): wages $3,270
+    monthly -> annual 39,240 - 3,360 = 35,880 x 3.5% = 1,255.80; / 12 = 104.65'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '3270.00'
+  state:
+  - { jurisdiction: US-KY, additional_withholding: '0' }
+expect:
+  state_withholding: '104.65'

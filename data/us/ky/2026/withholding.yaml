@@ -1,0 +1,31 @@
+schema_version: '0.1'
+jurisdiction: US-KY
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: 42A003(TCF), Kentucky Withholding Tax Formula (2026)
+  url: https://revenue.ky.gov/Forms/2026%20Withholding%20Formula.pdf
+  retrieved: '2026-07-08'
+  sha256: bb8244c5131e6ba8a932dd7f2cb5359ed962bc705c13a13e185e85e831271243
+  notes: 'One-page formula sheet: flat 3.5% on annualized wages less the $3,360 standard deduction (no
+    filing statuses — single ''all'' schedule; KY W-4 has no allowances). KNOWN PUBLICATION DEFECT, verified
+    on the rendered page: the bi-weekly example prints a stale intermediate ($35,730 — the 2025 deduction
+    arithmetic) and a misprinted final (''= $47'' where 1,247.40/26 = 47.98); its dollar figure $1,247.40
+    is nonetheless consistent with the correct 2026 deduction (39,000 - 3,360 = 35,640 x 3.5%). The monthly
+    example is exact and is the transcribed golden test.'
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    all: '3360'
+  allowance_amount: null
+  credit_per_allowance: null
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.035'
+      base: '0'
