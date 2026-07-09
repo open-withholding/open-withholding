@@ -8,7 +8,11 @@ source:
   url: https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf
   retrieved: '2026-07-09'
   sha256: be5e53a31b7175ed17fd2457ef40dff1224e4e9737ac18248f1434c6d4b578eb
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'W = A + B x (G - C) formulas per period x status, transcribed with printed bases; all nine printed
+    examples reproduce. KNOWN DOC DEFECT (reported-worthy): the definitions box says amounts ''must be
+    rounded UP to the nearest dollar'' but every worked example rounds to NEAREST (33.088->33, 114.48->114,
+    7.755->8) — the examples decide (nearest). MW-4 conveys status only; standard deduction is embedded
+    in the 0% bracket.'
 method: per_period_percentage
 rounding:
   to: '1.00'
