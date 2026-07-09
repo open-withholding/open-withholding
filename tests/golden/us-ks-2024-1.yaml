@@ -1,0 +1,16 @@
+source:
+  document: KW-100, Kansas Withholding Tax Guide (2024)
+  page: 6
+  example: 'Transcribed percentage-formula example (Esmeralda Espinoza): $2,000
+    semi-monthly, married with spouse having no income, one dependent ("three
+    withholding allowances" = 2 personal, carried by the married status, + 1
+    dependent): (18,320 + 2,320)/24 = 860.00; net 1,140; (1,140 - 343) x 5.2%
+    = 41.44 -> $41. as_of 2026 pins current effectiveness.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '2000.00'
+  state:
+  - { jurisdiction: US-KS, filing_status: married, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '41.00'

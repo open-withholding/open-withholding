@@ -1,0 +1,14 @@
+source:
+  document: KW-100, Kansas Withholding Tax Guide (2024)
+  page: 6
+  example: 'maintainer-constructed: single $2,000 semi-monthly, no dependents ->
+    9,160/24 = 381.67; net 1,618.33; 49.83 + (1,618.33 - 1,109) x 5.58% =
+    78.25 -> $78 (nearest dollar)'
+as_of: '2024-09-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '2000.00'
+  state:
+  - { jurisdiction: US-KS, filing_status: single, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '78.00'

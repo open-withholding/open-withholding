@@ -1,0 +1,197 @@
+schema_version: '0.1'
+jurisdiction: US-KS
+tax: state_income_withholding
+effective_from: '2024-07-01'
+effective_to: null
+source:
+  document: KW-100, Kansas Withholding Tax Guide (2024)
+  url: https://www.ksrevenue.gov/pdf/kw100.pdf
+  retrieved: '2026-07-09'
+  sha256: 7e521f216548a12e5afc42faff6d3aa170327e9061582ce8e431ed86c67f8fdd
+  notes: 'KW-100 percentage formula (rev. eff. 2024-07-01): per-period tables for all eight frequencies,
+    both statuses; printed bases authoritative. Allowance decomposition: the K-4''s total allowance count
+    mixes kinds — personal exemptions ($9,160 each) are carried by filing_status (single $9,160; married
+    $18,320 = both spouses'' exemptions when the spouse has no income) and the `allowances` input counts
+    DEPENDENTS ($2,320 each). The guide''s example (''three withholding allowances'' = 2 personal + 1
+    dependent, $20,640/yr) maps to filing_status married + allowances 1. Final amounts round to the whole
+    dollar per the example ($41.44 -> $41). The wage-bracket-table example (p.7) is a table lookup and
+    intentionally not a golden.'
+method: per_period_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    single: '9160'
+    married: '18320'
+  allowance_amount: '2320'
+  brackets:
+    weekly:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '69'
+        rate: '0.052'
+        base: '0'
+      - over: '512'
+        rate: '0.0558'
+        base: '23.00'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '158'
+        rate: '0.052'
+        base: '0'
+      - over: '1043'
+        rate: '0.0558'
+        base: '46.00'
+    biweekly:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '139'
+        rate: '0.052'
+        base: '0'
+      - over: '1023'
+        rate: '0.0558'
+        base: '46.00'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '317'
+        rate: '0.052'
+        base: '0'
+      - over: '2086'
+        rate: '0.0558'
+        base: '92.00'
+    semimonthly:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '150'
+        rate: '0.052'
+        base: '0'
+      - over: '1109'
+        rate: '0.0558'
+        base: '49.83'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '343'
+        rate: '0.052'
+        base: '0'
+      - over: '2260'
+        rate: '0.0558'
+        base: '99.67'
+    monthly:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '300'
+        rate: '0.052'
+        base: '0'
+      - over: '2217'
+        rate: '0.0558'
+        base: '99.67'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '687'
+        rate: '0.052'
+        base: '0'
+      - over: '4520'
+        rate: '0.0558'
+        base: '199.33'
+    quarterly:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '901'
+        rate: '0.052'
+        base: '0'
+      - over: '6651'
+        rate: '0.0558'
+        base: '299.00'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '2060'
+        rate: '0.052'
+        base: '0'
+      - over: '13560'
+        rate: '0.0558'
+        base: '598.00'
+    semiannually:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '1803'
+        rate: '0.052'
+        base: '0'
+      - over: '13303'
+        rate: '0.0558'
+        base: '598.00'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '4120'
+        rate: '0.052'
+        base: '0'
+      - over: '27120'
+        rate: '0.0558'
+        base: '1196.00'
+    annually:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '3605'
+        rate: '0.052'
+        base: '0'
+      - over: '26605'
+        rate: '0.0558'
+        base: '1196.00'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '8240'
+        rate: '0.052'
+        base: '0'
+      - over: '54240'
+        rate: '0.0558'
+        base: '2392.00'
+    daily:
+      single:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '14'
+        rate: '0.052'
+        base: '0'
+      - over: '102'
+        rate: '0.0558'
+        base: '4.60'
+      married:
+      - over: '0'
+        rate: '0'
+        base: '0'
+      - over: '32'
+        rate: '0.052'
+        base: '0'
+      - over: '209'
+        rate: '0.0558'
+        base: '9.20'
