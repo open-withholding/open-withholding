@@ -1,0 +1,16 @@
+source:
+  document: Alabama Withholding Tax Tables and Instructions for Employers (2026)
+  page: 7
+  example: 'maintainer-constructed: dependent-tier boundary — single, annual GI
+    exactly $50,000, 1 dependent, $3,000 federal WH -> tier is $1,000 (exclusive
+    lower bound); SD 2,500; PE 1,500 -> taxable 42,000 -> 110 + 5% x 39,000 =
+    2,060.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: annually
+  gross_wages: '50000.00'
+  period_federal_income_withholding: '3000.00'
+  state:
+  - { jurisdiction: US-AL, filing_status: s, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '2060.00'
