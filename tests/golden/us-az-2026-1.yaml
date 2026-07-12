@@ -1,0 +1,14 @@
+source:
+  document: Arizona Form A-4, Employee's Arizona Withholding Election (2026)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, elected 2.5% -> $50.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  state:
+  - jurisdiction: US-AZ
+    elected_rate: '0.025'
+    additional_withholding: '0'
+expect:
+  state_withholding: '50.00'
