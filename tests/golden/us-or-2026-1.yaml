@@ -1,0 +1,17 @@
+source:
+  document: 150-206-436, Oregon Withholding Tax Formulas (2026)
+  page: 5
+  example: 'Example 1: single employee, annual wage $25,000, 0 allowances, federal withholding $1,000,
+    standard deduction $2,910. BASE = $21,090; WH = 941 + [(21,090-11,400)×0.0875] = $1,789 annual'
+as_of: '2026-06-15'
+input:
+  pay_frequency: annually
+  gross_wages: '25000'
+  period_federal_income_withholding: '1000'
+  state:
+  - jurisdiction: US-OR
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '1789'

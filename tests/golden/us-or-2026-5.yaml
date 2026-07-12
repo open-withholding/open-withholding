@@ -1,0 +1,16 @@
+source:
+  document: 150-206-436, Oregon Withholding Tax Formulas (2026)
+  page: 5
+  example: 'Example 2: weekly withholding, $1,789 ÷ 52 = $34'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '480.77'
+  period_federal_income_withholding: '19.23'
+  state:
+  - jurisdiction: US-OR
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '34'
