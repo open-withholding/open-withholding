@@ -1,0 +1,17 @@
+source:
+  document: Iowa Individual Income Tax Withholding Formula (2026)
+  page: 4
+  example: 'Example 2: Biweekly wages $2,100.00, ''Married jointly spouse no earned income/Qualifying
+    surviving spouse'' on 2026 IA W-4, $80 allowance'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2100.00'
+  state:
+  - jurisdiction: US-IA
+    filing_status: married_joint_spouse_no_income_surviving_spouse
+    allowances: 0
+    additional_withholding: '0'
+    elected_annual_amount: '80'
+expect:
+  state_withholding: '38.72'

@@ -1,0 +1,16 @@
+source:
+  document: Iowa Individual Income Tax Withholding Formula (2026)
+  page: 5
+  example: 'Example 6: Monthly wages $5,000.00, ''Head of Household'' on 2026 IA W-4, $160 allowance'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '5000.00'
+  state:
+  - jurisdiction: US-IA
+    filing_status: head_of_household
+    allowances: 0
+    additional_withholding: '0'
+    elected_annual_amount: '160'
+expect:
+  state_withholding: '114.92'
