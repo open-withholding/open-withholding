@@ -1,0 +1,114 @@
+schema_version: '0.1'
+jurisdiction: US-OR
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: 150-206-436, Oregon Withholding Tax Formulas (2026)
+  url: https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf
+  retrieved: '2026-07-12'
+  sha256: 5beea1190b4072da8fb027d211665a4899ffd43d4488ab9e910bde57261ed37d
+  notes: '150-206-436 computer formulas (Rev. 12-31-25, eff. 2026): BASE = wages minus federal income
+    tax withheld (capped $8,750; [S]/[M] step ladders phase it to $0) minus standard deduction; printed
+    wage-tier formula rows; $263/allowance credit after the worksheet''s whole-dollar annual rounding;
+    allowances zeroed above $100k/$200k by UNDERLYING status while brackets key on (status, allowances>=3)
+    — the doc prints both ladders inside the married group. Requires the period_federal_income_withholding
+    input (FICA excluded, FAQ 1). ADJUDICATED STALE PROSE (tables + Example 1''s worksheet govern): Example
+    1 narrative says $21,165/$1,798 vs its own worksheet''s 21,090/1,789; worksheet credit line says $256
+    vs the formulas'' $263; intro/FAQ 3 say ''$8,500 in 2025'' vs printed $8,750; Example 3''s $5,100
+    is the 2025 ladder (2026: $5,250). Report-worthy to OR DOR (payroll.help.dor@dor.oregon.gov, printed
+    in the doc).'
+method: custom
+custom_implementation: custom/us_or
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: annual
+params:
+  credit_per_allowance: '263'
+  statuses:
+    single:
+      allowance_zero_above: '100000'
+      fed_subtraction_phaseout:
+      - at_least: '0'
+        cap: '8750'
+      - at_least: '125000'
+        cap: '7000'
+      - at_least: '130000'
+        cap: '5250'
+      - at_least: '135000'
+        cap: '3500'
+      - at_least: '140000'
+        cap: '1750'
+      - at_least: '145000'
+        cap: '0'
+    married:
+      allowance_zero_above: '200000'
+      fed_subtraction_phaseout:
+      - at_least: '0'
+        cap: '8750'
+      - at_least: '250000'
+        cap: '7000'
+      - at_least: '260000'
+        cap: '5250'
+      - at_least: '270000'
+        cap: '3500'
+      - at_least: '280000'
+        cap: '1750'
+      - at_least: '290000'
+        cap: '0'
+  status_groups:
+    single_under_3:
+      standard_deduction: '2910'
+      wage_tiers:
+      - wages_at_least: '0'
+        formulas:
+        - at_least: '0'
+          base: '263'
+          rate: '0.0475'
+          excess_over: '0'
+        - at_least: '4550'
+          base: '479'
+          rate: '0.0675'
+          excess_over: '4550'
+        - at_least: '11400'
+          base: '941'
+          rate: '0.0875'
+          excess_over: '11400'
+      - wages_at_least: '50000'
+        formulas:
+        - at_least: '38340'
+          base: '678'
+          rate: '0.0875'
+          excess_over: '11400'
+        - at_least: '125000'
+          base: '10618'
+          rate: '0.099'
+          excess_over: '125000'
+    married_or_single_3plus:
+      standard_deduction: '5820'
+      wage_tiers:
+      - wages_at_least: '0'
+        formulas:
+        - at_least: '0'
+          base: '263'
+          rate: '0.0475'
+          excess_over: '0'
+        - at_least: '9100'
+          base: '695'
+          rate: '0.0675'
+          excess_over: '9100'
+        - at_least: '22800'
+          base: '1620'
+          rate: '0.0875'
+          excess_over: '22800'
+      - wages_at_least: '50000'
+        formulas:
+        - at_least: '35430'
+          base: '1357'
+          rate: '0.0875'
+          excess_over: '22800'
+        - at_least: '250000'
+          base: '21237'
+          rate: '0.099'
+          excess_over: '250000'

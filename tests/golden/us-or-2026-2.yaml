@@ -1,0 +1,16 @@
+source:
+  document: 150-206-436, Oregon Withholding Tax Formulas (2026)
+  page: 5
+  example: 'Example 2: monthly withholding from Example 1 annual net tax $1,789 ÷ 12 = $149'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '2083.33'
+  period_federal_income_withholding: '83.33'
+  state:
+  - jurisdiction: US-OR
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '149'
