@@ -1,0 +1,15 @@
+source:
+  document: Arkansas Withholding Tax Formula Method (2026)
+  page: 2
+  example: 'maintainer-constructed above the snap ceiling: monthly $8,400 -> annual 100,800 - 2,470 =
+    98,330 >= 97,701 -> exact lookup; x 3.7% - 79.90 = 3,558.31 -> $3,558; / 12 = 296.50'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '8400.00'
+  state:
+  - jurisdiction: US-AR
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '296.50'
