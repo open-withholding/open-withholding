@@ -102,7 +102,10 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
         url = _substitute_year(source["document_url_pattern"], year)
     else:
         try:
-            url = discover.discover_document_url(source["landing"], source["link_pattern"], year)
+            url = discover.discover_document_url(
+                source["landing"], source["link_pattern"], year,
+                insecure=source.get("insecure_tls", False),
+            )
         except discover.DiscoveryError as exc:
             events.append({"type": "url_404", "detail": f"link_scan failed: {exc}"})
             return events, new

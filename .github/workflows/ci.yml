@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  merge_group:
 
 jobs:
   test:
@@ -21,7 +22,7 @@ jobs:
         run: pytest -q
 
   data-golden-guard:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,4 +34,4 @@ jobs:
       - name: Install dependencies
         run: pip install "PyYAML>=6"
       - name: Require golden tests for changed data
-        run: python tools/check_data_golden.py "origin/${{ github.base_ref }}"
+        run: python tools/check_data_golden.py "origin/${{ github.base_ref || 'main' }}"
