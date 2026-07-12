@@ -1,0 +1,15 @@
+source:
+  document: Circular M, Massachusetts Income Tax Withholding Tables (2026)
+  page: 12
+  example: 'maintainer-constructed: weekly $800, 1 exemption, $61.20 FICA this
+    period, no prior cap usage -> 800 - 61.20 - 85 = 653.80; x52 = 33,997.60;
+    5% = 1,699.88; /52 = 32.69'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '800.00'
+  period_fica_withholding: '61.20'
+  state:
+  - { jurisdiction: US-MA, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '32.69'

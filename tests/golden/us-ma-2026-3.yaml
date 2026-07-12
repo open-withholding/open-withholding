@@ -1,0 +1,15 @@
+source:
+  document: Circular M, Massachusetts Income Tax Withholding Tables (2026)
+  page: 12
+  example: 'maintainer-constructed: surtax tier — annual $1,500,000, 0
+    exemptions, $2,000 FICA -> w 1,498,000; 5% x 1,107,750 + 9% x 390,250 =
+    90,510.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: annually
+  gross_wages: '1500000.00'
+  period_fica_withholding: '2000.00'
+  state:
+  - { jurisdiction: US-MA, allowances: 0, additional_withholding: '0' }
+expect:
+  state_withholding: '90510.00'
