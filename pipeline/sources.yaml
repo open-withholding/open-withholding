@@ -10,6 +10,7 @@
   jurisdiction: US
   tax: federal_income_withholding
   method: federal_percentage_2020
+  no_printed_examples: true
   landing: "https://www.irs.gov/forms-pubs/about-publication-15-t"
   document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15t.pdf"
   check: [etag, content_hash]
@@ -35,6 +36,7 @@
   jurisdiction: US-MN
   tax: state_income_withholding
   method: annualized_percentage
+  no_printed_examples: true
   landing: "https://www.revenue.state.mn.us/withholding-tax"
   discovery: link_scan
   # Upload-month directory varies per year; occasional _0 dedup suffixes.
@@ -49,6 +51,7 @@
   jurisdiction: US-OH
   tax: state_income_withholding
   method: annualized_percentage
+  no_printed_examples: true
   # Landing is JS-rendered (no hrefs for curl); the DAM URL keeps its _2025
   # name but is revised IN PLACE (current: Rev. 09/25, eff. 2025-10-01; OH
   # reissues around Oct 1, not Jan 1 — DOT bulletin says these tables
@@ -221,6 +224,7 @@
   jurisdiction: US-MI
   tax: state_income_withholding
   method: annualized_percentage
+  no_printed_examples: true
   landing: "https://www.michigan.gov/taxes/business-taxes/withholding/calendar-year-tax-information"
   document_url_pattern: "https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY{year}/446_Withholding-Guide_{year}.pdf"
   check: [content_hash]
@@ -288,6 +292,7 @@
   jurisdiction: US-NE
   tax: state_income_withholding
   method: annualized_percentage
+  no_printed_examples: true
   landing: "https://revenue.nebraska.gov/businesses/circular-en-nebraska-income-tax-withholding-wages-pensions-and-annuities-and-gambling"
   discovery: link_scan
   # Year-versioned CMS path (e.g. .../Cir_En_2025/2026cir_en_whole.pdf);
@@ -303,6 +308,7 @@
   jurisdiction: US-PA
   tax: state_income_withholding
   method: flat_rate
+  no_printed_examples: true
   landing: "https://www.pa.gov/agencies/revenue.html"
   # Stable dam path; PA's flat rate has not changed since 2004.
   document_url_pattern: "https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf"
@@ -328,6 +334,7 @@
   jurisdiction: US-CO
   tax: state_income_withholding
   method: flat_rate_with_annual_allowance
+  no_printed_examples: true
   # Stable form page; the PDF itself lives at a CMS path that moves per
   # edition (currently DR_1098_2024.pdf — CO hasn't reissued since 2024).
   # The year in the pattern keeps the *employee* worksheet PDF (undated

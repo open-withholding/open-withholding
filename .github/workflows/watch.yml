@@ -1,0 +1,75 @@
+# The watcher (DESIGN §8.1): daily sweep of every registered source, hourly
+# during publication season (Nov-Jan). On a changed document it dispatches
+# the Extract workflow (the human still reviews and merges the PR); dead
+# URLs, staleness, and content anomalies open issues. State lives on the
+# `watcher-state` branch — auditable history without PR noise on main.
+
+name: Watch
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report only; no dispatches or issues"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "17 9 * * *"          # daily sweep
+    - cron: "5 * * 1,11,12 *"     # hourly during Nov-Jan publication season
+
+concurrency:
+  group: watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install "PyYAML>=6"
+
+      - name: Mint app token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.PIPELINE_APP_ID }}
+          private-key: ${{ secrets.PIPELINE_APP_PRIVATE_KEY }}
+
+      - name: Restore watcher state
+        run: |
+          git fetch origin watcher-state 2>/dev/null && \
+            git checkout origin/watcher-state -- watch-state.json 2>/dev/null || \
+            echo "no prior state (first run: baselines will be recorded)"
+
+      - name: Run watcher
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          python pipeline/watch.py --state watch-state.json --github \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Persist watcher state
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          cp watch-state.json "$RUNNER_TEMP/watch-state.json"
+          git config user.name "${{ steps.app-token.outputs.app-slug }}[bot]"
+          git config user.email "${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code origin watcher-state >/dev/null 2>&1; then
+            git fetch origin watcher-state
+            git checkout -B watcher-state origin/watcher-state
+          else
+            git checkout --orphan watcher-state
+            git rm -rf --cached . >/dev/null 2>&1 || true
+            find . -mindepth 1 -maxdepth 1 -not -name '.git' -exec rm -rf {} +
+          fi
+          cp "$RUNNER_TEMP/watch-state.json" watch-state.json
+          git add watch-state.json
+          git commit -m "watcher state $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "no state change"; exit 0; }
+          git push https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git watcher-state
