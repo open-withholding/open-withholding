@@ -1,0 +1,15 @@
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  page: 11
+  example: Example 4 - Schedule 4, Monthly/Married, wages $7,800
+as_of: '2026-06-01'
+input:
+  pay_frequency: monthly
+  gross_wages: '7800'
+  state:
+  - jurisdiction: US-UT
+    filing_status: married
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '347'
