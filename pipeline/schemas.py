@@ -553,6 +553,7 @@ WORKED_EXAMPLE = {
         "step4c_extra",
         "additional_withholding",
         "elected_annual_amount",
+        "period_federal_income_withholding",
         "expected_withholding",
     ],
     "properties": {
@@ -578,6 +579,12 @@ WORKED_EXAMPLE = {
             **DECIMAL_OR_NULL,
             "description": "Employee-entered dollar amount where the example uses one "
             "(IA W-4 allowance dollars, MS 89-350 exemption); null otherwise",
+        },
+        "period_federal_income_withholding": {
+            **DECIMAL_OR_NULL,
+            "description": "Federal income tax withheld THIS PERIOD where the example "
+            "states one (OR/AL formulas consume it); divide a stated annual federal "
+            "amount by the pay periods; null otherwise",
         },
         "expected_withholding": {
             **DECIMAL,

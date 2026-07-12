@@ -270,6 +270,8 @@ def assemble_golden_case(
         "pay_frequency": example["pay_frequency"],
         "gross_wages": example["gross_wages"],
     }
+    if example.get("period_federal_income_withholding") is not None:
+        record["period_federal_income_withholding"] = example["period_federal_income_withholding"]
     if tax == "federal_income_withholding":
         record["federal"] = {
             "w4_version": 2020,
