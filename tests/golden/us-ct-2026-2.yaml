@@ -1,0 +1,15 @@
+source:
+  document: TPG-211, Connecticut Withholding Calculation Rules (2026)
+  page: 2
+  example: 'maintainer-constructed, code B monthly $2,500: salary 30,000 ->
+    exemption 19,000 (<=38,000); taxable 11,000 -> Table B code B: 2% =
+    220; no add-back/recapture; Table E (27,500..34,000] = .35 ->
+    220 x .65 = 143; / 12 = 11.92'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '2500.00'
+  state:
+  - { jurisdiction: US-CT, filing_status: b, additional_withholding: '0' }
+expect:
+  state_withholding: '11.92'

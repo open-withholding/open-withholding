@@ -1,0 +1,15 @@
+source:
+  document: TPG-211, Connecticut Withholding Calculation Rules (2026)
+  page: 2
+  example: 'maintainer-constructed, code F semimonthly $3,000: salary
+    72,000 -> exemption 0 (>44,000); Table B (A/D/F): 2,000 + 5.5% x
+    22,000 = 3,210; Table C code F (71,500..76,500] = 100; recapture 0;
+    Table E 0.00 (>64,500) -> 3,310; / 24 = 137.92'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  state:
+  - { jurisdiction: US-CT, filing_status: f, additional_withholding: '0' }
+expect:
+  state_withholding: '137.92'
