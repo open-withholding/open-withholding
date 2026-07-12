@@ -117,6 +117,18 @@
   maps_to:
     - data/us/ut/{year}/withholding.yaml
 
+- id: us-ar-formula
+  document: "Arkansas Withholding Tax Formula Method"
+  jurisdiction: US-AR
+  tax: state_income_withholding
+  method: annualized_subtraction_percentage
+  landing: "https://www.dfa.arkansas.gov/office/taxes/income-tax-administration/withholding-tax-branch/withholding-tax-forms-instructions/"
+  document_url_pattern: "https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf"
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/ar/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN

@@ -7,6 +7,7 @@ Methods not yet implemented simply aren't registered — dispatch fails loud.
 from engine.errors import EngineError
 from engine.methods import (
     annualized_percentage,
+    annualized_subtraction_percentage,
     annualized_percentage_phaseout,
     federal_percentage_2020,
     flat_rate,
@@ -21,6 +22,7 @@ REGISTRY = {
     "flat_rate_with_annual_allowance": flat_rate_with_annual_allowance.compute,
     "annualized_percentage": annualized_percentage.compute,
     "annualized_percentage_phaseout": annualized_percentage_phaseout.compute,
+    "annualized_subtraction_percentage": annualized_subtraction_percentage.compute,
     "per_period_percentage": per_period_percentage.compute,
     "elective_flat_rate": elective_flat_rate.compute,
     "per_period_credit_phaseout": per_period_credit_phaseout.compute,
