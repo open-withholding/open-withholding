@@ -126,6 +126,25 @@ def _transform_params(method: str, params: dict) -> dict:
             **({"default_rate": params["default_rate"]}
                if params.get("default_rate") is not None else {}),
         }
+    if method == "custom/us_ma":
+        def freq_map(rows):
+            return {e["frequency"]: e["amount"] for e in rows}
+        return {
+            "retirement_deduction_cap": params["retirement_deduction_cap"],
+            "exemption_factors": {
+                e["frequency"]: {"claiming_one": e["claiming_one"],
+                                 "per_exemption": e["per_exemption"], "plus": e["plus"]}
+                for e in params["exemption_factors"]
+            },
+            "brackets": [
+                {"over": r["over"], "rate": r["rate"],
+                 **({"base": r["base"]} if r.get("base") is not None else {})}
+                for r in params["brackets"]
+            ],
+            "hoh_tax_value": freq_map(params["hoh_tax_value"]),
+            "blindness_tax_value": freq_map(params["blindness_tax_value"]),
+            "low_income_floor": freq_map(params["low_income_floor"]),
+        }
     if method == "custom/us_al":
         return {
             "statuses": {

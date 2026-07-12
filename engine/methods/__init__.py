@@ -18,6 +18,7 @@ from engine.methods import (
 )
 from engine.methods.custom import us_ct as custom_us_ct
 from engine.methods.custom import us_al as custom_us_al
+from engine.methods.custom import us_ma as custom_us_ma
 from engine.methods.custom import us_or as custom_us_or
 
 REGISTRY = {
@@ -33,6 +34,7 @@ REGISTRY = {
     "custom/us_ct": custom_us_ct.compute,
     "custom/us_or": custom_us_or.compute,
     "custom/us_al": custom_us_al.compute,
+    "custom/us_ma": custom_us_ma.compute,
 }
 
 
