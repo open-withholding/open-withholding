@@ -187,6 +187,40 @@ _PARAMS_BY_METHOD = {
                              "description": "Rate applied when no election is filed, or null"},
         },
     },
+    "annualized_subtraction_percentage": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["standard_deduction", "credit_per_allowance", "midrange_snap", "table"],
+        "properties": {
+            "standard_deduction": DECIMAL,
+            "credit_per_allowance": DECIMAL_OR_NULL,
+            "midrange_snap": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["bracket_size", "midpoint", "snap_below"],
+                "properties": {
+                    "bracket_size": DECIMAL,
+                    "midpoint": DECIMAL,
+                    "snap_below": {
+                        **DECIMAL,
+                        "description": "Per the WORKED EXAMPLE and the table's transition "
+                        "ladder, not the prose (known stale-text hazard)",
+                    },
+                },
+            },
+            "table": {
+                "type": "array",
+                "description": "EVERY printed row incl. the full transition ladder, exactly "
+                "as printed (from / rate / subtract; subtract null when blank)",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["from", "rate", "subtract"],
+                    "properties": {"from": DECIMAL, "rate": DECIMAL, "subtract": DECIMAL_OR_NULL},
+                },
+            },
+        },
+    },
     "per_period_credit_phaseout": {
         "type": "object",
         "additionalProperties": False,

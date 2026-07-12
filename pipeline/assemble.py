@@ -126,6 +126,17 @@ def _transform_params(method: str, params: dict) -> dict:
             **({"default_rate": params["default_rate"]}
                if params.get("default_rate") is not None else {}),
         }
+    if method == "annualized_subtraction_percentage":
+        return {
+            "standard_deduction": params["standard_deduction"],
+            "credit_per_allowance": params.get("credit_per_allowance"),
+            "midrange_snap": params["midrange_snap"],
+            "table": [
+                {"from": r["from"], "rate": r["rate"],
+                 **({"subtract": r["subtract"]} if r.get("subtract") is not None else {})}
+                for r in params["table"]
+            ],
+        }
     if method == "per_period_credit_phaseout":
         return {
             "rate": params["rate"],

@@ -39,6 +39,7 @@
         "flat_rate_with_annual_allowance",
         "annualized_percentage",
         "annualized_percentage_phaseout",
+        "annualized_subtraction_percentage",
         "annualized_percentage_with_credits",
         "per_period_percentage",
         "elective_flat_rate",
@@ -201,6 +202,47 @@
               },
               "zero_rate_allowed": { "type": "boolean", "default": false },
               "default_rate": { "anyOf": [{ "$ref": "#/$defs/rate" }, { "type": "null" }] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "annualized_subtraction_percentage" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["standard_deduction", "midrange_snap", "table"],
+            "additionalProperties": false,
+            "properties": {
+              "standard_deduction": { "$ref": "#/$defs/money" },
+              "credit_per_allowance": { "$ref": "#/$defs/moneyOrNull" },
+              "midrange_snap": {
+                "type": "object",
+                "required": ["bracket_size", "midpoint", "snap_below"],
+                "additionalProperties": false,
+                "properties": {
+                  "bracket_size": { "$ref": "#/$defs/money" },
+                  "midpoint": { "$ref": "#/$defs/money" },
+                  "snap_below": { "$ref": "#/$defs/money" }
+                }
+              },
+              "table": {
+                "type": "array",
+                "minItems": 1,
+                "description": "Printed rate-minus-subtraction rows, `from` ascending from 0",
+                "items": {
+                  "type": "object",
+                  "required": ["from", "rate"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "from": { "$ref": "#/$defs/money" },
+                    "rate": { "$ref": "#/$defs/rate" },
+                    "subtract": { "$ref": "#/$defs/moneyOrNull" }
+                  }
+                }
+              }
             }
           }
         }

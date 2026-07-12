@@ -547,3 +547,57 @@ def test_ut_credit_never_negative_wages_below_rate_floor(taxability):
     # tiny wages: tentative rounds to whole dollars, credit exceeds it -> 0
     got = compute_withholding(UT, _ut("weekly", "100.00", "single"), taxability)
     assert got == Decimal("0.00")  # 4 - 9 clamps
+
+
+# --- Arkansas annualized_subtraction_percentage ----------------------------
+
+AR = _pf(
+    "US-AR",
+    "annualized_subtraction_percentage",
+    {
+        "standard_deduction": "2470",
+        "credit_per_allowance": "29",
+        "midrange_snap": {"bracket_size": "100", "midpoint": "50", "snap_below": "97701"},
+        "table": [
+            {"from": "0", "rate": "0"},
+            {"from": "5600", "rate": "0.02", "subtract": "111.98"},
+            {"from": "11200", "rate": "0.03", "subtract": "223.97"},
+            {"from": "16000", "rate": "0.034", "subtract": "287.97"},
+            {"from": "26400", "rate": "0.037", "subtract": "367.16"},
+            {"from": "94701", "rate": "0.037", "subtract": "369.90"},
+            {"from": "97601", "rate": "0.037", "subtract": "79.90"},
+        ],
+    },
+)
+AR = _dc.replace(AR, rounding=_R.from_dict(
+    {"to": "0.01", "mode": "nearest", "intermediate": "annual", "intermediate_to": "1.00"}))
+
+
+def test_ar_gary_printed_example(taxability):
+    # pp.3-4: monthly $2,127, 2 exemptions -> NTI 23,054 snaps to 23,050;
+    # x 3.4% - 287.97 = 495.73 -> $496; - 58 = 438; /12 = 36.50
+    emp = _employee("monthly", "2127.00", jurisdiction="US-AR", allowances=2)
+    assert compute_withholding(AR, emp, taxability) == Decimal("36.50")
+
+
+def test_ar_above_snap_ceiling_uses_exact(taxability):
+    # $8,200 monthly: annual 98,400 - 2,470 = 95,930... wait, that's under
+    # 97,701 and in the ladder. Use $8,400: 100,800 - 2,470 = 98,330 >= 97,701
+    # -> exact; x 3.7% - 79.90 = 3,558.31 -> 3,558; /12 = 296.50
+    emp = _employee("monthly", "8400.00", jurisdiction="US-AR", allowances=0)
+    assert compute_withholding(AR, emp, taxability) == Decimal("296.50")
+
+
+def test_ar_ladder_region_snaps(taxability):
+    # weekly $1,915: annual 99,580 - 2,470 = 97,110 < 97,701 -> snaps to
+    # 97,150; ladder row from 94,701 (fixture collapses the ladder; real
+    # data carries every printed row): x 3.7% - 369.90 = 3,224.65 -> 3,225;
+    # /52 = 62.02
+    emp = _employee("weekly", "1915.00", jurisdiction="US-AR", allowances=0)
+    assert compute_withholding(AR, emp, taxability) == Decimal("62.02")
+
+
+def test_ar_zero_bracket(taxability):
+    # $500 monthly: annual 6,000 - 2,470 = 3,530 -> snaps 3,550 -> 0% -> 0
+    emp = _employee("monthly", "500.00", jurisdiction="US-AR", allowances=1)
+    assert compute_withholding(AR, emp, taxability) == Decimal("0.00")
