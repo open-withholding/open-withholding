@@ -102,6 +102,21 @@
   maps_to:
     - data/us/ms/{year}/withholding.yaml
 
+- id: us-ut-pub14
+  document: "Publication 14, Utah Withholding Tax Guide"
+  jurisdiction: US-UT
+  tax: state_income_withholding
+  method: per_period_credit_phaseout
+  landing: "https://tax.utah.gov/forms-pubs/pubs/pub-14/"
+  # Stable URL revised IN PLACE, incl. mid-year (current Rev. 4/26 is
+  # effective 2026-06-01); the Rev. date on p.1 is the only version signal.
+  # files.tax.utah.gov is the working host (the old tax.utah.gov path 404s).
+  document_url_pattern: "https://files.tax.utah.gov/tax/forms/pubs/pub-14.pdf"
+  no_printed_examples: false
+  check: [content_hash]
+  maps_to:
+    - data/us/ut/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN

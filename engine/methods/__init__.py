@@ -12,6 +12,7 @@ from engine.methods import (
     flat_rate,
     elective_flat_rate,
     flat_rate_with_annual_allowance,
+    per_period_credit_phaseout,
     per_period_percentage,
 )
 
@@ -22,6 +23,7 @@ REGISTRY = {
     "annualized_percentage_phaseout": annualized_percentage_phaseout.compute,
     "per_period_percentage": per_period_percentage.compute,
     "elective_flat_rate": elective_flat_rate.compute,
+    "per_period_credit_phaseout": per_period_credit_phaseout.compute,
     "federal_percentage_2020": federal_percentage_2020.compute,
 }
 
