@@ -1,0 +1,18 @@
+source:
+  document: Georgia Employer's Withholding Tax Guide (2026)
+  page: 46
+  example: '(January 5.19% edition, serves 2026-01-01..05-10) Example #1 (Table E): Married person on
+    semi-monthly payroll paid $1,470.83, spouse does not work, one child (one dependent allowance). Uses
+    semi-monthly standard deduction 1,000.00 (Married Filing Joint) and dependent allowance 166.67; 304.16
+    x 0.0519 = 15.79'
+as_of: '2026-03-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1470.83'
+  state:
+  - jurisdiction: US-GA
+    filing_status: married_joint
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '15.79'

@@ -1,0 +1,46 @@
+schema_version: '0.1'
+jurisdiction: US-GA
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: '2026-05-10'
+supersedes: data/us/ga/2026/withholding.yaml
+source:
+  document: Georgia Employer's Withholding Tax Guide (2026)
+  url: https://dor.georgia.gov/employers-tax-guide
+  retrieved: '2026-07-12'
+  sha256: 30c200e2e643aaecc589ea9a6f717102ebe851b4d4f96c326f8b7e7d4523126e
+  notes: 'January 2026 edition, recovered from the Wayback Machine (2026-01-16 snapshot; live slug returned
+    403 after the June revision replaced it): 5.19% flat rate and the pre-HB 463 standard deductions ($24,000
+    MFJ / $12,000 others). Superseded 2026-05-11 by the June guide (4.99%, $30,000/$15,000) already in
+    the dataset; this file serves wages paid 2026-01-01 through 2026-05-10 via effective dating (repo
+    issue #40).'
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    married_joint: '24000'
+    single: '12000'
+    head_of_household: '12000'
+    married_filing_separate: '12000'
+  allowance_amount: '4000'
+  credit_per_allowance: null
+  brackets:
+    married_joint:
+    - over: '0'
+      rate: '0.0519'
+      base: '0'
+    single:
+    - over: '0'
+      rate: '0.0519'
+      base: '0'
+    head_of_household:
+    - over: '0'
+      rate: '0.0519'
+      base: '0'
+    married_filing_separate:
+    - over: '0'
+      rate: '0.0519'
+      base: '0'

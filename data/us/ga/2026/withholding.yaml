@@ -39,3 +39,4 @@ params:
     - over: '0'
       rate: '0.0499'
       base: '0'
+supersedes: data/us/ga/2026/withholding-2026-01-01.yaml
