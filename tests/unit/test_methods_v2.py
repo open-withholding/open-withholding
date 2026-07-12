@@ -707,3 +707,147 @@ def test_ct_unknown_code_fails_loud(taxability):
     emp = _employee("weekly", "1000.00", jurisdiction="US-CT", filing_status="x")
     with pytest.raises(InputError, match="withholding code"):
         compute_withholding(CT, emp, taxability)
+
+
+# --- Oregon custom/us_or (150-206-436 printed formulas) --------------------
+
+def _or_pf():
+    single_low = [
+        {"at_least": "0", "base": "263", "rate": "0.0475", "excess_over": "0"},
+        {"at_least": "4550", "base": "479", "rate": "0.0675", "excess_over": "4550"},
+        {"at_least": "11400", "base": "941", "rate": "0.0875", "excess_over": "11400"},
+    ]
+    single_high = [
+        {"at_least": "0", "base": "678", "rate": "0.0875", "excess_over": "11400"},
+        {"at_least": "125000", "base": "10618", "rate": "0.099", "excess_over": "125000"},
+    ]
+    married_low = [
+        {"at_least": "0", "base": "263", "rate": "0.0475", "excess_over": "0"},
+        {"at_least": "9100", "base": "695", "rate": "0.0675", "excess_over": "9100"},
+        {"at_least": "22800", "base": "1620", "rate": "0.0875", "excess_over": "22800"},
+    ]
+    married_high = [
+        {"at_least": "0", "base": "1357", "rate": "0.0875", "excess_over": "22800"},
+        {"at_least": "250000", "base": "21237", "rate": "0.099", "excess_over": "250000"},
+    ]
+    def phaseout(steps):
+        return [{"at_least": "0", "cap": "8750"}] + steps
+    return load_parameter_dict({
+        "schema_version": "0.1",
+        "jurisdiction": "US-OR",
+        "tax": "state_income_withholding",
+        "effective_from": "2026-01-01",
+        "source": SOURCE,
+        "method": "custom",
+        "custom_implementation": "custom/us_or",
+        "params": {
+            "credit_per_allowance": "263",
+            "statuses": {
+                "single": {
+                    "allowance_zero_above": "100000",
+                    "fed_subtraction_phaseout": phaseout([
+                        {"at_least": "125000", "cap": "7000"},
+                        {"at_least": "130000", "cap": "5250"},
+                        {"at_least": "135000", "cap": "3500"},
+                        {"at_least": "140000", "cap": "1750"},
+                        {"at_least": "145000", "cap": "0"},
+                    ]),
+                },
+                "married": {
+                    "allowance_zero_above": "200000",
+                    "fed_subtraction_phaseout": phaseout([
+                        {"at_least": "250000", "cap": "7000"},
+                        {"at_least": "260000", "cap": "5250"},
+                        {"at_least": "270000", "cap": "3500"},
+                        {"at_least": "280000", "cap": "1750"},
+                        {"at_least": "290000", "cap": "0"},
+                    ]),
+                },
+            },
+            "status_groups": {
+                "single_under_3": {
+                    "standard_deduction": "2910",
+                    "wage_tiers": [
+                        {"wages_at_least": "0", "formulas": single_low},
+                        {"wages_at_least": "50000", "formulas": single_high},
+                    ],
+                },
+                "married_or_single_3plus": {
+                    "standard_deduction": "5820",
+                    "wage_tiers": [
+                        {"wages_at_least": "0", "formulas": married_low},
+                        {"wages_at_least": "50000", "formulas": married_high},
+                    ],
+                },
+            },
+        },
+        "rounding": {"to": "0.01", "mode": "nearest",
+                     "intermediate": "annual", "intermediate_to": "1.00"},
+    })
+
+
+OR = _or_pf()
+
+
+def _or_emp(freq, gross, status, allowances, fed):
+    return EmployeeInput.from_dict({
+        "pay_frequency": freq, "gross_wages": gross,
+        "period_federal_income_withholding": fed,
+        "state": [{"jurisdiction": "US-OR", "filing_status": status,
+                   "allowances": allowances, "additional_withholding": "0"}],
+    })
+
+
+def test_or_example_1_worksheet(taxability):
+    # Example 1's WORKSHEET (prose figures are stale): annual $25,000 wages,
+    # $1,000 federal WH, 0 allowances -> BASE 21,090 -> 941 + 8.75% x 9,690
+    # = 1,789 -> annual frequency, /1
+    emp = _or_emp("annually", "25000.00", "single", 0, "1000.00")
+    assert compute_withholding(OR, emp, taxability) == Decimal("1789.00")
+
+
+def test_or_example_2_monthly(taxability):
+    # Example 2: same employee monthly: wages 25,000/12, fed 1,000/12 ->
+    # same annual 1,789 -> /12 = 149.08 (doc rounds to $149)
+    emp = _or_emp("monthly", "2083.33", "single", 0, "83.33")
+    got = compute_withholding(OR, emp, taxability)
+    # annual $1,789 (dollar-rounded per the worksheet) / 12 = 149.08
+    assert got == Decimal("149.08"), got
+
+
+def test_or_high_income_cap_and_allowance_zeroing(taxability):
+    # Example 3 shape (2026 ladder): single 132,000 wages, fed WH 21,098,
+    # 4 allowances -> BRACKETS from the married group (3+ allowances, SD
+    # 5,820) but the SINGLE phase-out ladder: cap [130k,135k) = 5,250;
+    # BASE = 132,000 - 5,250 - 5,820 = 120,930 -> married high tier:
+    # 1,357 + 8.75% x 98,130 = 9,943.375 -> $9,943; allowances zeroed
+    # (single > 100k)
+    emp = _or_emp("annually", "132000.00", "single", 4, "21098.00")
+    assert compute_withholding(OR, emp, taxability) == Decimal("9943.00")
+
+
+def test_or_example_4_married_no_subtraction(taxability):
+    # married electing higher single rate = single status, 4 allowances ->
+    # married-group brackets (SD 5,820), single ladder: 175,000 >= 145,000
+    # -> fed subtraction 0; BASE 169,180 -> 1,357 + 8.75% x 146,380 =
+    # 14,165.25 -> $14,165; allowances zeroed (single > 100k)
+    emp = _or_emp("annually", "175000.00", "single", 4, "30000.00")
+    assert compute_withholding(OR, emp, taxability) == Decimal("14165.00")
+
+
+def test_or_missing_federal_input_fails_loud(taxability):
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "annually", "gross_wages": "25000.00",
+        "state": [{"jurisdiction": "US-OR", "filing_status": "single",
+                   "allowances": 0, "additional_withholding": "0"}],
+    })
+    with pytest.raises(InputError, match="period_federal_income_withholding"):
+        compute_withholding(OR, emp, taxability)
+
+
+def test_or_single_3plus_uses_married_group(taxability):
+    # single with 3 allowances -> married-group brackets (SD 5,820), single
+    # ladder: wages 40,000, fed 2,000 -> BASE 32,180 -> 1,620 + 8.75% x
+    # 9,380 = 2,440.75 -> $2,441 - 3 x 263 = 1,652
+    emp = _or_emp("annually", "40000.00", "single", 3, "2000.00")
+    assert compute_withholding(OR, emp, taxability) == Decimal("1652.00")

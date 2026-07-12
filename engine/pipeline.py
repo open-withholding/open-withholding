@@ -42,6 +42,7 @@ class MethodContext:
     federal: FederalElection | None
     elected_rate: Decimal | None = None
     elected_annual_amount: Decimal | None = None
+    period_federal_income_withholding: Decimal | None = None
 
 
 def compute_withholding(
@@ -98,6 +99,7 @@ def compute_withholding(
         federal=federal,
         elected_rate=elected_rate,
         elected_annual_amount=elected_amount,
+        period_federal_income_withholding=employee.period_federal_income_withholding,
     )
     method = resolve(param_file.method, param_file.custom_implementation)
     amount = method(ctx)

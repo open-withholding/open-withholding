@@ -147,6 +147,24 @@
   maps_to:
     - data/us/ct/{year}/withholding.yaml
 
+- id: us-or-formulas
+  document: "150-206-436, Oregon Withholding Tax Formulas"
+  jurisdiction: US-OR
+  tax: state_income_withholding
+  method: custom/us_or
+  landing: "https://www.oregon.gov/dor/forms/Pages/default.aspx"
+  document_url_pattern: "https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_{year}.pdf"
+  # KNOWN DOC DEFECTS (2026): Example 1 prose figures stale vs its own
+  # worksheet ($21,165/$1,798/$256 vs 21,090/1,789/263); intro + FAQ 3 cap
+  # says "$8,500 in 2025" vs tables' $8,750; Example 3's $5,100 is the 2025
+  # ladder. The formula tables + Example 1's worksheet govern. p.7 prints
+  # the [S] ladder twice (layout hazard).
+  no_printed_examples: true
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/or/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN
