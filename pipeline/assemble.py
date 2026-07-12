@@ -126,6 +126,22 @@ def _transform_params(method: str, params: dict) -> dict:
             **({"default_rate": params["default_rate"]}
                if params.get("default_rate") is not None else {}),
         }
+    if method == "custom/us_al":
+        return {
+            "statuses": {
+                e["code"]: {
+                    "personal_exemption": e["personal_exemption"],
+                    "standard_deduction": e["standard_deduction"],
+                    "brackets": [
+                        {"over": r["over"], "rate": r["rate"],
+                         **({"base": r["base"]} if r.get("base") is not None else {})}
+                        for r in e["brackets"]
+                    ],
+                }
+                for e in params["statuses"]
+            },
+            "dependent_tiers": params["dependent_tiers"],
+        }
     if method == "custom/us_or":
         return {
             "credit_per_allowance": params["credit_per_allowance"],

@@ -851,3 +851,99 @@ def test_or_single_3plus_uses_married_group(taxability):
     # 9,380 = 2,440.75 -> $2,441 - 3 x 263 = 1,652
     emp = _or_emp("annually", "40000.00", "single", 3, "2000.00")
     assert compute_withholding(OR, emp, taxability) == Decimal("1652.00")
+
+
+# --- Alabama custom/us_al (booklet p.7 formula + example) ------------------
+
+def _al_pf():
+    b_single = [{"over": "0", "rate": "0.02"},
+                {"over": "500", "rate": "0.04", "base": "10"},
+                {"over": "3000", "rate": "0.05", "base": "110"}]
+    b_married = [{"over": "0", "rate": "0.02"},
+                 {"over": "1000", "rate": "0.04", "base": "20"},
+                 {"over": "6000", "rate": "0.05", "base": "220"}]
+    sd_m = [{"at_least": "0", "amount": "8500"},
+            {"at_least": "26000", "amount": "8325"},
+            {"at_least": "35500", "amount": "5000"}]  # abbreviated schedule
+    sd_s = [{"at_least": "0", "amount": "3000"},
+            {"at_least": "35500", "amount": "2500"}]
+    return load_parameter_dict({
+        "schema_version": "0.1",
+        "jurisdiction": "US-AL",
+        "tax": "state_income_withholding",
+        "effective_from": "2026-01-01",
+        "source": SOURCE,
+        "method": "custom",
+        "custom_implementation": "custom/us_al",
+        "params": {
+            "statuses": {
+                "m": {"personal_exemption": "3000", "standard_deduction": sd_m,
+                      "brackets": b_married},
+                "s": {"personal_exemption": "1500", "standard_deduction": sd_s,
+                      "brackets": b_single},
+                "zero": {"personal_exemption": "0", "standard_deduction": sd_s,
+                         "brackets": b_single},
+            },
+            "dependent_tiers": [
+                {"more_than": "0", "value": "1000"},
+                {"more_than": "50000", "value": "500"},
+                {"more_than": "100000", "value": "300"},
+            ],
+        },
+        "rounding": {"to": "0.01", "mode": "nearest"},
+    })
+
+
+AL = _al_pf()
+
+
+def _al_emp(freq, gross, status, deps, fed):
+    return EmployeeInput.from_dict({
+        "pay_frequency": freq, "gross_wages": gross,
+        "period_federal_income_withholding": fed,
+        "state": [{"jurisdiction": "US-AL", "filing_status": status,
+                   "allowances": deps, "additional_withholding": "0"}],
+    })
+
+
+def test_al_printed_example_m2(taxability):
+    # p.7: M-2 weekly $850, federal WH $35.19/wk -> GI 44,200; SD 5,000;
+    # fed 1,829.88; PE 3,000; deps 2,000 -> taxable 32,370.12 ->
+    # 220 + 5% x 26,370.12 = 1,538.51 -> /52 = 29.59 (doc: 29.59)
+    emp = _al_emp("weekly", "850.00", "m", 2, "35.19")
+    assert compute_withholding(AL, emp, taxability) == Decimal("29.59")
+
+
+def test_al_dependent_tier_boundary(taxability):
+    # GI exactly 50,000 -> $1,000 tier (exclusive lower bound)
+    emp = _al_emp("annually", "50000.00", "s", 1, "3000.00")
+    # SD 2,500 (>=35,500); fed 3,000; PE 1,500; dep 1,000 -> taxable 42,000
+    # -> 110 + 5% x 39,000 = 2,060
+    assert compute_withholding(AL, emp, taxability) == Decimal("2060.00")
+    # one dollar more: GI 50,001 -> $500 tier -> taxable 42,501 ->
+    # 110 + 5% x 39,501 = 2,085.05
+    emp2 = _al_emp("annually", "50001.00", "s", 1, "3000.00")
+    assert compute_withholding(AL, emp2, taxability) == Decimal("2085.05")
+
+
+def test_al_stepped_deduction_lookup(taxability):
+    # GI 26,200 married: schedule row [26,000, ...) -> 8,325
+    emp = _al_emp("annually", "26200.00", "m", 0, "0.00")
+    # taxable 26,200 - 8,325 - 0 - 3,000 = 14,875 -> 220 + 5% x 8,875 = 663.75
+    assert compute_withholding(AL, emp, taxability) == Decimal("663.75")
+
+
+def test_al_zero_code_no_exemption(taxability):
+    emp = _al_emp("annually", "20000.00", "zero", 0, "1000.00")
+    # SD 3,000; fed 1,000; PE 0 -> taxable 16,000 -> 110 + 5% x 13,000 = 760
+    assert compute_withholding(AL, emp, taxability) == Decimal("760.00")
+
+
+def test_al_missing_federal_fails_loud(taxability):
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "850.00",
+        "state": [{"jurisdiction": "US-AL", "filing_status": "m",
+                   "allowances": 2, "additional_withholding": "0"}],
+    })
+    with pytest.raises(InputError, match="period_federal_income_withholding"):
+        compute_withholding(AL, emp, taxability)

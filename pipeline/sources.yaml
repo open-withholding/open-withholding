@@ -165,6 +165,19 @@
   maps_to:
     - data/us/or/{year}/withholding.yaml
 
+- id: us-al-whbooklet
+  document: "Alabama Withholding Tax Tables and Instructions for Employers"
+  jurisdiction: US-AL
+  tax: state_income_withholding
+  method: custom/us_al
+  landing: "https://www.revenue.alabama.gov/forms/withholding-tax-tables-and-instructions-for-employers-and-withholding-agents-2/"
+  discovery: link_scan
+  link_pattern: 'whbooklet[^"]*\.pdf'
+  check: [content_hash]
+  expected_window: "12-15..02-15"
+  maps_to:
+    - data/us/al/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN

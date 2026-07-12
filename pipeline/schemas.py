@@ -187,6 +187,53 @@ _PARAMS_BY_METHOD = {
                              "description": "Rate applied when no election is filed, or null"},
         },
     },
+    "custom/us_al": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["statuses", "dependent_tiers"],
+        "properties": {
+            "statuses": {
+                "type": "array",
+                "description": "One entry per A-4 claim code (zero, s, ms, m, h). "
+                "Standard-deduction rows come from the PRINTED Schedule of Standard "
+                "Deduction Amounts (every range row, as printed; codes zero and s share "
+                "the Single schedule). Bracket variants: 0/S/H/MS share one, M has its "
+                "own — transcribe into each code.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["code", "personal_exemption", "standard_deduction", "brackets"],
+                    "properties": {
+                        "code": {"enum": ["zero", "s", "ms", "m", "h"]},
+                        "personal_exemption": DECIMAL,
+                        "standard_deduction": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["at_least", "amount"],
+                                "properties": {"at_least": DECIMAL, "amount": DECIMAL},
+                            },
+                            "description": "Printed schedule rows; at_least = the range's "
+                            "lower bound (INCLUSIVE)",
+                        },
+                        "brackets": BRACKET_ROWS,
+                    },
+                },
+            },
+            "dependent_tiers": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["more_than", "value"],
+                    "properties": {"more_than": DECIMAL, "value": DECIMAL},
+                },
+                "description": "Per-dependent amounts by GI tier; more_than is EXCLUSIVE "
+                "('greater than $50,000' -> more_than 50000)",
+            },
+        },
+    },
     "custom/us_or": {
         "type": "object",
         "additionalProperties": False,
