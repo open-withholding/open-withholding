@@ -1,0 +1,15 @@
+source:
+  document: Rhode Island Employer's Income Tax Withholding Tables (2026)
+  page: 8
+  example: 'maintainer-constructed cliff pin: $6,000 weekly (312,000/yr > 290,800) with 10 exemptions
+    claimed -> exemption value is exactly $0; table arithmetic on full wages -> 299.16'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '6000.00'
+  state:
+  - jurisdiction: US-RI
+    allowances: 10
+    additional_withholding: '0'
+expect:
+  state_withholding: '299.16'

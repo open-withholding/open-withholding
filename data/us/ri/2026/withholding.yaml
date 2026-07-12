@@ -8,7 +8,11 @@ source:
   url: https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-12/2026%20Withholding%20Tax%20Booklet.pdf
   retrieved: '2026-07-09'
   sha256: 1e6883fa1a02cc03eaa0be3a62a8e8bf34b2a02ed5246fc8bcc7c54b0bab37c1
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'Percentage method (booklet p.8-10): one three-bracket schedule for all filing statuses, prorated
+    per payroll period (Tables 1-8, printed bases authoritative); $1,000/yr per RI W-4 exemption via the
+    printed per-period values. The exemption is a CLIFF, not a gradual phase-out: worth exactly $0 once
+    annualized wages exceed $290,800 (allowance_cliff_annual_wages; threshold inflation-indexed annually).
+    Printed example reproduces; second golden pins the cliff.'
 method: per_period_percentage
 rounding:
   to: '0.01'
