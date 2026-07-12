@@ -1,0 +1,16 @@
+source:
+  document: Pub 89-700, Mississippi Withholding Income Tax Tables and Employer Instructions (2026)
+  page: 0
+  example: 'maintainer-constructed: monthly $4,000, single, $6,000 total 89-350 exemption -> annual 48,000
+    - 6,000 - 2300 = 39700; formula arithmetic -> 99.00/mo'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '4000.00'
+  state:
+  - jurisdiction: US-MS
+    filing_status: single
+    elected_annual_amount: '6000.00'
+    additional_withholding: '0'
+expect:
+  state_withholding: '99.00'
