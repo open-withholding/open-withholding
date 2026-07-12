@@ -77,7 +77,11 @@ withholding method (percentage/formula method for the stated filing statuses)
 into the structured worked_examples format — these become the dataset's
 golden tests. Copy the example's inputs and final withholding amount exactly
 as printed — expected_withholding is the example's FINAL total (including any
-additional withholding it adds), never an intermediate line. For each
+additional withholding it adds), never an intermediate line. When a state's
+certificate combines a status code with a count (Alabama's "M-2" = married
+with 2 dependents; Missouri-style "M-1"), split it: the letter is the
+filing_status and the NUMBER goes in `allowances` — never leave the count
+null when the example states one. For each
 example's filing_status, use EXACTLY the filing-status
 key spelled in the candidate parameter file (not the document's prose). If
 an example states only annual wages, divide by the pay periods to per-period
