@@ -101,6 +101,8 @@ def _transform_params(method: str, params: dict) -> dict:
             out["secondary_allowance_amount"] = params["secondary_allowance_amount"]
         if params.get("percent_deduction") is not None:
             out["percent_deduction"] = params["percent_deduction"]
+        if params.get("elected_amount_treatment") is not None:
+            out["elected_amount_treatment"] = params["elected_amount_treatment"]
         out["credit_per_allowance"] = params.get("credit_per_allowance")
         out["brackets"] = _bracket_map(params["brackets"])
         return out
@@ -117,6 +119,13 @@ def _transform_params(method: str, params: dict) -> dict:
             "exemption_amount": params.get("exemption_amount"),
             "brackets": _bracket_map(params["brackets"]),
         }
+    if method == "elective_flat_rate":
+        return {
+            "allowed_rates": params["allowed_rates"],
+            "zero_rate_allowed": params["zero_rate_allowed"],
+            **({"default_rate": params["default_rate"]}
+               if params.get("default_rate") is not None else {}),
+        }
     if method == "per_period_percentage":
         out = {}
         if params.get("standard_deduction"):
@@ -129,6 +138,10 @@ def _transform_params(method: str, params: dict) -> dict:
             }
         if params.get("allowance_cliff_annual_wages") is not None:
             out["allowance_cliff_annual_wages"] = params["allowance_cliff_annual_wages"]
+        if params.get("credit_per_allowance") is not None:
+            out["credit_per_allowance"] = params["credit_per_allowance"]
+        if params.get("elected_amount_treatment") is not None:
+            out["elected_amount_treatment"] = params["elected_amount_treatment"]
         out["brackets"] = {
             e["frequency"]: _bracket_map(e["tables"]) for e in params["frequencies"]
         }
@@ -212,6 +225,8 @@ def assemble_golden_case(
         }
         if example.get("secondary_allowances"):
             election["secondary_allowances"] = example["secondary_allowances"]
+        if example.get("elected_annual_amount") is not None:
+            election["elected_annual_amount"] = example["elected_annual_amount"]
         record["state"] = [election]
         expect_key = "state_withholding"
     elif tax == "local_income_withholding":

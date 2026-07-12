@@ -1,0 +1,116 @@
+schema_version: '0.1'
+jurisdiction: US-RI
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Rhode Island Employer's Income Tax Withholding Tables (2026)
+  url: https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-12/2026%20Withholding%20Tax%20Booklet.pdf
+  retrieved: '2026-07-09'
+  sha256: 1e6883fa1a02cc03eaa0be3a62a8e8bf34b2a02ed5246fc8bcc7c54b0bab37c1
+  notes: Extracted by pipeline; pages per PR body
+method: per_period_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amounts_per_period:
+    weekly: '19.23'
+    biweekly: '38.46'
+    semimonthly: '41.67'
+    monthly: '83.33'
+    quarterly: '250.00'
+    semiannually: '500.00'
+    annually: '1000.00'
+    daily: '3.85'
+  allowance_cliff_annual_wages: '290800'
+  brackets:
+    weekly:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '1578'
+        rate: '0.0475'
+        base: '59.18'
+      - over: '3586'
+        rate: '0.0599'
+        base: '154.56'
+    biweekly:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '3156'
+        rate: '0.0475'
+        base: '118.35'
+      - over: '7171'
+        rate: '0.0599'
+        base: '309.06'
+    semimonthly:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '3419'
+        rate: '0.0475'
+        base: '128.21'
+      - over: '7769'
+        rate: '0.0599'
+        base: '334.84'
+    monthly:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '6838'
+        rate: '0.0475'
+        base: '256.43'
+      - over: '15538'
+        rate: '0.0599'
+        base: '669.68'
+    quarterly:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '20513'
+        rate: '0.0475'
+        base: '769.24'
+      - over: '46613'
+        rate: '0.0599'
+        base: '2008.99'
+    semiannually:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '41025'
+        rate: '0.0475'
+        base: '1538.44'
+      - over: '93225'
+        rate: '0.0599'
+        base: '4017.94'
+    annually:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '82050'
+        rate: '0.0475'
+        base: '3076.88'
+      - over: '186450'
+        rate: '0.0599'
+        base: '8035.88'
+    daily:
+      all:
+      - over: '0'
+        rate: '0.0375'
+        base: '0.00'
+      - over: '315.58'
+        rate: '0.0475'
+        base: '11.83'
+      - over: '717.12'
+        rate: '0.0599'
+        base: '30.90'

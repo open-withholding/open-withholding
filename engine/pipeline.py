@@ -40,6 +40,8 @@ class MethodContext:
     secondary_allowances: int
     additional_withholding: Decimal
     federal: FederalElection | None
+    elected_rate: Decimal | None = None
+    elected_annual_amount: Decimal | None = None
 
 
 def compute_withholding(
@@ -59,6 +61,8 @@ def compute_withholding(
     )
 
     secondary = 0
+    elected_rate = None
+    elected_amount = None
     if param_file.tax == "federal_income_withholding":
         if employee.federal is None:
             raise InputError("federal withholding requested but input has no federal block")
@@ -72,6 +76,8 @@ def compute_withholding(
         allowances = election.allowances
         secondary = election.secondary_allowances
         additional = election.additional_withholding
+        elected_rate = election.elected_rate
+        elected_amount = election.elected_annual_amount
         federal = None
     else:  # local
         filing_status = None
@@ -90,6 +96,8 @@ def compute_withholding(
         secondary_allowances=secondary,
         additional_withholding=additional,
         federal=federal,
+        elected_rate=elected_rate,
+        elected_annual_amount=elected_amount,
     )
     method = resolve(param_file.method, param_file.custom_implementation)
     amount = method(ctx)

@@ -1,0 +1,34 @@
+schema_version: '0.1'
+jurisdiction: US-SC
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: WH-1603F, Formula for Computing South Carolina Withholding Tax (2026)
+  url: https://dor.sc.gov/sites/dor/files/forms/WH1603F_2026.pdf
+  retrieved: '2026-07-09'
+  sha256: 588edf32e0876bc842d41dea20eebac59c2b12e5457562d052c0c28ac5e9ffff
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '5000'
+  percent_deduction:
+    rate: '0.10'
+    cap: '7500'
+    requires_allowances: true
+  credit_per_allowance: null
+  brackets:
+    all:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '3640'
+      rate: '0.03'
+      base: '0'
+    - over: '18230'
+      rate: '0.06'
+      base: '437.70'

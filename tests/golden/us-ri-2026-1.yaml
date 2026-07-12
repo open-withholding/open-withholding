@@ -1,0 +1,16 @@
+source:
+  document: Rhode Island Employer's Income Tax Withholding Tables (2026)
+  page: 9
+  example: Unmarried employee, weekly payroll, paid $2,195.00, Form RI W-4 claiming 1 exemption. Percentage
+    method computation.
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '2195.00'
+  state:
+  - jurisdiction: US-RI
+    filing_status: all
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '87.57'
