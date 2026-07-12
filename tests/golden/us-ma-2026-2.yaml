@@ -1,0 +1,16 @@
+source:
+  document: Circular M, Massachusetts Income Tax Withholding Tables (2026)
+  page: 12
+  example: 'maintainer-constructed: the mid-year cap cutoff — same employee
+    after ytd.retirement_deduction_used reaches $2,000: step 1 discontinued;
+    800 - 85 = 715; x52 = 37,180; 5% = 1,859; /52 = 35.75'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '800.00'
+  period_fica_withholding: '61.20'
+  ytd: { retirement_deduction_used: '2000.00' }
+  state:
+  - { jurisdiction: US-MA, allowances: 1, additional_withholding: '0' }
+expect:
+  state_withholding: '35.75'

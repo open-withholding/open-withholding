@@ -1,0 +1,79 @@
+schema_version: '0.1'
+jurisdiction: US-MA
+tax: state_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Circular M, Massachusetts Income Tax Withholding Tables (2026)
+  url: https://www.mass.gov/lists/massachusetts-dor-withholding-tax-forms
+  retrieved: '2026-07-12'
+  sha256: d3f12716311bb9977c9597de25c89a79523d50a5bdc293ab7e68368a453f79a8
+  notes: 'Circular M percentage method p.12 (Rev. 12/25): period wages less actual FICA/Medicare/MA/US/Railroad-Retirement
+    withholdings (input period_fica_withholding) under the $2,000 CUMULATIVE annual cap — the caller tracks
+    prior subtractions in ytd.retirement_deduction_used; less the exemption factor (claiming-1 is its
+    own printed amount; ''a claimed spouse counts as 4 exemptions'' — the count arrives totaled); annualized
+    through 5% + the 9% surtax tier ($1,107,750 threshold, 2026-indexed); HoH ($2.31/wk) and blindness
+    ($2.12/wk, per claim via secondary_allowances) subtract from the per-period TAX; no withholding below
+    the printed floor when claiming >= 1 exemption. Biweekly uses 26 periods (Circular M permits 26 or
+    27). The document''s wage-bracket tables embed only the 5% rate and are intentionally not encoded
+    — the percentage method is the only surtax-correct path. No regular-wage worked example is printed;
+    goldens are maintainer-constructed (validated against the p.2+ wage-bracket tables where in range).'
+method: custom
+custom_implementation: custom/us_ma
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  retirement_deduction_cap: '2000'
+  exemption_factors:
+    weekly:
+      claiming_one: '85'
+      per_exemption: '19'
+      plus: '66'
+    biweekly:
+      claiming_one: '169'
+      per_exemption: '38'
+      plus: '131'
+    semimonthly:
+      claiming_one: '183'
+      per_exemption: '42'
+      plus: '141'
+    monthly:
+      claiming_one: '367'
+      per_exemption: '83'
+      plus: '284'
+    daily:
+      claiming_one: '12'
+      per_exemption: '3'
+      plus: '9'
+    annually:
+      claiming_one: '4400'
+      per_exemption: '1000'
+      plus: '3400'
+  brackets:
+  - over: '0'
+    rate: '0.05'
+  - over: '1107750'
+    rate: '0.09'
+  hoh_tax_value:
+    weekly: '2.31'
+    biweekly: '4.62'
+    semimonthly: '5.00'
+    monthly: '10.00'
+    daily: '0.33'
+    annually: '120.00'
+  blindness_tax_value:
+    weekly: '2.12'
+    biweekly: '4.23'
+    semimonthly: '4.58'
+    monthly: '9.17'
+    daily: '0.30'
+    annually: '110.00'
+  low_income_floor:
+    weekly: '154'
+    biweekly: '308'
+    semimonthly: '333'
+    monthly: '667'
+    daily: '22'
+    annually: '8000'
