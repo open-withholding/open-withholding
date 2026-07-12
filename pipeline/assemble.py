@@ -126,6 +126,21 @@ def _transform_params(method: str, params: dict) -> dict:
             **({"default_rate": params["default_rate"]}
                if params.get("default_rate") is not None else {}),
         }
+    if method == "per_period_credit_phaseout":
+        return {
+            "rate": params["rate"],
+            "phase_rate": params["phase_rate"],
+            "schedules": {
+                e["frequency"]: {
+                    snake(st["filing_status"]): {
+                        "base_allowance": st["base_allowance"],
+                        "phase_start": st["phase_start"],
+                    }
+                    for st in e["statuses"]
+                }
+                for e in params["frequencies"]
+            },
+        }
     if method == "per_period_percentage":
         out = {}
         if params.get("standard_deduction"):

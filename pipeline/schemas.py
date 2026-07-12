@@ -187,6 +187,41 @@ _PARAMS_BY_METHOD = {
                              "description": "Rate applied when no election is filed, or null"},
         },
     },
+    "per_period_credit_phaseout": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["rate", "phase_rate", "frequencies"],
+        "properties": {
+            "rate": DECIMAL,
+            "phase_rate": {**DECIMAL, "description": "Credit reduction per dollar of wages over the threshold (UT: 0.013)"},
+            "frequencies": {
+                "type": "array",
+                "description": "One entry per printed schedule (UT Schedules 1-8). Transcribe EVERY frequency.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "statuses"],
+                    "properties": {
+                        "frequency": {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                               "monthly", "quarterly", "semiannually", "annually"]},
+                        "statuses": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["filing_status", "base_allowance", "phase_start"],
+                                "properties": {
+                                    "filing_status": {"type": "string"},
+                                    "base_allowance": DECIMAL,
+                                    "phase_start": DECIMAL,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     "per_period_percentage": {
         "type": "object",
         "additionalProperties": False,

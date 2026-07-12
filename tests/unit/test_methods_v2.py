@@ -491,3 +491,59 @@ def test_elected_amount_without_treatment_fails_loud(taxability):
                     elected_annual_amount="1000.00")
     with pytest.raises(InputError, match="does not consume"):
         compute_withholding(SC, emp, taxability)
+
+
+# --- Utah per_period_credit_phaseout (Pub 14 Rev. 4/26 printed examples) ---
+
+UT = _pf(
+    "US-UT",
+    "per_period_credit_phaseout",
+    {
+        "rate": "0.0445",
+        "phase_rate": "0.013",
+        "schedules": {
+            "weekly": {"single": {"base_allowance": "9", "phase_start": "180"},
+                       "married": {"base_allowance": "19", "phase_start": "360"}},
+            "semimonthly": {"single": {"base_allowance": "20", "phase_start": "390"},
+                            "married": {"base_allowance": "40", "phase_start": "779"}},
+            "monthly": {"single": {"base_allowance": "40", "phase_start": "779"},
+                        "married": {"base_allowance": "81", "phase_start": "1558"}},
+            "quarterly": {"single": {"base_allowance": "121", "phase_start": "2337"},
+                          "married": {"base_allowance": "243", "phase_start": "4674"}},
+            "daily": {"single": {"base_allowance": "2", "phase_start": "36"},
+                      "married": {"base_allowance": "4", "phase_start": "72"}},
+        },
+    },
+)
+import dataclasses as _dc
+from engine.money import Rounding as _R
+UT = _dc.replace(UT, rounding=_R.from_dict({"to": "1.00", "mode": "nearest"}))
+
+
+def _ut(freq, gross, status):
+    return _employee(freq, gross, jurisdiction="US-UT", filing_status=status)
+
+
+def test_ut_printed_examples(taxability):
+    # Pub 14 p.11, all rounding per-line to whole dollars:
+    cases = [
+        ("weekly", "400.00", "single", "12.00"),       # 18 - (9-3) = 12
+        ("semimonthly", "1200.00", "married", "18.00"),# 53 - (40-5) = 18
+        ("monthly", "7800.00", "married", "347.00"),   # credit fully phased out
+        ("quarterly", "9000.00", "single", "367.00"),  # 401 - (121-87) = 367
+        ("daily", "175.00", "married", "5.00"),        # 8 - (4-1) = 5
+    ]
+    for freq, gross, status, expect in cases:
+        got = compute_withholding(UT, _ut(freq, gross, status), taxability)
+        assert got == Decimal(expect), (freq, gross, status, got)
+
+
+def test_ut_missing_frequency_fails_loud(taxability):
+    with pytest.raises(InputError, match="no printed schedule"):
+        compute_withholding(UT, _ut("biweekly", "1000.00", "single"), taxability)
+
+
+def test_ut_credit_never_negative_wages_below_rate_floor(taxability):
+    # tiny wages: tentative rounds to whole dollars, credit exceeds it -> 0
+    got = compute_withholding(UT, _ut("weekly", "100.00", "single"), taxability)
+    assert got == Decimal("0.00")  # 4 - 9 clamps

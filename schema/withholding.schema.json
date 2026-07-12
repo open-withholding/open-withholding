@@ -42,6 +42,7 @@
         "annualized_percentage_with_credits",
         "per_period_percentage",
         "elective_flat_rate",
+        "per_period_credit_phaseout",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
         "wage_bracket_lookup",
@@ -200,6 +201,42 @@
               },
               "zero_rate_allowed": { "type": "boolean", "default": false },
               "default_rate": { "anyOf": [{ "$ref": "#/$defs/rate" }, { "type": "null" }] }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "method": { "const": "per_period_credit_phaseout" } } },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["rate", "phase_rate", "schedules"],
+            "additionalProperties": false,
+            "properties": {
+              "rate": { "$ref": "#/$defs/rate" },
+              "phase_rate": { "$ref": "#/$defs/rate" },
+              "schedules": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "type": "object",
+                      "required": ["base_allowance", "phase_start"],
+                      "additionalProperties": false,
+                      "properties": {
+                        "base_allowance": { "$ref": "#/$defs/money" },
+                        "phase_start": { "$ref": "#/$defs/money" }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
