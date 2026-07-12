@@ -1,9 +1,14 @@
-# Method: `annualized_percentage` (v1.1)
+# Method: `annualized_percentage` (v1.2)
 
 v1.1 (additive; results unchanged for v1 files): optional
 `secondary_allowance_amount` for jurisdictions with a second, differently
 valued count-based allowance (e.g. Illinois IL-W-4 Line 2 at $1,000 next to
 Line 1's $2,925); and the single-table `all` convention below.
+
+v1.2 (additive): optional `percent_deduction` — a percentage-of-annual-wages
+deduction with a cap, optionally gated on claiming at least one allowance
+(South Carolina WH-1603F: 10% of gross capped at $7,500/yr, zero when zero
+allowances are claimed). Subtracted in step 3 alongside SD.
 
 Annualize the period's taxable wages, subtract a standard deduction and
 per-allowance amount, run the result through a bracket table, optionally

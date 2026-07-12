@@ -339,3 +339,83 @@ def test_per_period_extraction_transform_loads():
     pf = load_parameter_dict(raw)
     assert "semimonthly.single" in pf.bracket_tables
     assert raw["params"]["standard_deduction"] == {"single": "9160"}
+
+
+# --- SC percent_deduction and RI allowance cliff ---------------------------
+
+SC = _pf(
+    "US-SC",
+    "annualized_percentage",
+    {
+        "allowance_amount": "5000",
+        "percent_deduction": {"rate": "0.10", "cap": "7500", "requires_allowances": True},
+        "credit_per_allowance": None,
+        "brackets": {
+            "all": [
+                {"over": "0", "rate": "0"},
+                {"over": "3640", "rate": "0.03"},
+                {"over": "18230", "rate": "0.06", "base": "437.70"},
+            ]
+        },
+    },
+)
+
+
+def test_sc_printed_example(taxability):
+    # WH-1603F p.1: $750 weekly, 3 allowances -> 39,000 - 15,000 - 3,900 =
+    # 20,100; 437.70 + 6% x 1,870 = 549.90; / 52 = 10.575 -> 10.58
+    emp = _employee("weekly", "750.00", jurisdiction="US-SC", allowances=3)
+    assert compute_withholding(SC, emp, taxability) == Decimal("10.58")
+
+
+def test_sc_zero_allowances_zeroes_both_deductions(taxability):
+    # zero allowances: no personal allowance AND no percent deduction —
+    # tax on full gross: 39,000 -> 437.70 + 6% x 20,770 = 1,683.90; /52 = 32.38
+    emp = _employee("weekly", "750.00", jurisdiction="US-SC", allowances=0)
+    assert compute_withholding(SC, emp, taxability) == Decimal("32.38")
+
+
+def test_sc_percent_deduction_caps(taxability):
+    # $2,000 weekly, 1 allowance: 104,000; 10% = 10,400 -> capped 7,500;
+    # 104,000 - 5,000 - 7,500 = 91,500; 437.70 + 6% x 73,270 = 4,833.90; /52 = 92.96
+    emp = _employee("weekly", "2000.00", jurisdiction="US-SC", allowances=1)
+    assert compute_withholding(SC, emp, taxability) == Decimal("92.96")
+
+
+RI = _pp(
+    "US-RI",
+    {
+        "allowance_amounts_per_period": {"weekly": "19.23"},
+        "allowance_cliff_annual_wages": "290800",
+        "brackets": {
+            "weekly": {
+                "all": [
+                    {"over": "0", "rate": "0.0375"},
+                    {"over": "1578", "rate": "0.0475", "base": "59.18"},
+                    {"over": "3586", "rate": "0.0599", "base": "154.56"},
+                ]
+            }
+        },
+    },
+)
+
+
+def test_ri_printed_example(taxability):
+    # RI booklet p.8: $2,195 weekly, 1 exemption -> 2,175.77;
+    # 59.18 + 4.75% x 597.77 = 87.57
+    emp = _employee("weekly", "2195.00", jurisdiction="US-RI", allowances=1)
+    assert compute_withholding(RI, emp, taxability) == Decimal("87.57")
+
+
+def test_ri_cliff_zeroes_exemptions(taxability):
+    # $6,000 weekly = 312,000/yr > 290,800: exemption worth $0 even with
+    # 10 claimed; 154.56 + 5.99% x (6,000 - 3,586) = 299.16
+    emp = _employee("weekly", "6000.00", jurisdiction="US-RI", allowances=10)
+    assert compute_withholding(RI, emp, taxability) == Decimal("299.16")
+
+
+def test_ri_below_cliff_exemptions_apply(taxability):
+    # same 10 exemptions under the cliff: 2,195 - 192.30 = 2,002.70;
+    # 59.18 + 4.75% x 424.70 = 79.35
+    emp = _employee("weekly", "2195.00", jurisdiction="US-RI", allowances=10)
+    assert compute_withholding(RI, emp, taxability) == Decimal("79.35")

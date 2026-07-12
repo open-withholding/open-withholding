@@ -120,6 +120,17 @@
                 "$ref": "#/$defs/moneyOrNull",
                 "description": "Per second-kind allowance (e.g. IL-W-4 Line 2), where the jurisdiction defines one"
               },
+              "percent_deduction": {
+                "type": "object",
+                "description": "Percentage-of-annual-wages deduction with a cap, optionally gated on claiming at least one allowance (SC)",
+                "required": ["rate", "cap"],
+                "additionalProperties": false,
+                "properties": {
+                  "rate": { "$ref": "#/$defs/rate" },
+                  "cap": { "$ref": "#/$defs/money" },
+                  "requires_allowances": { "type": "boolean", "default": false }
+                }
+              },
               "credit_per_allowance": { "$ref": "#/$defs/moneyOrNull" },
               "brackets": {
                 "type": "object",
@@ -184,6 +195,10 @@
               "allowance_amount": {
                 "$ref": "#/$defs/moneyOrNull",
                 "description": "ANNUAL per-allowance amount, divided with standard_deduction"
+              },
+              "allowance_cliff_annual_wages": {
+                "$ref": "#/$defs/moneyOrNull",
+                "description": "Annualized-wage threshold above which the allowance value becomes exactly $0 (RI's cliff)"
               },
               "allowance_amounts_per_period": {
                 "type": "object",

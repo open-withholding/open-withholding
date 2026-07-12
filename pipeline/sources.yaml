@@ -31,6 +31,33 @@
   maps_to:
     - data/us/mo/{year}/withholding.yaml
 
+- id: us-sc-wh1603f
+  document: "WH-1603F, Formula for Computing South Carolina Withholding Tax"
+  jurisdiction: US-SC
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://dor.sc.gov/tax/withholding/forms"
+  # Site migrated in 2025; the old /forms-site/Forms/ pattern is dead for 2026+.
+  document_url_pattern: "https://dor.sc.gov/sites/dor/files/forms/WH1603F_{year}.pdf"
+  check: [content_hash]
+  expected_window: "10-15..12-15"
+  maps_to:
+    - data/us/sc/{year}/withholding.yaml
+
+- id: us-ri-withholding-booklet
+  document: "Rhode Island Employer's Income Tax Withholding Tables"
+  jurisdiction: US-RI
+  tax: state_income_withholding
+  method: per_period_percentage
+  landing: "https://tax.ri.gov/forms/business-tax-forms/withholding-tax-forms"
+  discovery: link_scan
+  # Drupal hash path with upload-month segment; suffix variants across years.
+  link_pattern: '(?i)20\d{2}[-%20 ]*withholding[-%20 ]*(tax[-%20 ]*)?booklet[^"]*\.pdf'
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ri/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN

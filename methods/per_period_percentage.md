@@ -28,6 +28,10 @@ ones its worksheet prints):
   per-period value of one allowance (Vermont's table headers)
 - `brackets[frequency][filing_status]` — per-period rows (`over`/`rate`/
   optional `base`; printed bases are authoritative, as everywhere)
+- `allowance_cliff_annual_wages` (optional) — when taxable period wages
+  annualize above this threshold, the entire allowance reduction is exactly
+  0 (Rhode Island: "if your annual wages exceed $290,800, your exemption
+  amount will be phased out and be equal to zero")
 - envelope `rounding`
 
 ## Algorithm

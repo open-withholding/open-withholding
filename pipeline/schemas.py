@@ -96,6 +96,7 @@ _PARAMS_BY_METHOD = {
             "standard_deduction",
             "allowance_amount",
             "secondary_allowance_amount",
+            "percent_deduction",
             "credit_per_allowance",
             "brackets",
         ],
@@ -109,6 +110,26 @@ _PARAMS_BY_METHOD = {
                 **DECIMAL_OR_NULL,
                 "description": "Per second-kind allowance where the state defines one "
                 "(e.g. IL-W-4 Line 2 at $1,000); null otherwise",
+            },
+            "percent_deduction": {
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["rate", "cap", "requires_allowances"],
+                        "properties": {
+                            "rate": DECIMAL,
+                            "cap": DECIMAL,
+                            "requires_allowances": {
+                                "type": "boolean",
+                                "description": "true when the document zeroes this deduction "
+                                "for employees claiming no allowances (SC WH-1603F)",
+                            },
+                        },
+                    },
+                    {"type": "null"},
+                ],
+                "description": "Percentage-of-annual-wages deduction with a cap, or null",
             },
             "credit_per_allowance": DECIMAL_OR_NULL,
             "brackets": {
@@ -155,6 +176,7 @@ _PARAMS_BY_METHOD = {
             "standard_deduction",
             "allowance_amount",
             "allowance_amounts_per_period",
+            "allowance_cliff_annual_wages",
             "frequencies",
         ],
         "properties": {
@@ -167,6 +189,11 @@ _PARAMS_BY_METHOD = {
                 **DECIMAL_OR_NULL,
                 "description": "ANNUAL per-allowance amount divided with the standard "
                 "deduction (e.g. Kansas per-dependent), or null",
+            },
+            "allowance_cliff_annual_wages": {
+                **DECIMAL_OR_NULL,
+                "description": "Annualized-wage threshold above which one allowance is worth "
+                "exactly $0 (RI cliff), or null",
             },
             "allowance_amounts_per_period": {
                 "anyOf": [

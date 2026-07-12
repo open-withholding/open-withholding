@@ -38,11 +38,23 @@ def compute(ctx) -> Decimal:
     )
     table = per_status(ctx.bracket_tables, status, context="annualized_percentage")
 
-    # Steps 2-3: annualize, subtract deduction and allowances, clamp.
+    # Steps 2-3: annualize, subtract deductions and allowances, clamp.
     annual_wages = ctx.taxable_wages * ctx.pay_periods
+    percent_deduction = ZERO
+    pd = params.get("percent_deduction")
+    if pd is not None:
+        # v1.2: percentage-of-wages deduction with a cap, optionally gated on
+        # claiming at least one allowance (South Carolina WH-1603F).
+        claiming = (ctx.allowances + ctx.secondary_allowances) > 0
+        if claiming or not pd.get("requires_allowances", False):
+            percent_deduction = min(
+                annual_wages * D(pd["rate"], context="percent_deduction.rate"),
+                D(pd["cap"], context="percent_deduction.cap"),
+            )
     annual_taxable = clamp0(
         annual_wages
         - standard_deduction
+        - percent_deduction
         - ctx.allowances * allowance_amount
         - ctx.secondary_allowances * secondary_allowance_amount
     )
