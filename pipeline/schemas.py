@@ -187,6 +187,73 @@ _PARAMS_BY_METHOD = {
                              "description": "Rate applied when no election is filed, or null"},
         },
     },
+    "custom/us_ma": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["retirement_deduction_cap", "exemption_factors", "brackets",
+                     "hoh_tax_value", "blindness_tax_value", "low_income_floor"],
+        "properties": {
+            "retirement_deduction_cap": {**DECIMAL, "description": "The cumulative annual FICA-deduction cap ($2,000)"},
+            "exemption_factors": {
+                "type": "array",
+                "description": "Per payroll period: the claiming-'1' amount, and the "
+                "per-exemption + plus amounts for claiming more than 1",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "claiming_one", "per_exemption", "plus"],
+                    "properties": {
+                        "frequency": {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                               "monthly", "quarterly", "semiannually", "annually"]},
+                        "claiming_one": DECIMAL,
+                        "per_exemption": DECIMAL,
+                        "plus": DECIMAL,
+                    },
+                },
+            },
+            "brackets": {**BRACKET_ROWS, "description": "ANNUAL: 5% tier then the "
+                         "surtax-inclusive 9% tier above the printed threshold"},
+            "hoh_tax_value": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {
+                        "frequency": {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                               "monthly", "quarterly", "semiannually", "annually"]},
+                        "amount": DECIMAL,
+                    },
+                },
+            },
+            "blindness_tax_value": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {
+                        "frequency": {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                               "monthly", "quarterly", "semiannually", "annually"]},
+                        "amount": DECIMAL,
+                    },
+                },
+            },
+            "low_income_floor": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {
+                        "frequency": {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                               "monthly", "quarterly", "semiannually", "annually"]},
+                        "amount": DECIMAL,
+                    },
+                },
+            },
+        },
+    },
     "custom/us_al": {
         "type": "object",
         "additionalProperties": False,

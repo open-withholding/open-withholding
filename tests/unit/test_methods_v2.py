@@ -870,12 +870,6 @@ def _al_pf():
     return load_parameter_dict({
         "schema_version": "0.1",
         "jurisdiction": "US-AL",
-# --- Massachusetts custom/us_ma (Circular M p.12) --------------------------
-
-def _ma_pf():
-    return load_parameter_dict({
-        "schema_version": "0.1",
-        "jurisdiction": "US-MA",
         "tax": "state_income_withholding",
         "effective_from": "2026-01-01",
         "source": SOURCE,
@@ -895,20 +889,6 @@ def _ma_pf():
                 {"more_than": "50000", "value": "500"},
                 {"more_than": "100000", "value": "300"},
             ],
-        "custom_implementation": "custom/us_ma",
-        "params": {
-            "retirement_deduction_cap": "2000",
-            "exemption_factors": {
-                "weekly": {"claiming_one": "85", "per_exemption": "19", "plus": "66"},
-                "annually": {"claiming_one": "4400", "per_exemption": "1000", "plus": "3400"},
-            },
-            "brackets": [
-                {"over": "0", "rate": "0.05"},
-                {"over": "1107750", "rate": "0.09", "base": "55387.50"},
-            ],
-            "hoh_tax_value": {"weekly": "2.31", "annually": "120.00"},
-            "blindness_tax_value": {"weekly": "2.12", "annually": "110.00"},
-            "low_income_floor": {"weekly": "154", "annually": "8000"},
         },
         "rounding": {"to": "0.01", "mode": "nearest"},
     })
@@ -967,6 +947,37 @@ def test_al_missing_federal_fails_loud(taxability):
     })
     with pytest.raises(InputError, match="period_federal_income_withholding"):
         compute_withholding(AL, emp, taxability)
+
+
+# --- Massachusetts custom/us_ma (Circular M p.12) --------------------------
+
+def _ma_pf():
+    return load_parameter_dict({
+        "schema_version": "0.1",
+        "jurisdiction": "US-MA",
+        "tax": "state_income_withholding",
+        "effective_from": "2026-01-01",
+        "source": SOURCE,
+        "method": "custom",
+        "custom_implementation": "custom/us_ma",
+        "params": {
+            "retirement_deduction_cap": "2000",
+            "exemption_factors": {
+                "weekly": {"claiming_one": "85", "per_exemption": "19", "plus": "66"},
+                "annually": {"claiming_one": "4400", "per_exemption": "1000", "plus": "3400"},
+            },
+            "brackets": [
+                {"over": "0", "rate": "0.05"},
+                {"over": "1107750", "rate": "0.09", "base": "55387.50"},
+            ],
+            "hoh_tax_value": {"weekly": "2.31", "annually": "120.00"},
+            "blindness_tax_value": {"weekly": "2.12", "annually": "110.00"},
+            "low_income_floor": {"weekly": "154", "annually": "8000"},
+        },
+        "rounding": {"to": "0.01", "mode": "nearest"},
+    })
+
+
 MA = _ma_pf()
 
 
