@@ -135,6 +135,7 @@ class EmployeeInput:
     state: tuple[StateElection, ...] = ()
     locals: tuple[LocalElection, ...] = ()
     ytd: dict[str, Decimal] = field(default_factory=dict)
+    period_federal_income_withholding: Decimal | None = None
 
     @property
     def pay_periods_per_year(self) -> int:
@@ -161,9 +162,13 @@ class EmployeeInput:
             key: D(value, context=f"ytd.{key}")
             for key, value in (raw.get("ytd") or {}).items()
         }
+        pfw = None
+        if raw.get("period_federal_income_withholding") is not None:
+            pfw = _money(raw, "period_federal_income_withholding", None, context="input")
         return cls(
             pay_frequency=frequency,
             gross_wages=_money(raw, "gross_wages", None, context="input"),
+            period_federal_income_withholding=pfw,
             pretax_deductions=tuple(deductions),
             federal=FederalElection.from_dict(federal) if federal else None,
             state=tuple(StateElection.from_dict(s) for s in raw.get("state") or []),

@@ -187,6 +187,83 @@ _PARAMS_BY_METHOD = {
                              "description": "Rate applied when no election is filed, or null"},
         },
     },
+    "custom/us_or": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["credit_per_allowance", "statuses", "status_groups"],
+        "properties": {
+            "credit_per_allowance": DECIMAL,
+            "statuses": {
+                "type": "array",
+                "description": "Phase-out ladder + allowance-zeroing threshold per "
+                "UNDERLYING status (single, married) — both [S] and [M] ladders, from "
+                "wherever they are printed",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["status", "allowance_zero_above", "fed_subtraction_phaseout"],
+                    "properties": {
+                        "status": {"enum": ["single", "married"]},
+                        "allowance_zero_above": DECIMAL,
+                        "fed_subtraction_phaseout": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["at_least", "cap"],
+            "properties": {"at_least": DECIMAL, "cap": DECIMAL},
+        },
+        "description": "'wages >= X' rows (INCLUSIVE lower); first row at_least 0 carries "
+        "the un-phased cap",
+    },
+                    },
+                },
+            },
+            "status_groups": {
+                "type": "array",
+                "description": "Brackets + standard deduction per bracket group "
+                "('Single with fewer than 3 allowances' -> single_under_3; 'Single with "
+                "3 or more allowances, or married' -> married_or_single_3plus)",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["group", "standard_deduction", "wage_tiers"],
+                    "properties": {
+                        "group": {"enum": ["single_under_3", "married_or_single_3plus"]},
+                        "standard_deduction": DECIMAL,
+                        "wage_tiers": {
+                            "type": "array",
+                            "description": "One entry per printed wage band (annual wages "
+                            "up to $50,000; $50,000 or higher) — the formula constants "
+                            "DIFFER between bands, transcribe each as printed",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["wages_at_least", "formulas"],
+                                "properties": {
+                                    "wages_at_least": DECIMAL,
+                                    "formulas": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["at_least", "base", "rate", "excess_over"],
+            "properties": {
+                "at_least": DECIMAL, "base": DECIMAL, "rate": DECIMAL, "excess_over": DECIMAL,
+            },
+        },
+        "description": "Printed formula rows 'WH = base + [(BASE - excess_over) x rate]'; "
+        "at_least is the row's BASE lower bound; excess_over is copied EXACTLY as printed "
+        "(it differs from at_least in the high-wage tier)",
+    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     "custom/us_ct": {
         "type": "object",
         "additionalProperties": False,

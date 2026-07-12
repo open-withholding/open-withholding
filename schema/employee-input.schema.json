@@ -24,6 +24,10 @@
       },
       "default": []
     },
+    "period_federal_income_withholding": {
+      "$ref": "#/$defs/money",
+      "description": "Federal income tax withheld this period — an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
+    },
     "ytd": {
       "type": "object",
       "description": "Required for wage-base caps (SS, SUI, SDI) and the Additional Medicare threshold",

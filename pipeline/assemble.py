@@ -126,6 +126,24 @@ def _transform_params(method: str, params: dict) -> dict:
             **({"default_rate": params["default_rate"]}
                if params.get("default_rate") is not None else {}),
         }
+    if method == "custom/us_or":
+        return {
+            "credit_per_allowance": params["credit_per_allowance"],
+            "statuses": {
+                e["status"]: {
+                    "allowance_zero_above": e["allowance_zero_above"],
+                    "fed_subtraction_phaseout": e["fed_subtraction_phaseout"],
+                }
+                for e in params["statuses"]
+            },
+            "status_groups": {
+                e["group"]: {
+                    "standard_deduction": e["standard_deduction"],
+                    "wage_tiers": e["wage_tiers"],
+                }
+                for e in params["status_groups"]
+            },
+        }
     if method == "custom/us_ct":
         return {
             "codes": {
