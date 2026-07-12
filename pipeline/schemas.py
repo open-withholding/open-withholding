@@ -187,6 +187,73 @@ _PARAMS_BY_METHOD = {
                              "description": "Rate applied when no election is filed, or null"},
         },
     },
+    "custom/us_ct": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["codes"],
+        "properties": {
+            "codes": {
+                "type": "array",
+                "description": "One entry per CT-W4 withholding code (a, b, c, d, f). "
+                "Shared printed tables (e.g. Table B 'Code A, D, or F') are transcribed "
+                "into EACH code they apply to. Code D: exemptions and credits are the "
+                "single zero row per the footnotes.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["code", "exemptions", "brackets", "add_back", "recapture", "credits"],
+                    "properties": {
+                        "code": {"enum": ["a", "b", "c", "d", "f"]},
+                        "exemptions": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["more_than", "value"],
+            "properties": {"more_than": DECIMAL, "value": DECIMAL},
+        },
+        "description": "Exclusive-lower 'More Than / Less Than or Equal To' rows, "
+        "transcribed row for row as printed (value from the rightmost column)",
+    },
+                        "brackets": BRACKET_ROWS,
+                        "add_back": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["more_than", "value"],
+            "properties": {"more_than": DECIMAL, "value": DECIMAL},
+        },
+        "description": "Exclusive-lower 'More Than / Less Than or Equal To' rows, "
+        "transcribed row for row as printed (value from the rightmost column)",
+    },
+                        "recapture": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["more_than", "value"],
+            "properties": {"more_than": DECIMAL, "value": DECIMAL},
+        },
+        "description": "Exclusive-lower 'More Than / Less Than or Equal To' rows, "
+        "transcribed row for row as printed (value from the rightmost column)",
+    },
+                        "credits": {
+        "type": "array",
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["more_than", "value"],
+            "properties": {"more_than": DECIMAL, "value": DECIMAL},
+        },
+        "description": "Exclusive-lower 'More Than / Less Than or Equal To' rows, "
+        "transcribed row for row as printed (value from the rightmost column)",
+    },
+                    },
+                },
+            },
+        },
+    },
     "annualized_subtraction_percentage": {
         "type": "object",
         "additionalProperties": False,

@@ -601,3 +601,109 @@ def test_ar_zero_bracket(taxability):
     # $500 monthly: annual 6,000 - 2,470 = 3,530 -> snaps 3,550 -> 0% -> 0
     emp = _employee("monthly", "500.00", jurisdiction="US-AR", allowances=1)
     assert compute_withholding(AR, emp, taxability) == Decimal("0.00")
+
+
+# --- Connecticut custom/us_ct (TPG-211 tables, code-A rows as printed) -----
+
+def _ct_pf():
+    a_exemptions = ([{"more_than": "0", "value": "12000"}] +
+        [{"more_than": str(24000 + i * 1000), "value": str(11000 - i * 1000)}
+         for i in range(12)])  # 24k->11k ... 35k+->0
+    a_brackets = [
+        {"over": "0", "rate": "0.02"},
+        {"over": "10000", "rate": "0.045", "base": "200"},
+        {"over": "50000", "rate": "0.055", "base": "2000"},
+        {"over": "100000", "rate": "0.06", "base": "4750"},
+        {"over": "200000", "rate": "0.065", "base": "10750"},
+        {"over": "250000", "rate": "0.069", "base": "14000"},
+        {"over": "500000", "rate": "0.0699", "base": "31250"},
+    ]
+    a_add_back = ([{"more_than": "0", "value": "0"}] +
+        [{"more_than": str(50250 + i * 2500), "value": str(25 * (i + 1))}
+         for i in range(10)])  # caps at 250 for 72,750+
+    a_recapture = [{"more_than": "0", "value": "0"},
+                   {"more_than": "105000", "value": "25"},
+                   {"more_than": "540000", "value": "3400"}]  # abbreviated
+    a_credits = [
+        {"more_than": "12000", "value": "0.75"},
+        {"more_than": "15000", "value": "0.70"},
+        {"more_than": "21500", "value": "0.15"},
+        {"more_than": "25000", "value": "0.14"},
+        {"more_than": "27000", "value": "0.10"},
+        {"more_than": "48000", "value": "0.09"},
+        {"more_than": "51500", "value": "0.02"},
+        {"more_than": "52000", "value": "0.01"},
+        {"more_than": "52500", "value": "0.00"},
+    ]  # abbreviated to the rows the tests touch
+    d_tables = {
+        "exemptions": [{"more_than": "0", "value": "0"}],
+        "brackets": a_brackets,  # code D shares Table B "A, D, or F"
+        "add_back": a_add_back,  # Table C "A or D"
+        "recapture": a_recapture,
+        "credits": [{"more_than": "0", "value": "0.00"}],
+    }
+    return load_parameter_dict({
+        "schema_version": "0.1",
+        "jurisdiction": "US-CT",
+        "tax": "state_income_withholding",
+        "effective_from": "2026-01-01",
+        "source": SOURCE,
+        "method": "custom",
+        "custom_implementation": "custom/us_ct",
+        "params": {"codes": {
+            "a": {"exemptions": a_exemptions, "brackets": a_brackets,
+                  "add_back": a_add_back, "recapture": a_recapture,
+                  "credits": a_credits},
+            "d": d_tables,
+        }},
+        "rounding": {"to": "0.01", "mode": "nearest"},
+    })
+
+
+CT = _ct_pf()
+
+
+def test_ct_code_a_full_pipeline(taxability):
+    # weekly $1,000: salary 52,000 -> exemption 0 (>35,000);
+    # initial 2,000 + 5.5% x 2,000 = 2,110; add-back (50,250..52,750] = 25;
+    # recapture 0; credit (51,500..52,000] = .02 -> 2,135 x .98 = 2,092.30;
+    # /52 = 40.2365 -> 40.24
+    emp = _employee("weekly", "1000.00", jurisdiction="US-CT", filing_status="a")
+    assert compute_withholding(CT, emp, taxability) == Decimal("40.24")
+
+
+def test_ct_exclusive_boundary_salary_24000(taxability):
+    # salary EXACTLY 24,000 (annual frequency): row is (0, 24,000] ->
+    # exemption 12,000, NOT 11,000. taxable 12,000 -> 200 + 4.5% x 2,000
+    # = 290; credit at 24,000 -> (21,500, 25,000] = .15 -> 246.50
+    emp = _employee("annually", "24000.00", jurisdiction="US-CT", filing_status="a")
+    assert compute_withholding(CT, emp, taxability) == Decimal("246.50")
+
+
+def test_ct_exemption_phase_step(taxability):
+    # salary 24,500: row (24,000, 25,000] -> exemption 11,000;
+    # taxable 13,500 -> 200 + 4.5% x 3,500 = 357.50; credit .15 -> 303.875
+    emp = _employee("annually", "24500.00", jurisdiction="US-CT", filing_status="a")
+    assert compute_withholding(CT, emp, taxability) == Decimal("303.88")
+
+
+def test_ct_code_d_no_exemption_no_credit(taxability):
+    # weekly $1,000 code D: taxable 52,000; 2,110 + 25 + 0 = 2,135 x 1.00;
+    # /52 = 41.0577 -> 41.06
+    emp = _employee("weekly", "1000.00", jurisdiction="US-CT", filing_status="d")
+    assert compute_withholding(CT, emp, taxability) == Decimal("41.06")
+
+
+def test_ct_below_exemption_only_additional(taxability):
+    # salary 20,000 code A -> exemption 12,000... salary < exemption? No:
+    # 20,000 > 12,000. Use 10,000: exemption 12,000 -> taxable <= 0 ->
+    # only the additional amount applies
+    emp = _employee("annually", "10000.00", jurisdiction="US-CT",
+                    filing_status="a", additional_withholding="5.00")
+    assert compute_withholding(CT, emp, taxability) == Decimal("5.00")
+
+
+def test_ct_unknown_code_fails_loud(taxability):
+    emp = _employee("weekly", "1000.00", jurisdiction="US-CT", filing_status="x")
+    with pytest.raises(InputError, match="withholding code"):
+        compute_withholding(CT, emp, taxability)
