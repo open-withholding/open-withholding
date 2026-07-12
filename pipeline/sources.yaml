@@ -129,6 +129,24 @@
   maps_to:
     - data/us/ar/{year}/withholding.yaml
 
+- id: us-ct-tpg211
+  document: "TPG-211, Connecticut Withholding Calculation Rules"
+  jurisdiction: US-CT
+  tax: state_income_withholding
+  method: custom/us_ct
+  landing: "https://portal.ct.gov/drs/drs-forms/current-year-forms/withholding-forms"
+  discovery: link_scan
+  # Filename is year-versioned (tpg-211_12{yy}.pdf, Dec revision for the
+  # following year) but the CMS directory year is inconsistent — scan.
+  # TPG-211 prints NO worked examples; goldens are maintainer-constructed
+  # (or transcribed from companion IP {year}(1) where it prints examples).
+  link_pattern: 'tpg-211[^"]*\.pdf'
+  no_printed_examples: true
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ct/{year}/withholding.yaml
+
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
   jurisdiction: US-MN

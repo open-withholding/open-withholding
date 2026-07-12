@@ -379,6 +379,42 @@
     {
       "if": { "properties": { "method": { "const": "custom" } } },
       "then": { "required": ["custom_implementation"] }
+    },
+    {
+      "if": {
+        "properties": { "custom_implementation": { "const": "custom/us_ct" } },
+        "required": ["custom_implementation"]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": ["codes"],
+            "additionalProperties": false,
+            "properties": {
+              "codes": {
+                "type": "object",
+                "description": "CT-W4 withholding codes; each self-contained (shared printed tables duplicated per code)",
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^[a-f]$": {
+                    "type": "object",
+                    "required": ["exemptions", "brackets", "add_back", "recapture", "credits"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "exemptions": { "$ref": "#/$defs/rangeRows" },
+                      "brackets": { "$ref": "#/$defs/bracketTable" },
+                      "add_back": { "$ref": "#/$defs/rangeRows" },
+                      "recapture": { "$ref": "#/$defs/rangeRows" },
+                      "credits": { "$ref": "#/$defs/rangeRows" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ],
   "$defs": {
@@ -401,6 +437,20 @@
     "perStatusMoney": {
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/money" }
+    },
+    "rangeRows": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Exclusive-lower-bound range rows ('More Than X'), ascending; the applicable row is the last with more_than < salary",
+      "items": {
+        "type": "object",
+        "required": ["more_than", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "more_than": { "$ref": "#/$defs/money" },
+          "value": { "$ref": "#/$defs/decimal" }
+        }
+      }
     },
     "bracketTable": {
       "type": "array",

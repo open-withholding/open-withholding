@@ -126,6 +126,23 @@ def _transform_params(method: str, params: dict) -> dict:
             **({"default_rate": params["default_rate"]}
                if params.get("default_rate") is not None else {}),
         }
+    if method == "custom/us_ct":
+        return {
+            "codes": {
+                e["code"]: {
+                    "exemptions": e["exemptions"],
+                    "brackets": [
+                        {"over": r["over"], "rate": r["rate"],
+                         **({"base": r["base"]} if r.get("base") is not None else {})}
+                        for r in e["brackets"]
+                    ],
+                    "add_back": e["add_back"],
+                    "recapture": e["recapture"],
+                    "credits": e["credits"],
+                }
+                for e in params["codes"]
+            }
+        }
     if method == "annualized_subtraction_percentage":
         return {
             "standard_deduction": params["standard_deduction"],
@@ -200,6 +217,10 @@ def assemble_parameter_file(
     rounding = dict(extraction["rounding"])
     if rounding.get("intermediate_to") is None:
         rounding.pop("intermediate_to", None)
+    if method.startswith("custom/"):
+        method_field = {"method": "custom", "custom_implementation": method}
+    else:
+        method_field = {"method": method}
     return {
         "schema_version": schema_version,
         "jurisdiction": jurisdiction,
@@ -208,7 +229,7 @@ def assemble_parameter_file(
         "effective_to": None,
         **({"supersedes": supersedes} if supersedes else {}),
         "source": source,
-        "method": method,
+        **method_field,
         "rounding": rounding,
         "params": _transform_params(method, extraction["params"]),
     }
