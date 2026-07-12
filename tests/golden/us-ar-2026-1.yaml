@@ -1,0 +1,17 @@
+source:
+  document: Arkansas Withholding Tax Formula Method (2026)
+  page: 4
+  example: 'Gary, monthly pay $2,127, 2 exemptions on AR4EC. Annual gross $25,524; less $2,470 SD = $23,054;
+    snapped to $23,050 midrange; 3.4% bracket: 23050*.034=783.70 minus 287.97=495.73 rounded to 496; less
+    2*$29=58 credit = 438 annual net; /12 = 36.50 per period.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '2127'
+  state:
+  - jurisdiction: US-AR
+    filing_status: default
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '36.50'
