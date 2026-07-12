@@ -1,0 +1,17 @@
+source:
+  document: Alabama Withholding Tax Tables and Instructions for Employers (2026)
+  page: 8
+  example: Employee claims 'M-2' exemption on Form A-4; weekly wages $850.00; federal withholding $35.19/week;
+    formula method annualized tax $1,538.50 / 52 = $29.59
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '850.00'
+  period_federal_income_withholding: '35.19'
+  state:
+  - jurisdiction: US-AL
+    filing_status: m
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '29.59'
