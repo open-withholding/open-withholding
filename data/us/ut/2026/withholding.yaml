@@ -1,0 +1,81 @@
+schema_version: '0.1'
+jurisdiction: US-UT
+tax: state_income_withholding
+effective_from: '2026-06-01'
+effective_to: null
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  url: https://files.tax.utah.gov/tax/forms/pubs/pub-14.pdf
+  retrieved: '2026-07-12'
+  sha256: a7662517232b93b21774666e703123d398916a0a1dd1f1791eccca10f4a8d56f
+  notes: 'Pub 14 Rev. 4/26, effective for pay periods beginning on/after 2026-06-01 (Utah revises this
+    stable URL in place, mid-year when rates change — the Rev. date on p.1 is the version signal). Flat
+    4.45% with the per-schedule credit phase-out (1.3% of wages over the threshold); no allowance counts
+    — federal W-4 status only, head of household uses the Single column. Every worksheet line rounds to
+    the whole dollar, per the six printed examples (all transcribed as goldens). NOTE: pay periods beginning
+    before 2026-06-01 used the prior edition (4.55%) — backfill via Wayback tracked separately.'
+method: per_period_credit_phaseout
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0445'
+  phase_rate: '0.013'
+  schedules:
+    weekly:
+      single:
+        base_allowance: '9'
+        phase_start: '180'
+      married:
+        base_allowance: '19'
+        phase_start: '360'
+    biweekly:
+      single:
+        base_allowance: '19'
+        phase_start: '360'
+      married:
+        base_allowance: '37'
+        phase_start: '719'
+    semimonthly:
+      single:
+        base_allowance: '20'
+        phase_start: '390'
+      married:
+        base_allowance: '40'
+        phase_start: '779'
+    monthly:
+      single:
+        base_allowance: '40'
+        phase_start: '779'
+      married:
+        base_allowance: '81'
+        phase_start: '1558'
+    quarterly:
+      single:
+        base_allowance: '121'
+        phase_start: '2337'
+      married:
+        base_allowance: '243'
+        phase_start: '4674'
+    semiannually:
+      single:
+        base_allowance: '243'
+        phase_start: '4674'
+      married:
+        base_allowance: '485'
+        phase_start: '9348'
+    annually:
+      single:
+        base_allowance: '485'
+        phase_start: '9348'
+      married:
+        base_allowance: '970'
+        phase_start: '18696'
+    daily:
+      single:
+        base_allowance: '2'
+        phase_start: '36'
+      married:
+        base_allowance: '4'
+        phase_start: '72'

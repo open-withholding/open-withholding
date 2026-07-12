@@ -1,0 +1,15 @@
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  page: 11
+  example: Example 3 - Schedule 3, Semimonthly/Married, wages $1,200
+as_of: '2026-06-01'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1200'
+  state:
+  - jurisdiction: US-UT
+    filing_status: married
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '18'

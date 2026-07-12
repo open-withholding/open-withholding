@@ -1,0 +1,15 @@
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  page: 11
+  example: Example 2 - Schedule 2, Biweekly/Single, wages $2,600
+as_of: '2026-06-01'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2600'
+  state:
+  - jurisdiction: US-UT
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '116'

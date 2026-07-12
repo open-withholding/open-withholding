@@ -1,0 +1,15 @@
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  page: 11
+  example: Example 5 - Schedule 5, Quarterly/Single, wages $9,000
+as_of: '2026-06-01'
+input:
+  pay_frequency: quarterly
+  gross_wages: '9000'
+  state:
+  - jurisdiction: US-UT
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '367'

@@ -1,0 +1,15 @@
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  page: 11
+  example: Example 6 - Schedule 8, Daily/Married, wages $175
+as_of: '2026-06-01'
+input:
+  pay_frequency: daily
+  gross_wages: '175'
+  state:
+  - jurisdiction: US-UT
+    filing_status: married
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '5'

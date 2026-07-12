@@ -1,0 +1,15 @@
+source:
+  document: Publication 14, Utah Withholding Tax Guide (2026)
+  page: 11
+  example: Example 1 - Schedule 1, Weekly/Single, wages $400
+as_of: '2026-06-01'
+input:
+  pay_frequency: weekly
+  gross_wages: '400'
+  state:
+  - jurisdiction: US-UT
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '12'
