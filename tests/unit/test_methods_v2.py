@@ -870,6 +870,12 @@ def _al_pf():
     return load_parameter_dict({
         "schema_version": "0.1",
         "jurisdiction": "US-AL",
+# --- Massachusetts custom/us_ma (Circular M p.12) --------------------------
+
+def _ma_pf():
+    return load_parameter_dict({
+        "schema_version": "0.1",
+        "jurisdiction": "US-MA",
         "tax": "state_income_withholding",
         "effective_from": "2026-01-01",
         "source": SOURCE,
@@ -889,6 +895,20 @@ def _al_pf():
                 {"more_than": "50000", "value": "500"},
                 {"more_than": "100000", "value": "300"},
             ],
+        "custom_implementation": "custom/us_ma",
+        "params": {
+            "retirement_deduction_cap": "2000",
+            "exemption_factors": {
+                "weekly": {"claiming_one": "85", "per_exemption": "19", "plus": "66"},
+                "annually": {"claiming_one": "4400", "per_exemption": "1000", "plus": "3400"},
+            },
+            "brackets": [
+                {"over": "0", "rate": "0.05"},
+                {"over": "1107750", "rate": "0.09", "base": "55387.50"},
+            ],
+            "hoh_tax_value": {"weekly": "2.31", "annually": "120.00"},
+            "blindness_tax_value": {"weekly": "2.12", "annually": "110.00"},
+            "low_income_floor": {"weekly": "154", "annually": "8000"},
         },
         "rounding": {"to": "0.01", "mode": "nearest"},
     })
@@ -947,3 +967,75 @@ def test_al_missing_federal_fails_loud(taxability):
     })
     with pytest.raises(InputError, match="period_federal_income_withholding"):
         compute_withholding(AL, emp, taxability)
+MA = _ma_pf()
+
+
+def _ma_emp(freq, gross, exemptions, fica, ytd_used=None, status=None, blind=0):
+    record = {
+        "pay_frequency": freq, "gross_wages": gross,
+        "period_fica_withholding": fica,
+        "state": [{"jurisdiction": "US-MA", "allowances": exemptions,
+                   "secondary_allowances": blind, "additional_withholding": "0",
+                   **({"filing_status": status} if status else {})}],
+    }
+    if ytd_used is not None:
+        record["ytd"] = {"retirement_deduction_used": ytd_used}
+    return EmployeeInput.from_dict(record)
+
+
+def test_ma_basic_weekly(taxability):
+    # 800 - 61.20 fica - 85 (claiming 1) = 653.80 -> x52 = 33,997.60 ->
+    # 5% = 1,699.88 -> /52 = 32.69
+    emp = _ma_emp("weekly", "800.00", 1, "61.20")
+    assert compute_withholding(MA, emp, taxability) == Decimal("32.69")
+
+
+def test_ma_cap_exhausted_mid_year(taxability):
+    # ytd used 2,000 -> step 1 discontinued: 800 - 85 = 715 -> 37,180 ->
+    # 1,859 -> 35.75
+    emp = _ma_emp("weekly", "800.00", 1, "61.20", ytd_used="2000.00")
+    assert compute_withholding(MA, emp, taxability) == Decimal("35.75")
+
+
+def test_ma_cap_partial(taxability):
+    # remaining 30: 800 - 30 - 85 = 685 -> 35,620 -> 1,781 -> 34.25
+    emp = _ma_emp("weekly", "800.00", 1, "61.20", ytd_used="1970.00")
+    assert compute_withholding(MA, emp, taxability) == Decimal("34.25")
+
+
+def test_ma_multi_exemption_factor(taxability):
+    # 3 exemptions: 19x3 + 66 = 123: 800 - 61.20 - 123 = 615.80 ->
+    # 32,021.60 -> 1,601.08 -> 30.79
+    emp = _ma_emp("weekly", "800.00", 3, "61.20")
+    assert compute_withholding(MA, emp, taxability) == Decimal("30.79")
+
+
+def test_ma_surtax_tier(taxability):
+    # annual 1,500,000, 0 exemptions, fica 2,000: w = 1,498,000 ->
+    # 55,387.50 + 9% x 390,250 = 90,510.00
+    emp = _ma_emp("annually", "1500000.00", 0, "2000.00")
+    assert compute_withholding(MA, emp, taxability) == Decimal("90510.00")
+
+
+def test_ma_hoh_and_blindness_tax_values(taxability):
+    # basic 32.69 - 2.31 (HoH) - 2.12 (1 blind) = 28.26
+    emp = _ma_emp("weekly", "800.00", 1, "61.20", status="head_of_household", blind=1)
+    assert compute_withholding(MA, emp, taxability) == Decimal("28.26")
+
+
+def test_ma_low_income_floor(taxability):
+    # weekly 150 < 154 with 1 exemption -> no withholding
+    emp = _ma_emp("weekly", "150.00", 1, "10.00")
+    assert compute_withholding(MA, emp, taxability) == Decimal("0.00")
+    # but 0 exemptions: floor doesn't apply
+    emp0 = _ma_emp("weekly", "150.00", 0, "10.00")
+    assert compute_withholding(MA, emp0, taxability) > Decimal("0")
+
+
+def test_ma_missing_fica_fails_loud(taxability):
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "800.00",
+        "state": [{"jurisdiction": "US-MA", "allowances": 1, "additional_withholding": "0"}],
+    })
+    with pytest.raises(InputError, match="period_fica_withholding"):
+        compute_withholding(MA, emp, taxability)

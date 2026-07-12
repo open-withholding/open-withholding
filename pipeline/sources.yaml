@@ -177,6 +177,21 @@
   expected_window: "12-15..02-15"
   maps_to:
     - data/us/al/{year}/withholding.yaml
+- id: us-ma-circular-m
+  document: "Circular M, Massachusetts Income Tax Withholding Tables"
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  method: custom/us_ma
+  # mass.gov (Akamai) 403s plain fetches — needs full browser headers; the
+  # /doc/ slug embeds year AND rate, so always link-scan.
+  landing: "https://www.mass.gov/lists/massachusetts-dor-withholding-tax-forms"
+  discovery: link_scan
+  link_pattern: '/doc/[^"]*circular-m[^"]*/download'
+  no_printed_examples: true
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ma/{year}/withholding.yaml
 
 - id: us-mn-wh-inst
   document: "Minnesota Income Tax Withholding Instruction Booklet and Tax Tables"
