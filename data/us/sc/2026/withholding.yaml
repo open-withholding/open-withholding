@@ -8,7 +8,11 @@ source:
   url: https://dor.sc.gov/sites/dor/files/forms/WH1603F_2026.pdf
   retrieved: '2026-07-09'
   sha256: 588edf32e0876bc842d41dea20eebac59c2b12e5457562d052c0c28ac5e9ffff
-  notes: Extracted by pipeline; pages per PR body
+  notes: 'WH-1603F single-page formula (Rev. 11/4/25): annualized; $5,000 personal allowance per claimed
+    allowance AND the 10%-of-wages standard deduction (capped $7,500/yr) are BOTH zero when zero allowances
+    are claimed (percent_deduction.requires_allowances). Brackets encoded from the Addition Method (base
+    + rate on excess); the Subtraction Method printed alongside is algebraically identical. Printed example
+    reproduces.'
 method: annualized_percentage
 rounding:
   to: '0.01'

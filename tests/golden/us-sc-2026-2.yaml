@@ -1,0 +1,15 @@
+source:
+  document: WH-1603F, Formula for Computing South Carolina Withholding Tax (2026)
+  page: 1
+  example: "maintainer-constructed: the zero-allowance gate \u2014 $750 weekly, 0 allowances -> NO personal\
+    \ allowance and NO standard deduction, tax on full annualized gross 39,000 -> 32.38/wk"
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '750.00'
+  state:
+  - jurisdiction: US-SC
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '32.38'
