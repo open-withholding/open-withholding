@@ -563,18 +563,32 @@
     - data/us/nj/{year}/withholding.yaml
 
 - id: us-dc-fr230
-  document: "FR-230 (2018 method/allowances) + OTR Tax Notice 2022-08 (current rates)"
+  document: "FR-230 (2018 mechanics) + OTR Notice 2022-08 + TY2022 rate schedule + Pub 15-T 2022 allowance"
   jurisdiction: US-DC
   tax: state_income_withholding
   method: annualized_percentage
   no_printed_examples: true
   landing: "https://otr.cfo.dc.gov/page/income-tax-withholding-instructions-and-tables"
-  # Multi-source reconciliation (issue #26): FR-230 was last issued for 2018
-  # and predates the 2022 rate restructure; the current brackets (10.75% top)
-  # live only in OTR Tax Notice 2022-08. Method/allowance mechanics come from
-  # FR-230, brackets from the notice — the source.notes must record the
-  # adjudication. OTR's Drupal pages 403 non-browser agents (Akamai) but the
-  # /sites/default/files attachments serve fine with a browser User-Agent.
+  # Multi-source reconciliation (issue #26). FR-230 was last issued for 2018;
+  # OTR Tax Notice 2022-08 does NOT print the current rates — it points to
+  # the "tax changes take effect October 1" release page for the TY2022
+  # schedule (10.75% top) and says to use the federal allowance amount for
+  # TY2022 ($4,300, printed in Pub 15-T 2022). The first dispatch proved the
+  # two-document set insufficient: the model correctly refused to invent the
+  # 2022 brackets and transcribed FR-230's stale 2018 tables instead.
+  # OTR's Drupal pages 403 non-browser agents (Akamai); the /sites/default/
+  # files attachments serve fine, and the release page is cited via its
+  # Wayback snapshot (precedent: GA mid-year backfill).
+  extraction_hint: >-
+    These four documents must be reconciled. Take the withholding METHOD
+    MECHANICS (annualization, how allowances are applied) from FR-230 (2018).
+    Take the rate brackets from the "New District of Columbia Tax Rate
+    Schedule" for tax year 2022 on the archived OTR release page — FR-230's
+    printed 2018 tables are superseded and must NOT be transcribed. OTR Tax
+    Notice 2022-08 directs use of the federal allowance amount for tax year
+    2022; that amount is printed in Publication 15-T (2022). The result is
+    effective for tax year 2022 (effective_from 2022-01-01) and remains
+    current. FR-230's worked examples predate the 2022 rates — exclude them.
   documents:
     - name: "FR-230, Income Tax Withholding Instructions and Tables (2018)"
       kind: pdf
@@ -582,6 +596,12 @@
     - name: "OTR Tax Notice 2022-08, District of Columbia Withholding for Tax Year 2022 (updated 10/17/2022)"
       kind: pdf
       url: "https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/release_content/attachments/Important_Information_Regarding_the_District_of_Columbia_Withholding_for_Tax_Year_2022_updated_10_17_2022.pdf"
+    - name: "OTR release: District of Columbia Tax Changes Take Effect October 1 (TY2022 rate schedule; Wayback snapshot)"
+      kind: html
+      url: "https://web.archive.org/web/20250616055422/https://otr.cfo.dc.gov/release/district-columbia-tax-changes-take-effect-october-1-real-property-individual-income-and"
+    - name: "Publication 15-T (2022), Federal Income Tax Withholding Methods"
+      kind: pdf
+      url: "https://www.irs.gov/pub/irs-prior/p15t--2022.pdf"
   check: [content_hash]
   maps_to:
     - data/us/dc/{year}/withholding.yaml

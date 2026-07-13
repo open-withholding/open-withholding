@@ -277,6 +277,8 @@ def assemble_parameter_file(
     provenance = (
         {"sources": source["sources"]} if "sources" in source else {"source": source}
     )
+    if "sources" in source:
+        schema_version = "0.2"  # multi-document citation is a v0.2 feature
     return {
         "schema_version": schema_version,
         "jurisdiction": jurisdiction,

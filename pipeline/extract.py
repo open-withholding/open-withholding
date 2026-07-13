@@ -342,6 +342,11 @@ def main() -> int:
 
     client = anthropic.Anthropic()
 
+    # Maintainer guidance from the registry: WHERE to read each value when
+    # documents overlap or supersede each other — never the values themselves.
+    hint = source.get("extraction_hint", "")
+    hint_note = f"\n\nMaintainer notes on this source's documents:\n{hint}" if hint else ""
+
     print(f"[2/5] extraction pass ({args.model}) ...")
     extraction = call_model(
         client,
@@ -358,7 +363,7 @@ def main() -> int:
                 "type": "text",
                 "text": f"Jurisdiction: {jurisdiction}\nTax: {tax}\nMethod: {method}\n"
                 f"Expected year: {args.year}\n\nThe normative method spec:\n\n{method_spec}"
-                f"{prev_note}\n\nTranscribe this document's parameters for the method above.",
+                f"{prev_note}{hint_note}\n\nTranscribe this document's parameters for the method above.",
             },
         ],
         extraction_schema(method),
@@ -413,7 +418,7 @@ def main() -> int:
                 "text": "The candidate parameter file to verify:\n\n```yaml\n"
                 + candidate_yaml
                 + "```\n\nConfirm every number against the document and transcribe all "
-                "applicable worked examples.",
+                "applicable worked examples." + hint_note,
             },
         ],
         VERIFICATION_SCHEMA,

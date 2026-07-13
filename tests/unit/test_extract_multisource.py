@@ -85,3 +85,25 @@ def test_stamp_edition_year_leaves_sources_list_verbatim():
     stamp_edition_year(block, 2018)  # regression: this KeyError'd all four dispatches
     assert block["sources"][0]["document"] == "FR-230 (2018)"
     assert block["sources"][1]["document"] == "Notice 2022-08"
+
+
+def test_schema_version_bumps_for_sources():
+    from pipeline import assemble
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {"rate": "0.0100"},
+    }
+    multi = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ", tax="state_income_withholding", method="flat_rate",
+        extraction=extraction,
+        source={"sources": [{"document": "a", "url": "u", "retrieved": "d", "sha256": "0" * 64},
+                            {"document": "b", "url": "u", "retrieved": "d", "sha256": "1" * 64}]})
+    single = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ", tax="state_income_withholding", method="flat_rate",
+        extraction=extraction,
+        source={"document": "a", "url": "u", "retrieved": "d", "sha256": "0" * 64})
+    assert multi["schema_version"] == "0.2"
+    assert single["schema_version"] == "0.1"
