@@ -1,0 +1,54 @@
+schema_version: '0.2'
+jurisdiction: US-DC
+tax: state_income_withholding
+effective_from: '2022-01-01'
+effective_to: null
+sources:
+- document: FR-230, Income Tax Withholding Instructions and Tables (2018)
+  url: https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/publication/attachments/2018%20FR-230_12.13.17.pdf
+  retrieved: '2026-07-13'
+  sha256: a3f017d25cb9b315c73f8599c64762e6d87728e9a7c33b51325d751126ee8cd0
+- document: OTR Tax Notice 2022-08, District of Columbia Withholding for Tax Year 2022 (updated 10/17/2022)
+  url: https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/release_content/attachments/Important_Information_Regarding_the_District_of_Columbia_Withholding_for_Tax_Year_2022_updated_10_17_2022.pdf
+  retrieved: '2026-07-13'
+  sha256: 60b90d3020faf4170c26cc0f9810632f3157899ddb3ca7f36cc5e1df9a5bcbb0
+- document: 'OTR release: District of Columbia Tax Changes Take Effect October 1 (TY2022 rate schedule;
+    Wayback snapshot)'
+  url: https://web.archive.org/web/20250616055422/https://otr.cfo.dc.gov/release/district-columbia-tax-changes-take-effect-october-1-real-property-individual-income-and
+  retrieved: '2026-07-13'
+  sha256: fd2854276634fb0684fc8762031a42f04ff5182d4668ff7941f998f8ff9cde58
+- document: Publication 15-T (2022), Federal Income Tax Withholding Methods
+  url: https://www.irs.gov/pub/irs-prior/p15t--2022.pdf
+  retrieved: '2026-07-13'
+  sha256: 7b08bd6bff8d545b7d999f1e2fe67978c486ad095ff659ce6e63b3873d111562
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '4300'
+  credit_per_allowance: null
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.04'
+      base: '0'
+    - over: '10000'
+      rate: '0.06'
+      base: '400'
+    - over: '40000'
+      rate: '0.065'
+      base: '2200'
+    - over: '60000'
+      rate: '0.085'
+      base: '3500'
+    - over: '250000'
+      rate: '0.0925'
+      base: '19650'
+    - over: '500000'
+      rate: '0.0975'
+      base: '42775'
+    - over: '1000000'
+      rate: '0.1075'
+      base: '91525'

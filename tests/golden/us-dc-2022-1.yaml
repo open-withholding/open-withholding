@@ -1,0 +1,16 @@
+source:
+  document: FR-230 (2018 mechanics) + OTR Notice 2022-08 + TY2022 rate schedule + Pub 15-T 2022 allowance
+  page: 1
+  example: 'maintainer-constructed (no current-rate examples exist in any source): annualize 2,000 x 26
+    = 52,000; minus 1 x 4,300 = 47,700; schedule: 2,200 + 6.5% x 7,700 = 2,700.50; / 26'
+as_of: '2022-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  state:
+  - jurisdiction: US-DC
+    filing_status: all
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '103.87'
