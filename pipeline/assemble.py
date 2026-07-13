@@ -380,8 +380,21 @@ def build_pr_body(
         f"- **Method:** `{method}`",
         f"- **Classification:** {extraction['classification']}",
         f"- **Effective from:** {extraction['effective_from']}",
-        f"- **Source:** [{source['document']}]({source['url']}) — retrieved {source['retrieved']}",
-        f"- **Archived PDF sha256:** `{source['sha256']}`",
+        *(
+            [
+                line
+                for block in source["sources"]
+                for line in (
+                    f"- **Source:** [{block['document']}]({block['url']}) — retrieved {block['retrieved']}",
+                    f"- **Archived sha256:** `{block['sha256']}`",
+                )
+            ]
+            if "sources" in source
+            else [
+                f"- **Source:** [{source['document']}]({source['url']}) — retrieved {source['retrieved']}",
+                f"- **Archived PDF sha256:** `{source['sha256']}`",
+            ]
+        ),
         f"- **Supersedes:** `{prev_path}`" if prev_path else "- **Supersedes:** none (first edition in repo)",
         "",
         "### Extraction citations",

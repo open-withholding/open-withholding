@@ -271,3 +271,27 @@ def test_single_source_still_required():
     neither = {k: v for k, v in raw.items() if k != "source"}
     with _p.raises(DataError, match="schema validation"):
         load_parameter_dict(neither)  # provenance still mandatory
+
+
+def test_build_pr_body_multi_source_lists_every_document():
+    body = assemble.build_pr_body(
+        source_id="us-zz-multi",
+        jurisdiction="US-ZZ",
+        tax="state_income_withholding",
+        method="flat_rate",
+        source={"sources": [
+            {"document": "Guide (HTML)", "url": "https://x.gov/guide",
+             "retrieved": "2026-07-12", "sha256": "0" * 64},
+            {"document": "Tables", "url": "https://x.gov/tables.pdf",
+             "retrieved": "2026-07-12", "sha256": "1" * 64},
+        ]},
+        extraction={"classification": "new_year_edition",
+                    "effective_from": "2026-01-01", "citations": []},
+        verification={"checks": [], "worked_examples": []},
+        golden_paths=[],
+        golden_ok=True,
+        prev_path=None,
+    )
+    assert "[Guide (HTML)](https://x.gov/guide)" in body
+    assert "[Tables](https://x.gov/tables.pdf)" in body
+    assert body.count("Archived sha256") == 2
