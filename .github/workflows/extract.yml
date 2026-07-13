@@ -110,6 +110,15 @@ jobs:
         run: |
           TRIAGE="pipeline/out/${{ inputs.source_id }}-${{ inputs.year }}-triage.md"
           if [ -f "$TRIAGE" ]; then
+            # Issue bodies cap at 65536 chars (NJ's full triage blew past it
+            # and the issue never opened). Truncate; the artifact is complete.
+            if [ "$(wc -c < "$TRIAGE")" -gt 60000 ]; then
+              head -c 60000 "$TRIAGE" > triage-truncated.md
+              printf '\n\n---\n**Truncated.** Full report in the run artifact `extractor-out-%s-%s`: %s\n' \
+                "${{ inputs.source_id }}" "${{ inputs.year }}" \
+                "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> triage-truncated.md
+              TRIAGE=triage-truncated.md
+            fi
             gh issue create \
               --title "Triage: ${{ inputs.source_id }} ${{ inputs.year }} extraction failed" \
               --body-file "$TRIAGE" \
