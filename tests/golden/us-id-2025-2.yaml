@@ -1,0 +1,16 @@
+source:
+  document: EPB00744 (percentage computation) + ICTCAT allowance table (HTML)
+  page: 1
+  example: 'Annualized Wage method example: married person paid $1,000 per week, claims four Idaho withholding
+    allowances'
+as_of: '2025-04-28'
+input:
+  pay_frequency: weekly
+  gross_wages: '1000'
+  state:
+  - jurisdiction: US-ID
+    filing_status: married
+    allowances: 4
+    additional_withholding: '0'
+expect:
+  state_withholding: '7'
