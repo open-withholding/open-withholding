@@ -1,0 +1,15 @@
+source:
+  document: Delaware Employer's Guide (Withholding Regulations) + withholding tables
+  page: 1
+  example: Section 17 example - Single, 1 allowance, monthly
+as_of: '2025-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '2083.33'
+  state:
+  - jurisdiction: US-DE
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '60.17'

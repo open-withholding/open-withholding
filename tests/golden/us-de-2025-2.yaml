@@ -1,0 +1,15 @@
+source:
+  document: Delaware Employer's Guide (Withholding Regulations) + withholding tables
+  page: 1
+  example: Section 17 example - Single, 1 allowance, bi-weekly
+as_of: '2025-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '961.54'
+  state:
+  - jurisdiction: US-DE
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '27.77'

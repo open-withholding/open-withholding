@@ -1,0 +1,15 @@
+source:
+  document: Delaware Employer's Guide (Withholding Regulations) + withholding tables
+  page: 1
+  example: Section 17 example - Married filing separate, 2 allowances, semi-monthly
+as_of: '2025-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '1041.67'
+  state:
+  - jurisdiction: US-DE
+    filing_status: married_filing_separately
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '25.50'

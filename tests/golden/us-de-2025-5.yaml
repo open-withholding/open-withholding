@@ -1,0 +1,15 @@
+source:
+  document: Delaware Employer's Guide (Withholding Regulations) + withholding tables
+  page: 1
+  example: Section 17 example - Married filing joint, 3 allowances, weekly
+as_of: '2025-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '480.77'
+  state:
+  - jurisdiction: US-DE
+    filing_status: married_joint
+    allowances: 3
+    additional_withholding: '0'
+expect:
+  state_withholding: '6.52'
