@@ -428,7 +428,9 @@ def main() -> int:
             tax=tax,
             example=ex,
             as_of=as_of,
-            document=source_block["document"],
+            # Multi-source blocks have no single name; cite the registry
+            # entry's summary (e.g. "NJ-WT + Rate Tables A-E").
+            document=source_block.get("document", source["document"]),
         )
         for ex in verification["worked_examples"]
     ]
