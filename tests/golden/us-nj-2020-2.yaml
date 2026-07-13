@@ -1,0 +1,15 @@
+source:
+  document: NJ-WT Income Tax Withholding Instructions + Percentage Method Rate Tables A-E
+  page: 25
+  example: 'Rate Table A Example 2: single, paid weekly, 1 allowance, $700 wage'
+as_of: '2020-10-01'
+input:
+  pay_frequency: weekly
+  gross_wages: '700.00'
+  state:
+  - jurisdiction: US-NJ
+    filing_status: rate_a
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '11.84'
