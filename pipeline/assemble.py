@@ -207,6 +207,30 @@ def _transform_params(method: str, params: dict) -> dict:
                 for r in params["table"]
             ],
         }
+    if method == "rate_schedule_percentage":
+        return {
+            "exemption_per_period": {
+                e["frequency"]: e["amount"] for e in params["exemption_per_period"]
+            },
+            "standard_deduction_per_period": {
+                e["frequency"]: e["amount"]
+                for e in params["standard_deduction_per_period"]
+            },
+            "no_withholding_floor": {
+                e["frequency"]: e["amount"] for e in params["no_withholding_floor"]
+            },
+            "status_groups": {
+                g["group"]: [snake(st) for st in g["statuses"]]
+                for g in params["status_groups"]
+            },
+            "schedules": {
+                sc["schedule"]: {
+                    f["frequency"]: {g["group"]: g["brackets"] for g in f["groups"]}
+                    for f in sc["frequencies"]
+                }
+                for sc in params["schedules"]
+            },
+        }
     if method == "deduction_constant_percentage":
         return {
             "rate": params["rate"],
@@ -344,6 +368,8 @@ def assemble_golden_case(
             election["secondary_allowances"] = example["secondary_allowances"]
         if example.get("exemption_counts"):
             election["exemptions"] = dict(example["exemption_counts"])
+        if example.get("rate_schedule"):
+            election["rate_schedule"] = example["rate_schedule"]
         if example.get("elected_annual_amount") is not None:
             election["elected_annual_amount"] = example["elected_annual_amount"]
         record["state"] = [election]
