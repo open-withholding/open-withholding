@@ -16,6 +16,7 @@ from engine.methods import (
     per_period_credit_phaseout,
     per_period_percentage,
 )
+from engine.methods.custom import us_ca as custom_us_ca
 from engine.methods.custom import us_ct as custom_us_ct
 from engine.methods.custom import us_al as custom_us_al
 from engine.methods.custom import us_ma as custom_us_ma
@@ -35,6 +36,7 @@ REGISTRY = {
     "elective_flat_rate": elective_flat_rate.compute,
     "per_period_credit_phaseout": per_period_credit_phaseout.compute,
     "federal_percentage_2020": federal_percentage_2020.compute,
+    "custom/us_ca": custom_us_ca.compute,
     "custom/us_ct": custom_us_ct.compute,
     "custom/us_or": custom_us_or.compute,
     "custom/us_al": custom_us_al.compute,

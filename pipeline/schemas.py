@@ -517,6 +517,104 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "custom/us_ca": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["low_income_exemption", "estimated_deduction",
+                     "standard_deduction", "exemption_allowance", "brackets"],
+        "properties": {
+            "low_income_exemption": {
+                "type": "array",
+                "description": "Table 1, one entry per payroll period; the two married "
+                "columns split on the number of REGULAR allowances ('0 or 1' vs '2 or "
+                "more'); daily/miscellaneous maps to frequency 'daily'",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "single", "married_allowances_0_1",
+                                 "married_allowances_2_plus", "head_of_household"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "single": DECIMAL,
+                        "married_allowances_0_1": DECIMAL,
+                        "married_allowances_2_plus": DECIMAL,
+                        "head_of_household": DECIMAL,
+                    },
+                },
+            },
+            "estimated_deduction": {
+                "type": "array",
+                "description": "Table 2: per period, the printed amounts for counts 1..10 "
+                "IN ORDER (amounts[0] = one allowance). Do not extrapolate past the table.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amounts"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "amounts": {"type": "array", "minItems": 1, "items": DECIMAL},
+                    },
+                },
+            },
+            "standard_deduction": {
+                "type": "array",
+                "description": "Table 3, same column structure as Table 1",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "single", "married_allowances_0_1",
+                                 "married_allowances_2_plus", "head_of_household"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "single": DECIMAL,
+                        "married_allowances_0_1": DECIMAL,
+                        "married_allowances_2_plus": DECIMAL,
+                        "head_of_household": DECIMAL,
+                    },
+                },
+            },
+            "exemption_allowance": {
+                "type": "array",
+                "description": "Table 4: per period, the printed CREDIT amounts for counts "
+                "1..10 IN ORDER (amounts[0] = one allowance; omit the zero row).",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amounts"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "amounts": {"type": "array", "minItems": 1, "items": DECIMAL},
+                    },
+                },
+            },
+            "brackets": {
+                "type": "array",
+                "description": "Tables 5-28: one entry per (period, filing status); "
+                "statuses are single, married, head_of_household; printed bases are "
+                "authoritative",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "statuses"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "statuses": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["filing_status", "rows"],
+                                "properties": {
+                                    "filing_status": {"type": "string"},
+                                    "rows": BRACKET_ROWS,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     "rate_schedule_percentage": {
         "type": "object",
         "additionalProperties": False,

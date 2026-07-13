@@ -664,3 +664,32 @@
   expected_window: "11-15..01-31"
   maps_to:
     - data/us/md/{year}/withholding.yaml
+
+- id: us-ca-methb
+  document: "California Withholding Schedules, Method B — Exact Calculation (DE 44 excerpt)"
+  jurisdiction: US-CA
+  tax: state_income_withholding
+  method: custom/us_ca
+  landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
+  # Year-versioned filename ({yy}methb.pdf); Method A ({yy}metha.pdf) is the
+  # wage-bracket lookup and is NOT extracted.
+  document_url_pattern: "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/{yy}methb.pdf"
+  extraction_hint: >-
+    Tables 1 and 3 print four columns; use keys single (the "Single, Dual
+    Income Married or Married with Multiple Employers" column),
+    married_allowances_0_1, married_allowances_2_plus, and
+    head_of_household. Tables 2 and 4 are transcribed as ordered amount
+    lists for counts 1..10 (omit Table 4's zero row; the beyond-10
+    multiplication rule is method behavior, not data). The
+    Daily/Miscellaneous period maps to frequency daily. Bracket statuses
+    are single, married, head_of_household. In the worked examples,
+    "claiming N withholding allowances, one of which is for estimated
+    deductions" means allowances = N-1 (regular) and secondary_allowances
+    = 1 — the Table 4 credit in the example confirms the regular count.
+    Example E computes an ANNUAL amount and prorates back by dividing by
+    the payroll periods; transcribe it with pay_frequency annually and the
+    printed ANNUAL tax amount (before the divide), or skip it with a note.
+  check: [content_hash]
+  expected_window: "11-01..01-15"
+  maps_to:
+    - data/us/ca/{year}/withholding.yaml

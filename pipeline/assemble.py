@@ -179,6 +179,31 @@ def _transform_params(method: str, params: dict) -> dict:
                 for e in params["status_groups"]
             },
         }
+    if method == "custom/us_ca":
+        cols = ("single", "married_allowances_0_1",
+                "married_allowances_2_plus", "head_of_household")
+        return {
+            "low_income_exemption": {
+                e["frequency"]: {c: e[c] for c in cols}
+                for e in params["low_income_exemption"]
+            },
+            "estimated_deduction": {
+                e["frequency"]: e["amounts"] for e in params["estimated_deduction"]
+            },
+            "standard_deduction": {
+                e["frequency"]: {c: e[c] for c in cols}
+                for e in params["standard_deduction"]
+            },
+            "exemption_allowance": {
+                e["frequency"]: e["amounts"] for e in params["exemption_allowance"]
+            },
+            "brackets": {
+                e["frequency"]: {
+                    snake(st["filing_status"]): st["rows"] for st in e["statuses"]
+                }
+                for e in params["brackets"]
+            },
+        }
     if method == "custom/us_ct":
         return {
             "codes": {

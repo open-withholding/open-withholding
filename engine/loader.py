@@ -78,7 +78,7 @@ def _validate_and_parse_brackets(method: str, params: dict) -> dict[str, tuple[B
                     tables[f"{sched}.{freq}.{group}"] = parse_table(
                         rows, context=f"params.schedules.{sched}.{freq}.{group}"
                     )
-    elif method in ("federal_percentage_2020", "per_period_percentage"):
+    elif method in ("federal_percentage_2020", "per_period_percentage", "custom/us_ca"):
         # Two-level tables: variant/frequency -> filing status -> rows.
         for outer, per_status in params.get("brackets", {}).items():
             for status, rows in per_status.items():
@@ -120,7 +120,9 @@ def load_parameter_dict(raw: dict, *, path: Path | None = None) -> ParameterFile
         params=params,
         rounding=Rounding.from_dict(raw.get("rounding")),
         source=raw["source"] if "source" in raw else {"sources": raw["sources"]},
-        bracket_tables=_validate_and_parse_brackets(method, params),
+        bracket_tables=_validate_and_parse_brackets(
+            raw.get("custom_implementation") or method, params
+        ),
     )
 
 
