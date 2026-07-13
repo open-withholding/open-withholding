@@ -52,7 +52,7 @@ class ParameterFile:
     custom_implementation: str | None
     params: dict
     rounding: Rounding
-    source: dict
+    source: dict  # single source block, or {"sources": [...]} for multi-document files
     bracket_tables: dict[str, tuple[BracketRow, ...]]  # flattened "status" / "standard.status" keys
 
     def in_effect(self, as_of: dt.date) -> bool:
@@ -111,7 +111,7 @@ def load_parameter_dict(raw: dict, *, path: Path | None = None) -> ParameterFile
         custom_implementation=raw.get("custom_implementation"),
         params=params,
         rounding=Rounding.from_dict(raw.get("rounding")),
-        source=raw["source"],
+        source=raw["source"] if "source" in raw else {"sources": raw["sources"]},
         bracket_tables=_validate_and_parse_brackets(method, params),
     )
 

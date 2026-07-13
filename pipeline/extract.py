@@ -111,6 +111,45 @@ def _substitute_year(pattern: str, year: int) -> str:
     return pattern.replace("{year}", str(year)).replace("{yy}", f"{year % 100:02d}")
 
 
+def html_to_text(data: bytes, url: str) -> str:
+    """Strip an HTML page to readable text for the model. Crude but
+    sufficient: agencies' formula pages are simple documents."""
+    import re
+
+    html = data.decode("utf-8", errors="replace")
+    html = re.sub(r"<(script|style|nav|header|footer)[^>]*>.*?</\1>", " ", html,
+                  flags=re.S | re.I)
+    html = re.sub(r"<br[^>]*>|</(p|div|tr|li|h[1-6])>", "\n", html, flags=re.I)
+    html = re.sub(r"</t[dh]>", "\t", html, flags=re.I)
+    html = re.sub(r"<[^>]+>", " ", html)
+    import html as h
+
+    text = h.unescape(html)
+    # Collapse space runs but keep the tabs that mark table-cell boundaries.
+    text = re.sub(r" +", " ", text)
+    text = re.sub(r" ?\t[ \t]*", "\t", text)
+    text = re.sub(r"\n[ \t]*(?=\n)|\t+(?=\n)", "", text)
+    text = re.sub(r"\n\n+", "\n\n", text)
+    return f"[HTML source: {url}]\n\n" + text.strip()
+
+
+def fetch_documents(source: dict, year: int) -> list[dict]:
+    """Multi-document sources: fetch every entry in `documents`. Returns
+    [{name, kind, url, data, text?}] — PDFs keep bytes, HTML becomes text."""
+    out = []
+    for doc in source["documents"]:
+        url = _substitute_year(doc["url"], year)
+        data = discover.fetch(url, insecure=source.get("insecure_tls", False))
+        kind = doc.get("kind", "pdf")
+        if kind == "pdf" and not data.startswith(b"%PDF"):
+            raise ExtractionFailure(f"{url}: expected PDF, got other bytes")
+        entry = {"name": doc["name"], "kind": kind, "url": url, "data": data}
+        if kind == "html":
+            entry["text"] = html_to_text(data, url)
+        out.append(entry)
+    return out
+
+
 def fetch_pdf(source: dict, year: int, pdf_path: str | None) -> tuple[bytes, str]:
     """Returns (pdf bytes, the URL they came from)."""
     if pdf_path:
@@ -248,15 +287,34 @@ def main() -> int:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     print(f"[1/5] fetching + archiving {args.source_id} ...")
-    pdf, pdf_url = fetch_pdf(source, args.year, args.pdf)
-    sha = archive_pdf(pdf, source, args.year, pdf_url)
-    source_block = {
-        "document": source["document"],
-        "url": pdf_url,
-        "retrieved": dt.date.today().isoformat(),
-        "sha256": sha,
-    }
-    print(f"      archived archive/{sha}.pdf ({len(pdf)//1024} KiB)")
+    documents = None
+    if source.get("documents"):
+        documents = fetch_documents(source, args.year)
+        source_blocks = []
+        for doc in documents:
+            sha = hashlib.sha256(doc["data"]).hexdigest()
+            ARCHIVE_DIR.mkdir(exist_ok=True)
+            ext = "pdf" if doc["kind"] == "pdf" else "html"
+            (ARCHIVE_DIR / f"{sha}.{ext}").write_bytes(doc["data"])
+            doc["sha256"] = sha
+            source_blocks.append({
+                "document": doc["name"],
+                "url": doc["url"],
+                "retrieved": dt.date.today().isoformat(),
+                "sha256": sha,
+            })
+            print(f"      archived {doc['name']} ({doc['kind']}, {len(doc['data'])//1024} KiB) {sha[:12]}...")
+        source_block = {"sources": source_blocks}
+    else:
+        pdf, pdf_url = fetch_pdf(source, args.year, args.pdf)
+        sha = archive_pdf(pdf, source, args.year, pdf_url)
+        source_block = {
+            "document": source["document"],
+            "url": pdf_url,
+            "retrieved": dt.date.today().isoformat(),
+            "sha256": sha,
+        }
+        print(f"      archived archive/{sha}.pdf ({len(pdf)//1024} KiB)")
 
     method_spec = (REPO_ROOT / "methods" / f"{method}.md").read_text()
     prev_path = find_prev_file(jurisdiction, tax)
@@ -281,7 +339,12 @@ def main() -> int:
         args.model,
         EXTRACTION_SYSTEM,
         [
-            pdf_block(pdf),
+            *(
+                [pdf_block(d["data"]) if d["kind"] == "pdf"
+                 else {"type": "text", "text": d["text"]}
+                 for d in documents]
+                if documents else [pdf_block(pdf)]
+            ),
             {
                 "type": "text",
                 "text": f"Jurisdiction: {jurisdiction}\nTax: {tax}\nMethod: {method}\n"
@@ -315,7 +378,11 @@ def main() -> int:
         tax=tax,
         method=method,
         extraction=extraction,
-        source={**source_block, "notes": "Extracted by pipeline; pages per PR body"},
+        source=(
+            source_block
+            if "sources" in source_block
+            else {**source_block, "notes": "Extracted by pipeline; pages per PR body"}
+        ),
         supersedes=str(prev_path.relative_to(REPO_ROOT)) if prev_path else None,
     )
     candidate_yaml = dump_yaml(param_dict)
@@ -326,7 +393,12 @@ def main() -> int:
         args.model,
         VERIFICATION_SYSTEM,
         [
-            pdf_block(pdf),
+            *(
+                [pdf_block(d["data"]) if d["kind"] == "pdf"
+                 else {"type": "text", "text": d["text"]}
+                 for d in documents]
+                if documents else [pdf_block(pdf)]
+            ),
             {
                 "type": "text",
                 "text": "The candidate parameter file to verify:\n\n```yaml\n"

@@ -274,6 +274,9 @@ def assemble_parameter_file(
         method_field = {"method": "custom", "custom_implementation": method}
     else:
         method_field = {"method": method}
+    provenance = (
+        {"sources": source["sources"]} if "sources" in source else {"source": source}
+    )
     return {
         "schema_version": schema_version,
         "jurisdiction": jurisdiction,
@@ -281,7 +284,7 @@ def assemble_parameter_file(
         "effective_from": extraction["effective_from"],
         "effective_to": None,
         **({"supersedes": supersedes} if supersedes else {}),
-        "source": source,
+        **provenance,
         **method_field,
         "rounding": rounding,
         "params": _transform_params(method, extraction["params"]),

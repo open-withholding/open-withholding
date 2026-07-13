@@ -229,3 +229,45 @@ def test_prose_filing_status_labels_normalized_to_snake_case():
         document="doc",
     )
     assert golden["input"]["state"][0]["filing_status"] == "married_spouse_works"
+
+
+def test_multi_source_provenance_roundtrip():
+    # v0.2: a sources list validates and assembles in place of source
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {"rate": "0.0100"},
+    }
+    sources = {"sources": [
+        {"document": "tables", "url": "https://example.gov/a.pdf",
+         "retrieved": "2026-07-12", "sha256": "0" * 64},
+        {"document": "formula page", "url": "https://example.gov/guide",
+         "retrieved": "2026-07-12", "sha256": "1" * 64},
+    ]}
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ", tax="state_income_withholding",
+        method="flat_rate", extraction=extraction, source=sources)
+    assert "source" not in raw and len(raw["sources"]) == 2
+    load_parameter_dict(raw)  # schema accepts the list form
+
+
+def test_single_source_still_required():
+    import pytest as _p
+    from engine.errors import DataError
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {"rate": "0.0100"},
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ", tax="state_income_withholding",
+        method="flat_rate", extraction=extraction, source=SOURCE)
+    both = dict(raw)
+    both["sources"] = [dict(SOURCE, document="dup")]
+    with _p.raises(DataError, match="schema validation"):
+        load_parameter_dict(both)  # source AND sources is rejected
+    neither = {k: v for k, v in raw.items() if k != "source"}
+    with _p.raises(DataError, match="schema validation"):
+        load_parameter_dict(neither)  # provenance still mandatory
