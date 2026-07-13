@@ -207,6 +207,16 @@ def _transform_params(method: str, params: dict) -> dict:
                 for r in params["table"]
             ],
         }
+    if method == "deduction_constant_percentage":
+        return {
+            "rate": params["rate"],
+            "exemptions": {
+                snake(e["kind"]): e["annual_amount"] for e in params["exemption_kinds"]
+            },
+            "periods_per_year": {
+                e["frequency"]: str(e["divisor"]) for e in params["periods_per_year"]
+            },
+        }
     if method == "per_period_credit_phaseout":
         return {
             "rate": params["rate"],
@@ -332,6 +342,8 @@ def assemble_golden_case(
         }
         if example.get("secondary_allowances"):
             election["secondary_allowances"] = example["secondary_allowances"]
+        if example.get("exemption_counts"):
+            election["exemptions"] = dict(example["exemption_counts"])
         if example.get("elected_annual_amount") is not None:
             election["elected_annual_amount"] = example["elected_annual_amount"]
         record["state"] = [election]

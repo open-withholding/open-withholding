@@ -2,45 +2,75 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/open-withholding/schema/employee-input.schema.json",
   "title": "Employee input record",
-  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 — org URL in $id is a placeholder.",
+  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 \u2014 org URL in $id is a placeholder.",
   "type": "object",
-  "required": ["pay_frequency", "gross_wages"],
+  "required": [
+    "pay_frequency",
+    "gross_wages"
+  ],
   "additionalProperties": false,
   "properties": {
     "pay_frequency": {
-      "enum": ["weekly", "biweekly", "semimonthly", "monthly", "quarterly", "semiannually", "annually", "daily"]
+      "enum": [
+        "weekly",
+        "biweekly",
+        "semimonthly",
+        "monthly",
+        "quarterly",
+        "semiannually",
+        "annually",
+        "daily"
+      ]
     },
-    "gross_wages": { "$ref": "#/$defs/money" },
+    "gross_wages": {
+      "$ref": "#/$defs/money"
+    },
     "pretax_deductions": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["type", "amount"],
+        "required": [
+          "type",
+          "amount"
+        ],
         "additionalProperties": false,
         "properties": {
-          "type": { "type": "string", "description": "Must exist in /taxability; unknown types are a hard error" },
-          "amount": { "$ref": "#/$defs/money" }
+          "type": {
+            "type": "string",
+            "description": "Must exist in /taxability; unknown types are a hard error"
+          },
+          "amount": {
+            "$ref": "#/$defs/money"
+          }
         }
       },
       "default": []
     },
     "period_federal_income_withholding": {
       "$ref": "#/$defs/money",
-      "description": "Federal income tax withheld this period — an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
+      "description": "Federal income tax withheld this period \u2014 an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
     },
     "period_fica_withholding": {
       "$ref": "#/$defs/money",
-      "description": "FICA/Medicare/retirement-system withholdings this period — consumed by MA's capped deduction"
+      "description": "FICA/Medicare/retirement-system withholdings this period \u2014 consumed by MA's capped deduction"
     },
     "ytd": {
       "type": "object",
       "description": "Required for wage-base caps (SS, SUI, SDI) and the Additional Medicare threshold",
       "additionalProperties": false,
       "properties": {
-        "social_security_wages": { "$ref": "#/$defs/money" },
-        "medicare_wages": { "$ref": "#/$defs/money" },
-        "sui_wages": { "$ref": "#/$defs/money" },
-        "sdi_wages": { "$ref": "#/$defs/money" },
+        "social_security_wages": {
+          "$ref": "#/$defs/money"
+        },
+        "medicare_wages": {
+          "$ref": "#/$defs/money"
+        },
+        "sui_wages": {
+          "$ref": "#/$defs/money"
+        },
+        "sdi_wages": {
+          "$ref": "#/$defs/money"
+        },
         "retirement_deduction_used": {
           "$ref": "#/$defs/money",
           "description": "Amount already subtracted this year under MA Circular M step 1 (the $2,000 cumulative cap tracker); absent = 0"
@@ -49,19 +79,46 @@
     },
     "federal": {
       "type": "object",
-      "required": ["w4_version", "filing_status"],
+      "required": [
+        "w4_version",
+        "filing_status"
+      ],
       "additionalProperties": false,
       "properties": {
-        "w4_version": { "enum": [2020, "pre_2020"] },
+        "w4_version": {
+          "enum": [
+            2020,
+            "pre_2020"
+          ]
+        },
         "filing_status": {
-          "enum": ["single", "married_joint", "head_of_household"],
+          "enum": [
+            "single",
+            "married_joint",
+            "head_of_household"
+          ],
           "description": "single covers Married Filing Separately; married_joint covers Qualifying Surviving Spouse (Pub 15-T table headings)"
         },
-        "step2_checkbox": { "type": "boolean", "default": false },
-        "step3_credits": { "$ref": "#/$defs/money", "default": "0" },
-        "step4a_other_income": { "$ref": "#/$defs/money", "default": "0" },
-        "step4b_deductions": { "$ref": "#/$defs/money", "default": "0" },
-        "step4c_extra": { "$ref": "#/$defs/money", "default": "0" },
+        "step2_checkbox": {
+          "type": "boolean",
+          "default": false
+        },
+        "step3_credits": {
+          "$ref": "#/$defs/money",
+          "default": "0"
+        },
+        "step4a_other_income": {
+          "$ref": "#/$defs/money",
+          "default": "0"
+        },
+        "step4b_deductions": {
+          "$ref": "#/$defs/money",
+          "default": "0"
+        },
+        "step4c_extra": {
+          "$ref": "#/$defs/money",
+          "default": "0"
+        },
         "allowances": {
           "type": "integer",
           "minimum": 0,
@@ -73,22 +130,33 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["jurisdiction"],
+        "required": [
+          "jurisdiction"
+        ],
         "additionalProperties": false,
         "properties": {
-          "jurisdiction": { "$ref": "#/$defs/jurisdiction" },
+          "jurisdiction": {
+            "$ref": "#/$defs/jurisdiction"
+          },
           "filing_status": {
             "type": "string",
             "description": "Per-state enum; each state's parameter file defines its legal statuses"
           },
-          "allowances": { "type": "integer", "minimum": 0, "default": 0 },
+          "allowances": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
           "secondary_allowances": {
             "type": "integer",
             "minimum": 0,
             "default": 0,
             "description": "Second allowance kind where the state defines one (e.g. IL-W-4 Line 2)"
           },
-          "additional_withholding": { "$ref": "#/$defs/money", "default": "0" },
+          "additional_withholding": {
+            "$ref": "#/$defs/money",
+            "default": "0"
+          },
           "elected_rate": {
             "$ref": "#/$defs/rate",
             "description": "Employee-elected withholding rate where the state offers one (AZ Form A-4)"
@@ -96,6 +164,14 @@
           "elected_annual_amount": {
             "$ref": "#/$defs/money",
             "description": "Employee-entered annual dollar amount where the state's certificate takes one (MS 89-350 exemption; IA W-4 allowance dollars)"
+          },
+          "exemptions": {
+            "type": "object",
+            "description": "Named exemption counts for jurisdictions with more than two kinds (IN WH-4 lines 5-8: personal/dependent/first_time_dependent/adopted); keys are method-defined",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         }
       }
@@ -104,11 +180,18 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["jurisdiction"],
+        "required": [
+          "jurisdiction"
+        ],
         "additionalProperties": false,
         "properties": {
-          "jurisdiction": { "$ref": "#/$defs/jurisdiction" },
-          "resident": { "type": "boolean", "default": true }
+          "jurisdiction": {
+            "$ref": "#/$defs/jurisdiction"
+          },
+          "resident": {
+            "type": "boolean",
+            "default": true
+          }
         }
       }
     },
@@ -116,7 +199,9 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "sui_jurisdiction": { "$ref": "#/$defs/jurisdiction" },
+        "sui_jurisdiction": {
+          "$ref": "#/$defs/jurisdiction"
+        },
         "sui_experience_rate": {
           "$ref": "#/$defs/rate",
           "description": "Always user-entered from the state rate notice; never data"

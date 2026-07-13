@@ -605,3 +605,33 @@
   check: [content_hash]
   maps_to:
     - data/us/dc/{year}/withholding.yaml
+
+- id: us-in-dn01
+  document: "Departmental Notice #1, How to Compute Withholding for State and County Income Tax"
+  jurisdiction: US-IN
+  tax: state_income_withholding
+  method: deduction_constant_percentage
+  landing: "https://www.in.gov/dor/business-tax/withholding-income-tax/"
+  # Stable in-place URL, REISSUED TWICE YEARLY (Oct 1 and Jan 1) — asterisks
+  # in the county table mark rate changes since the prior issue. The county
+  # rate table (pp.4+, all 92 counties) is THE Indiana locals source; county
+  # files (same method + same exemption params + the county's rate on the
+  # identical taxable base) are a separate workstream and NOT part of this
+  # state file.
+  document_url_pattern: "https://www.in.gov/dor/files/dn01.pdf"
+  extraction_hint: >-
+    Use these exemption kind keys, mapped to Form WH-4 lines: personal =
+    line 5 (Table A, $1,000/yr, includes 65+/blind extras); dependent =
+    line 6 (Table B); first_time_dependent = line 7 (the supplemental
+    first-time additional dependent exemption, ALSO valued from Table B);
+    adopted = line 8 (Table C). The deduction-constant tables print
+    round(count x annual / divisor) per cell — transcribe the divisor each
+    column implies (the Daily column divides by 365). In the worked example
+    the line 6 and line 7 amounts are looked up separately and each rounded
+    independently; transcribe its counts into exemption_counts with the keys
+    above. The county tax rows of the example belong to county files, not
+    this state file — the state expected_withholding is the state tax only.
+  check: [content_hash]
+  expected_window: "09-15..01-31"
+  maps_to:
+    - data/us/in/{year}/withholding.yaml

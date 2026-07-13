@@ -88,6 +88,10 @@ class StateElection:
     additional_withholding: Decimal = ZERO
     elected_rate: Decimal | None = None  # AZ A-4 style employee-elected rate
     elected_annual_amount: Decimal | None = None  # MS/IA employee-entered dollars
+    # Named exemption counts for jurisdictions whose certificate carries more
+    # than two kinds (IN WH-4 lines 5-8: personal / dependent /
+    # first_time_dependent / adopted). Keys are method-defined.
+    exemptions: dict = field(default_factory=dict)
 
     @classmethod
     def from_dict(cls, raw: dict) -> "StateElection":
@@ -101,6 +105,12 @@ class StateElection:
             if not isinstance(value, int) or value < 0:
                 raise InputError(f"{ctx}.{key} must be an integer >= 0, got {value!r}")
             counts[key] = value
+        exemptions = raw.get("exemptions") or {}
+        if not isinstance(exemptions, dict):
+            raise InputError(f"{ctx}.exemptions must be a mapping of kind -> count")
+        for kind, n in exemptions.items():
+            if not isinstance(n, int) or n < 0:
+                raise InputError(f"{ctx}.exemptions.{kind} must be an integer >= 0, got {n!r}")
         elected_rate = None
         if raw.get("elected_rate") is not None:
             elected_rate = D(raw["elected_rate"], context=f"{ctx}.elected_rate")
@@ -117,6 +127,7 @@ class StateElection:
             additional_withholding=_money(raw, "additional_withholding", context=ctx),
             elected_rate=elected_rate,
             elected_annual_amount=elected_amount,
+            exemptions=exemptions,
         )
 
 

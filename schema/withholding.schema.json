@@ -2,39 +2,89 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/open-withholding/schema/withholding.schema.json",
   "title": "Withholding parameter file",
-  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 — org URL in $id is a placeholder.",
+  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 \u2014 org URL in $id is a placeholder.",
   "type": "object",
-  "required": ["schema_version", "jurisdiction", "tax", "effective_from", "method", "params"],
+  "required": [
+    "schema_version",
+    "jurisdiction",
+    "tax",
+    "effective_from",
+    "method",
+    "params"
+  ],
   "additionalProperties": false,
   "properties": {
-    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
     "jurisdiction": {
       "type": "string",
       "pattern": "^US(-[A-Z]{2})?(-[A-Z0-9-]+)?$",
       "description": "US, US-<state>, or US-<state>-<local id> (e.g. US-PA-PSD-700102)"
     },
     "tax": {
-      "enum": ["federal_income_withholding", "state_income_withholding", "local_income_withholding"]
+      "enum": [
+        "federal_income_withholding",
+        "state_income_withholding",
+        "local_income_withholding"
+      ]
     },
-    "effective_from": { "type": "string", "format": "date" },
-    "effective_to": { "type": ["string", "null"], "format": "date" },
-    "supersedes": { "type": ["string", "null"], "description": "Repo-relative path of the file this replaces" },
+    "effective_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "effective_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "supersedes": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Repo-relative path of the file this replaces"
+    },
     "sources": {
       "type": "array",
       "minItems": 2,
       "description": "Multi-document provenance (v0.2): every parameter must be traceable to one of these; single-document files keep `source`",
-      "items": { "$ref": "#/$defs/sourceBlock" }
+      "items": {
+        "$ref": "#/$defs/sourceBlock"
+      }
     },
     "source": {
       "type": "object",
-      "required": ["document", "url", "retrieved", "sha256"],
+      "required": [
+        "document",
+        "url",
+        "retrieved",
+        "sha256"
+      ],
       "additionalProperties": false,
       "properties": {
-        "document": { "type": "string", "minLength": 3 },
-        "url": { "type": "string", "format": "uri" },
-        "retrieved": { "type": "string", "format": "date" },
-        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "notes": { "type": "string" }
+        "document": {
+          "type": "string",
+          "minLength": 3
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "retrieved": {
+          "type": "string",
+          "format": "date"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     },
     "method": {
@@ -50,6 +100,7 @@
         "per_period_percentage",
         "elective_flat_rate",
         "per_period_credit_phaseout",
+        "deduction_constant_percentage",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
         "wage_bracket_lookup",
@@ -60,18 +111,39 @@
       "type": "string",
       "description": "Required iff method == custom; e.g. custom/us_ct"
     },
-    "params": { "type": "object" },
+    "params": {
+      "type": "object"
+    },
     "rounding": {
       "type": "object",
-      "required": ["to", "mode"],
+      "required": [
+        "to",
+        "mode"
+      ],
       "additionalProperties": false,
       "properties": {
-        "to": { "$ref": "#/$defs/money", "description": "Round to nearest multiple, e.g. \"1.00\" or \"0.01\"" },
-        "mode": { "enum": ["nearest", "up", "down", "half_even"] },
-        "intermediate": { "enum": ["none", "annual"], "default": "none" },
+        "to": {
+          "$ref": "#/$defs/money",
+          "description": "Round to nearest multiple, e.g. \"1.00\" or \"0.01\""
+        },
+        "mode": {
+          "enum": [
+            "nearest",
+            "up",
+            "down",
+            "half_even"
+          ]
+        },
+        "intermediate": {
+          "enum": [
+            "none",
+            "annual"
+          ],
+          "default": "none"
+        },
         "intermediate_to": {
           "$ref": "#/$defs/money",
-          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` — e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
+          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` \u2014 e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
         }
       }
     }
@@ -80,40 +152,87 @@
     {
       "description": "Provenance is mandatory: exactly one of source / sources",
       "oneOf": [
-        { "required": ["source"], "not": { "required": ["sources"] } },
-        { "required": ["sources"], "not": { "required": ["source"] } }
+        {
+          "required": [
+            "source"
+          ],
+          "not": {
+            "required": [
+              "sources"
+            ]
+          }
+        },
+        {
+          "required": [
+            "sources"
+          ],
+          "not": {
+            "required": [
+              "source"
+            ]
+          }
+        }
       ]
     },
     {
-      "if": { "properties": { "method": { "const": "flat_rate" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "flat_rate"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["rate"],
+            "required": [
+              "rate"
+            ],
             "additionalProperties": false,
-            "properties": { "rate": { "$ref": "#/$defs/rate" } }
+            "properties": {
+              "rate": {
+                "$ref": "#/$defs/rate"
+              }
+            }
           }
         }
       }
     },
     {
-      "if": { "properties": { "method": { "const": "flat_rate_with_annual_allowance" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "flat_rate_with_annual_allowance"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["rate", "filing_status"],
+            "required": [
+              "rate",
+              "filing_status"
+            ],
             "additionalProperties": false,
             "properties": {
-              "rate": { "$ref": "#/$defs/rate" },
+              "rate": {
+                "$ref": "#/$defs/rate"
+              },
               "filing_status": {
                 "type": "object",
                 "minProperties": 1,
                 "additionalProperties": {
                   "type": "object",
-                  "required": ["annual_allowance"],
-                  "properties": { "annual_allowance": { "$ref": "#/$defs/money" } }
+                  "required": [
+                    "annual_allowance"
+                  ],
+                  "properties": {
+                    "annual_allowance": {
+                      "$ref": "#/$defs/money"
+                    }
+                  }
                 }
               }
             }
@@ -122,41 +241,69 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "annualized_percentage" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "annualized_percentage"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["brackets"],
+            "required": [
+              "brackets"
+            ],
             "additionalProperties": false,
             "properties": {
-              "standard_deduction": { "$ref": "#/$defs/perStatusMoney" },
-              "allowance_amount": { "$ref": "#/$defs/moneyOrNull" },
+              "standard_deduction": {
+                "$ref": "#/$defs/perStatusMoney"
+              },
+              "allowance_amount": {
+                "$ref": "#/$defs/moneyOrNull"
+              },
               "secondary_allowance_amount": {
                 "$ref": "#/$defs/moneyOrNull",
                 "description": "Per second-kind allowance (e.g. IL-W-4 Line 2), where the jurisdiction defines one"
               },
               "elected_amount_treatment": {
-                "enum": ["wage_reduction"],
+                "enum": [
+                  "wage_reduction"
+                ],
                 "description": "How the input's elected_annual_amount is consumed (MS 89-350 exemption dollars reduce wages)"
               },
               "percent_deduction": {
                 "type": "object",
                 "description": "Percentage-of-annual-wages deduction with a cap, optionally gated on claiming at least one allowance (SC)",
-                "required": ["rate", "cap"],
+                "required": [
+                  "rate",
+                  "cap"
+                ],
                 "additionalProperties": false,
                 "properties": {
-                  "rate": { "$ref": "#/$defs/rate" },
-                  "cap": { "$ref": "#/$defs/money" },
-                  "requires_allowances": { "type": "boolean", "default": false }
+                  "rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "cap": {
+                    "$ref": "#/$defs/money"
+                  },
+                  "requires_allowances": {
+                    "type": "boolean",
+                    "default": false
+                  }
                 }
               },
-              "credit_per_allowance": { "$ref": "#/$defs/moneyOrNull" },
+              "credit_per_allowance": {
+                "$ref": "#/$defs/moneyOrNull"
+              },
               "brackets": {
                 "type": "object",
                 "minProperties": 1,
                 "description": "Keyed by this jurisdiction's filing-status enum",
-                "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                "additionalProperties": {
+                  "$ref": "#/$defs/bracketTable"
+                }
               }
             }
           }
@@ -164,12 +311,21 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "annualized_percentage_phaseout" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "annualized_percentage_phaseout"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["deduction_phaseout", "brackets"],
+            "required": [
+              "deduction_phaseout",
+              "brackets"
+            ],
             "additionalProperties": false,
             "properties": {
               "deduction_phaseout": {
@@ -178,21 +334,35 @@
                 "description": "Keyed by filing status; deduction = maximum until phase_start, then shrinks by phase_rate per dollar, floored at 0",
                 "additionalProperties": {
                   "type": "object",
-                  "required": ["maximum", "phase_start", "phase_rate"],
+                  "required": [
+                    "maximum",
+                    "phase_start",
+                    "phase_rate"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "maximum": { "$ref": "#/$defs/money" },
-                    "phase_start": { "$ref": "#/$defs/money" },
-                    "phase_rate": { "$ref": "#/$defs/rate" }
+                    "maximum": {
+                      "$ref": "#/$defs/money"
+                    },
+                    "phase_start": {
+                      "$ref": "#/$defs/money"
+                    },
+                    "phase_rate": {
+                      "$ref": "#/$defs/rate"
+                    }
                   }
                 }
               },
-              "exemption_amount": { "$ref": "#/$defs/moneyOrNull" },
+              "exemption_amount": {
+                "$ref": "#/$defs/moneyOrNull"
+              },
               "brackets": {
                 "type": "object",
                 "minProperties": 1,
                 "description": "Keyed by filing status; a single schedule for all statuses uses the key \"all\"",
-                "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                "additionalProperties": {
+                  "$ref": "#/$defs/bracketTable"
+                }
               }
             }
           }
@@ -200,45 +370,91 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "elective_flat_rate" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "elective_flat_rate"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["allowed_rates"],
+            "required": [
+              "allowed_rates"
+            ],
             "additionalProperties": false,
             "properties": {
               "allowed_rates": {
                 "type": "array",
                 "minItems": 1,
-                "items": { "$ref": "#/$defs/rate" }
+                "items": {
+                  "$ref": "#/$defs/rate"
+                }
               },
-              "zero_rate_allowed": { "type": "boolean", "default": false },
-              "default_rate": { "anyOf": [{ "$ref": "#/$defs/rate" }, { "type": "null" }] }
+              "zero_rate_allowed": {
+                "type": "boolean",
+                "default": false
+              },
+              "default_rate": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/rate"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
             }
           }
         }
       }
     },
     {
-      "if": { "properties": { "method": { "const": "annualized_subtraction_percentage" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "annualized_subtraction_percentage"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["standard_deduction", "midrange_snap", "table"],
+            "required": [
+              "standard_deduction",
+              "midrange_snap",
+              "table"
+            ],
             "additionalProperties": false,
             "properties": {
-              "standard_deduction": { "$ref": "#/$defs/money" },
-              "credit_per_allowance": { "$ref": "#/$defs/moneyOrNull" },
+              "standard_deduction": {
+                "$ref": "#/$defs/money"
+              },
+              "credit_per_allowance": {
+                "$ref": "#/$defs/moneyOrNull"
+              },
               "midrange_snap": {
                 "type": "object",
-                "required": ["bracket_size", "midpoint", "snap_below"],
+                "required": [
+                  "bracket_size",
+                  "midpoint",
+                  "snap_below"
+                ],
                 "additionalProperties": false,
                 "properties": {
-                  "bracket_size": { "$ref": "#/$defs/money" },
-                  "midpoint": { "$ref": "#/$defs/money" },
-                  "snap_below": { "$ref": "#/$defs/money" }
+                  "bracket_size": {
+                    "$ref": "#/$defs/money"
+                  },
+                  "midpoint": {
+                    "$ref": "#/$defs/money"
+                  },
+                  "snap_below": {
+                    "$ref": "#/$defs/money"
+                  }
                 }
               },
               "table": {
@@ -247,12 +463,21 @@
                 "description": "Printed rate-minus-subtraction rows, `from` ascending from 0",
                 "items": {
                   "type": "object",
-                  "required": ["from", "rate"],
+                  "required": [
+                    "from",
+                    "rate"
+                  ],
                   "additionalProperties": false,
                   "properties": {
-                    "from": { "$ref": "#/$defs/money" },
-                    "rate": { "$ref": "#/$defs/rate" },
-                    "subtract": { "$ref": "#/$defs/moneyOrNull" }
+                    "from": {
+                      "$ref": "#/$defs/money"
+                    },
+                    "rate": {
+                      "$ref": "#/$defs/rate"
+                    },
+                    "subtract": {
+                      "$ref": "#/$defs/moneyOrNull"
+                    }
                   }
                 }
               }
@@ -262,16 +487,30 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "per_period_credit_phaseout" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "per_period_credit_phaseout"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["rate", "phase_rate", "schedules"],
+            "required": [
+              "rate",
+              "phase_rate",
+              "schedules"
+            ],
             "additionalProperties": false,
             "properties": {
-              "rate": { "$ref": "#/$defs/rate" },
-              "phase_rate": { "$ref": "#/$defs/rate" },
+              "rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "phase_rate": {
+                "$ref": "#/$defs/rate"
+              },
               "schedules": {
                 "type": "object",
                 "minProperties": 1,
@@ -282,11 +521,18 @@
                     "minProperties": 1,
                     "additionalProperties": {
                       "type": "object",
-                      "required": ["base_allowance", "phase_start"],
+                      "required": [
+                        "base_allowance",
+                        "phase_start"
+                      ],
                       "additionalProperties": false,
                       "properties": {
-                        "base_allowance": { "$ref": "#/$defs/money" },
-                        "phase_start": { "$ref": "#/$defs/money" }
+                        "base_allowance": {
+                          "$ref": "#/$defs/money"
+                        },
+                        "phase_start": {
+                          "$ref": "#/$defs/money"
+                        }
                       }
                     }
                   }
@@ -298,12 +544,65 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "per_period_percentage" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "deduction_constant_percentage"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["brackets"],
+            "required": [
+              "rate",
+              "exemptions",
+              "periods_per_year"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "exemptions": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "$ref": "#/$defs/money"
+                }
+              },
+              "periods_per_year": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "string",
+                    "pattern": "^[0-9]+$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "per_period_percentage"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "brackets"
+            ],
             "additionalProperties": false,
             "properties": {
               "standard_deduction": {
@@ -319,7 +618,9 @@
                 "description": "ANNUAL per-allowance tax credit, prorated per period (IA legacy W-4s: $40/allowance)"
               },
               "elected_amount_treatment": {
-                "enum": ["tax_credit"],
+                "enum": [
+                  "tax_credit"
+                ],
                 "description": "How the input's elected_annual_amount is consumed (IA W-4 dollars, prorated per period, subtracted from tax)"
               },
               "allowance_cliff_annual_wages": {
@@ -345,7 +646,9 @@
                   "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
                     "type": "object",
                     "minProperties": 1,
-                    "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                    "additionalProperties": {
+                      "$ref": "#/$defs/bracketTable"
+                    }
                   }
                 }
               }
@@ -355,12 +658,21 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "federal_percentage_2020" } } },
+      "if": {
+        "properties": {
+          "method": {
+            "const": "federal_percentage_2020"
+          }
+        }
+      },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["wage_adjustment", "brackets"],
+            "required": [
+              "wage_adjustment",
+              "brackets"
+            ],
             "additionalProperties": false,
             "properties": {
               "wage_adjustment": {
@@ -369,18 +681,25 @@
               },
               "brackets": {
                 "type": "object",
-                "required": ["standard", "step2_checkbox"],
+                "required": [
+                  "standard",
+                  "step2_checkbox"
+                ],
                 "additionalProperties": false,
                 "properties": {
                   "standard": {
                     "type": "object",
                     "minProperties": 1,
-                    "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                    "additionalProperties": {
+                      "$ref": "#/$defs/bracketTable"
+                    }
                   },
                   "step2_checkbox": {
                     "type": "object",
                     "minProperties": 1,
-                    "additionalProperties": { "$ref": "#/$defs/bracketTable" }
+                    "additionalProperties": {
+                      "$ref": "#/$defs/bracketTable"
+                    }
                   }
                 }
               }
@@ -390,19 +709,38 @@
       }
     },
     {
-      "if": { "properties": { "method": { "const": "custom" } } },
-      "then": { "required": ["custom_implementation"] }
+      "if": {
+        "properties": {
+          "method": {
+            "const": "custom"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "custom_implementation"
+        ]
+      }
     },
     {
       "if": {
-        "properties": { "custom_implementation": { "const": "custom/us_al" } },
-        "required": ["custom_implementation"]
+        "properties": {
+          "custom_implementation": {
+            "const": "custom/us_al"
+          }
+        },
+        "required": [
+          "custom_implementation"
+        ]
       },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["statuses", "dependent_tiers"],
+            "required": [
+              "statuses",
+              "dependent_tiers"
+            ],
             "additionalProperties": false,
             "properties": {
               "statuses": {
@@ -412,29 +750,46 @@
                 "patternProperties": {
                   "^(zero|s|ms|m|h)$": {
                     "type": "object",
-                    "required": ["personal_exemption", "standard_deduction", "brackets"],
+                    "required": [
+                      "personal_exemption",
+                      "standard_deduction",
+                      "brackets"
+                    ],
                     "additionalProperties": false,
                     "properties": {
-                      "personal_exemption": { "$ref": "#/$defs/money" },
+                      "personal_exemption": {
+                        "$ref": "#/$defs/money"
+                      },
                       "standard_deduction": {
                         "type": "array",
                         "minItems": 1,
                         "items": {
                           "type": "object",
-                          "required": ["at_least", "amount"],
+                          "required": [
+                            "at_least",
+                            "amount"
+                          ],
                           "additionalProperties": false,
                           "properties": {
-                            "at_least": { "$ref": "#/$defs/money" },
-                            "amount": { "$ref": "#/$defs/money" }
+                            "at_least": {
+                              "$ref": "#/$defs/money"
+                            },
+                            "amount": {
+                              "$ref": "#/$defs/money"
+                            }
                           }
                         }
                       },
-                      "brackets": { "$ref": "#/$defs/bracketTable" }
+                      "brackets": {
+                        "$ref": "#/$defs/bracketTable"
+                      }
                     }
                   }
                 }
               },
-              "dependent_tiers": { "$ref": "#/$defs/rangeRows" }
+              "dependent_tiers": {
+                "$ref": "#/$defs/rangeRows"
+              }
             }
           }
         }
@@ -442,38 +797,65 @@
     },
     {
       "if": {
-        "properties": { "custom_implementation": { "const": "custom/us_or" } },
-        "required": ["custom_implementation"]
+        "properties": {
+          "custom_implementation": {
+            "const": "custom/us_or"
+          }
+        },
+        "required": [
+          "custom_implementation"
+        ]
       },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["credit_per_allowance", "statuses", "status_groups"],
+            "required": [
+              "credit_per_allowance",
+              "statuses",
+              "status_groups"
+            ],
             "additionalProperties": false,
             "properties": {
-              "credit_per_allowance": { "$ref": "#/$defs/money" },
+              "credit_per_allowance": {
+                "$ref": "#/$defs/money"
+              },
               "statuses": {
                 "type": "object",
-                "required": ["single", "married"],
+                "required": [
+                  "single",
+                  "married"
+                ],
                 "additionalProperties": false,
                 "patternProperties": {
                   "^(single|married)$": {
                     "type": "object",
-                    "required": ["allowance_zero_above", "fed_subtraction_phaseout"],
+                    "required": [
+                      "allowance_zero_above",
+                      "fed_subtraction_phaseout"
+                    ],
                     "additionalProperties": false,
                     "properties": {
-                      "allowance_zero_above": { "$ref": "#/$defs/money" },
+                      "allowance_zero_above": {
+                        "$ref": "#/$defs/money"
+                      },
                       "fed_subtraction_phaseout": {
                         "type": "array",
                         "minItems": 1,
                         "items": {
                           "type": "object",
-                          "required": ["at_least", "cap"],
+                          "required": [
+                            "at_least",
+                            "cap"
+                          ],
                           "additionalProperties": false,
                           "properties": {
-                            "at_least": { "$ref": "#/$defs/money" },
-                            "cap": { "$ref": "#/$defs/money" }
+                            "at_least": {
+                              "$ref": "#/$defs/money"
+                            },
+                            "cap": {
+                              "$ref": "#/$defs/money"
+                            }
                           }
                         }
                       }
@@ -483,36 +865,62 @@
               },
               "status_groups": {
                 "type": "object",
-                "required": ["single_under_3", "married_or_single_3plus"],
+                "required": [
+                  "single_under_3",
+                  "married_or_single_3plus"
+                ],
                 "additionalProperties": false,
                 "patternProperties": {
                   "^(single_under_3|married_or_single_3plus)$": {
                     "type": "object",
-                    "required": ["standard_deduction", "wage_tiers"],
+                    "required": [
+                      "standard_deduction",
+                      "wage_tiers"
+                    ],
                     "additionalProperties": false,
                     "properties": {
-                      "standard_deduction": { "$ref": "#/$defs/money" },
+                      "standard_deduction": {
+                        "$ref": "#/$defs/money"
+                      },
                       "wage_tiers": {
                         "type": "array",
                         "minItems": 1,
                         "items": {
                           "type": "object",
-                          "required": ["wages_at_least", "formulas"],
+                          "required": [
+                            "wages_at_least",
+                            "formulas"
+                          ],
                           "additionalProperties": false,
                           "properties": {
-                            "wages_at_least": { "$ref": "#/$defs/money" },
+                            "wages_at_least": {
+                              "$ref": "#/$defs/money"
+                            },
                             "formulas": {
                               "type": "array",
                               "minItems": 1,
                               "items": {
                                 "type": "object",
-                                "required": ["at_least", "base", "rate", "excess_over"],
+                                "required": [
+                                  "at_least",
+                                  "base",
+                                  "rate",
+                                  "excess_over"
+                                ],
                                 "additionalProperties": false,
                                 "properties": {
-                                  "at_least": { "$ref": "#/$defs/money" },
-                                  "base": { "$ref": "#/$defs/money" },
-                                  "rate": { "$ref": "#/$defs/rate" },
-                                  "excess_over": { "$ref": "#/$defs/money" }
+                                  "at_least": {
+                                    "$ref": "#/$defs/money"
+                                  },
+                                  "base": {
+                                    "$ref": "#/$defs/money"
+                                  },
+                                  "rate": {
+                                    "$ref": "#/$defs/rate"
+                                  },
+                                  "excess_over": {
+                                    "$ref": "#/$defs/money"
+                                  }
                                 }
                               }
                             }
@@ -530,14 +938,22 @@
     },
     {
       "if": {
-        "properties": { "custom_implementation": { "const": "custom/us_ct" } },
-        "required": ["custom_implementation"]
+        "properties": {
+          "custom_implementation": {
+            "const": "custom/us_ct"
+          }
+        },
+        "required": [
+          "custom_implementation"
+        ]
       },
       "then": {
         "properties": {
           "params": {
             "type": "object",
-            "required": ["codes"],
+            "required": [
+              "codes"
+            ],
             "additionalProperties": false,
             "properties": {
               "codes": {
@@ -547,14 +963,30 @@
                 "patternProperties": {
                   "^[a-f]$": {
                     "type": "object",
-                    "required": ["exemptions", "brackets", "add_back", "recapture", "credits"],
+                    "required": [
+                      "exemptions",
+                      "brackets",
+                      "add_back",
+                      "recapture",
+                      "credits"
+                    ],
                     "additionalProperties": false,
                     "properties": {
-                      "exemptions": { "$ref": "#/$defs/rangeRows" },
-                      "brackets": { "$ref": "#/$defs/bracketTable" },
-                      "add_back": { "$ref": "#/$defs/rangeRows" },
-                      "recapture": { "$ref": "#/$defs/rangeRows" },
-                      "credits": { "$ref": "#/$defs/rangeRows" }
+                      "exemptions": {
+                        "$ref": "#/$defs/rangeRows"
+                      },
+                      "brackets": {
+                        "$ref": "#/$defs/bracketTable"
+                      },
+                      "add_back": {
+                        "$ref": "#/$defs/rangeRows"
+                      },
+                      "recapture": {
+                        "$ref": "#/$defs/rangeRows"
+                      },
+                      "credits": {
+                        "$ref": "#/$defs/rangeRows"
+                      }
                     }
                   }
                 }
@@ -571,7 +1003,16 @@
       "pattern": "^\\d+(\\.\\d{1,2})?$",
       "description": "Exact decimal as string; engine parses with Decimal"
     },
-    "moneyOrNull": { "anyOf": [{ "$ref": "#/$defs/money" }, { "type": "null" }] },
+    "moneyOrNull": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/money"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "decimal": {
       "type": "string",
       "pattern": "^\\d+(\\.\\d+)?$",
@@ -584,18 +1025,39 @@
     },
     "perStatusMoney": {
       "type": "object",
-      "additionalProperties": { "$ref": "#/$defs/money" }
+      "additionalProperties": {
+        "$ref": "#/$defs/money"
+      }
     },
     "sourceBlock": {
       "type": "object",
-      "required": ["document", "url", "retrieved", "sha256"],
+      "required": [
+        "document",
+        "url",
+        "retrieved",
+        "sha256"
+      ],
       "additionalProperties": false,
       "properties": {
-        "document": { "type": "string", "minLength": 3 },
-        "url": { "type": "string", "format": "uri" },
-        "retrieved": { "type": "string", "format": "date" },
-        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "notes": { "type": "string" }
+        "document": {
+          "type": "string",
+          "minLength": 3
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "retrieved": {
+          "type": "string",
+          "format": "date"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     },
     "rangeRows": {
@@ -604,11 +1066,18 @@
       "description": "Exclusive-lower-bound range rows ('More Than X'), ascending; the applicable row is the last with more_than < salary",
       "items": {
         "type": "object",
-        "required": ["more_than", "value"],
+        "required": [
+          "more_than",
+          "value"
+        ],
         "additionalProperties": false,
         "properties": {
-          "more_than": { "$ref": "#/$defs/money" },
-          "value": { "$ref": "#/$defs/decimal" }
+          "more_than": {
+            "$ref": "#/$defs/money"
+          },
+          "value": {
+            "$ref": "#/$defs/decimal"
+          }
         }
       }
     },
@@ -618,12 +1087,28 @@
       "description": "Rows ordered by ascending `over`; first row must have over == 0. A printed `base` is authoritative in computation; the loader verifies monotonicity and checks any printed base against the recomputed cumulative sum within a small tolerance (printed thresholds are rounded, base columns derive from unrounded amounts).",
       "items": {
         "type": "object",
-        "required": ["over", "rate"],
+        "required": [
+          "over",
+          "rate"
+        ],
         "additionalProperties": false,
         "properties": {
-          "over": { "$ref": "#/$defs/money" },
-          "rate": { "$ref": "#/$defs/rate" },
-          "base": { "anyOf": [{ "$ref": "#/$defs/decimal" }, { "type": "null" }] }
+          "over": {
+            "$ref": "#/$defs/money"
+          },
+          "rate": {
+            "$ref": "#/$defs/rate"
+          },
+          "base": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/decimal"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
         }
       }
     }
