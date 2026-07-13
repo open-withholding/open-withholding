@@ -68,3 +68,20 @@ def test_fetch_documents_rejects_non_pdf_bytes(monkeypatch):
                         _fake_fetch({"https://x.gov/tables.pdf": b"<html>error page</html>"}))
     with pytest.raises(ExtractionFailure, match="expected PDF"):
         fetch_documents(src, 2026)
+
+
+def test_stamp_edition_year_single_source():
+    from pipeline.extract import stamp_edition_year
+
+    block = {"document": "Pub X", "url": "u", "retrieved": "d", "sha256": "s"}
+    stamp_edition_year(block, 2025)
+    assert block["document"] == "Pub X (2025)"
+
+
+def test_stamp_edition_year_leaves_sources_list_verbatim():
+    from pipeline.extract import stamp_edition_year
+
+    block = {"sources": [{"document": "FR-230 (2018)"}, {"document": "Notice 2022-08"}]}
+    stamp_edition_year(block, 2018)  # regression: this KeyError'd all four dispatches
+    assert block["sources"][0]["document"] == "FR-230 (2018)"
+    assert block["sources"][1]["document"] == "Notice 2022-08"

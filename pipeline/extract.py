@@ -133,6 +133,15 @@ def html_to_text(data: bytes, url: str) -> str:
     return f"[HTML source: {url}]\n\n" + text.strip()
 
 
+def stamp_edition_year(source_block: dict, effective_year: int) -> None:
+    """Suffix the edition year onto a single-source citation's document name.
+    Multi-source citations keep their registry names verbatim — each already
+    identifies its own document (some carry their own years); the parameter
+    file's effective_from carries the edition."""
+    if "sources" not in source_block:
+        source_block["document"] = f"{source_block['document']} ({effective_year})"
+
+
 def fetch_documents(source: dict, year: int) -> list[dict]:
     """Multi-document sources: fetch every entry in `documents`. Returns
     [{name, kind, url, data, text?}] — PDFs keep bytes, HTML becomes text."""
@@ -371,7 +380,7 @@ def main() -> int:
     if effective_year != args.year:
         print(f"      note: document is effective {extraction['effective_from']} — "
               f"filing under {effective_year}, not {args.year}")
-    source_block["document"] = f"{source_block['document']} ({effective_year})"
+    stamp_edition_year(source_block, effective_year)
 
     param_dict = assemble.assemble_parameter_file(
         jurisdiction=jurisdiction,
