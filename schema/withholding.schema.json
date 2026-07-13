@@ -4,7 +4,7 @@
   "title": "Withholding parameter file",
   "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 — org URL in $id is a placeholder.",
   "type": "object",
-  "required": ["schema_version", "jurisdiction", "tax", "effective_from", "source", "method", "params"],
+  "required": ["schema_version", "jurisdiction", "tax", "effective_from", "method", "params"],
   "additionalProperties": false,
   "properties": {
     "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
@@ -19,6 +19,12 @@
     "effective_from": { "type": "string", "format": "date" },
     "effective_to": { "type": ["string", "null"], "format": "date" },
     "supersedes": { "type": ["string", "null"], "description": "Repo-relative path of the file this replaces" },
+    "sources": {
+      "type": "array",
+      "minItems": 2,
+      "description": "Multi-document provenance (v0.2): every parameter must be traceable to one of these; single-document files keep `source`",
+      "items": { "$ref": "#/$defs/sourceBlock" }
+    },
     "source": {
       "type": "object",
       "required": ["document", "url", "retrieved", "sha256"],
@@ -71,6 +77,13 @@
     }
   },
   "allOf": [
+    {
+      "description": "Provenance is mandatory: exactly one of source / sources",
+      "oneOf": [
+        { "required": ["source"], "not": { "required": ["sources"] } },
+        { "required": ["sources"], "not": { "required": ["source"] } }
+      ]
+    },
     {
       "if": { "properties": { "method": { "const": "flat_rate" } } },
       "then": {
@@ -572,6 +585,18 @@
     "perStatusMoney": {
       "type": "object",
       "additionalProperties": { "$ref": "#/$defs/money" }
+    },
+    "sourceBlock": {
+      "type": "object",
+      "required": ["document", "url", "retrieved", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "document": { "type": "string", "minLength": 3 },
+        "url": { "type": "string", "format": "uri" },
+        "retrieved": { "type": "string", "format": "date" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "notes": { "type": "string" }
+      }
     },
     "rangeRows": {
       "type": "array",

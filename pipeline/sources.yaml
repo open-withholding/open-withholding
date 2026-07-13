@@ -326,14 +326,23 @@
     - data/us/nm/{year}/withholding.yaml
 
 - id: us-id-epb00744
-  document: "EPB00744, Idaho Table for Percentage Computation Method of Withholding"
+  document: "EPB00744 (percentage computation) + ICTCAT allowance table (HTML)"
   jurisdiction: US-ID
   tax: state_income_withholding
   method: annualized_percentage
   landing: "https://tax.idaho.gov/taxes/income-tax/withholding/computing/"
-  # Redirector always resolves to the latest dated revision; ID revises
+  # Multi-source: EPB00744 prints the brackets but NOT the child-tax-credit
+  # allowance value — that lives only in the ICTCAT table rendered inline on
+  # the computing page ($3,868/yr per allowance as of 2026). The EPB00744
+  # redirector always resolves to the latest dated revision; ID revises
   # mid-year as needed, so never cache the dated wp-content target.
-  document_url_pattern: "https://tax.idaho.gov/document-mngr/pubs_EPB00744"
+  documents:
+    - name: "EPB00744, Idaho Table for Percentage Computation Method of Withholding"
+      kind: pdf
+      url: "https://tax.idaho.gov/document-mngr/pubs_EPB00744"
+    - name: "Computing withholding page with Idaho Child Tax Credit Allowance Table (ICTCAT)"
+      kind: html
+      url: "https://tax.idaho.gov/taxes/income-tax/withholding/computing/"
   check: [content_hash]
   maps_to:
     - data/us/id/{year}/withholding.yaml
@@ -508,3 +517,71 @@
   expected_window: "11-15..01-15"
   maps_to:
     - data/us/co/{year}/withholding.yaml
+
+- id: us-de-employers-guide
+  document: "Delaware Employer's Guide (Withholding Regulations) + withholding tables"
+  jurisdiction: US-DE
+  tax: state_income_withholding
+  method: annualized_percentage
+  landing: "https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/"
+  # Multi-source: the formula (Section 17) and its worked examples exist ONLY
+  # in the HTML guide; the per-period tables are separate PDFs (rates static
+  # since 2014 — the "16" suffix is the 2014 edition marker, not a year
+  # pattern). Trap: the /employers-guide-withholding-tables/ page stale-links
+  # 2000-era unsuffixed files; use revenuefiles paths directly.
+  documents:
+    - name: "Employer's Guide, Section 17 Percentage Method Formula (HTML)"
+      kind: html
+      url: "https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/"
+    - name: "Weekly payroll period withholding table"
+      kind: pdf
+      url: "https://revenuefiles.delaware.gov/docs/weekly16.pdf"
+  check: [content_hash]
+  maps_to:
+    - data/us/de/{year}/withholding.yaml
+
+- id: us-nj-njwt
+  document: "NJ-WT Income Tax Withholding Instructions + Percentage Method Rate Tables A-E"
+  jurisdiction: US-NJ
+  tax: state_income_withholding
+  method: per_period_percentage
+  landing: "https://www.nj.gov/treasury/taxation/businesses/payroll/index.shtml"
+  # Multi-source: the rate tables PDF holds the five rate-letter schedules
+  # (A-E, selected via NJ-W4; eff. 10/2020, still current) but the allowance
+  # values and worked examples live in NJ-WT. NJ-WT's examples are printed as
+  # IMAGES — expect the extractor to miss them; goldens likely need
+  # maintainer transcription at review. Both URLs are stable in place.
+  documents:
+    - name: "NJ-WT, New Jersey Income Tax Withholding Instructions"
+      kind: pdf
+      url: "https://www.nj.gov/treasury/taxation/pdf/current/njwt.pdf"
+    - name: "Percentage Method Withholding Rate Tables A-E"
+      kind: pdf
+      url: "https://www.nj.gov/treasury/taxation/pdf/withholdingtables.pdf"
+  check: [content_hash]
+  maps_to:
+    - data/us/nj/{year}/withholding.yaml
+
+- id: us-dc-fr230
+  document: "FR-230 (2018 method/allowances) + OTR Tax Notice 2022-08 (current rates)"
+  jurisdiction: US-DC
+  tax: state_income_withholding
+  method: annualized_percentage
+  no_printed_examples: true
+  landing: "https://otr.cfo.dc.gov/page/income-tax-withholding-instructions-and-tables"
+  # Multi-source reconciliation (issue #26): FR-230 was last issued for 2018
+  # and predates the 2022 rate restructure; the current brackets (10.75% top)
+  # live only in OTR Tax Notice 2022-08. Method/allowance mechanics come from
+  # FR-230, brackets from the notice — the source.notes must record the
+  # adjudication. OTR's Drupal pages 403 non-browser agents (Akamai) but the
+  # /sites/default/files attachments serve fine with a browser User-Agent.
+  documents:
+    - name: "FR-230, Income Tax Withholding Instructions and Tables (2018)"
+      kind: pdf
+      url: "https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/publication/attachments/2018%20FR-230_12.13.17.pdf"
+    - name: "OTR Tax Notice 2022-08, District of Columbia Withholding for Tax Year 2022 (updated 10/17/2022)"
+      kind: pdf
+      url: "https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/release_content/attachments/Important_Information_Regarding_the_District_of_Columbia_Withholding_for_Tax_Year_2022_updated_10_17_2022.pdf"
+  check: [content_hash]
+  maps_to:
+    - data/us/dc/{year}/withholding.yaml

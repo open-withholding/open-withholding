@@ -89,8 +89,86 @@ def _window_bounds(window: str, today: dt.date) -> tuple[dt.date, dt.date] | Non
     return None
 
 
+def _apply_staleness(source: dict, state: dict, new: dict, events: list[dict],
+                     today: dt.date, last_change: dt.date | None) -> None:
+    """Flag a source whose expected_window passed with no observed change."""
+    window = source.get("expected_window")
+    if not window:
+        return
+    bounds = _window_bounds(window, today)
+    if not bounds:
+        return
+    start, end = bounds
+    recently_flagged = state.get("stale_flagged_for") == end.isoformat()
+    if (last_change is None or last_change < start) and not recently_flagged:
+        events.append({"type": "stale",
+                       "detail": f"expected_window {window} (ended {end}) passed "
+                                 f"with no observed change; the agency may have "
+                                 f"published at a new URL"})
+        new["stale_flagged_for"] = end.isoformat()
+
+
+def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tuple[list[dict], dict]:
+    """Multi-document sources: per-document state keyed by name; at most one
+    `changed` event per source (a single extraction re-reads every document)."""
+    events: list[dict] = []
+    year = today.year
+    new = dict(state)
+    new["checked_at"] = today.isoformat()
+    docs_state = dict(state.get("documents", {}))
+    changed_details: list[str] = []
+
+    for doc in source["documents"]:
+        url = _substitute_year(doc["url"], year)
+        kind = doc.get("kind", "pdf")
+        prefix = f"[{doc['name']}] "
+        old = docs_state.get(doc["name"], {})
+        result = fetcher(url)
+        if result["status"] == 404 or result["status"] == 0:
+            detail = f"{url} -> {result.get('error', result['status'])}"
+            if "{year}" in doc["url"] or "{yy}" in doc["url"]:
+                next_url = _substitute_year(doc["url"], year + 1)
+                if fetcher(next_url)["status"] == 200:
+                    detail += f"; NOTE: next-year URL exists: {next_url}"
+            events.append({"type": "url_404", "detail": prefix + detail})
+            continue
+        if result["status"] != 200:
+            events.append({"type": "url_404", "detail": prefix + f"{url} -> HTTP {result['status']}"})
+            continue
+        if kind == "pdf" and not result["is_pdf"]:
+            events.append({"type": "content_type_anomaly",
+                           "detail": prefix + f"{url} returned non-PDF bytes (HTML error page?)"})
+            continue
+        entry = {"url": url, "sha256": result["sha256"], "etag": result.get("etag"),
+                 "last_modified": result.get("last_modified"),
+                 "changed_at": old.get("changed_at")}
+        if old.get("sha256") is None:
+            events.append({"type": "baseline",
+                           "detail": prefix + f"{url} sha256={result['sha256'][:12]}..."})
+        elif result["sha256"] != old["sha256"]:
+            changed_details.append(
+                prefix + f"{url}: {old['sha256'][:12]}... -> {result['sha256'][:12]}...")
+            entry["changed_at"] = today.isoformat()
+        docs_state[doc["name"]] = entry
+    new["documents"] = docs_state
+
+    if changed_details:
+        events.append({"type": "changed", "detail": "; ".join(changed_details)})
+        return events, new
+    if any(e["type"] == "baseline" for e in events):
+        return events, new  # first sighting — no staleness verdict yet
+
+    changed_ats = [d.get("changed_at") for d in docs_state.values() if d.get("changed_at")]
+    last_change = dt.date.fromisoformat(max(changed_ats)) if changed_ats else None
+    _apply_staleness(source, state, new, events, today, last_change)
+    return events, new
+
+
 def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[list[dict], dict]:
     """Pure logic: one source -> (events, new state entry). No side effects."""
+    if source.get("documents"):
+        return _check_documents(source, state, fetcher, today)
+
     events: list[dict] = []
     year = today.year
     new = dict(state)
@@ -151,20 +229,9 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
         return events, new
 
     # Unchanged — staleness check against the most recent completed window.
-    window = source.get("expected_window")
-    if window:
-        bounds = _window_bounds(window, today)
-        if bounds:
-            start, end = bounds
-            changed_at = state.get("changed_at")
-            last_change = dt.date.fromisoformat(changed_at) if changed_at else None
-            recently_flagged = state.get("stale_flagged_for") == end.isoformat()
-            if (last_change is None or last_change < start) and not recently_flagged:
-                events.append({"type": "stale",
-                               "detail": f"expected_window {window} (ended {end}) passed "
-                                         f"with no observed change; the agency may have "
-                                         f"published at a new URL"})
-                new["stale_flagged_for"] = end.isoformat()
+    changed_at = state.get("changed_at")
+    last_change = dt.date.fromisoformat(changed_at) if changed_at else None
+    _apply_staleness(source, state, new, events, today, last_change)
     return events, new
 
 
