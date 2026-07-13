@@ -1,0 +1,49 @@
+schema_version: '0.2'
+jurisdiction: US-DE
+tax: state_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+sources:
+- document: Employer's Guide, Section 17 Percentage Method Formula (HTML)
+  url: https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/
+  retrieved: '2026-07-13'
+  sha256: 2c14c3183d049dd00a96db45ac419a2b302233d16dec3353398471d219eb744c
+- document: Weekly payroll period withholding table
+  url: https://revenuefiles.delaware.gov/docs/weekly16.pdf
+  retrieved: '2026-07-13'
+  sha256: 8b19fd5bb9e81a681c40a9fb4b62629692c22395483d3f234e72fbd718066a75
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  standard_deduction:
+    single: '3250'
+    married_joint: '6500'
+    married_filing_separately: '3250'
+  allowance_amount: null
+  credit_per_allowance: '110'
+  brackets:
+    all:
+    - over: '0'
+      rate: '0.0000'
+      base: '0.00'
+    - over: '2000'
+      rate: '0.0220'
+      base: '0.00'
+    - over: '5000'
+      rate: '0.0390'
+      base: '66.00'
+    - over: '10000'
+      rate: '0.0480'
+      base: '261.00'
+    - over: '20000'
+      rate: '0.0520'
+      base: '741.00'
+    - over: '25000'
+      rate: '0.0555'
+      base: '1001.00'
+    - over: '60000'
+      rate: '0.0660'
+      base: '2943.50'
