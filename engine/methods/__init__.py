@@ -19,6 +19,7 @@ from engine.methods import (
 from engine.methods.custom import us_ct as custom_us_ct
 from engine.methods.custom import us_al as custom_us_al
 from engine.methods.custom import us_ma as custom_us_ma
+from engine.methods import deduction_constant_percentage
 from engine.methods.custom import us_or as custom_us_or
 
 REGISTRY = {
@@ -28,6 +29,7 @@ REGISTRY = {
     "annualized_percentage_phaseout": annualized_percentage_phaseout.compute,
     "annualized_subtraction_percentage": annualized_subtraction_percentage.compute,
     "per_period_percentage": per_period_percentage.compute,
+    "deduction_constant_percentage": deduction_constant_percentage.compute,
     "elective_flat_rate": elective_flat_rate.compute,
     "per_period_credit_phaseout": per_period_credit_phaseout.compute,
     "federal_percentage_2020": federal_percentage_2020.compute,

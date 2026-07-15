@@ -295,3 +295,65 @@ def test_build_pr_body_multi_source_lists_every_document():
     assert "[Guide (HTML)](https://x.gov/guide)" in body
     assert "[Tables](https://x.gov/tables.pdf)" in body
     assert body.count("Archived sha256") == 2
+
+
+def test_deduction_constant_transform_roundtrip():
+    # Extraction shape -> assemble -> loader -> engine reproduces DN #1's
+    # printed example ($800 weekly, 5/3/1/2 exemptions -> $13.96).
+    from engine.pipeline import compute_withholding
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+    from pathlib import Path
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "rate": "0.0295",
+            "exemption_kinds": [
+                {"kind": "Personal", "annual_amount": "1000"},
+                {"kind": "dependent", "annual_amount": "1500"},
+                {"kind": "first_time_dependent", "annual_amount": "1500"},
+                {"kind": "adopted", "annual_amount": "3000"},
+            ],
+            "periods_per_year": [
+                {"frequency": "daily", "divisor": 365},
+                {"frequency": "weekly", "divisor": 52},
+                {"frequency": "biweekly", "divisor": 26},
+                {"frequency": "semimonthly", "divisor": 24},
+                {"frequency": "monthly", "divisor": 12},
+            ],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-IN", tax="state_income_withholding",
+        method="deduction_constant_percentage", extraction=extraction, source=SOURCE)
+    assert raw["params"]["exemptions"]["personal"] == "1000"  # snake'd
+    assert raw["params"]["periods_per_year"]["daily"] == "365"
+    pf = load_parameter_dict(raw)
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "800.00",
+        "state": [{"jurisdiction": "US-IN",
+                   "exemptions": {"personal": 5, "dependent": 3,
+                                  "first_time_dependent": 1, "adopted": 2}}],
+    })
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    from decimal import Decimal
+    assert compute_withholding(pf, emp, taxability) == Decimal("13.96")
+
+
+def test_golden_case_carries_exemption_counts():
+    example = {
+        "page": 3, "description": "DN1 example",
+        "pay_frequency": "weekly", "gross_wages": "800.00",
+        "filing_status": "all", "allowances": None,
+        "exemption_counts": {"personal": 5, "dependent": 3},
+        "additional_withholding": None,
+        "expected_withholding": "13.96",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-IN", tax="state_income_withholding",
+        example=example, as_of="2026-06-15", document="DN #1")
+    assert g["input"]["state"][0]["exemptions"] == {"personal": 5, "dependent": 3}

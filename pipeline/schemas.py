@@ -514,6 +514,47 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "deduction_constant_percentage": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["rate", "exemption_kinds", "periods_per_year"],
+        "properties": {
+            "rate": DECIMAL,
+            "exemption_kinds": {
+                "type": "array",
+                "description": "One entry per exemption kind the certificate defines "
+                "(IN WH-4: personal=line 5, dependent=line 6, first_time_dependent="
+                "line 7, adopted=line 8). kind is a lower_snake_case machine key; "
+                "annual_amount is the per-exemption ANNUAL dollar value the document "
+                "states for that kind.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["kind", "annual_amount"],
+                    "properties": {
+                        "kind": {"type": "string"},
+                        "annual_amount": DECIMAL,
+                    },
+                },
+            },
+            "periods_per_year": {
+                "type": "array",
+                "description": "The divisor each printed deduction-constant column "
+                "implies (verify: printed cell = round(n x annual / divisor)). "
+                "Transcribe ONLY frequencies the document prints tables for.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "divisor"],
+                    "properties": {
+                        "frequency": {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                                               "monthly", "quarterly", "semiannually", "annually"]},
+                        "divisor": {"type": "integer"},
+                    },
+                },
+            },
+        },
+    },
     "per_period_percentage": {
         "type": "object",
         "additionalProperties": False,
@@ -660,6 +701,7 @@ WORKED_EXAMPLE = {
         "filing_status",
         "allowances",
         "secondary_allowances",
+        "exemption_counts",
         "step2_checkbox",
         "step3_credits",
         "step4a_other_income",
@@ -682,6 +724,14 @@ WORKED_EXAMPLE = {
         "secondary_allowances": {
             "type": ["integer", "null"],
             "description": "Second allowance kind where the state defines one; null otherwise",
+        },
+        "exemption_counts": {
+            "type": ["object", "null"],
+            "description": "Named exemption counts where the state's certificate "
+            "defines more than two kinds (IN WH-4: personal/dependent/"
+            "first_time_dependent/adopted). Keys MUST match the candidate's "
+            "params.exemptions keys. Null when not applicable.",
+            "additionalProperties": {"type": "integer"},
         },
         "step2_checkbox": {"type": ["boolean", "null"], "description": "Federal only; null otherwise"},
         "step3_credits": DECIMAL_OR_NULL,

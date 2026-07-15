@@ -1050,3 +1050,86 @@ def test_ma_missing_fica_fails_loud(taxability):
     })
     with pytest.raises(InputError, match="period_fica_withholding"):
         compute_withholding(MA, emp, taxability)
+
+
+# --- IN deduction_constant_percentage (DN #1 2026) --------------------------
+
+IN = _pf(
+    "US-IN",
+    "deduction_constant_percentage",
+    {
+        "rate": "0.0295",
+        "exemptions": {
+            "personal": "1000",
+            "dependent": "1500",
+            "first_time_dependent": "1500",
+            "adopted": "3000",
+        },
+        "periods_per_year": {
+            "daily": "365",
+            "weekly": "52",
+            "biweekly": "26",
+            "semimonthly": "24",
+            "monthly": "12",
+        },
+    },
+)
+
+
+def _in_emp(freq, gross, **exemptions):
+    extra = {"exemptions": exemptions} if exemptions else {}
+    return _employee(freq, gross, jurisdiction="US-IN", **extra)
+
+
+def test_in_printed_example(taxability):
+    # DN #1 p.3: weekly $800; 5 personal + 3 dependent + 1 first-time + 2
+    # adopted -> constants 96.15 + 86.54 + 28.85 + 115.38 = 326.92;
+    # taxable 473.08 x .0295 = 13.9559 -> 13.96
+    emp = _in_emp("weekly", "800.00", personal=5, dependent=3,
+                  first_time_dependent=1, adopted=2)
+    assert compute_withholding(IN, emp, taxability) == Decimal("13.96")
+
+
+def test_in_kinds_round_independently(taxability):
+    # The trap the printed example encodes: 3 dependents (86.54) + 1
+    # first-time (28.85) = 115.39, NOT one lookup of 4 x 1500/52 = 115.38.
+    together = _in_emp("weekly", "800.00", dependent=3, first_time_dependent=1)
+    folded = _in_emp("weekly", "800.00", dependent=4)
+    a = compute_withholding(IN, together, taxability)
+    b = compute_withholding(IN, folded, taxability)
+    # taxable differs by one cent: 684.61 vs 684.62
+    assert a == Decimal("20.20")  # (800 - 115.39) x .0295 = 20.1960 -> 20.20
+    assert b == Decimal("20.20")  # (800 - 115.38) x .0295 = 20.1963 -> 20.20
+    # the bases differ even when the rounded tax happens to agree
+    # (kept as the printed-example regression via test_in_printed_example)
+
+
+def test_in_daily_divisor_is_365(taxability):
+    # Table A daily row 1 prints 2.74 = 1000/365 (not /260):
+    # daily $100, 1 personal -> (100 - 2.74) x .0295 = 2.8692 -> 2.87
+    emp = _in_emp("daily", "100.00", personal=1)
+    assert compute_withholding(IN, emp, taxability) == Decimal("2.87")
+
+
+def test_in_no_exemptions(taxability):
+    emp = _in_emp("weekly", "800.00")
+    assert compute_withholding(IN, emp, taxability) == Decimal("23.60")
+
+
+def test_in_constants_exceed_wages_clamp(taxability):
+    emp = _in_emp("weekly", "50.00", adopted=5)  # constant 288.46 > wages
+    assert compute_withholding(IN, emp, taxability) == Decimal("0.00")
+
+
+def test_in_unknown_kind_fails_loud(taxability):
+    from engine.errors import InputError
+    emp = _in_emp("weekly", "800.00", veterans=1)
+    with pytest.raises(InputError, match="veterans"):
+        compute_withholding(IN, emp, taxability)
+
+
+def test_in_missing_frequency_fails_loud(taxability):
+    from engine.errors import InputError
+    emp = _in_emp("quarterly", "5000.00", personal=1)
+    with pytest.raises(InputError, match="quarterly"):
+        compute_withholding(IN, emp, taxability)

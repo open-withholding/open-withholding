@@ -45,6 +45,7 @@ class MethodContext:
     period_federal_income_withholding: Decimal | None = None
     period_fica_withholding: Decimal | None = None
     ytd: dict = None
+    exemptions: dict = None  # named counts (IN WH-4 lines 5-8)
 
 
 def compute_withholding(
@@ -66,6 +67,7 @@ def compute_withholding(
     secondary = 0
     elected_rate = None
     elected_amount = None
+    exemptions = {}
     if param_file.tax == "federal_income_withholding":
         if employee.federal is None:
             raise InputError("federal withholding requested but input has no federal block")
@@ -81,6 +83,7 @@ def compute_withholding(
         additional = election.additional_withholding
         elected_rate = election.elected_rate
         elected_amount = election.elected_annual_amount
+        exemptions = election.exemptions
         federal = None
     else:  # local
         filing_status = None
@@ -101,6 +104,7 @@ def compute_withholding(
         federal=federal,
         elected_rate=elected_rate,
         elected_annual_amount=elected_amount,
+        exemptions=exemptions,
         period_federal_income_withholding=employee.period_federal_income_withholding,
         period_fica_withholding=employee.period_fica_withholding,
         ytd=employee.ytd,
