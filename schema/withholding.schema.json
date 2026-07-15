@@ -1026,6 +1026,141 @@
       "if": {
         "properties": {
           "custom_implementation": {
+            "const": "custom/us_ca"
+          }
+        },
+        "required": [
+          "custom_implementation"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "low_income_exemption",
+              "estimated_deduction",
+              "standard_deduction",
+              "exemption_allowance",
+              "brackets"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "low_income_exemption": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "required": [
+                      "single",
+                      "married_allowances_0_1",
+                      "married_allowances_2_plus",
+                      "head_of_household"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "single": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married_allowances_0_1": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married_allowances_2_plus": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "head_of_household": {
+                        "$ref": "#/$defs/money"
+                      }
+                    }
+                  }
+                }
+              },
+              "estimated_deduction": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/$defs/money"
+                    }
+                  }
+                },
+                "description": "Table 2 amounts for counts 1..N (index = count); beyond the table: one-allowance amount x count"
+              },
+              "standard_deduction": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "required": [
+                      "single",
+                      "married_allowances_0_1",
+                      "married_allowances_2_plus",
+                      "head_of_household"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "single": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married_allowances_0_1": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married_allowances_2_plus": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "head_of_household": {
+                        "$ref": "#/$defs/money"
+                      }
+                    }
+                  }
+                }
+              },
+              "exemption_allowance": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "$ref": "#/$defs/money"
+                    }
+                  }
+                },
+                "description": "Table 4 amounts for counts 1..N (index = count; count 0 is 0); beyond the table: one-allowance amount x count"
+              },
+              "brackets": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "$ref": "#/$defs/bracketTable"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "custom_implementation": {
             "const": "custom/us_ct"
           }
         },

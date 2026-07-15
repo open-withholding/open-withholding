@@ -429,3 +429,53 @@ def test_golden_case_carries_rate_schedule():
         jurisdiction="US-MD", tax="state_income_withholding",
         example=example, as_of="2026-06-15", document="MD guide")
     assert g["input"]["state"][0]["rate_schedule"] == "0.0225"
+
+
+def test_ca_transform_roundtrip():
+    # Extraction shape -> assemble -> loader -> engine reproduces Example B
+    # (biweekly $1,600 married, 2 regular + 1 estimated -> $2.38).
+    from engine.pipeline import compute_withholding
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+    from decimal import Decimal
+    from pathlib import Path
+
+    cols = {"single": "727", "married_allowances_0_1": "727",
+            "married_allowances_2_plus": "1454", "head_of_household": "1454"}
+    sd = {"single": "219", "married_allowances_0_1": "219",
+          "married_allowances_2_plus": "439", "head_of_household": "439"}
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "low_income_exemption": [{"frequency": "biweekly", **cols}],
+            "estimated_deduction": [{"frequency": "biweekly",
+                                     "amounts": ["38", "77", "115"]}],
+            "standard_deduction": [{"frequency": "biweekly", **sd}],
+            "exemption_allowance": [{"frequency": "biweekly",
+                                     "amounts": ["6.47", "12.95", "19.42"]}],
+            "brackets": [{
+                "frequency": "biweekly",
+                "statuses": [{"filing_status": "Married", "rows": [
+                    {"over": "0", "rate": "0.011", "base": "0"},
+                    {"over": "852", "rate": "0.022", "base": "9.37"},
+                ]}],
+            }],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-CA", tax="state_income_withholding",
+        method="custom/us_ca", extraction=extraction, source=SOURCE)
+    assert raw["method"] == "custom"
+    assert raw["custom_implementation"] == "custom/us_ca"
+    pf = load_parameter_dict(raw)
+    assert "biweekly.married" in pf.bracket_tables
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "biweekly", "gross_wages": "1600.00",
+        "state": [{"jurisdiction": "US-CA", "filing_status": "married",
+                   "allowances": 2, "secondary_allowances": 1}],
+    })
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    assert compute_withholding(pf, emp, taxability) == Decimal("2.38")

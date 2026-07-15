@@ -1229,3 +1229,120 @@ def test_md_unknown_schedule_fails_loud(taxability):
     emp = _md_emp("weekly", "1000.00", "single", schedule="0.0399")
     with pytest.raises(InputError, match="0.0399"):
         compute_withholding(MD, emp, taxability)
+
+
+# --- CA custom/us_ca (2026 Method B, Examples A-D + footnotes) ---------------
+
+CA = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US-CA",
+    "tax": "state_income_withholding",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "custom",
+    "custom_implementation": "custom/us_ca",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "low_income_exemption": {
+            "weekly": {"single": "363", "married_allowances_0_1": "363",
+                       "married_allowances_2_plus": "727", "head_of_household": "727"},
+            "biweekly": {"single": "727", "married_allowances_0_1": "727",
+                         "married_allowances_2_plus": "1454", "head_of_household": "1454"},
+            "monthly": {"single": "1575", "married_allowances_0_1": "1575",
+                        "married_allowances_2_plus": "3149", "head_of_household": "3149"},
+        },
+        "estimated_deduction": {
+            "weekly": ["19", "38", "58", "77", "96"],
+            "biweekly": ["38", "77", "115", "154", "192"],
+            "monthly": ["83", "167", "250", "333", "417"],
+        },
+        "standard_deduction": {
+            "weekly": {"single": "110", "married_allowances_0_1": "110",
+                       "married_allowances_2_plus": "219", "head_of_household": "219"},
+            "biweekly": {"single": "219", "married_allowances_0_1": "219",
+                         "married_allowances_2_plus": "439", "head_of_household": "439"},
+            "monthly": {"single": "476", "married_allowances_0_1": "476",
+                        "married_allowances_2_plus": "951", "head_of_household": "951"},
+        },
+        "exemption_allowance": {
+            "weekly": ["3.24", "6.47", "9.71", "12.95", "16.18"],
+            "biweekly": ["6.47", "12.95", "19.42", "25.89", "32.37"],
+            "monthly": ["14.03", "28.05", "42.08", "56.10", "70.13"],
+        },
+        "brackets": {
+            "weekly": {
+                "single": [{"over": "0", "rate": "0.011", "base": "0"}],
+                "married": [{"over": "0", "rate": "0.011", "base": "0"}],
+                "head_of_household": [
+                    {"over": "0", "rate": "0.011", "base": "0"},
+                    {"over": "426", "rate": "0.022", "base": "4.69"},
+                ],
+            },
+            "biweekly": {
+                "married": [
+                    {"over": "0", "rate": "0.011", "base": "0"},
+                    {"over": "852", "rate": "0.022", "base": "9.37"},
+                ],
+            },
+            "monthly": {
+                "married": [
+                    {"over": "0", "rate": "0.011", "base": "0"},
+                    {"over": "1848", "rate": "0.022", "base": "20.33"},
+                ],
+            },
+        },
+    },
+})
+
+
+def _ca_emp(freq, gross, status, allowances=0, secondary=0):
+    return _employee(freq, gross, jurisdiction="US-CA", filing_status=status,
+                     allowances=allowances, secondary_allowances=secondary)
+
+
+def test_ca_example_a_low_income_cliff(taxability):
+    # Example A: weekly $210 single, 1 allowance -> under $363 -> 0
+    emp = _ca_emp("weekly", "210.00", "single", allowances=1)
+    assert compute_withholding(CA, emp, taxability) == Decimal("0.00")
+
+
+def test_ca_example_b_estimated_deduction(taxability):
+    # Example B: biweekly $1,600 married, 3 claimed (1 estimated -> 2 regular):
+    # 1600 - 38 - 439 = 1123 -> 9.37 + 2.2% x 271 = 15.33 - 12.95 = 2.38
+    emp = _ca_emp("biweekly", "1600.00", "married", allowances=2, secondary=1)
+    assert compute_withholding(CA, emp, taxability) == Decimal("2.38")
+
+
+def test_ca_example_c_monthly(taxability):
+    # Example C: monthly $5,100 married, 5 allowances -> 0.82
+    emp = _ca_emp("monthly", "5100.00", "married", allowances=5)
+    assert compute_withholding(CA, emp, taxability) == Decimal("0.82")
+
+
+def test_ca_example_d_head_of_household(taxability):
+    # Example D: weekly $950 HoH, 3 allowances -> 1.69
+    emp = _ca_emp("weekly", "950.00", "head_of_household", allowances=3)
+    assert compute_withholding(CA, emp, taxability) == Decimal("1.69")
+
+
+def test_ca_married_column_splits_on_regular_count(taxability):
+    # Table 1 weekly married: '0 or 1' -> $363; '2 or more' -> $727.
+    # $500 gross: exempt only with 2+ regular allowances.
+    one = _ca_emp("weekly", "500.00", "married", allowances=1)
+    two = _ca_emp("weekly", "500.00", "married", allowances=2)
+    assert compute_withholding(CA, one, taxability) > Decimal("0")
+    assert compute_withholding(CA, two, taxability) == Decimal("0.00")
+
+
+def test_ca_beyond_table_counts_multiply():
+    # Table 4 footnote: 15 weekly allowances -> 15 x $3.24 = $48.60
+    from engine.methods.custom.us_ca import _count_lookup
+    assert _count_lookup(["3.24", "6.47"], 15, context="t") == Decimal("48.60")
+    assert _count_lookup(["3.24", "6.47"], 2, context="t") == Decimal("6.47")
+    assert _count_lookup(["3.24"], 0, context="t") == Decimal("0")
+
+
+def test_ca_cliff_is_inclusive(taxability):
+    # Step 1 text: "less than, or equal to" -> exactly $363 is exempt
+    emp = _ca_emp("weekly", "363.00", "single")
+    assert compute_withholding(CA, emp, taxability) == Decimal("0.00")
