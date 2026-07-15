@@ -88,6 +88,9 @@ class StateElection:
     additional_withholding: Decimal = ZERO
     elected_rate: Decimal | None = None  # AZ A-4 style employee-elected rate
     elected_annual_amount: Decimal | None = None  # MS/IA employee-entered dollars
+    # Employer-selected printed rate schedule (MD: the employee's county
+    # combined rate, e.g. "0.0320"; the special DE-resident schedule).
+    rate_schedule: str | None = None
     # Named exemption counts for jurisdictions whose certificate carries more
     # than two kinds (IN WH-4 lines 5-8: personal / dependent /
     # first_time_dependent / adopted). Keys are method-defined.
@@ -105,6 +108,9 @@ class StateElection:
             if not isinstance(value, int) or value < 0:
                 raise InputError(f"{ctx}.{key} must be an integer >= 0, got {value!r}")
             counts[key] = value
+        rate_schedule = raw.get("rate_schedule")
+        if rate_schedule is not None and not isinstance(rate_schedule, str):
+            raise InputError(f"{ctx}.rate_schedule must be a string schedule key")
         exemptions = raw.get("exemptions") or {}
         if not isinstance(exemptions, dict):
             raise InputError(f"{ctx}.exemptions must be a mapping of kind -> count")
@@ -127,6 +133,7 @@ class StateElection:
             additional_withholding=_money(raw, "additional_withholding", context=ctx),
             elected_rate=elected_rate,
             elected_annual_amount=elected_amount,
+            rate_schedule=rate_schedule,
             exemptions=exemptions,
         )
 

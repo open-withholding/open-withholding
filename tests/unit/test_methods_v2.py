@@ -1133,3 +1133,99 @@ def test_in_missing_frequency_fails_loud(taxability):
     emp = _in_emp("quarterly", "5000.00", personal=1)
     with pytest.raises(InputError, match="quarterly"):
         compute_withholding(IN, emp, taxability)
+
+
+# --- MD rate_schedule_percentage (2026 Employer Withholding Guide) ----------
+
+MD = _pf(
+    "US-MD",
+    "rate_schedule_percentage",
+    {
+        "exemption_per_period": {"weekly": "61.54", "daily": "8.77"},
+        "standard_deduction_per_period": {"weekly": "65.38", "daily": "9.31"},
+        "no_withholding_floor": {"weekly": "96.00", "daily": "13.70"},
+        "status_groups": {
+            "a": ["married_joint", "head_of_household"],
+            "b": ["single", "married_filing_separately", "dependent"],
+        },
+        "schedules": {
+            "0.0225": {
+                "weekly": {
+                    "a": [
+                        {"over": "0", "rate": "0.0700", "base": "0"},
+                        {"over": "2885", "rate": "0.0725", "base": "201.92"},
+                        {"over": "3365", "rate": "0.0750", "base": "236.78"},
+                        {"over": "4327", "rate": "0.0775", "base": "308.89"},
+                        {"over": "5769", "rate": "0.0800", "base": "420.67"},
+                        {"over": "11538", "rate": "0.0850", "base": "882.17"},
+                        {"over": "23077", "rate": "0.0875", "base": "1862.99"},
+                    ],
+                    "b": [
+                        {"over": "0", "rate": "0.0700", "base": "0"},
+                        {"over": "1923", "rate": "0.0725", "base": "134.62"},
+                        {"over": "2404", "rate": "0.0750", "base": "169.47"},
+                        {"over": "2885", "rate": "0.0775", "base": "205.53"},
+                        {"over": "4808", "rate": "0.0800", "base": "354.57"},
+                        {"over": "9615", "rate": "0.0850", "base": "739.15"},
+                        {"over": "19231", "rate": "0.0875", "base": "1556.51"},
+                    ],
+                },
+            },
+        },
+    },
+)
+
+
+def _md_emp(freq, gross, status, allowances=0, schedule="0.0225"):
+    extra = {"rate_schedule": schedule} if schedule else {}
+    return _employee(freq, gross, jurisdiction="US-MD", filing_status=status,
+                     allowances=allowances, **extra)
+
+
+def test_md_first_bracket(taxability):
+    # weekly $1,000, MFJ, 1 exemption: 1000 - 65.38 - 61.54 = 873.08
+    # x 7.00% = 61.1156 -> 61.12
+    emp = _md_emp("weekly", "1000.00", "married_joint", allowances=1)
+    assert compute_withholding(MD, emp, taxability) == Decimal("61.12")
+
+
+def test_md_single_upper_bracket_printed_base(taxability):
+    # weekly $3,000 single, 0 exemptions: taxable 2,934.62; printed base
+    # 205.53 + 7.75% x 49.62 = 209.3756 -> 209.38
+    emp = _md_emp("weekly", "3000.00", "single")
+    assert compute_withholding(MD, emp, taxability) == Decimal("209.38")
+
+
+def test_md_status_group_resolution(taxability):
+    # head_of_household uses group (a); dependent uses group (b)
+    hoh = _md_emp("weekly", "3000.00", "head_of_household")
+    dep = _md_emp("weekly", "3000.00", "dependent")
+    # (a): taxable 2,934.62 -> 201.92 + 7.25% x 49.62 = 205.5175 -> 205.52
+    assert compute_withholding(MD, hoh, taxability) == Decimal("205.52")
+    assert compute_withholding(MD, dep, taxability) == Decimal("209.38")
+
+
+def test_md_gross_wage_floor(taxability):
+    # "DO NOT WITHHOLD ON GROSS WAGES LESS THAN $96.00" tests GROSS wages
+    emp = _md_emp("weekly", "95.99", "single")
+    assert compute_withholding(MD, emp, taxability) == Decimal("0.00")
+
+
+def test_md_above_floor_but_taxable_zero(taxability):
+    # over the floor, but deductions exceed wages -> clamp, not the floor path
+    emp = _md_emp("weekly", "100.00", "single", allowances=1)
+    assert compute_withholding(MD, emp, taxability) == Decimal("0.00")
+
+
+def test_md_missing_schedule_fails_loud(taxability):
+    from engine.errors import InputError
+    emp = _md_emp("weekly", "1000.00", "single", schedule=None)
+    with pytest.raises(InputError, match="rate_schedule"):
+        compute_withholding(MD, emp, taxability)
+
+
+def test_md_unknown_schedule_fails_loud(taxability):
+    from engine.errors import InputError
+    emp = _md_emp("weekly", "1000.00", "single", schedule="0.0399")
+    with pytest.raises(InputError, match="0.0399"):
+        compute_withholding(MD, emp, taxability)

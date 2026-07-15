@@ -357,3 +357,74 @@ def test_golden_case_carries_exemption_counts():
         jurisdiction="US-IN", tax="state_income_withholding",
         example=example, as_of="2026-06-15", document="DN #1")
     assert g["input"]["state"][0]["exemptions"] == {"personal": 5, "dependent": 3}
+
+
+def test_rate_schedule_transform_roundtrip():
+    # Extraction shape -> assemble -> loader -> engine matches the printed
+    # 2.25% weekly schedule (hand-derived: $3,000 single -> $209.38).
+    from engine.pipeline import compute_withholding
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+    from decimal import Decimal
+    from pathlib import Path
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "exemption_per_period": [{"frequency": "weekly", "amount": "61.54"}],
+            "standard_deduction_per_period": [{"frequency": "weekly", "amount": "65.38"}],
+            "no_withholding_floor": [{"frequency": "weekly", "amount": "96.00"}],
+            "status_groups": [
+                {"group": "a", "statuses": ["married_joint", "head_of_household"]},
+                {"group": "b", "statuses": ["single", "married_filing_separately", "dependent"]},
+            ],
+            "schedules": [{
+                "schedule": "0.0225",
+                "frequencies": [{
+                    "frequency": "weekly",
+                    "groups": [
+                        {"group": "a", "brackets": [
+                            {"over": "0", "rate": "0.0700", "base": "0"},
+                            {"over": "2885", "rate": "0.0725", "base": "201.92"},
+                        ]},
+                        {"group": "b", "brackets": [
+                            {"over": "0", "rate": "0.0700", "base": "0"},
+                            {"over": "1923", "rate": "0.0725", "base": "134.62"},
+                            {"over": "2404", "rate": "0.0750", "base": "169.47"},
+                            {"over": "2885", "rate": "0.0775", "base": "205.53"},
+                        ]},
+                    ],
+                }],
+            }],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-MD", tax="state_income_withholding",
+        method="rate_schedule_percentage", extraction=extraction, source=SOURCE)
+    pf = load_parameter_dict(raw)
+    assert "0.0225.weekly.b" in pf.bracket_tables
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "3000.00",
+        "state": [{"jurisdiction": "US-MD", "filing_status": "single",
+                   "rate_schedule": "0.0225"}],
+    })
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    assert compute_withholding(pf, emp, taxability) == Decimal("209.38")
+
+
+def test_golden_case_carries_rate_schedule():
+    example = {
+        "page": 13, "description": "constructed",
+        "pay_frequency": "weekly", "gross_wages": "3000.00",
+        "filing_status": "single", "allowances": 0,
+        "rate_schedule": "0.0225",
+        "additional_withholding": None,
+        "expected_withholding": "209.38",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-MD", tax="state_income_withholding",
+        example=example, as_of="2026-06-15", document="MD guide")
+    assert g["input"]["state"][0]["rate_schedule"] == "0.0225"

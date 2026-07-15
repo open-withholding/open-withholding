@@ -101,6 +101,7 @@
         "elective_flat_rate",
         "per_period_credit_phaseout",
         "deduction_constant_percentage",
+        "rate_schedule_percentage",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
         "wage_bracket_lookup",
@@ -580,6 +581,91 @@
                   "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
                     "type": "string",
                     "pattern": "^[0-9]+$"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "rate_schedule_percentage"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "exemption_per_period",
+              "standard_deduction_per_period",
+              "no_withholding_floor",
+              "status_groups",
+              "schedules"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "exemption_per_period": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
+              },
+              "standard_deduction_per_period": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
+              },
+              "no_withholding_floor": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
+              },
+              "status_groups": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "schedules": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": {
+                  "type": "object",
+                  "minProperties": 1,
+                  "additionalProperties": false,
+                  "patternProperties": {
+                    "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                      "type": "object",
+                      "minProperties": 1,
+                      "additionalProperties": {
+                        "$ref": "#/$defs/bracketTable"
+                      }
+                    }
                   }
                 }
               }

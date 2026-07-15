@@ -172,6 +172,10 @@
               "type": "integer",
               "minimum": 0
             }
+          },
+          "rate_schedule": {
+            "type": "string",
+            "description": "Employer-selected printed rate schedule key (MD: the employee's county combined rate, e.g. '0.0320')"
           }
         }
       }

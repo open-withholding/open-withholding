@@ -15,6 +15,9 @@ DECIMAL = {
 }
 DECIMAL_OR_NULL = {"type": ["string", "null"], "description": "Exact decimal string, or null"}
 
+FREQUENCY_ENUM = {"enum": ["daily", "weekly", "biweekly", "semimonthly",
+                            "monthly", "quarterly", "semiannually", "annually"]}
+
 BRACKET_ROWS = {
     "type": "array",
     "description": "Rows ascending by `over` (lower bound); first row has over \"0\". "
@@ -514,6 +517,92 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "rate_schedule_percentage": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["exemption_per_period", "standard_deduction_per_period",
+                     "no_withholding_floor", "status_groups", "schedules"],
+        "properties": {
+            "exemption_per_period": {
+                "type": "array",
+                "description": "Printed per-period value of ONE exemption, every payroll period the document prints",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {"frequency": FREQUENCY_ENUM, "amount": DECIMAL},
+                },
+            },
+            "standard_deduction_per_period": {
+                "type": "array",
+                "description": "Printed per-period standard-deduction allowance",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {"frequency": FREQUENCY_ENUM, "amount": DECIMAL},
+                },
+            },
+            "no_withholding_floor": {
+                "type": "array",
+                "description": "The printed 'DO NOT WITHHOLD ON GROSS WAGES LESS THAN $X' per period (confirm it is identical across schedules; note in `notes` if any schedule differs)",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {"frequency": FREQUENCY_ENUM, "amount": DECIMAL},
+                },
+            },
+            "status_groups": {
+                "type": "array",
+                "description": "The printed status groupings, e.g. (a) married filing joint or head of household; (b) single including MFS or dependent. group is a short machine key ('a', 'b'); statuses are lower_snake_case filing-status keys.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["group", "statuses"],
+                    "properties": {
+                        "group": {"type": "string"},
+                        "statuses": {"type": "array", "items": {"type": "string"}},
+                    },
+                },
+            },
+            "schedules": {
+                "type": "array",
+                "description": "One entry per printed rate schedule (MD: 2.25% ... 3.30% plus the Maryland-resident-in-Delaware schedule). schedule is the combined rate as a decimal string ('0.0225') or a snake_case key for special schedules. Transcribe EVERY period and EVERY row; rates are the printed COMBINED marginal rates.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["schedule", "frequencies"],
+                    "properties": {
+                        "schedule": {"type": "string"},
+                        "frequencies": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["frequency", "groups"],
+                                "properties": {
+                                    "frequency": FREQUENCY_ENUM,
+                                    "groups": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "additionalProperties": False,
+                                            "required": ["group", "brackets"],
+                                            "properties": {
+                                                "group": {"type": "string"},
+                                                "brackets": BRACKET_ROWS,
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     "deduction_constant_percentage": {
         "type": "object",
         "additionalProperties": False,
@@ -702,6 +791,7 @@ WORKED_EXAMPLE = {
         "allowances",
         "secondary_allowances",
         "exemption_counts",
+        "rate_schedule",
         "step2_checkbox",
         "step3_credits",
         "step4a_other_income",
@@ -724,6 +814,12 @@ WORKED_EXAMPLE = {
         "secondary_allowances": {
             "type": ["integer", "null"],
             "description": "Second allowance kind where the state defines one; null otherwise",
+        },
+        "rate_schedule": {
+            "type": ["string", "null"],
+            "description": "The printed rate schedule the example uses, matching the "
+            "candidate's params.schedules key (MD: '0.0225'); null when the method "
+            "has no schedule dimension.",
         },
         "exemption_counts": {
             "type": ["object", "null"],

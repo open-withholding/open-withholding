@@ -635,3 +635,32 @@
   expected_window: "09-15..01-31"
   maps_to:
     - data/us/in/{year}/withholding.yaml
+
+- id: us-md-withholding-guide
+  document: "Maryland Employer Withholding Guide"
+  jurisdiction: US-MD
+  tax: state_income_withholding
+  method: rate_schedule_percentage
+  no_printed_examples: true
+  # Landing is a ServiceNow KB page (JS-rendered) — probe the DAM path
+  # directly; filename case has varied across years.
+  landing: "https://www.marylandcomptroller.gov/taxes/business/withholding.html"
+  document_url_pattern: "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/{year}/withholding-guide.pdf"
+  extraction_hint: >-
+    The guide prints one full percentage-method section per pre-combined
+    state+local rate (2.25% through 3.30%) plus a separate schedule for
+    Maryland residents who work in Delaware. Use the combined rate as the
+    schedule key ('0.0225' ... '0.0330') and 'md_resident_in_de' for the
+    Delaware-resident schedule. Status groups: 'a' = married_joint,
+    head_of_household; 'b' = single, married_filing_separately, dependent.
+    Transcribe EVERY schedule, EVERY payroll period, EVERY row — printed
+    bases are authoritative. The per-period exemption ($3,200/yr), standard
+    deduction ($3,400/yr flat; the 15 percent min/max was repealed for 2026),
+    and DO-NOT-WITHHOLD floors are printed once per schedule section and
+    should be identical across sections — confirm that and note any
+    exception. The wage-bracket tables elsewhere in the guide are lookup
+    tables, not this method; skip them.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/md/{year}/withholding.yaml
