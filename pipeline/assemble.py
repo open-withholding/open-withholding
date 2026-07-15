@@ -367,7 +367,9 @@ def assemble_golden_case(
         if example.get("secondary_allowances"):
             election["secondary_allowances"] = example["secondary_allowances"]
         if example.get("exemption_counts"):
-            election["exemptions"] = dict(example["exemption_counts"])
+            election["exemptions"] = {
+                e["kind"]: e["count"] for e in example["exemption_counts"]
+            }
         if example.get("rate_schedule"):
             election["rate_schedule"] = example["rate_schedule"]
         if example.get("elected_annual_amount") is not None:
