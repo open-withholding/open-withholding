@@ -822,12 +822,20 @@ WORKED_EXAMPLE = {
             "has no schedule dimension.",
         },
         "exemption_counts": {
-            "type": ["object", "null"],
+            "type": ["array", "null"],
             "description": "Named exemption counts where the state's certificate "
             "defines more than two kinds (IN WH-4: personal/dependent/"
-            "first_time_dependent/adopted). Keys MUST match the candidate's "
-            "params.exemptions keys. Null when not applicable.",
-            "additionalProperties": {"type": "integer"},
+            "first_time_dependent/adopted). kind MUST match a candidate "
+            "params.exemptions key. Null when not applicable.",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["kind", "count"],
+                "properties": {
+                    "kind": {"type": "string"},
+                    "count": {"type": "integer"},
+                },
+            },
         },
         "step2_checkbox": {"type": ["boolean", "null"], "description": "Federal only; null otherwise"},
         "step3_credits": DECIMAL_OR_NULL,

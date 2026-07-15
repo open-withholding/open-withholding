@@ -349,7 +349,8 @@ def test_golden_case_carries_exemption_counts():
         "page": 3, "description": "DN1 example",
         "pay_frequency": "weekly", "gross_wages": "800.00",
         "filing_status": "all", "allowances": None,
-        "exemption_counts": {"personal": 5, "dependent": 3},
+        "exemption_counts": [{"kind": "personal", "count": 5},
+                             {"kind": "dependent", "count": 3}],
         "additional_withholding": None,
         "expected_withholding": "13.96",
     }
