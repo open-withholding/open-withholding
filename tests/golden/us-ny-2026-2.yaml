@@ -1,0 +1,15 @@
+source:
+  document: NYS-50-T-NYS, New York State Withholding Tax Tables and Methods (2026)
+  page: 16
+  example: 'Example 3: Monthly payroll, $50,000 gross wages, single, 3 exemptions'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '50000'
+  state:
+  - jurisdiction: US-NY
+    filing_status: single
+    allowances: 3
+    additional_withholding: '0'
+expect:
+  state_withholding: '3576.63'
