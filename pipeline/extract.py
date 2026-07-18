@@ -203,7 +203,7 @@ def archive_pdf(data: bytes, source: dict, year: int, url: str) -> str:
 def call_model(client, model: str, system: str, content: list, schema: dict) -> dict:
     with client.messages.stream(
         model=model,
-        max_tokens=32000,
+        max_tokens=64000,
         thinking={"type": "adaptive"},
         system=system,
         messages=[{"role": "user", "content": content}],
