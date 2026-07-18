@@ -22,6 +22,7 @@ from engine.methods.custom import us_al as custom_us_al
 from engine.methods.custom import us_ma as custom_us_ma
 from engine.methods import deduction_constant_percentage
 from engine.methods import rate_schedule_percentage
+from engine.methods.custom import us_ny as custom_us_ny
 from engine.methods.custom import us_or as custom_us_or
 
 REGISTRY = {
@@ -38,6 +39,7 @@ REGISTRY = {
     "federal_percentage_2020": federal_percentage_2020.compute,
     "custom/us_ca": custom_us_ca.compute,
     "custom/us_ct": custom_us_ct.compute,
+    "custom/us_ny": custom_us_ny.compute,
     "custom/us_or": custom_us_or.compute,
     "custom/us_al": custom_us_al.compute,
     "custom/us_ma": custom_us_ma.compute,

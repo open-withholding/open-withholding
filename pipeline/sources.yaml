@@ -733,3 +733,37 @@
   expected_window: "11-01..01-15"
   maps_to:
     - data/us/ca/{year}/withholding.yaml
+
+- id: us-ny-nys50tnys
+  document: "NYS-50-T-NYS, New York State Withholding Tax Tables and Methods"
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  method: custom/us_ny
+  landing: "https://www.tax.ny.gov/forms/withholding_cur_forms.htm"
+  # The unversioned URL serves the current edition; the cover carries the
+  # revision mark, e.g. (1/26), and an explicit effective date range.
+  document_url_pattern: "https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_nys.pdf"
+  extraction_hint: >-
+    Transcribe ONLY Method II (exact calculation, pages 14-19) and Method
+    III (page 22). Skip the Method I wage-bracket tables, the dollar to
+    dollar tables (pages 20-21), Table A (it is the precomputed Table B +
+    n x Table C grid for 10 or fewer exemptions - the deduction and
+    exemption values come from Tables B and C), and Table D (an
+    employer-elected federal-allowance adjustment, out of scope). Marital
+    keys are single and married. 'Daily or miscellaneous' maps to
+    frequency daily and 'Annual' to annually. In the exact-calculation
+    tables (II-A..E and the Annual Tax Rate Schedule), over = column 1 'at
+    least' (column 3 'subtract' repeats it in every printed row - confirm
+    and note any exception), rate = column 4, base = column 5; printed
+    bases are authoritative. Each table's FINAL line ('$X & over - use
+    Method III') is NOT a bracket row; transcribe it into
+    method_iii_cutover for that period and status. Method III bands key on
+    ANNUALIZED net wages. Transcribe ALL EIGHT printed examples (four
+    single p.16, four married p.18) exactly as printed, including any
+    whose printed step arithmetic looks off - the maintainer adjudicates
+    conflicts. The page-23 conversion example uses the Method I
+    wage-bracket table (a lookup), so it is NOT a golden.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ny/{year}/withholding.yaml

@@ -615,6 +615,108 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "custom/us_ny": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["deduction", "exemption_value", "brackets",
+                     "method_iii_cutover", "method_iii"],
+        "properties": {
+            "deduction": {
+                "type": "array",
+                "description": "Table B deduction allowance, one entry per printed "
+                "payroll period ('Daily or miscellaneous' maps to 'daily', 'Annual' to "
+                "'annually')",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "single", "married"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "single": DECIMAL,
+                        "married": DECIMAL,
+                    },
+                },
+            },
+            "exemption_value": {
+                "type": "array",
+                "description": "Table C value of one exemption per payroll period",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "amount"],
+                    "properties": {"frequency": FREQUENCY_ENUM, "amount": DECIMAL},
+                },
+            },
+            "brackets": {
+                "type": "array",
+                "description": "Method II Tables II-A..E AND the Annual Tax Rate "
+                "Schedule (frequency 'annually'), one entry per (period, marital "
+                "status): over = column 1 'at least' (column 3 repeats it), rate = "
+                "column 4, base = column 5. Printed bases authoritative. Do NOT "
+                "transcribe the final 'use Method III' line as a row.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "statuses"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "statuses": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["filing_status", "rows"],
+                                "properties": {
+                                    "filing_status": {"type": "string"},
+                                    "rows": BRACKET_ROWS,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            "method_iii_cutover": {
+                "type": "array",
+                "description": "Each bracket table's FINAL printed line ('$X & over -> "
+                "use Method III'): the per-period net-wage amount at which Method III "
+                "takes over, per period and marital status",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "single", "married"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "single": DECIMAL,
+                        "married": DECIMAL,
+                    },
+                },
+            },
+            "method_iii": {
+                "type": "array",
+                "description": "Method III top-rate bands on ANNUALIZED net wages, one "
+                "entry per marital status; each band: over = column 1 'at least', rate "
+                "= column 3",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["filing_status", "bands"],
+                    "properties": {
+                        "filing_status": {"type": "string"},
+                        "bands": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["over", "rate"],
+                                "properties": {"over": DECIMAL, "rate": DECIMAL},
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     "rate_schedule_percentage": {
         "type": "object",
         "additionalProperties": False,
