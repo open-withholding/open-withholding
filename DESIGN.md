@@ -471,6 +471,23 @@ Cost note: this corpus is ~120 documents/year; even generous multi-pass
 extraction is cents-to-a-dollar per document. Optimize for reviewer
 minutes, not tokens.
 
+**Print-defect adjudications.** Occasionally the published document itself
+is internally inconsistent (a rate or cumulative base that contradicts the
+document's own bracket chaining — see MD 2026, NJ 2020). A faithful
+transcription then deterministically fails mechanical validation, which is
+the validator working as intended. The registry entry may carry an
+`adjudications` list — the ONLY sanctioned path by which a data file
+deviates from print. Each entry states the exact printed (defective) value,
+the correction, and a justification derivable from the document's own
+arithmetic. The pipeline applies corrections after independent verification
+(the verifier must confirm the transcription as printed) and before
+mechanical validation, and only when the transcription matches `printed`
+exactly (already-corrected transcriptions no-op; anything else fails the
+run — so a revised document invalidates stale adjudications loudly).
+Every application is rendered in the PR body and counted in the data
+file's source notes; a defect report to the issuing agency accompanies
+the adjudication.
+
 ### 8.3 Human review
 
 The maintainer's entire recurring job:

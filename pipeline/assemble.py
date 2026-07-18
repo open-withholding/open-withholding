@@ -352,6 +352,48 @@ def assemble_parameter_file(
     }
 
 
+def apply_adjudications(params: dict, adjudications: list[dict]) -> list[dict]:
+    """Apply maintainer-adjudicated print-defect corrections from the source
+    registry to assembled params.
+
+    This is the ONLY path by which a data file may deviate from the printed
+    document, and it is guarded so it can never silently rewrite good data:
+    each entry states the printed (defective) value, and the correction
+    applies only when the transcription matches it exactly. A transcription
+    already equal to the corrected value no-ops (models sometimes normalize
+    from a redundant column that prints the right number); anything else
+    raises, failing the run. Every entry is disclosed in the PR body and
+    counted in the data file's source notes.
+
+    Returns the adjudication list with a `status` of "applied" or
+    "already_correct" per entry."""
+    results = []
+    for adj in adjudications:
+        path = adj["path"]
+        node = params
+        try:
+            for key in path[:-1]:
+                node = node[key]
+            current = node[path[-1]]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise ValueError(
+                f"adjudication path {path!r} not found in candidate params: {exc}"
+            ) from exc
+        printed, corrected = str(adj["printed"]), str(adj["corrected"])
+        if str(current) == corrected:
+            results.append({**adj, "status": "already_correct"})
+        elif str(current) == printed:
+            node[path[-1]] = adj["corrected"]
+            results.append({**adj, "status": "applied"})
+        else:
+            raise ValueError(
+                f"adjudication {path!r}: transcription {current!r} matches neither "
+                f"the printed value {printed!r} nor the correction {corrected!r} — "
+                "the document may have been revised; re-review the adjudication"
+            )
+    return results
+
+
 def _money(value, default: str = "0") -> str:
     return default if value is None else value
 
@@ -437,6 +479,7 @@ def build_pr_body(
     golden_paths: list[str],
     golden_ok: bool,
     prev_path: str | None,
+    adjudications: list[dict] | None = None,
 ) -> str:
     checks = verification.get("checks", [])
     confirmed = sum(1 for c in checks if c["confirmed"])
@@ -474,6 +517,25 @@ def build_pr_body(
     ]
     for c in unconfirmed:
         lines.append(f"- ⚠️ **UNCONFIRMED** `{c['path']}` = `{c['candidate_value']}` — {c['note'] or 'no note'}")
+    if adjudications:
+        lines += [
+            "",
+            "### ⚠️ Maintainer adjudications (print defects)",
+            "",
+            "This file deviates from the printed document at the rows below. Each "
+            "correction was adjudicated in the source registry with a justification "
+            "derived from the document's own arithmetic; the extraction transcribed "
+            "the printed value and the pipeline applied the correction.",
+            "",
+        ]
+        for adj in adjudications:
+            path = ".".join(str(p) for p in adj["path"])
+            marker = (
+                f"`{adj['printed']}` → `{adj['corrected']}`"
+                if adj["status"] == "applied"
+                else f"already `{adj['corrected']}` in transcription (printed `{adj['printed']}`)"
+            )
+            lines.append(f"- `{path}`: {marker} — {adj['justification']}")
     lines += ["", "### Golden tests", ""]
     if golden_paths:
         lines += [
@@ -498,6 +560,11 @@ def build_pr_body(
         "### Reviewer checklist",
         "",
         "- [ ] Spot-checked 2–3 parameter values against the linked PDF pages",
+        *(
+            ["- [ ] Verified each maintainer adjudication's justification against the printed pages"]
+            if adjudications
+            else []
+        ),
         "- [ ] Golden tests are transcribed from THIS edition (source document/year matches)",
         "- [ ] Rounding block matches what the worked examples actually do",
         "- [ ] `supersedes` / `effective_to` handled on the prior file if this is a revision",

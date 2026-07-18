@@ -425,6 +425,35 @@ def main() -> int:
     )
     unconfirmed = [c for c in verification["checks"] if not c["confirmed"]]
 
+    # Maintainer-adjudicated print-defect corrections (registry `adjudications`).
+    # Applied AFTER verification — the verifier must confirm the transcription
+    # against the document as printed — and before validation, which checks the
+    # corrected arithmetic. assemble.apply_adjudications guards that each
+    # correction matches the transcribed printed value.
+    applied_adjudications: list[dict] = []
+    if source.get("adjudications"):
+        try:
+            applied_adjudications = assemble.apply_adjudications(
+                param_dict["params"], source["adjudications"]
+            )
+        except ValueError as exc:
+            (OUT_DIR / f"{args.source_id}-{args.year}-triage.md").write_text(
+                f"# Triage: {args.source_id} {args.year}\n\n**Failure:** {exc}\n\n"
+                f"## Candidate\n\n```yaml\n{candidate_yaml}```\n"
+            )
+            print(f"      FAILED — {exc}")
+            return 1
+        n_applied = sum(1 for a in applied_adjudications if a["status"] == "applied")
+        if "source" in param_dict:
+            param_dict["source"]["notes"] = (
+                param_dict["source"].get("notes", "").rstrip() + "; "
+                f"{n_applied} print-defect correction(s) adjudicated by maintainer "
+                "(see PR / registry adjudications)"
+            ).lstrip("; ")
+        candidate_yaml = dump_yaml(param_dict)
+        print(f"      applied {n_applied} maintainer adjudication(s) "
+              f"({len(applied_adjudications) - n_applied} already correct in transcription)")
+
     print(f"[4/5] mechanical validation ...")
     as_of = assemble.default_as_of(extraction["effective_from"])
     golden_dicts = [
@@ -489,6 +518,7 @@ def main() -> int:
         golden_paths=golden_paths,
         golden_ok=True,
         prev_path=str(prev_path.relative_to(REPO_ROOT)) if prev_path else None,
+        adjudications=applied_adjudications,
     )
     pr_file = OUT_DIR / f"{args.source_id}-{args.year}-pr.md"
     pr_file.write_text(pr_body + "\n")

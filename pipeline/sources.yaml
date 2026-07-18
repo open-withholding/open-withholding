@@ -662,6 +662,46 @@
     tables, not this method; skip them.
   check: [content_hash]
   expected_window: "11-15..01-31"
+  # Print defects in the 2026 edition (sha256 ce61cef90c00bc41...), each
+  # provable from the document's own arithmetic; full analysis on issue #109.
+  # Guarded corrections: applied only when the transcription matches
+  # `printed` exactly (see assemble.apply_adjudications).
+  adjudications:
+    - path: [schedules, '0.0275', monthly, a, 4, rate]
+      printed: '0.0825'
+      corrected: '0.0850'
+      justification: >-
+        p.23 prints 8.25% on the $25,000-$50,000 row; the next printed base
+        4,072.92 = 1,947.92 + 8.50% x 25,000 exactly, and all seven sibling
+        payroll periods print 8.50% at this ladder position.
+    - path: [schedules, '0.0275', monthly, b, 4, base]
+      printed: '953.13'
+      corrected: '1640.60'
+      justification: >-
+        p.23 duplicates the prior row's base 953.13; chaining gives 953.13 +
+        8.25% x 8,333 = 1,640.60, and the next printed base 3,411.49 =
+        1,640.60 + 8.50% x 20,834 exactly.
+    - path: [schedules, '0.0310', semimonthly, b, 5, base]
+      printed: '1789.06'
+      corrected: '1778.65'
+      justification: >-
+        p.35: this table is generated as the annual (b) table / 24 (e.g.
+        856.77 = 20,562.50 / 24 exactly); annual base 42,687.50 / 24 =
+        1,778.65. The printed 1,789.06 equals 42,937.50 / 24, i.e. generated
+        with an 8.95% rate instead of the schedule's 8.85%.
+    - path: [schedules, '0.0310', semimonthly, b, 6, base]
+      printed: '3737.01'
+      corrected: '3726.56'
+      justification: >-
+        p.35: chained from the defective row above; the annual (b) top base
+        89,437.50 / 24 = 3,726.56.
+    - path: [schedules, '0.0240', monthly, b, 6, over]
+      printed: '83833'
+      corrected: '83333'
+      justification: >-
+        p.17 prints "Over $83,833"; the row's own "of excess over" column
+        prints 83,333 and the printed base 6,869.76 = 3,265.65 + 8.65% x
+        41,666 chains only from 83,333.
   maps_to:
     - data/us/md/{year}/withholding.yaml
 
