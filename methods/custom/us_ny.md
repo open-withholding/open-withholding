@@ -83,6 +83,16 @@ All arithmetic in Decimal; `r(x)` = the envelope rounding rule;
 - The married rate ladder is non-monotonic (the 13.49% tax-benefit
   recapture band sits between 6.40% and 7.35%); only the bounds must
   ascend.
+- The Annual Tax Rate Schedule's printed bases are statute-derived
+  cumulative amounts that intentionally do NOT chain with the smoothed
+  withholding rates (drift up to ~$4.30 at the 2026 single table's upper
+  rows), so the loader relaxes the cumulative-chaining tolerance to
+  $10.00 for the annual tables only. The operative transcription check
+  is structural: every per-period table is the annual schedule divided
+  by pay periods — row-for-row equal rates, and each base equal to
+  round(annual base ÷ periods) to the cent. The loader enforces this
+  cross-frequency corroboration (six independent transcriptions of the
+  same schedule), and requires the annual schedule to be present.
 - Table D (employer-elected federal-allowance adjustment) and the
   Method I wage-bracket / dollar-to-dollar lookup tables are out of
   scope.

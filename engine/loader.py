@@ -11,14 +11,16 @@ import datetime as dt
 import functools
 import json
 from dataclasses import dataclass
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import jsonschema
 import yaml
 
-from engine.brackets import BracketRow, parse_table
+from engine.brackets import BASE_TOLERANCE, BracketRow, parse_table
 from engine.errors import DataError
-from engine.money import Rounding
+from engine.inputs import PAY_PERIODS_PER_YEAR
+from engine.money import D, Rounding
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WITHHOLDING_SCHEMA_PATH = REPO_ROOT / "schema" / "withholding.schema.json"
@@ -82,11 +84,73 @@ def _validate_and_parse_brackets(method: str, params: dict) -> dict[str, tuple[B
                     "custom/us_ny"):
         # Two-level tables: variant/frequency -> filing status -> rows.
         for outer, per_status in params.get("brackets", {}).items():
+            # NY's Annual Tax Rate Schedule bases are statute-derived
+            # cumulative amounts that intentionally do not chain with the
+            # smoothed withholding rates (drift up to ~$4.30); the real
+            # transcription check for this method is the cross-frequency
+            # corroboration below.
+            tol = (
+                Decimal("10.00")
+                if method == "custom/us_ny" and outer == "annually"
+                else BASE_TOLERANCE
+            )
             for status, rows in per_status.items():
                 tables[f"{outer}.{status}"] = parse_table(
-                    rows, context=f"params.brackets.{outer}.{status}"
+                    rows, context=f"params.brackets.{outer}.{status}",
+                    base_tolerance=tol,
                 )
+    if method == "custom/us_ny":
+        _crosscheck_us_ny_brackets(params)
     return tables
+
+
+def _crosscheck_us_ny_brackets(params: dict) -> None:
+    """NY per-period tables are the Annual Tax Rate Schedule divided by pay
+    periods: every base must equal round(annual base / periods) to the cent
+    and every rate must match row-for-row. Six independent transcriptions
+    corroborating each other is a stronger transcription check than
+    cumulative chaining, which NY's annual bases legitimately fail."""
+    brackets = params.get("brackets", {})
+    annual = brackets.get("annually")
+    if not annual:
+        raise DataError(
+            "custom/us_ny: params.brackets must include the 'annually' schedule "
+            "(the Annual Tax Rate Schedule anchors the cross-frequency check)"
+        )
+    cent = Decimal("0.01")
+    for freq, per_status in brackets.items():
+        if freq == "annually":
+            continue
+        periods = PAY_PERIODS_PER_YEAR[freq]
+        for status, rows in per_status.items():
+            where = f"params.brackets.{freq}.{status}"
+            arows = annual.get(status)
+            if arows is None:
+                raise DataError(f"{where}: no matching status in the annual schedule")
+            if len(arows) != len(rows):
+                raise DataError(
+                    f"{where}: {len(rows)} rows but the annual schedule has "
+                    f"{len(arows)} — tables must correspond row-for-row"
+                )
+            for i, (row, arow) in enumerate(zip(rows, arows)):
+                if D(row["rate"], context=f"{where}[{i}].rate") != D(
+                    arow["rate"], context=f"annually.{status}[{i}].rate"
+                ):
+                    raise DataError(
+                        f"{where}[{i}]: rate {row['rate']} differs from the annual "
+                        f"schedule's {arow['rate']} in the same position"
+                    )
+                if row.get("base") is None or arow.get("base") is None:
+                    continue
+                expected = (
+                    D(arow["base"], context=f"annually.{status}[{i}].base") / periods
+                ).quantize(cent, rounding=ROUND_HALF_UP)
+                declared = D(row["base"], context=f"{where}[{i}].base")
+                if abs(declared - expected) > cent:
+                    raise DataError(
+                        f"{where}[{i}]: base {declared} is not the annual schedule's "
+                        f"{arow['base']} / {periods} = {expected}; transcription error"
+                    )
 
 
 def load_parameter_dict(raw: dict, *, path: Path | None = None) -> ParameterFile:

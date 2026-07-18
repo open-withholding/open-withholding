@@ -32,7 +32,12 @@ class BracketRow:
     base: Decimal  # tax on income below `over`; printed value wins when declared
 
 
-def parse_table(rows: list[dict], *, context: str = "brackets") -> tuple[BracketRow, ...]:
+def parse_table(
+    rows: list[dict],
+    *,
+    context: str = "brackets",
+    base_tolerance: Decimal = BASE_TOLERANCE,
+) -> tuple[BracketRow, ...]:
     if not rows:
         raise DataError(f"{context}: table is empty")
     parsed: list[BracketRow] = []
@@ -57,10 +62,10 @@ def parse_table(rows: list[dict], *, context: str = "brackets") -> tuple[Bracket
         declared = row.get("base")
         if declared is not None:
             declared = D(declared, context=f"{where}.base")
-            if abs(declared - cumulative) > BASE_TOLERANCE:
+            if abs(declared - cumulative) > base_tolerance:
                 raise DataError(
                     f"{where}: declared base {declared} is {abs(declared - cumulative)} from "
-                    f"the recomputed cumulative {cumulative} (tolerance {BASE_TOLERANCE}); "
+                    f"the recomputed cumulative {cumulative} (tolerance {base_tolerance}); "
                     f"transcription error"
                 )
             base = declared  # printed value is what the guide's examples use

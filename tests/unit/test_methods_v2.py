@@ -1372,6 +1372,34 @@ NY = load_parameter_dict({
             "monthly": "83.30", "annually": "1000",
         },
         "brackets": {
+            "annually": {
+                "single": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "8500", "rate": "0.0440", "base": "332.00"},
+                    {"over": "11700", "rate": "0.0515", "base": "472.00"},
+                    {"over": "13900", "rate": "0.0540", "base": "586.00"},
+                    {"over": "80650", "rate": "0.0590", "base": "4190.00"},
+                    {"over": "96800", "rate": "0.0703", "base": "5143.00"},
+                    {"over": "107650", "rate": "0.0753", "base": "5906.00"},
+                    {"over": "157650", "rate": "0.0640", "base": "9673.00"},
+                    {"over": "215400", "rate": "0.1144", "base": "13369.00"},
+                    {"over": "265400", "rate": "0.0735", "base": "19091.00"},
+                ],
+                "married": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "8500", "rate": "0.0440", "base": "332.00"},
+                    {"over": "11700", "rate": "0.0515", "base": "472.00"},
+                    {"over": "13900", "rate": "0.0540", "base": "586.00"},
+                    {"over": "80650", "rate": "0.0590", "base": "4190.00"},
+                    {"over": "96800", "rate": "0.0657", "base": "5143.00"},
+                    {"over": "107650", "rate": "0.0707", "base": "5855.00"},
+                    {"over": "157650", "rate": "0.0801", "base": "9388.00"},
+                    {"over": "211550", "rate": "0.0640", "base": "13708.00"},
+                    {"over": "323200", "rate": "0.1349", "base": "20854.00"},
+                    {"over": "373200", "rate": "0.0735", "base": "27600.00"},
+                    {"over": "1077550", "rate": "0.0765", "base": "79369.00"},
+                ],
+            },
             "weekly": {
                 "single": [
                     {"over": "0", "rate": "0.0390", "base": "0"},
@@ -1634,3 +1662,49 @@ def test_ny_missing_frequency_fails_loud(taxability):
     emp = _ny_emp("biweekly", "800.00", "single")
     with pytest.raises(InputError, match="pay frequency"):
         compute_withholding(NY, emp, taxability)
+
+
+def test_ny_annual_bases_do_not_chain_but_load():
+    # The printed annual single bases drift up to $4.295 from cumulative
+    # chaining (statute-derived, not smoothed) — the NY loader path accepts
+    # them; the generic parser (default $1.00 tolerance) rejects them.
+    from engine.brackets import parse_table
+    from engine.errors import DataError
+    rows = NY.params["brackets"]["annually"]["single"]
+    with pytest.raises(DataError, match="recomputed cumulative"):
+        parse_table(rows, context="generic")
+    assert "annually.single" in NY.bracket_tables  # NY path loaded it
+
+
+def test_ny_crosscheck_catches_perturbed_annual_base():
+    # 9,673 -> 9,678 drifts only $7.30 (inside the relaxed $10 chaining
+    # tolerance) but breaks the cross-frequency identity with the weekly
+    # table (186.02 != 9,678 / 52 = 186.12) — the cross-check catches what
+    # relaxed chaining alone would miss.
+    import copy
+    from engine.errors import DataError
+    raw = copy.deepcopy(NY.params)
+    raw["brackets"]["annually"]["single"][7]["base"] = "9678.00"
+    from engine.loader import _validate_and_parse_brackets
+    with pytest.raises(DataError, match="not the annual schedule's"):
+        _validate_and_parse_brackets("custom/us_ny", raw)
+
+
+def test_ny_crosscheck_catches_rate_mismatch():
+    import copy
+    from engine.errors import DataError
+    raw = copy.deepcopy(NY.params)
+    raw["brackets"]["weekly"]["single"][6]["rate"] = "0.0763"
+    from engine.loader import _validate_and_parse_brackets
+    with pytest.raises(DataError, match="differs from the annual"):
+        _validate_and_parse_brackets("custom/us_ny", raw)
+
+
+def test_ny_crosscheck_requires_annual_schedule():
+    import copy
+    from engine.errors import DataError
+    raw = copy.deepcopy(NY.params)
+    del raw["brackets"]["annually"]
+    from engine.loader import _validate_and_parse_brackets
+    with pytest.raises(DataError, match="must include the 'annually'"):
+        _validate_and_parse_brackets("custom/us_ny", raw)
