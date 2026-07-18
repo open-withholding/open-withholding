@@ -1,0 +1,22 @@
+source:
+  document: 'Departmental Notice #1, How to Compute Withholding for State and County Income Tax (2026)'
+  page: 3
+  example: Weekly salary $800; 5 personal (Table A), 3 additional dependent (Table B), 1 first-time additional
+    dependent (Table B), 2 adopted child (Table C). Total deduction constant $326.92, taxable $473.08.
+    State tax = 473.08 x .0295 = 13.96 (county tax computed separately belongs to county files).
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '800'
+  state:
+  - jurisdiction: US-IN
+    filing_status: all
+    allowances: 0
+    additional_withholding: '0'
+    exemptions:
+      personal: 5
+      dependent: 3
+      first_time_dependent: 1
+      adopted: 2
+expect:
+  state_withholding: '13.96'
