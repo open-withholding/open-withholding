@@ -1,0 +1,17 @@
+source:
+  document: Maryland Employer Withholding Guide (2026)
+  page: 10
+  example: 'maintainer-constructed: Maryland-resident-in-Delaware schedule, biweekly, single (group b),
+    2 exemptions'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2400.00'
+  state:
+  - jurisdiction: US-MD
+    filing_status: single
+    allowances: 2
+    rate_schedule: md_resident_in_de
+    additional_withholding: '0'
+expect:
+  state_withholding: '66.76'

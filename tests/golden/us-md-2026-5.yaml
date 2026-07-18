@@ -1,0 +1,17 @@
+source:
+  document: Maryland Employer Withholding Guide (2026)
+  page: 22
+  example: 'maintainer-constructed: gross wages below the weekly $96.00 DO-NOT-WITHHOLD floor with additional
+    withholding — floor tests gross and returns only the additional amount'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '90.00'
+  state:
+  - jurisdiction: US-MD
+    filing_status: single
+    allowances: 0
+    rate_schedule: '0.0225'
+    additional_withholding: '5.00'
+expect:
+  state_withholding: '5.00'
