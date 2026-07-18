@@ -1,0 +1,16 @@
+source:
+  document: California Withholding Schedules, Method B — Exact Calculation (DE 44 excerpt) (2026)
+  page: 4
+  example: 'Example E: Semi-monthly earnings of $2,400, married, four allowances. Annualized (24 x $2,400
+    = $57,600) and computed on annual tables; printed ANNUAL tax before dividing by 24 is $99.20.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: annually
+  gross_wages: '57600'
+  state:
+  - jurisdiction: US-CA
+    filing_status: married
+    allowances: 4
+    additional_withholding: '0'
+expect:
+  state_withholding: '99.20'

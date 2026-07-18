@@ -1,0 +1,17 @@
+source:
+  document: California Withholding Schedules, Method B — Exact Calculation (DE 44 excerpt) (2026)
+  page: 2
+  example: 'Example B: Biweekly earnings of $1,600, married, claiming three withholding allowances one
+    of which is for estimated deductions (2 regular + 1 estimated).'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1600'
+  state:
+  - jurisdiction: US-CA
+    filing_status: married
+    allowances: 2
+    additional_withholding: '0'
+    secondary_allowances: 1
+expect:
+  state_withholding: '2.38'
