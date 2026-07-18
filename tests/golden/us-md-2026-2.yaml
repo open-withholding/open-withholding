@@ -1,0 +1,18 @@
+source:
+  document: Maryland Employer Withholding Guide (2026)
+  page: 23
+  example: 'maintainer-constructed: 2.75% schedule, monthly, married_joint (group a), 0 exemptions, taxable
+    in the $25,000-$50,000 row — exercises the adjudicated 8.50% rate (printed 8.25%, see PR/registry
+    adjudications)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '30283.33'
+  state:
+  - jurisdiction: US-MD
+    filing_status: married_joint
+    allowances: 0
+    rate_schedule: '0.0275'
+    additional_withholding: '0'
+expect:
+  state_withholding: '2372.92'
