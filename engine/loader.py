@@ -78,7 +78,8 @@ def _validate_and_parse_brackets(method: str, params: dict) -> dict[str, tuple[B
                     tables[f"{sched}.{freq}.{group}"] = parse_table(
                         rows, context=f"params.schedules.{sched}.{freq}.{group}"
                     )
-    elif method in ("federal_percentage_2020", "per_period_percentage", "custom/us_ca"):
+    elif method in ("federal_percentage_2020", "per_period_percentage", "custom/us_ca",
+                    "custom/us_ny"):
         # Two-level tables: variant/frequency -> filing status -> rows.
         for outer, per_status in params.get("brackets", {}).items():
             for status, rows in per_status.items():

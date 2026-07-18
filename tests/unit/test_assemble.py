@@ -586,3 +586,49 @@ def test_pr_body_omits_adjudication_section_when_none():
         golden_paths=[], golden_ok=True, prev_path=None,
     )
     assert "adjudication" not in body.lower()
+
+
+def test_ny_transform_roundtrip():
+    # Extraction shape -> assemble -> loader -> engine reproduces the p.16
+    # Example 1 (weekly $400 single, 3 exemptions -> $8.01).
+    from engine.pipeline import compute_withholding
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "deduction": [{"frequency": "weekly", "single": "142.30", "married": "152.90"}],
+            "exemption_value": [{"frequency": "weekly", "amount": "19.25"}],
+            "brackets": [{
+                "frequency": "weekly",
+                "statuses": [{"filing_status": "Single", "rows": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "163", "rate": "0.0440", "base": "6.38"},
+                    {"over": "225", "rate": "0.0515", "base": "9.08"},
+                ]}],
+            }],
+            "method_iii_cutover": [{"frequency": "weekly", "single": "20722", "married": "41449"}],
+            "method_iii": [
+                {"filing_status": "Single", "bands": [{"over": "1077550", "rate": "0.1045"}]},
+                {"filing_status": "Married", "bands": [{"over": "2155350", "rate": "0.1045"}]},
+            ],
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-NY", tax="state_income_withholding",
+        method="custom/us_ny", extraction=extraction, source=SOURCE)
+    assert raw["custom_implementation"] == "custom/us_ny"
+    pf = load_parameter_dict(raw)
+    assert "weekly.single" in pf.bracket_tables
+    assert pf.params["method_iii"]["single"][0]["rate"] == "0.1045"
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "400.00",
+        "state": [{"jurisdiction": "US-NY", "filing_status": "single", "allowances": 3}],
+    })
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    from decimal import Decimal as _D
+    assert compute_withholding(pf, emp, taxability) == _D("8.01")

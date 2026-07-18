@@ -1346,3 +1346,291 @@ def test_ca_cliff_is_inclusive(taxability):
     # Step 1 text: "less than, or equal to" -> exactly $363 is exempt
     emp = _ca_emp("weekly", "363.00", "single")
     assert compute_withholding(CA, emp, taxability) == Decimal("0.00")
+
+
+# --- NY custom/us_ny (NYS-50-T-NYS 1/26, Method II pp.14-19 + Method III p.22)
+
+NY = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US-NY",
+    "tax": "state_income_withholding",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "custom",
+    "custom_implementation": "custom/us_ny",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "deduction": {
+            "daily": {"single": "28.45", "married": "30.60"},
+            "weekly": {"single": "142.30", "married": "152.90"},
+            "semimonthly": {"single": "308.35", "married": "331.25"},
+            "monthly": {"single": "616.70", "married": "662.50"},
+            "annually": {"single": "7400", "married": "7950"},
+        },
+        "exemption_value": {
+            "daily": "3.85", "weekly": "19.25", "semimonthly": "41.65",
+            "monthly": "83.30", "annually": "1000",
+        },
+        "brackets": {
+            "weekly": {
+                "single": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "163", "rate": "0.0440", "base": "6.38"},
+                    {"over": "225", "rate": "0.0515", "base": "9.08"},
+                    {"over": "267", "rate": "0.0540", "base": "11.27"},
+                    {"over": "1551", "rate": "0.0590", "base": "80.58"},
+                    {"over": "1862", "rate": "0.0703", "base": "98.90"},
+                    {"over": "2070", "rate": "0.0753", "base": "113.58"},
+                    {"over": "3032", "rate": "0.0640", "base": "186.02"},
+                    {"over": "4142", "rate": "0.1144", "base": "257.10"},
+                    {"over": "5104", "rate": "0.0735", "base": "367.13"},
+                ],
+                "married": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "163", "rate": "0.0440", "base": "6.38"},
+                    {"over": "225", "rate": "0.0515", "base": "9.08"},
+                    {"over": "267", "rate": "0.0540", "base": "11.27"},
+                    {"over": "1551", "rate": "0.0590", "base": "80.58"},
+                    {"over": "1862", "rate": "0.0657", "base": "98.90"},
+                    {"over": "2070", "rate": "0.0707", "base": "112.60"},
+                    {"over": "3032", "rate": "0.0801", "base": "180.54"},
+                    {"over": "4068", "rate": "0.0640", "base": "263.62"},
+                    {"over": "6215", "rate": "0.1349", "base": "401.04"},
+                    {"over": "7177", "rate": "0.0735", "base": "530.77"},
+                    {"over": "20722", "rate": "0.0765", "base": "1526.33"},
+                ],
+            },
+            "semimonthly": {
+                "single": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "354", "rate": "0.0440", "base": "13.83"},
+                    {"over": "488", "rate": "0.0515", "base": "19.67"},
+                    {"over": "579", "rate": "0.0540", "base": "24.42"},
+                    {"over": "3360", "rate": "0.0590", "base": "174.58"},
+                    {"over": "4033", "rate": "0.0703", "base": "214.29"},
+                    {"over": "4485", "rate": "0.0753", "base": "246.08"},
+                    {"over": "6569", "rate": "0.0640", "base": "403.04"},
+                    {"over": "8975", "rate": "0.1144", "base": "557.04"},
+                    {"over": "11058", "rate": "0.0735", "base": "795.46"},
+                ],
+                "married": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "354", "rate": "0.0440", "base": "13.83"},
+                    {"over": "488", "rate": "0.0515", "base": "19.67"},
+                    {"over": "579", "rate": "0.0540", "base": "24.42"},
+                    {"over": "3360", "rate": "0.0590", "base": "174.58"},
+                    {"over": "4033", "rate": "0.0657", "base": "214.29"},
+                    {"over": "4485", "rate": "0.0707", "base": "243.96"},
+                    {"over": "6569", "rate": "0.0801", "base": "391.17"},
+                    {"over": "8815", "rate": "0.0640", "base": "571.17"},
+                    {"over": "13467", "rate": "0.1349", "base": "868.92"},
+                    {"over": "15550", "rate": "0.0735", "base": "1150.00"},
+                    {"over": "44898", "rate": "0.0765", "base": "3307.04"},
+                ],
+            },
+            "monthly": {
+                "single": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "708", "rate": "0.0440", "base": "27.67"},
+                    {"over": "975", "rate": "0.0515", "base": "39.33"},
+                    {"over": "1158", "rate": "0.0540", "base": "48.83"},
+                    {"over": "6721", "rate": "0.0590", "base": "349.17"},
+                    {"over": "8067", "rate": "0.0703", "base": "428.58"},
+                    {"over": "8971", "rate": "0.0753", "base": "492.17"},
+                    {"over": "13138", "rate": "0.0640", "base": "806.08"},
+                    {"over": "17950", "rate": "0.1144", "base": "1114.08"},
+                    {"over": "22117", "rate": "0.0735", "base": "1590.92"},
+                ],
+                "married": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "708", "rate": "0.0440", "base": "27.67"},
+                    {"over": "975", "rate": "0.0515", "base": "39.33"},
+                    {"over": "1158", "rate": "0.0540", "base": "48.83"},
+                    {"over": "6721", "rate": "0.0590", "base": "349.17"},
+                    {"over": "8067", "rate": "0.0657", "base": "428.58"},
+                    {"over": "8971", "rate": "0.0707", "base": "487.92"},
+                    {"over": "13138", "rate": "0.0801", "base": "782.33"},
+                    {"over": "17629", "rate": "0.0640", "base": "1142.33"},
+                    {"over": "26933", "rate": "0.1349", "base": "1737.83"},
+                    {"over": "31100", "rate": "0.0735", "base": "2300.00"},
+                    {"over": "89796", "rate": "0.0765", "base": "6614.08"},
+                ],
+            },
+            "daily": {
+                "single": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "33", "rate": "0.0440", "base": "1.28"},
+                    {"over": "45", "rate": "0.0515", "base": "1.82"},
+                    {"over": "53", "rate": "0.0540", "base": "2.25"},
+                    {"over": "310", "rate": "0.0590", "base": "16.12"},
+                    {"over": "372", "rate": "0.0703", "base": "19.78"},
+                    {"over": "414", "rate": "0.0753", "base": "22.72"},
+                    {"over": "606", "rate": "0.0640", "base": "37.20"},
+                    {"over": "828", "rate": "0.1144", "base": "51.42"},
+                    {"over": "1021", "rate": "0.0735", "base": "73.43"},
+                ],
+                "married": [
+                    {"over": "0", "rate": "0.0390", "base": "0"},
+                    {"over": "33", "rate": "0.0440", "base": "1.28"},
+                    {"over": "45", "rate": "0.0515", "base": "1.82"},
+                    {"over": "53", "rate": "0.0540", "base": "2.25"},
+                    {"over": "310", "rate": "0.0590", "base": "16.12"},
+                    {"over": "372", "rate": "0.0657", "base": "19.78"},
+                    {"over": "414", "rate": "0.0707", "base": "22.52"},
+                    {"over": "606", "rate": "0.0801", "base": "36.11"},
+                    {"over": "814", "rate": "0.0640", "base": "52.72"},
+                    {"over": "1243", "rate": "0.1349", "base": "80.21"},
+                    {"over": "1435", "rate": "0.0735", "base": "106.15"},
+                    {"over": "4144", "rate": "0.0765", "base": "305.27"},
+                ],
+            },
+        },
+        "method_iii_cutover": {
+            "daily": {"single": "4144", "married": "8290"},
+            "weekly": {"single": "20722", "married": "41449"},
+            "semimonthly": {"single": "44898", "married": "89806"},
+            "monthly": {"single": "89796", "married": "179613"},
+            "annually": {"single": "1077550", "married": "2155350"},
+        },
+        "method_iii": {
+            "single": [
+                {"over": "1077550", "rate": "0.1045"},
+                {"over": "5000000", "rate": "0.1110"},
+                {"over": "25000000", "rate": "0.1170"},
+            ],
+            "married": [
+                {"over": "2155350", "rate": "0.1045"},
+                {"over": "5000000", "rate": "0.1110"},
+                {"over": "25000000", "rate": "0.1170"},
+            ],
+        },
+    },
+})
+
+
+def _ny_emp(freq, gross, status, allowances=0, additional="0"):
+    return _employee(freq, gross, jurisdiction="US-NY", filing_status=status,
+                     allowances=allowances, additional_withholding=additional)
+
+
+def test_ny_single_example_1_weekly(taxability):
+    # p.16 Example 1: weekly $400 single, 3 exemptions -> net 199.95 ->
+    # 6.38 + 4.40% x 36.95 = 8.0058 -> $8.01 (as printed)
+    emp = _ny_emp("weekly", "400.00", "single", allowances=3)
+    assert compute_withholding(NY, emp, taxability) == Decimal("8.01")
+
+
+def test_ny_single_example_3_monthly(taxability):
+    # p.16 Example 3: monthly $50,000 single, 3 exemptions -> $3,576.63
+    emp = _ny_emp("monthly", "50000.00", "single", allowances=3)
+    assert compute_withholding(NY, emp, taxability) == Decimal("3576.63")
+
+
+def test_ny_single_example_4_daily(taxability):
+    # p.16 Example 4: daily $750 single, 2 exemptions -> $44.10
+    emp = _ny_emp("daily", "750.00", "single", allowances=2)
+    assert compute_withholding(NY, emp, taxability) == Decimal("44.10")
+
+
+def test_ny_married_example_1_weekly(taxability):
+    # p.18 Example 1: weekly $400 married, 4 exemptions -> net 170.10 -> $6.69
+    emp = _ny_emp("weekly", "400.00", "married", allowances=4)
+    assert compute_withholding(NY, emp, taxability) == Decimal("6.69")
+
+
+def test_ny_married_example_3_monthly(taxability):
+    # p.18 Example 3: monthly $50,000 married, 3 exemptions -> $3,622.09
+    emp = _ny_emp("monthly", "50000.00", "married", allowances=3)
+    assert compute_withholding(NY, emp, taxability) == Decimal("3622.09")
+
+
+def test_ny_married_example_4_daily(taxability):
+    # p.18 Example 4: daily $750 married, 2 exemptions -> $44.58
+    emp = _ny_emp("daily", "750.00", "married", allowances=2)
+    assert compute_withholding(NY, emp, taxability) == Decimal("44.58")
+
+
+def test_ny_example_2s_print_defects(taxability):
+    # Both printed Examples 2 are internally inconsistent by exactly 1 cent
+    # (opposite directions); the engine computes the arithmetic the tables
+    # imply. Single p.16: 246.08 + 165.00 x 0.0753 = 258.5045 -> 258.50
+    # (printed 258.51). Married p.18: 243.96 + 58.80 x 0.0707 = 248.11716
+    # -> 248.12 (printed 248.11). See methods/custom/us_ny.md notes.
+    single = _ny_emp("semimonthly", "5000.00", "single", allowances=1)
+    assert compute_withholding(NY, single, taxability) == Decimal("258.50")
+    married = _ny_emp("semimonthly", "5000.00", "married", allowances=3)
+    assert compute_withholding(NY, married, taxability) == Decimal("248.12")
+
+
+def test_ny_method_iii_first_band(taxability):
+    # Weekly single, gross 25,161.05, 1 exemption: net = 25,161.05 - 142.30
+    # - 19.25 = 24,999.50 >= cutover 20,722 -> annualized 1,299,974 ->
+    # band 1 (10.45%): 1,299,974 x 0.1045 / 52 = 2,612.4478... -> 2,612.45
+    emp = _ny_emp("weekly", "25161.05", "single", allowances=1)
+    assert compute_withholding(NY, emp, taxability) == Decimal("2612.45")
+
+
+def test_ny_method_iii_sliver_uses_first_band(taxability):
+    # Net of exactly the weekly cutover (20,722) annualizes to 1,077,544 —
+    # BELOW the first band's printed lower bound (1,077,550). The tables'
+    # cutover governs; the sliver takes the first band's rate:
+    # 1,077,544 x 0.1045 / 52 = 2,165.4490 -> 2,165.45
+    emp = _ny_emp("weekly", "20864.30", "single", allowances=0)  # net = 20722
+    assert compute_withholding(NY, emp, taxability) == Decimal("2165.45")
+
+
+def test_ny_method_iii_second_band(taxability):
+    # Weekly single net 96,297.60 -> annualized 5,007,475.20 >= 5,000,000
+    # -> 11.10%: 5,007,475.20 x 0.1110 / 52 (= net x rate) = 10,689.0336
+    # -> 10,689.03
+    emp = _ny_emp("weekly", "96459.15", "single", allowances=1)
+    assert compute_withholding(NY, emp, taxability) == Decimal("10689.03")
+
+
+def test_ny_married_cutover_differs(taxability):
+    # Weekly married net 24,999.50 is BELOW the married cutover (41,449):
+    # Method II row 12 applies: 1,526.33 + 7.65% x (24,999.50 - 20,722)
+    # = 1,526.33 + 327.2287... -> 1,853.56
+    emp = _ny_emp("weekly", "25171.65", "married", allowances=1)
+    assert compute_withholding(NY, emp, taxability) == Decimal("1853.56")
+
+
+def test_ny_quarterly_converts_via_monthly(taxability):
+    # p.23 rule B: quarterly computes at monthly on wages / 3, result x 3.
+    # 6,750 / 3 = 2,250; married 2 exemptions: net = 2,250 - 662.50 -
+    # 166.60 = 1,420.90 -> 48.83 + 5.40% x 262.90 = 63.0266 -> 63.03; x 3
+    # = 189.09. (The page's own example uses the Method I wage-bracket
+    # LOOKUP table, so its 190.50 is not comparable.)
+    emp = _ny_emp("quarterly", "6750.00", "married", allowances=2)
+    assert compute_withholding(NY, emp, taxability) == Decimal("189.09")
+
+
+def test_ny_beyond_ten_exemptions_uses_formula(taxability):
+    # Step 1 for >10 exemptions IS deduction + n x exemption: weekly single
+    # 12 exemptions on $600: net = 600 - 142.30 - 231.00 = 226.70 ->
+    # 9.08 + 5.15% x 1.70 = 9.1676 -> 9.17
+    emp = _ny_emp("weekly", "600.00", "single", allowances=12)
+    assert compute_withholding(NY, emp, taxability) == Decimal("9.17")
+
+
+def test_ny_net_clamps_to_zero(taxability):
+    # Wages under the allowance -> net 0 -> first row -> 0.00
+    emp = _ny_emp("weekly", "100.00", "married", allowances=2)
+    assert compute_withholding(NY, emp, taxability) == Decimal("0.00")
+
+
+def test_ny_additional_withholding_added(taxability):
+    emp = _ny_emp("weekly", "400.00", "single", allowances=3, additional="10.00")
+    assert compute_withholding(NY, emp, taxability) == Decimal("18.01")
+
+
+def test_ny_unknown_status_fails_loud(taxability):
+    emp = _ny_emp("weekly", "400.00", "head_of_household")
+    with pytest.raises(InputError, match="filing_status"):
+        compute_withholding(NY, emp, taxability)
+
+
+def test_ny_missing_frequency_fails_loud(taxability):
+    emp = _ny_emp("biweekly", "800.00", "single")
+    with pytest.raises(InputError, match="pay frequency"):
+        compute_withholding(NY, emp, taxability)

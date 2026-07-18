@@ -1161,6 +1161,140 @@
       "if": {
         "properties": {
           "custom_implementation": {
+            "const": "custom/us_ny"
+          }
+        },
+        "required": [
+          "custom_implementation"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "deduction",
+              "exemption_value",
+              "brackets",
+              "method_iii_cutover",
+              "method_iii"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "deduction": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "description": "Table B deduction allowance per payroll period and marital status",
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "required": [
+                      "single",
+                      "married"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "single": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married": {
+                        "$ref": "#/$defs/money"
+                      }
+                    }
+                  }
+                }
+              },
+              "exemption_value": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "description": "Table C value of one exemption per payroll period",
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
+              },
+              "brackets": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "description": "Tables II-A..E and the Annual Tax Rate Schedule: over = column 1, rate = column 4, base = column 5",
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "$ref": "#/$defs/bracketTable"
+                    }
+                  }
+                }
+              },
+              "method_iii_cutover": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "description": "Each bracket table's final printed line: net wages of this amount and over use Method III",
+                "patternProperties": {
+                  "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                    "type": "object",
+                    "required": [
+                      "single",
+                      "married"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "single": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married": {
+                        "$ref": "#/$defs/money"
+                      }
+                    }
+                  }
+                }
+              },
+              "method_iii": {
+                "type": "object",
+                "required": [
+                  "single",
+                  "married"
+                ],
+                "additionalProperties": false,
+                "description": "Page-22 top-rate bands on ANNUALIZED net wages",
+                "patternProperties": {
+                  "^(single|married)$": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "over",
+                        "rate"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "over": {
+                          "$ref": "#/$defs/money"
+                        },
+                        "rate": {
+                          "$ref": "#/$defs/rate"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "custom_implementation": {
             "const": "custom/us_ct"
           }
         },

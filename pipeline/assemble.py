@@ -204,6 +204,29 @@ def _transform_params(method: str, params: dict) -> dict:
                 for e in params["brackets"]
             },
         }
+    if method == "custom/us_ny":
+        return {
+            "deduction": {
+                e["frequency"]: {"single": e["single"], "married": e["married"]}
+                for e in params["deduction"]
+            },
+            "exemption_value": {
+                e["frequency"]: e["amount"] for e in params["exemption_value"]
+            },
+            "brackets": {
+                e["frequency"]: {
+                    snake(st["filing_status"]): st["rows"] for st in e["statuses"]
+                }
+                for e in params["brackets"]
+            },
+            "method_iii_cutover": {
+                e["frequency"]: {"single": e["single"], "married": e["married"]}
+                for e in params["method_iii_cutover"]
+            },
+            "method_iii": {
+                snake(e["filing_status"]): e["bands"] for e in params["method_iii"]
+            },
+        }
     if method == "custom/us_ct":
         return {
             "codes": {
