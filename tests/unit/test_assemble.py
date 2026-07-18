@@ -479,3 +479,110 @@ def test_ca_transform_roundtrip():
     taxability = TaxabilityMatrix.from_file(
         Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
     assert compute_withholding(pf, emp, taxability) == Decimal("2.38")
+
+
+# --- maintainer adjudications (registry print-defect corrections) ---
+
+MD_MONTHLY_A = [  # the 2.75% monthly (a) table as printed (defective rate in row 4)
+    {"over": "0", "rate": "0.0750", "base": "0"},
+    {"over": "12500", "rate": "0.0775", "base": "937.50"},
+    {"over": "14583", "rate": "0.0800", "base": "1098.96"},
+    {"over": "18750", "rate": "0.0825", "base": "1432.29"},
+    {"over": "25000", "rate": "0.0825", "base": "1947.92"},
+    {"over": "50000", "rate": "0.0900", "base": "4072.92"},
+    {"over": "100000", "rate": "0.0925", "base": "8572.92"},
+]
+
+ADJ_RATE = {
+    "path": ["schedules", "0.0275", "monthly", "a", 4, "rate"],
+    "printed": "0.0825",
+    "corrected": "0.0850",
+    "justification": "next printed base chains only with 8.50%",
+}
+
+
+def _md_params():
+    import copy
+    return {"schedules": {"0.0275": {"monthly": {"a": copy.deepcopy(MD_MONTHLY_A)}}}}
+
+
+def test_adjudication_applies_when_transcription_matches_printed():
+    params = _md_params()
+    results = assemble.apply_adjudications(params, [ADJ_RATE])
+    assert results[0]["status"] == "applied"
+    assert params["schedules"]["0.0275"]["monthly"]["a"][4]["rate"] == "0.0850"
+
+
+def test_adjudication_noops_when_transcription_already_correct():
+    params = _md_params()
+    params["schedules"]["0.0275"]["monthly"]["a"][4]["rate"] = "0.0850"
+    results = assemble.apply_adjudications(params, [ADJ_RATE])
+    assert results[0]["status"] == "already_correct"
+    assert params["schedules"]["0.0275"]["monthly"]["a"][4]["rate"] == "0.0850"
+
+
+def test_adjudication_fails_loud_on_unexpected_transcription():
+    params = _md_params()
+    params["schedules"]["0.0275"]["monthly"]["a"][4]["rate"] = "0.0875"
+    with pytest.raises(ValueError, match="matches neither"):
+        assemble.apply_adjudications(params, [ADJ_RATE])
+
+
+def test_adjudication_fails_loud_on_missing_path():
+    with pytest.raises(ValueError, match="not found"):
+        assemble.apply_adjudications(
+            _md_params(),
+            [{**ADJ_RATE, "path": ["schedules", "0.0330", "monthly", "a", 4, "rate"]}],
+        )
+
+
+def test_adjudicated_table_passes_bracket_validation_and_printed_fails():
+    # The whole point: the printed table trips the cumulative-base check,
+    # the adjudicated table passes it.
+    from engine.brackets import parse_table
+    from engine.errors import DataError
+
+    with pytest.raises(DataError, match="recomputed cumulative"):
+        parse_table(MD_MONTHLY_A, context="printed")
+    params = _md_params()
+    assemble.apply_adjudications(params, [ADJ_RATE])
+    parse_table(params["schedules"]["0.0275"]["monthly"]["a"], context="adjudicated")
+
+
+def test_pr_body_renders_adjudications():
+    body = assemble.build_pr_body(
+        source_id="us-md-withholding-guide",
+        jurisdiction="US-MD",
+        tax="state_income_withholding",
+        method="rate_schedule_percentage",
+        source=SOURCE,
+        extraction={"classification": "new_year_edition",
+                    "effective_from": "2026-01-01", "citations": [], "notes": ""},
+        verification={"checks": [], "worked_examples": []},
+        golden_paths=[],
+        golden_ok=True,
+        prev_path=None,
+        adjudications=[
+            {**ADJ_RATE, "status": "applied"},
+            {"path": ["schedules", "0.0240", "monthly", "b", 6, "over"],
+             "printed": "83833", "corrected": "83333",
+             "justification": "of-excess-over column prints 83,333",
+             "status": "already_correct"},
+        ],
+    )
+    assert "Maintainer adjudications (print defects)" in body
+    assert "`schedules.0.0275.monthly.a.4.rate`: `0.0825` → `0.0850`" in body
+    assert "already `83333` in transcription (printed `83833`)" in body
+    assert "Verified each maintainer adjudication's justification" in body
+
+
+def test_pr_body_omits_adjudication_section_when_none():
+    body = assemble.build_pr_body(
+        source_id="s", jurisdiction="US-MD", tax="state_income_withholding",
+        method="rate_schedule_percentage", source=SOURCE,
+        extraction={"classification": "new_year_edition",
+                    "effective_from": "2026-01-01", "citations": [], "notes": ""},
+        verification={"checks": [], "worked_examples": []},
+        golden_paths=[], golden_ok=True, prev_path=None,
+    )
+    assert "adjudication" not in body.lower()
