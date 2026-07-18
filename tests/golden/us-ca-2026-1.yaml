@@ -1,0 +1,16 @@
+source:
+  document: California Withholding Schedules, Method B — Exact Calculation (DE 44 excerpt) (2026)
+  page: 2
+  example: 'Example A: Weekly earnings of $210, single, claiming one withholding allowance. Below low
+    income exemption ($363) so no tax withheld.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '210'
+  state:
+  - jurisdiction: US-CA
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '0.00'

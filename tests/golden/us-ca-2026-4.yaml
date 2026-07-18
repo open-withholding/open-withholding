@@ -1,0 +1,15 @@
+source:
+  document: California Withholding Schedules, Method B — Exact Calculation (DE 44 excerpt) (2026)
+  page: 3
+  example: 'Example D: Weekly earnings of $950, unmarried head of household, three withholding allowances.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '950'
+  state:
+  - jurisdiction: US-CA
+    filing_status: head_of_household
+    allowances: 3
+    additional_withholding: '0'
+expect:
+  state_withholding: '1.69'
