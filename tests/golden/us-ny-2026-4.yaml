@@ -1,0 +1,15 @@
+source:
+  document: NYS-50-T-NYS, New York State Withholding Tax Tables and Methods (2026)
+  page: 18
+  example: 'Example 1: Weekly payroll, $400 gross wages, married, 4 exemptions'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '400'
+  state:
+  - jurisdiction: US-NY
+    filing_status: married
+    allowances: 4
+    additional_withholding: '0'
+expect:
+  state_withholding: '6.69'

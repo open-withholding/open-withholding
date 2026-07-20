@@ -1,0 +1,15 @@
+source:
+  document: NYS-50-T-NYS, New York State Withholding Tax Tables and Methods (2026)
+  page: 16
+  example: 'Example 4: Daily payroll, $750 gross wages, single, 2 exemptions'
+as_of: '2026-06-15'
+input:
+  pay_frequency: daily
+  gross_wages: '750'
+  state:
+  - jurisdiction: US-NY
+    filing_status: single
+    allowances: 2
+    additional_withholding: '0'
+expect:
+  state_withholding: '44.10'
