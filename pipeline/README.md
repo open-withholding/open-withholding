@@ -1,14 +1,16 @@
 # /pipeline
 
-Automation that keeps /data current: a cheap cron **watcher** that detects
-changed publications (not yet implemented), an LLM-assisted **extractor**
-that turns a PDF into a candidate YAML + golden tests, and mechanical
-validation that gates a PR for **human review**. See DESIGN.md §8.
+Automation that keeps /data current: a cron **watcher** that detects
+changed publications, an LLM-assisted **extractor** that turns a PDF (or a
+multi-document set) into a candidate YAML + golden tests, and mechanical
+validation that gates a PR for **human review**. See DESIGN.md §8. All of
+it is implemented and operational; the dataset's 43 jurisdictions were
+seeded through this exact machinery.
 
-## Extractor (implemented)
+## Extractor
 
-Drive it manually per document — this is also how the dataset gets seeded,
-so seeding exercises the exact machinery that will do steady-state updates:
+Normally dispatched via the Extract workflow (by the watcher on a changed
+document, or by hand); it can also run locally:
 
 ```sh
 export ANTHROPIC_API_KEY=...          # or `ant auth login`
@@ -32,8 +34,17 @@ Stages (each visible in the output):
    worked example. Any failure → triage report in `pipeline/out/`, no
    candidate files.
 5. **Write candidate** — parameter file into `data/`, golden fixtures into
-   `tests/golden/`, PR body into `pipeline/out/<source>-<year>-pr.md`. A
-   human reviews the diff and opens the PR (one PR per source document).
+   `tests/golden/`, PR body into `pipeline/out/<source>-<year>-pr.md`. In
+   CI the pipeline's GitHub App bot opens the PR (one PR per source
+   document); a human reviews and merges it.
+
+Between verification and validation, any registry `adjudications` for the
+source are applied — guarded print-defect corrections that only take
+effect when the transcription matches the declared printed value, rendered
+loudly in the PR body (DESIGN.md §8.2). Sources whose publications print
+no worked examples dispatch with `no_examples_ok`; maintainer-constructed,
+engine-computed golden cases are then required on the PR before the
+data-golden-guard check passes.
 
 **Never auto-merge.** The human merge is the trust product.
 
@@ -77,8 +88,15 @@ chooses them. Entries added here are commitments to watch that source.
   requires the CI checks on main, blocks direct pushes and force pushes,
   including for admins.
 
-## Watcher (not yet implemented)
+## Watcher
 
-Principles from the design: detection is free and constant; every failure
-mode opens a GitHub issue (`changed`, `url_404`, `stale`,
-`content_type_anomaly`) — never a silent skip.
+`watch.py`, run by `.github/workflows/watch.yml` on a daily cron (hourly
+during the Nov–Jan publication season). Detection is free and constant;
+every outcome is loud: a `changed` document dispatches the Extract
+workflow for that source, while `url_404`, `stale` (a source's
+`expected_window` passed with no change), and `content_type_anomaly` each
+open a GitHub issue — never a silent skip. State lives on the
+`watcher-state` branch: an auditable history without PR noise on main.
+The watcher deliberately imports only PyYAML-weight modules, never the
+engine — the workflow installs nothing else (regression-guarded in
+`tests/unit/test_watch.py`).
