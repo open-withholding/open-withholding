@@ -495,8 +495,8 @@ def main() -> int:
         return 1
 
     print(f"[5/5] writing candidate files ...")
-    slug = assemble.golden_slug(jurisdiction)
-    data_file = assemble.data_path(jurisdiction, effective_year)
+    slug = assemble.golden_slug(jurisdiction, tax)
+    data_file = assemble.data_path(jurisdiction, effective_year, tax)
     golden_paths = [
         f"tests/golden/{slug}-{effective_year}-{i + 1}.yaml" for i in range(len(golden_dicts))
     ]
