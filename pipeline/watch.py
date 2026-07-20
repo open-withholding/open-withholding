@@ -38,7 +38,7 @@ sys.path.insert(0, str(REPO_ROOT))
 import yaml  # noqa: E402
 
 from pipeline import discover  # noqa: E402
-from pipeline.extract import _substitute_year  # noqa: E402
+from pipeline.discover import substitute_year as _substitute_year  # noqa: E402
 
 REPO = "open-withholding/open-withholding"
 

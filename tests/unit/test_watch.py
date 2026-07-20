@@ -168,3 +168,19 @@ def test_multi_document_stale_uses_latest_document_change():
     prior["documents"]["tables"]["changed_at"] = "2026-01-05"
     events, _ = check_source(MULTI_SRC, prior, fetch, TODAY)
     assert events == []
+
+
+def test_watch_does_not_import_the_engine():
+    # The watch workflow installs only PyYAML; importing pipeline.watch must
+    # not drag in pipeline.extract -> engine -> jsonschema (this exact chain
+    # broke the daily cron: ModuleNotFoundError on the runner).
+    import subprocess
+    import sys
+    from pathlib import Path
+    repo = Path(__file__).resolve().parent.parent.parent
+    code = (
+        "import sys; sys.path.insert(0, r'%s'); import pipeline.watch; "
+        "bad = [m for m in sys.modules if m.startswith('engine') or m == 'pipeline.extract' "
+        "or m == 'jsonschema']; assert not bad, bad" % repo
+    )
+    subprocess.run([sys.executable, "-c", code], check=True)

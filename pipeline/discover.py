@@ -32,6 +32,15 @@ class DiscoveryError(Exception):
     pass
 
 
+def substitute_year(pattern: str, year: int) -> str:
+    """{year} -> 2026, {yy} -> 26 (LA's 1306-1-{yy}.pdf, ME's {yy}_wh_tab_instr.pdf).
+
+    Lives here (not extract.py) so the watcher can import it without pulling
+    in the engine and its dependencies — the watch workflow installs only
+    PyYAML."""
+    return pattern.replace("{year}", str(year)).replace("{yy}", f"{year % 100:02d}")
+
+
 def fetch(url: str, *, timeout: int = 120, insecure: bool = False) -> bytes:
     """`insecure` disables TLS verification for the handful of agencies that
     serve incomplete certificate chains (dor.ms.gov). The sha256 archive and

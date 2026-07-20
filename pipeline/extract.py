@@ -106,9 +106,7 @@ def load_source(source_id: str) -> dict:
     raise SystemExit(f"source id {source_id!r} not in pipeline/sources.yaml")
 
 
-def _substitute_year(pattern: str, year: int) -> str:
-    """{year} -> 2026, {yy} -> 26 (LA's 1306-1-{yy}.pdf, ME's {yy}_wh_tab_instr.pdf)."""
-    return pattern.replace("{year}", str(year)).replace("{yy}", f"{year % 100:02d}")
+_substitute_year = discover.substitute_year
 
 
 def html_to_text(data: bytes, url: str) -> str:
