@@ -602,14 +602,24 @@ def test_ny_transform_roundtrip():
         "params": {
             "deduction": [{"frequency": "weekly", "single": "142.30", "married": "152.90"}],
             "exemption_value": [{"frequency": "weekly", "amount": "19.25"}],
-            "brackets": [{
-                "frequency": "weekly",
-                "statuses": [{"filing_status": "Single", "rows": [
-                    {"over": "0", "rate": "0.0390", "base": "0"},
-                    {"over": "163", "rate": "0.0440", "base": "6.38"},
-                    {"over": "225", "rate": "0.0515", "base": "9.08"},
-                ]}],
-            }],
+            "brackets": [
+                {
+                    "frequency": "weekly",
+                    "statuses": [{"filing_status": "Single", "rows": [
+                        {"over": "0", "rate": "0.0390", "base": "0"},
+                        {"over": "163", "rate": "0.0440", "base": "6.38"},
+                        {"over": "225", "rate": "0.0515", "base": "9.08"},
+                    ]}],
+                },
+                {
+                    "frequency": "annually",
+                    "statuses": [{"filing_status": "Single", "rows": [
+                        {"over": "0", "rate": "0.0390", "base": "0"},
+                        {"over": "8500", "rate": "0.0440", "base": "332.00"},
+                        {"over": "11700", "rate": "0.0515", "base": "472.00"},
+                    ]}],
+                },
+            ],
             "method_iii_cutover": [{"frequency": "weekly", "single": "20722", "married": "41449"}],
             "method_iii": [
                 {"filing_status": "Single", "bands": [{"over": "1077550", "rate": "0.1045"}]},
