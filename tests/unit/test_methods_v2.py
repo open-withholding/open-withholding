@@ -1708,3 +1708,93 @@ def test_ny_crosscheck_requires_annual_schedule():
     from engine.loader import _validate_and_parse_brackets
     with pytest.raises(DataError, match="must include the 'annually'"):
         _validate_and_parse_brackets("custom/us_ny", raw)
+
+
+# --- FICA (fixture rates; every expected value shown as arithmetic) --------
+
+FICA = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US",
+    "tax": "fica",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "fica",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "social_security": {
+            "employee_rate": "0.062",
+            "employer_rate": "0.062",
+            "wage_base": "150000",
+        },
+        "medicare": {
+            "employee_rate": "0.0145",
+            "employer_rate": "0.0145",
+            "additional_employee_rate": "0.009",
+            "additional_threshold": "200000",
+        },
+    },
+})
+
+
+def _fica_emp(gross, ytd=None, pretax=None):
+    raw = {"pay_frequency": "biweekly", "gross_wages": gross}
+    if ytd:
+        raw["ytd"] = ytd
+    if pretax:
+        raw["pretax_deductions"] = pretax
+    return EmployeeInput.from_dict(raw)
+
+
+def test_fica_basic(taxability):
+    # 2000 x 6.2% = 124.00; 2000 x 1.45% = 29.00
+    assert compute_withholding(FICA, _fica_emp("2000.00"), taxability) == Decimal("153.00")
+
+
+def test_fica_rounds_each_component(taxability):
+    # 1234.56 x .062 = 76.54272 -> 76.54; x .0145 = 17.90112 -> 17.90
+    assert compute_withholding(FICA, _fica_emp("1234.56"), taxability) == Decimal("94.44")
+
+
+def test_fica_ss_stops_at_wage_base(taxability):
+    # ytd 149,000 of a 150,000 base: SS on 1,000 only (62.00) + medicare 29.00
+    emp = _fica_emp("2000.00", ytd={"social_security_wages": "149000"})
+    assert compute_withholding(FICA, emp, taxability) == Decimal("91.00")
+
+
+def test_fica_ss_zero_past_wage_base(taxability):
+    emp = _fica_emp("2000.00", ytd={"social_security_wages": "150000"})
+    assert compute_withholding(FICA, emp, taxability) == Decimal("29.00")
+
+
+def test_fica_additional_medicare_straddles_threshold(taxability):
+    # ytd medicare wages 199,000; threshold 200,000: additional on 1,000 =
+    # 9.00. SS already capped (ytd 199,000 > 150,000) -> 0. Medicare 29.00.
+    emp = _fica_emp("2000.00", ytd={"social_security_wages": "199000",
+                                    "medicare_wages": "199000"})
+    assert compute_withholding(FICA, emp, taxability) == Decimal("38.00")
+
+
+def test_fica_additional_medicare_fully_above_threshold(taxability):
+    # ytd 250,000: whole 2,000 gets additional (18.00) + medicare 29.00
+    emp = _fica_emp("2000.00", ytd={"social_security_wages": "250000",
+                                    "medicare_wages": "250000"})
+    assert compute_withholding(FICA, emp, taxability) == Decimal("47.00")
+
+
+def test_fica_ytd_defaults_to_zero(taxability):
+    # No ytd block at all == first paycheck of the year
+    assert compute_withholding(FICA, _fica_emp("2000.00"), taxability) == Decimal("153.00")
+
+
+def test_fica_taxability_401k_does_not_reduce(taxability):
+    # Traditional 401(k) reduces income wage bases but NOT fica
+    emp = _fica_emp("2000.00", pretax=[{"type": "401k_traditional", "amount": "500"}])
+    assert compute_withholding(FICA, emp, taxability) == Decimal("153.00")
+
+
+def test_fica_taxability_cafeteria_reduces(taxability):
+    # Section 125 cafeteria health premium reduces fica: base 1,800 ->
+    # 111.60 + 26.10 = 137.70
+    emp = _fica_emp("2000.00",
+                    pretax=[{"type": "cafeteria_health_premium", "amount": "200"}])
+    assert compute_withholding(FICA, emp, taxability) == Decimal("137.70")

@@ -16,23 +16,30 @@ WITHHOLDING_TAXES = (
     "federal_income_withholding",
     "state_income_withholding",
     "local_income_withholding",
+    "fica",
 )
 
 
-def data_path(jurisdiction: str, year: int) -> PurePosixPath:
-    """Repo-relative path for a jurisdiction-year withholding file."""
+def data_path(
+    jurisdiction: str, year: int, tax: str = "state_income_withholding"
+) -> PurePosixPath:
+    """Repo-relative path for a jurisdiction-year parameter file."""
+    filename = "fica.yaml" if tax == "fica" else "withholding.yaml"
     parts = jurisdiction.split("-")
     if jurisdiction == "US":
-        return PurePosixPath(f"data/us/federal/{year}/withholding.yaml")
+        return PurePosixPath(f"data/us/federal/{year}/{filename}")
     if len(parts) == 2:
-        return PurePosixPath(f"data/us/{parts[1].lower()}/{year}/withholding.yaml")
+        return PurePosixPath(f"data/us/{parts[1].lower()}/{year}/{filename}")
     local_id = "-".join(parts[2:]).lower()
     return PurePosixPath(f"data/us/{parts[1].lower()}/{year}/locals/{local_id}.yaml")
 
 
-def golden_slug(jurisdiction: str) -> str:
-    """Filename prefix for golden cases: US -> us-federal, US-CO -> us-co."""
-    return "us-federal" if jurisdiction == "US" else jurisdiction.lower()
+def golden_slug(jurisdiction: str, tax: str = "state_income_withholding") -> str:
+    """Filename prefix for golden cases: US -> us-federal, US-CO -> us-co.
+    Non-income taxes get a suffix so their fixtures don't collide with the
+    jurisdiction's income-withholding numbering (US + fica -> us-federal-fica)."""
+    base = "us-federal" if jurisdiction == "US" else jurisdiction.lower()
+    return f"{base}-fica" if tax == "fica" else base
 
 
 # Connector words carry no meaning in a status key: "married and spouse
@@ -203,6 +210,12 @@ def _transform_params(method: str, params: dict) -> dict:
                 }
                 for e in params["brackets"]
             },
+        }
+    if method == "fica":
+        # Extraction shape == data shape; pass through the two blocks.
+        return {
+            "social_security": dict(params["social_security"]),
+            "medicare": dict(params["medicare"]),
         }
     if method == "custom/us_ny":
         return {
@@ -466,6 +479,8 @@ def assemble_golden_case(
             election["elected_annual_amount"] = example["elected_annual_amount"]
         record["state"] = [election]
         expect_key = "state_withholding"
+    elif tax == "fica":
+        expect_key = "fica_withholding"  # no elections apply
     elif tax == "local_income_withholding":
         record["locals"] = [{"jurisdiction": jurisdiction, "resident": True}]
         expect_key = "local_withholding"

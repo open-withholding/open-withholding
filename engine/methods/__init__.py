@@ -21,6 +21,7 @@ from engine.methods.custom import us_ct as custom_us_ct
 from engine.methods.custom import us_al as custom_us_al
 from engine.methods.custom import us_ma as custom_us_ma
 from engine.methods import deduction_constant_percentage
+from engine.methods import fica
 from engine.methods import rate_schedule_percentage
 from engine.methods.custom import us_ny as custom_us_ny
 from engine.methods.custom import us_or as custom_us_or
@@ -37,6 +38,7 @@ REGISTRY = {
     "elective_flat_rate": elective_flat_rate.compute,
     "per_period_credit_phaseout": per_period_credit_phaseout.compute,
     "federal_percentage_2020": federal_percentage_2020.compute,
+    "fica": fica.compute,
     "custom/us_ca": custom_us_ca.compute,
     "custom/us_ct": custom_us_ct.compute,
     "custom/us_ny": custom_us_ny.compute,

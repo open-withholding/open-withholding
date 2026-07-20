@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/open-withholding/schema/withholding.schema.json",
   "title": "Withholding parameter file",
-  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 \u2014 org URL in $id is a placeholder.",
+  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 — org URL in $id is a placeholder.",
   "type": "object",
   "required": [
     "schema_version",
@@ -27,7 +27,8 @@
       "enum": [
         "federal_income_withholding",
         "state_income_withholding",
-        "local_income_withholding"
+        "local_income_withholding",
+        "fica"
       ]
     },
     "effective_from": {
@@ -104,6 +105,7 @@
         "rate_schedule_percentage",
         "federal_percentage_2020",
         "federal_percentage_pre2020",
+        "fica",
         "wage_bracket_lookup",
         "custom"
       ]
@@ -144,7 +146,7 @@
         },
         "intermediate_to": {
           "$ref": "#/$defs/money",
-          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` \u2014 e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
+          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` — e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
         }
       }
     }
@@ -1149,6 +1151,76 @@
                     "additionalProperties": {
                       "$ref": "#/$defs/bracketTable"
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "fica"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "social_security",
+              "medicare"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "social_security": {
+                "type": "object",
+                "required": [
+                  "employee_rate",
+                  "employer_rate",
+                  "wage_base"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "employee_rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "employer_rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "wage_base": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
+              },
+              "medicare": {
+                "type": "object",
+                "required": [
+                  "employee_rate",
+                  "employer_rate",
+                  "additional_employee_rate",
+                  "additional_threshold"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "employee_rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "employer_rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "additional_employee_rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "additional_threshold": {
+                    "$ref": "#/$defs/money"
                   }
                 }
               }

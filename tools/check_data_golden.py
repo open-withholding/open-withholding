@@ -39,7 +39,7 @@ def missing_golden(changed: list[str], read_yaml) -> list[str]:
         raw = read_yaml(path)
         if not isinstance(raw, dict) or raw.get("tax") not in WITHHOLDING_TAXES:
             continue
-        slug = golden_slug(raw["jurisdiction"])
+        slug = golden_slug(raw["jurisdiction"], raw["tax"])
         year = str(raw["effective_from"])[:4]
         prefix = f"tests/golden/{slug}-{year}-"
         if not any(p.startswith(prefix) for p in changed):

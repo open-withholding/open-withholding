@@ -22,6 +22,7 @@ _WAGE_BASE_BY_TAX = {
     "federal_income_withholding": "federal_income",
     "state_income_withholding": "state_income",
     "local_income_withholding": "state_income",  # locals follow their state's treatment
+    "fica": "fica",
 }
 
 
@@ -88,7 +89,7 @@ def compute_withholding(
         exemptions = election.exemptions
         rate_schedule = election.rate_schedule
         federal = None
-    else:  # local
+    else:  # local, fica: no elections apply
         filing_status = None
         allowances = 0
         additional = ZERO
