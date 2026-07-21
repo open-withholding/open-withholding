@@ -18,12 +18,18 @@ Policy (from DESIGN.md §7):
 
 - A data PR that changes a jurisdiction's parameters MUST update or add that
   jurisdiction's golden tests from the new publication. **No worked example
-  transcribed → PR not mergeable.**
-- Guides without printed examples get maintainer-constructed cases
-  cross-checked against the state's own online calculator where one exists,
-  noted as such in `source`.
+  transcribed → PR not mergeable** (enforced by the data-golden-guard CI
+  job).
+- Guides without printed examples (DC, MD) get maintainer-constructed
+  cases: inputs chosen by the maintainer, expected values **computed by the
+  reference engine** — never hand arithmetic — and noted as such in
+  `source.example`.
+- A printed example that contradicts its own publication's arithmetic is
+  excluded by maintainer adjudication, documented in the data file's
+  `source.notes` (NJ's truncated worksheet constants, NY's two Examples 2).
 - Target: ≥ 2 examples per jurisdiction per year, covering different filing
   statuses.
 
-This directory is empty until real data lands. Illustrative cases that
-exercise the runner live in `/tests/fixtures/golden`.
+The corpus currently holds 141 fixtures across the 43 covered
+jurisdictions. Illustrative cases that exercise the runner live in
+`/tests/fixtures/golden`.
