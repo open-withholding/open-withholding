@@ -15,15 +15,21 @@ stable landing page and scans its anchors for the link matching
 from __future__ import annotations
 
 import re
+import urllib.error
 import urllib.request
 from html.parser import HTMLParser
 from urllib.parse import urljoin
 
 # Several state tax sites (Drupal/CDN-fronted) return 403 to non-browser
-# user agents — our honest "open-withholding/0.1" UA is rejected outright.
+# user agents — our honest "open-withholding" UA is rejected outright.
 # We identify via the repo instead; the watcher touches each source at most
 # daily (hourly Nov-Jan), far below any abusive rate.
 BROWSER_UA = "Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0"
+
+# ...and mass.gov (Akamai) does the OPPOSITE: it 403s the browser UA coming
+# from a non-browser TLS stack but accepts an honest client UA. fetch()
+# tries BROWSER_UA first and falls back to this on a 403.
+HONEST_UA = "open-withholding/1.0 (+https://github.com/open-withholding/open-withholding)"
 
 _YEAR = re.compile(r"20\d{2}")
 
@@ -44,8 +50,8 @@ def substitute_year(pattern: str, year: int) -> str:
 def fetch(url: str, *, timeout: int = 120, insecure: bool = False) -> bytes:
     """`insecure` disables TLS verification for the handful of agencies that
     serve incomplete certificate chains (dor.ms.gov). The sha256 archive and
-    human review still gate what the bytes are used for."""
-    request = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
+    human review still gate what the bytes are used for. A 403 on the
+    browser UA is retried once with the honest UA (mass.gov)."""
     context = None
     if insecure:
         import ssl
@@ -53,8 +59,16 @@ def fetch(url: str, *, timeout: int = 120, insecure: bool = False) -> bytes:
         context = ssl.create_default_context()
         context.check_hostname = False
         context.verify_mode = ssl.CERT_NONE
-    with urllib.request.urlopen(request, timeout=timeout, context=context) as resp:
-        return resp.read()
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA})
+        with urllib.request.urlopen(request, timeout=timeout, context=context) as resp:
+            return resp.read()
+    except urllib.error.HTTPError as exc:
+        if exc.code != 403:
+            raise
+        request = urllib.request.Request(url, headers={"User-Agent": HONEST_UA})
+        with urllib.request.urlopen(request, timeout=timeout, context=context) as resp:
+            return resp.read()
 
 
 class _AnchorParser(HTMLParser):
