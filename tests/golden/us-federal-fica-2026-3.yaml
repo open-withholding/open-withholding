@@ -1,0 +1,14 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide (2026)
+  page: 2
+  example: 'maintainer-constructed: biweekly $8,000 with ytd social security wages $180,000 — the period
+    crosses the $184,500 wage base; social security withholds on the remaining $4,500 only'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '8000.00'
+  ytd:
+    social_security_wages: '180000'
+    medicare_wages: '180000'
+expect:
+  fica_withholding: '395.00'

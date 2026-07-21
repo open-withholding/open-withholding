@@ -1,0 +1,11 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide (2026)
+  page: 2
+  example: 'maintainer-constructed: biweekly $3,000, first paycheck of the year — social security + Medicare
+    at the printed rates'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '3000.00'
+expect:
+  fica_withholding: '229.50'
