@@ -642,3 +642,57 @@ def test_ny_transform_roundtrip():
         Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
     from decimal import Decimal as _D
     assert compute_withholding(pf, emp, taxability) == _D("8.01")
+
+
+def test_fica_paths_and_slug():
+    assert assemble.data_path("US", 2026, "fica") == PurePosixPath(
+        "data/us/federal/2026/fica.yaml")
+    assert assemble.golden_slug("US", "fica") == "us-federal-fica"
+    # Default tax keeps the historical behavior
+    assert assemble.data_path("US", 2026) == PurePosixPath(
+        "data/us/federal/2026/withholding.yaml")
+    assert assemble.golden_slug("US") == "us-federal"
+
+
+def test_fica_transform_roundtrip():
+    # Extraction shape -> assemble -> loader -> engine computes a period.
+    from engine.pipeline import compute_withholding
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+    from decimal import Decimal as _D
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {
+            "social_security": {"employee_rate": "0.062", "employer_rate": "0.062",
+                                "wage_base": "150000"},
+            "medicare": {"employee_rate": "0.0145", "employer_rate": "0.0145",
+                         "additional_employee_rate": "0.009",
+                         "additional_threshold": "200000"},
+        },
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US", tax="fica", method="fica",
+        extraction=extraction, source=SOURCE)
+    pf = load_parameter_dict(raw)
+    emp = EmployeeInput.from_dict({"pay_frequency": "biweekly", "gross_wages": "2000.00"})
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    assert compute_withholding(pf, emp, taxability) == _D("153.00")
+
+
+def test_fica_golden_case_expect_key():
+    example = {
+        "description": "maintainer-constructed", "page": 1,
+        "pay_frequency": "biweekly", "gross_wages": "2000.00",
+        "filing_status": None, "allowances": None,
+        "additional_withholding": None,
+        "expected_withholding": "153.00",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US", tax="fica", example=example,
+        as_of="2026-06-15", document="Pub 15 (2026)")
+    assert g["expect"] == {"fica_withholding": "153.00"}
+    assert "state" not in g["input"] and "federal" not in g["input"]

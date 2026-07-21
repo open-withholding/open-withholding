@@ -26,6 +26,7 @@ _WITHHOLDING_TAXES = (
     "federal_income_withholding",
     "state_income_withholding",
     "local_income_withholding",
+    "fica",
 )
 
 
@@ -84,6 +85,8 @@ def _expected_pairs(case: GoldenCase, employee: EmployeeInput, key: str, expecte
     """Map an expect key to (jurisdiction, tax, expected amount) triples."""
     if key == "federal_withholding":
         return [("US", "federal_income_withholding", expected)]
+    if key == "fica_withholding":
+        return [("US", "fica", expected)]
     if key in ("state_withholding", "local_withholding"):
         tax = f"{key.split('_')[0]}_income_withholding"
         if isinstance(expected, dict):

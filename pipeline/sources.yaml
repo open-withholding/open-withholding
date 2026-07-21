@@ -767,3 +767,28 @@
   expected_window: "12-01..01-31"
   maps_to:
     - data/us/ny/{year}/withholding.yaml
+
+- id: us-federal-p15
+  document: "Publication 15 (Circular E), Employer's Tax Guide"
+  jurisdiction: US
+  tax: fica
+  method: fica
+  landing: "https://www.irs.gov/forms-pubs/about-publication-15"
+  # The unversioned URL serves the current edition (like Pub 15-T).
+  document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+  extraction_hint: >-
+    Transcribe ONLY the FICA parameters: the social security employee and
+    employer tax rates and the annual wage base limit, the Medicare
+    employee and employer rates, and the Additional Medicare Tax
+    withholding rate with its calendar-year wage threshold (employee only,
+    no employer match; the withholding obligation starts in the pay period
+    in which wages paid in the year first exceed the threshold). Rates as
+    decimal fractions. The income-tax percentage-method tables live in
+    Pub 15-T, a separate registered source; FUTA and deposit schedules are
+    out of scope for this entry. If the publication prints a computed
+    dollar FICA example (not just the rates), transcribe it as a worked
+    example with the stated wages and period.
+  check: [content_hash]
+  expected_window: "12-01..02-15"
+  maps_to:
+    - data/us/federal/{year}/fica.yaml

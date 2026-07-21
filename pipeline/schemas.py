@@ -615,6 +615,40 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "fica": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["social_security", "medicare"],
+        "properties": {
+            "social_security": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["employee_rate", "employer_rate", "wage_base"],
+                "properties": {
+                    "employee_rate": DECIMAL,
+                    "employer_rate": DECIMAL,
+                    "wage_base": {**DECIMAL, "description": "Annual social security "
+                                  "wage base limit as printed, e.g. \"184500\""},
+                },
+            },
+            "medicare": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["employee_rate", "employer_rate",
+                             "additional_employee_rate", "additional_threshold"],
+                "properties": {
+                    "employee_rate": DECIMAL,
+                    "employer_rate": DECIMAL,
+                    "additional_employee_rate": {**DECIMAL, "description":
+                        "Additional Medicare Tax withholding rate (employee only, "
+                        "no employer match)"},
+                    "additional_threshold": {**DECIMAL, "description":
+                        "Calendar-year wage threshold at which Additional Medicare "
+                        "Tax withholding begins"},
+                },
+            },
+        },
+    },
     "custom/us_ny": {
         "type": "object",
         "additionalProperties": False,
