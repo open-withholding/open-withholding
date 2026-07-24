@@ -26,6 +26,7 @@ WITHHOLDING_TAXES = (
     "federal_income_withholding",
     "state_income_withholding",
     "local_income_withholding",
+    "fica",
 )
 
 

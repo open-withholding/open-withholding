@@ -105,7 +105,6 @@ responsible for their withholding, deposits, and filings.
 
 ## License
 
-Code is licensed under [MIT](LICENSE). Data files under `/data` are intended
-for release under **CC0-1.0** (public-domain dedication) — the official
-dedication text will be added as `data/LICENSE` before the first data
-release. Government publications referenced are public domain.
+Code is licensed under [MIT](LICENSE). Data files under `/data` are
+dedicated to the public domain under **[CC0-1.0](data/LICENSE)**.
+Government publications referenced are public domain.

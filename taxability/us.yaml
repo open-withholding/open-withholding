@@ -1,13 +1,42 @@
 # Pre-tax deduction taxability matrix: which deduction types reduce which
 # wage bases, per jurisdiction.
 #
-# STATUS: DRAFT — STRUCTURE ONLY, NOT CITATION-BACKED.
-# The entries below reflect widely-known general treatments but none carries
-# the required source citation yet. Before the first data release, every
-# state_override (and each federal row) must gain a `sources` entry pointing
-# at the controlling publication, and this matrix gets its own golden tests.
-# CI will treat `status: draft_uncited` as a release blocker.
-status: draft_uncited
+# STATUS: CITED. Every federal row and every state_override below carries a
+# citation into `sources` (document + URL + sha256 of the archived bytes +
+# page). state_overrides are exhaustive ONLY for the states listed; a state
+# absent from an entry's overrides follows state_income_default, which is
+# the general-conformity treatment — consumers needing certainty for a
+# specific state should verify against that state's employer guide.
+# tests/unit/test_taxability.py enforces `status: cited` (release gate) and
+# pins each cited verdict.
+status: cited
+
+sources:
+  pub15-2026:
+    document: "Publication 15 (Circular E), Employer's Tax Guide (2026)"
+    url: "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+    sha256: b46c3622439d8521e3a0faca4cd5b5ece3451b526f65f06a5e38d5c9f804c88b
+    retrieved: "2026-07-21"
+  iw2w3-2026:
+    document: "General Instructions for Forms W-2 and W-3 (2026)"
+    url: "https://www.irs.gov/pub/irs-pdf/iw2w3.pdf"
+    sha256: d16b9f506f039f5af24f01fad699b0b60d392ac7920fcff528c7d97740c792b6
+    retrieved: "2026-07-24"
+  rev415-2023:
+    document: "REV-415, Employer Withholding Information Guide (PA, 2023)"
+    url: "https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf"
+    sha256: e64161ea109692f79d6642b5cbc7b56bf67483ad78b7ee369e57b14b5cd9c7e1
+    retrieved: "2026-07-08"
+  njwt-2025:
+    document: "NJ-WT, New Jersey Income Tax Withholding Instructions (Sep 2025)"
+    url: "https://www.nj.gov/treasury/taxation/pdf/current/njwt.pdf"
+    sha256: 0fbd45b2c7e9f5d8858ed4008c1436739e7a3ba655a823516ca4be8041cf01e9
+    retrieved: "2026-07-13"
+  de231eb:
+    document: "DE 231EB Rev. 12, Taxability of Employee Benefits (CA EDD)"
+    url: "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/de231eb.pdf"
+    sha256: dacbda0ff371054871fbb22e687e36e66f49f5b80b44a9e3901c762a90150b7b
+    retrieved: "2026-07-24"
 
 deduction_types:
   401k_traditional:
@@ -16,39 +45,122 @@ deduction_types:
     futa: does_not_reduce
     state_income_default: reduces
     state_overrides:
-      US-PA: does_not_reduce   # TODO citation: PA DOR employer withholding guide
-      US-NJ: does_not_reduce   # TODO citation: NJ-WT
+      US-PA: does_not_reduce
+    citations:
+      federal: >-
+        pub15-2026 p.51 (Section 15 table, Retirement and pension plans row
+        2): elective 401(k) deferrals are "Generally exempt" from federal
+        income tax withholding and "Taxable" for social security/Medicare
+        and FUTA.
+      US-PA: >-
+        rev415-2023 "Employee Fringe Benefits and Welfare Benefit Programs —
+        Taxable Benefits" (printed p.5, PDF p.8): "Payments by employers
+        into pension plans, 401(k) plans or other retirement plans made
+        pursuant to the employee's election, by salary reduction agreement
+        ... are taxable to employees and should be included in Pennsylvania
+        gross wages."
+      US-NJ: >-
+        NO override — njwt-2025 p.6 lists "401(k) contributions up to the
+        federal limit" under Compensation Not Subject to Withholding, so the
+        default (reduces) applies. (An earlier draft wrongly carried a
+        does_not_reduce override; the document refutes it. Contributions
+        beyond the federal limit are taxable, p.5 — not modeled.)
   403b_traditional:
     federal_income: reduces
     fica: does_not_reduce
     futa: does_not_reduce
     state_income_default: reduces
     state_overrides:
-      US-PA: does_not_reduce   # TODO citation
-      US-NJ: does_not_reduce   # TODO citation
+      US-PA: does_not_reduce
+      US-NJ: does_not_reduce
+    citations:
+      federal: >-
+        pub15-2026 p.51 (Section 15 table, rows 2 and 4): elective deferrals
+        income-tax exempt; salary-reduction 403(b) contributions taxable for
+        social security/Medicare and FUTA.
+      US-PA: >-
+        rev415-2023 (printed p.5, PDF p.8): same salary-reduction rule as
+        401(k) — "pension plans ... or other retirement plans" made by
+        employee election are PA-taxable.
+      US-NJ: >-
+        njwt-2025 p.5: "Employee contributions to retirement plans other
+        than a 401(k) in the year they are made" are subject to NJ
+        withholding.
   401k_roth:
     federal_income: does_not_reduce
     fica: does_not_reduce
     futa: does_not_reduce
     state_income_default: does_not_reduce
     state_overrides: {}
+    citations:
+      federal: >-
+        iw2w3-2026 p.10: "Designated Roth contributions are subject to
+        federal income tax withholding and social security and Medicare
+        taxes ... and must be reported in boxes 1, 3, and 5."
   hsa_cafeteria:
     federal_income: reduces
     fica: reduces
     futa: reduces
     state_income_default: reduces
     state_overrides:
-      US-CA: does_not_reduce   # TODO citation: CA DE 44
-      US-NJ: does_not_reduce   # TODO citation: NJ-WT
+      US-CA: does_not_reduce
+      US-NJ: does_not_reduce
+    citations:
+      federal: >-
+        pub15-2026 p.20: "HSA contributions made under a salary reduction
+        arrangement in a section 125 cafeteria plan aren't wages and aren't
+        subject to employment taxes or withholding."
+      US-CA: >-
+        de231eb p.2 (Cafeteria Plans) and p.3 (Health Savings Account):
+        employer contributions into a cafeteria-plan HSA and employee
+        salary reductions to a qualified HSA are "Subject" in the PIT
+        column.
+      US-NJ: >-
+        njwt-2025 p.5: amounts an employee takes out of cafeteria plans are
+        subject to NJ withholding; the p.6 excludable list names Archer MSA
+        (IRC 220) contributions but not HSAs, and the required-benefit
+        cafeteria carve-out does not cover HSA salary reductions.
   fsa_health:
     federal_income: reduces
     fica: reduces
     futa: reduces
     state_income_default: reduces
-    state_overrides: {}
+    state_overrides:
+      US-NJ: does_not_reduce
+    citations:
+      federal: >-
+        pub15-2026 p.47 (Section 15 table, Cafeteria plan benefits under
+        section 125): a nontaxable benefit elected under a cafeteria plan is
+        treated as if provided outside the plan; health FSA salary
+        reductions fund IRC 105/106 medical benefits, exempt from income
+        tax withholding, social security/Medicare, and FUTA (see also Pub
+        15-B).
+      US-NJ: >-
+        njwt-2025 p.5: "Amounts an employee takes out of cafeteria plans"
+        are subject to NJ withholding (the p.6 carve-out covers only plans
+        REQUIRING benefit dollars be used for minimum coverage, not
+        employee-elected FSA salary reductions). This override was MISSING
+        from the uncited draft.
   cafeteria_health_premium:
     federal_income: reduces
     fica: reduces
     futa: reduces
     state_income_default: reduces
-    state_overrides: {}
+    state_overrides:
+      US-NJ: does_not_reduce
+    citations:
+      federal: >-
+        pub15-2026 p.47 (Section 15 table): cafeteria-plan benefits —
+        nontaxable benefit treated as if provided outside the plan; accident
+        and health premiums are exempt from income tax withholding, social
+        security/Medicare, and FUTA.
+      US-PA: >-
+        NO override (default reduces): rev415-2023 (printed p.5) — employee
+        welfare benefit plans providing medical, dental or vision care are
+        "not considered taxable compensation for Pennsylvania purposes",
+        and the Taxable Benefits list names 401(k)-style salary reductions
+        but not cafeteria health premiums.
+      US-NJ: >-
+        njwt-2025 p.5: employee-elected cafeteria amounts are subject to NJ
+        withholding; only plans requiring minimum coverage purchases (p.6)
+        are excludable. This override was MISSING from the uncited draft.
