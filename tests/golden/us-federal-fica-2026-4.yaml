@@ -1,0 +1,14 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide (2026)
+  page: 30
+  example: 'maintainer-constructed: biweekly $8,000 with ytd wages $198,000 — social security already
+    capped; Additional Medicare 0.9% applies to the $6,000 above the $200,000 threshold'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '8000.00'
+  ytd:
+    social_security_wages: '198000'
+    medicare_wages: '198000'
+expect:
+  fica_withholding: '170.00'

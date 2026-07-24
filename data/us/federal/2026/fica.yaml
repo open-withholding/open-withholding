@@ -1,0 +1,26 @@
+schema_version: '0.1'
+jurisdiction: US
+tax: fica
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide (2026)
+  url: https://www.irs.gov/pub/irs-pdf/p15.pdf
+  retrieved: '2026-07-21'
+  sha256: b46c3622439d8521e3a0faca4cd5b5ece3451b526f65f06a5e38d5c9f804c88b
+  notes: Extracted by pipeline; pages per PR body
+method: fica
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  social_security:
+    employee_rate: '0.062'
+    employer_rate: '0.062'
+    wage_base: '184500'
+  medicare:
+    employee_rate: '0.0145'
+    employer_rate: '0.0145'
+    additional_employee_rate: '0.009'
+    additional_threshold: '200000'

@@ -1,0 +1,12 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide (2026)
+  page: 30
+  example: Gavrielle pays employee Dan's share of social security and Medicare taxes; for $1,000 of annual
+    wages the combined employee FICA share is $76.50 (7.65%). Gavrielle reports $1,076.50 in box 1 and
+    $1,000.00 in boxes 3 and 5.
+as_of: '2026-06-15'
+input:
+  pay_frequency: annually
+  gross_wages: '1000'
+expect:
+  fica_withholding: '76.50'
