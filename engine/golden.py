@@ -19,7 +19,7 @@ from engine.errors import DataError
 from engine.inputs import EmployeeInput
 from engine.loader import ParameterFile, load_parameter_dict, select_effective
 from engine.money import CENT, D
-from engine.pipeline import compute_withholding
+from engine.pipeline import compute_employer_tax, compute_withholding
 from engine.taxability import TaxabilityMatrix
 
 _WITHHOLDING_TAXES = (
@@ -27,6 +27,8 @@ _WITHHOLDING_TAXES = (
     "state_income_withholding",
     "local_income_withholding",
     "fica",
+    "futa",
+    "state_unemployment_insurance",
 )
 
 
@@ -87,6 +89,12 @@ def _expected_pairs(case: GoldenCase, employee: EmployeeInput, key: str, expecte
         return [("US", "federal_income_withholding", expected)]
     if key == "fica_withholding":
         return [("US", "fica", expected)]
+    if key == "futa_tax":
+        return [("US", "futa", expected)]
+    if key == "sui_tax":
+        if employee.employer is None or employee.employer.sui_jurisdiction is None:
+            raise DataError(f"{case.path}: sui_tax expects require input.employer.sui_jurisdiction")
+        return [(employee.employer.sui_jurisdiction, "state_unemployment_insurance", expected)]
     if key in ("state_withholding", "local_withholding"):
         tax = f"{key.split('_')[0]}_income_withholding"
         if isinstance(expected, dict):
@@ -111,7 +119,10 @@ def run_golden_case(
     for key, expected in case.expect.items():
         for jurisdiction, tax, amount in _expected_pairs(case, employee, key, expected):
             param_file = select_effective(files, case.as_of, jurisdiction=jurisdiction, tax=tax)
-            actual = compute_withholding(param_file, employee, taxability)
+            if tax in ("futa", "state_unemployment_insurance"):
+                actual = compute_employer_tax(param_file, employee, taxability)
+            else:
+                actual = compute_withholding(param_file, employee, taxability)
             results.append(
                 GoldenResult(
                     expect_key=key,

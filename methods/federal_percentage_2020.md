@@ -76,3 +76,25 @@ Step 4 — Extra withholding
 Pre-2020 W-4s (`federal_percentage_pre2020`, separate spec), supplemental
 wage flat rates (live in `limits.yaml`), nonresident alien additional
 amounts (Tier 2), and the wage-bracket lookup tables.
+
+## Pre-2020 Forms W-4: the computational bridge (v2 addition)
+
+A 2019-or-earlier Form W-4 that remains in effect computes through the
+SAME worksheet via Pub 15-T's computational bridge (2026 edition, pp.4–5),
+using params.computational_bridge (all values printed in the publication):
+
+1. Filing status: "Single" and "Married, but withhold at higher Single
+   rate" convert to `single`; "Married" converts to `married_joint`.
+   Head of household is unreachable from an old form. Inputs carry the
+   old form's own status (`single` | `married` | `married_higher_single`)
+   with `w4_version: "pre_2020"`.
+2. Step 4(a) = `computational_bridge.step4a[<converted status>]`
+   ($8,600 single / $12,900 married_joint as printed).
+3. Step 4(b) = allowances × `computational_bridge.allowance_amount`
+   ($4,300 as printed; statutorily frozen).
+4. Step 4(c) = the old form's line 6 additional withholding.
+
+Step 2 checkbox is treated as unchecked (the standard tables apply) and
+Step 3 credits are zero — an old form has neither. The rest of the
+worksheet runs unchanged. Editions whose params lack the bridge block
+fail loud on a pre-2020 input rather than guessing.

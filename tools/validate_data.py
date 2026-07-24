@@ -27,6 +27,8 @@ WITHHOLDING_TAXES = (
     "state_income_withholding",
     "local_income_withholding",
     "fica",
+    "futa",
+    "state_unemployment_insurance",
 )
 
 

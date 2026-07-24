@@ -792,3 +792,71 @@
   expected_window: "12-01..02-15"
   maps_to:
     - data/us/federal/{year}/fica.yaml
+
+- id: us-federal-p15-futa
+  document: "Publication 15 (Circular E), Employer's Tax Guide — FUTA (section 14)"
+  jurisdiction: US
+  tax: futa
+  method: futa
+  landing: "https://www.irs.gov/forms-pubs/about-publication-15"
+  document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    Transcribe ONLY section 14 (Federal Unemployment (FUTA) Tax): the gross
+    FUTA rate, the annual wage base, and the maximum credit for timely
+    state unemployment contributions, all as decimal fractions. If the
+    section names specific credit-reduction states with their reduction
+    rates, transcribe them; if it only refers the reader to Form 940
+    Schedule A without naming states, set credit_reductions null and say
+    so in notes. FICA (already a separate source), deposit schedules, and
+    Form 940 mechanics are out of scope.
+  check: [content_hash]
+  expected_window: "12-01..02-15"
+  maps_to:
+    - data/us/federal/{year}/futa.yaml
+
+- id: us-wi-sui
+  document: "Wisconsin DWD Unemployment Insurance Tax Rates (employer page)"
+  jurisdiction: US-WI
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://dwd.wisconsin.gov/ui/employers/taxrates.htm"
+  documents:
+    - name: "DWD UI Tax Rates page (HTML)"
+      kind: html
+      url: "https://dwd.wisconsin.gov/ui/employers/taxrates.htm"
+  no_printed_examples: true
+  extraction_hint: >-
+    Transcribe the target year's taxable wage base, the new-employer
+    rate(s) (Wisconsin publishes payroll-size variants and a separate
+    construction rate — use the standard under-$500,000-payroll rate as
+    new_employer_rate and the construction rate as
+    new_employer_rate_construction, noting other variants), and the rate
+    schedule's minimum and maximum. Wisconsin's noticed rates already
+    include the solvency tax — the range must be the WITH-solvency bounds,
+    and surtaxes stays null. Note which rate schedule (A/B/C/D) is in
+    effect for the year.
+  check: [content_hash]
+  expected_window: "10-01..01-31"
+  maps_to:
+    - data/us/wi/{year}/sui.yaml
+
+- id: us-il-sui
+  document: "IDES Annual Unemployment Insurance Tax Rate Summary"
+  jurisdiction: US-IL
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://ides.illinois.gov/employer-resources/taxes-reporting.html"
+  document_url_pattern: "https://ides.illinois.gov/content/dam/soi/en/web/ides/ides_forms_and_publications/UI_tax_rates_{year}.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The document is a multi-year comparison table; transcribe ONLY the
+    target year's column: taxable wage base, new-employer rate, and the
+    minimum and maximum rates. IDES prints rates "including the Fund
+    Builder" — those all-in values are what employers are noticed, so use
+    them for rate_range and new_employer_rate and leave surtaxes null.
+    Percentages convert to decimal fractions (0.550% -> 0.00550).
+  check: [content_hash]
+  expected_window: "11-15..02-28"
+  maps_to:
+    - data/us/il/{year}/sui.yaml

@@ -1798,3 +1798,224 @@ def test_fica_taxability_cafeteria_reduces(taxability):
     emp = _fica_emp("2000.00",
                     pretax=[{"type": "cafeteria_health_premium", "amount": "200"}])
     assert compute_withholding(FICA, emp, taxability) == Decimal("137.70")
+
+
+# --- Employer taxes: FUTA + SUI (fixture rates, arithmetic shown) ----------
+
+from engine.pipeline import compute_employer_tax
+
+FUTA = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US",
+    "tax": "futa",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "futa",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "rate": "0.060",
+        "wage_base": "7000",
+        "max_credit": "0.054",
+        "credit_reductions": {"US-ZZ": "0.012"},
+    },
+})
+
+SUI_WI = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US-WI",
+    "tax": "state_unemployment_insurance",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "sui",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "wage_base": "14000",
+        "new_employer_rate": "0.0305",
+        "rate_range": {"min": "0.0000", "max": "0.1200"},
+        "surtaxes": [{"name": "test_surtax", "rate": "0.0010", "wage_base": "7000"}],
+    },
+})
+
+
+def _emp(gross, ytd=None, employer=None):
+    raw = {"pay_frequency": "biweekly", "gross_wages": gross}
+    if ytd:
+        raw["ytd"] = ytd
+    if employer:
+        raw["employer"] = employer
+    return EmployeeInput.from_dict(raw)
+
+
+def test_futa_effective_rate(taxability):
+    # 2,000 x (6.0% - 5.4%) = 12.00
+    emp = _emp("2000.00", employer={"sui_jurisdiction": "US-WI"})
+    assert compute_employer_tax(FUTA, emp, taxability) == Decimal("12.00")
+
+
+def test_futa_credit_reduction_state(taxability):
+    # 2,000 x (0.6% + 1.2%) = 36.00
+    emp = _emp("2000.00", employer={"sui_jurisdiction": "US-ZZ"})
+    assert compute_employer_tax(FUTA, emp, taxability) == Decimal("36.00")
+
+
+def test_futa_no_employer_block_means_no_reduction(taxability):
+    assert compute_employer_tax(FUTA, _emp("2000.00"), taxability) == Decimal("12.00")
+
+
+def test_futa_wage_base_cap(taxability):
+    # ytd 6,500 of 7,000: tax on 500 -> 3.00; past cap -> 0
+    emp = _emp("2000.00", ytd={"futa_wages": "6500"})
+    assert compute_employer_tax(FUTA, emp, taxability) == Decimal("3.00")
+    emp = _emp("2000.00", ytd={"futa_wages": "7000"})
+    assert compute_employer_tax(FUTA, emp, taxability) == Decimal("0.00")
+
+
+def test_futa_401k_does_not_reduce_base(taxability):
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "biweekly", "gross_wages": "2000.00",
+        "pretax_deductions": [{"type": "401k_traditional", "amount": "500"}],
+    })
+    assert compute_employer_tax(FUTA, emp, taxability) == Decimal("12.00")
+
+
+def _wi_employer(rate="0.0305"):
+    return {"sui_jurisdiction": "US-WI", "sui_experience_rate": rate}
+
+
+def test_sui_basic(taxability):
+    # 2,000 x 3.05% = 61.00 + surtax 2,000 x 0.10% = 2.00
+    emp = _emp("2000.00", employer=_wi_employer())
+    assert compute_employer_tax(SUI_WI, emp, taxability) == Decimal("63.00")
+
+
+def test_sui_wage_base_caps_differ(taxability):
+    # ytd 6,000: main tax on 2,000 (61.00); surtax base 7,000 -> on 1,000 (1.00)
+    emp = _emp("2000.00", ytd={"sui_wages": "6000"}, employer=_wi_employer())
+    assert compute_employer_tax(SUI_WI, emp, taxability) == Decimal("62.00")
+    # ytd 13,000: main on 1,000 (30.50); surtax past its base -> 0
+    emp = _emp("2000.00", ytd={"sui_wages": "13000"}, employer=_wi_employer())
+    assert compute_employer_tax(SUI_WI, emp, taxability) == Decimal("30.50")
+
+
+def test_sui_requires_experience_rate(taxability):
+    emp = _emp("2000.00", employer={"sui_jurisdiction": "US-WI"})
+    with pytest.raises(InputError, match="rate notice"):
+        compute_employer_tax(SUI_WI, emp, taxability)
+
+
+def test_sui_rate_outside_published_range_fails(taxability):
+    # 30.5% is a decimal-form typo for 3.05% — the range check catches it
+    emp = _emp("2000.00", employer=_wi_employer("0.305"))
+    with pytest.raises(InputError, match="outside the published schedule"):
+        compute_employer_tax(SUI_WI, emp, taxability)
+
+
+def test_sui_jurisdiction_mismatch_fails(taxability):
+    emp = _emp("2000.00", employer={"sui_jurisdiction": "US-IL",
+                                    "sui_experience_rate": "0.0305"})
+    with pytest.raises(InputError, match="different state"):
+        compute_employer_tax(SUI_WI, emp, taxability)
+
+
+def test_sui_missing_employer_block_fails(taxability):
+    with pytest.raises(InputError, match="employer block"):
+        compute_employer_tax(SUI_WI, _emp("2000.00"), taxability)
+
+
+def test_employer_tax_rejects_withholding_taxes(taxability):
+    from engine.errors import EngineError
+    emp = _emp("2000.00")
+    with pytest.raises(EngineError, match="not an employer tax"):
+        compute_employer_tax(FICA, emp, taxability)
+
+
+# --- Pre-2020 W-4 computational bridge (Pub 15-T pp.4-5) -------------------
+
+FED = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US",
+    "tax": "federal_income_withholding",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "federal_percentage_2020",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "wage_adjustment": {"single": "8600", "married_joint": "12900"},
+        "computational_bridge": {
+            "step4a": {"single": "8600", "married_joint": "12900"},
+            "allowance_amount": "4300",
+        },
+        "brackets": {
+            "standard": {
+                "single": [{"over": "0", "rate": "0.10", "base": "0"}],
+                "married_joint": [{"over": "0", "rate": "0.10", "base": "0"}],
+            },
+            "step2_checkbox": {
+                "single": [{"over": "0", "rate": "0.10", "base": "0"}],
+                "married_joint": [{"over": "0", "rate": "0.10", "base": "0"}],
+            },
+        },
+    },
+})
+
+
+def _fed_emp(status, version, allowances=0, extra="0"):
+    return EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "1000.00",
+        "federal": {"w4_version": version, "filing_status": status,
+                    "allowances": allowances, "step4c_extra": extra},
+    })
+
+
+def test_bridge_married_maps_to_married_joint(taxability):
+    # Bridge: annual 52,000 + 12,900 (4a) - 2x4,300 (4b) - 12,900 (adj)
+    # = 43,400 x 10% / 52 = 83.4615 -> 83.46
+    emp = _fed_emp("married", "pre_2020", allowances=2)
+    assert compute_withholding(FED, emp, taxability) == Decimal("83.46")
+
+
+def test_bridge_higher_single_rate_maps_to_single(taxability):
+    # 52,000 + 8,600 - 0 - 8,600 = 52,000 x 10% / 52 = 100.00
+    emp = _fed_emp("married_higher_single", "pre_2020")
+    assert compute_withholding(FED, emp, taxability) == Decimal("100.00")
+
+
+def test_bridge_equivalent_to_manual_2020_form(taxability):
+    # The bridge output must equal a 2020+ W-4 filled per Pub 15-T's own
+    # conversion steps (4a = 12,900, 4b = allowances x 4,300).
+    old = _fed_emp("married", "pre_2020", allowances=3)
+    new = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "1000.00",
+        "federal": {"w4_version": 2020, "filing_status": "married_joint",
+                    "step4a_other_income": "12900", "step4b_deductions": "12900"},
+    })
+    assert compute_withholding(FED, old, taxability) == compute_withholding(FED, new, taxability)
+
+
+def test_bridge_line6_additional_carries(taxability):
+    emp = _fed_emp("single", "pre_2020", extra="15.00")
+    base = _fed_emp("single", "pre_2020")
+    diff = compute_withholding(FED, emp, taxability) - compute_withholding(FED, base, taxability)
+    assert diff == Decimal("15.00")
+
+
+def test_bridge_missing_params_fails_loud(taxability):
+    import copy
+    raw_params = copy.deepcopy(FED.params)
+    del raw_params["computational_bridge"]
+    import dataclasses
+    pf = dataclasses.replace(FED, params=raw_params)
+    with pytest.raises(InputError, match="computational_bridge"):
+        compute_withholding(pf, _fed_emp("single", "pre_2020"), taxability)
+
+
+def test_pre_2020_rejects_2020_statuses():
+    with pytest.raises(InputError, match="filing_status"):
+        _fed_emp("married_joint", "pre_2020")
+    with pytest.raises(InputError, match="filing_status"):
+        _fed_emp("head_of_household", "pre_2020")
+
+
+def test_2020_rejects_pre_2020_statuses():
+    with pytest.raises(InputError, match="filing_status"):
+        _fed_emp("married", 2020)

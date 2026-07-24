@@ -17,6 +17,8 @@ WITHHOLDING_TAXES = (
     "state_income_withholding",
     "local_income_withholding",
     "fica",
+    "futa",
+    "state_unemployment_insurance",
 )
 
 
@@ -24,7 +26,8 @@ def data_path(
     jurisdiction: str, year: int, tax: str = "state_income_withholding"
 ) -> PurePosixPath:
     """Repo-relative path for a jurisdiction-year parameter file."""
-    filename = "fica.yaml" if tax == "fica" else "withholding.yaml"
+    filename = {"fica": "fica.yaml", "futa": "futa.yaml",
+                "state_unemployment_insurance": "sui.yaml"}.get(tax, "withholding.yaml")
     parts = jurisdiction.split("-")
     if jurisdiction == "US":
         return PurePosixPath(f"data/us/federal/{year}/{filename}")
@@ -39,7 +42,9 @@ def golden_slug(jurisdiction: str, tax: str = "state_income_withholding") -> str
     Non-income taxes get a suffix so their fixtures don't collide with the
     jurisdiction's income-withholding numbering (US + fica -> us-federal-fica)."""
     base = "us-federal" if jurisdiction == "US" else jurisdiction.lower()
-    return f"{base}-fica" if tax == "fica" else base
+    suffix = {"fica": "-fica", "futa": "-futa",
+              "state_unemployment_insurance": "-sui"}.get(tax, "")
+    return base + suffix
 
 
 # Connector words carry no meaning in a status key: "married and spouse
@@ -217,6 +222,23 @@ def _transform_params(method: str, params: dict) -> dict:
             "social_security": dict(params["social_security"]),
             "medicare": dict(params["medicare"]),
         }
+    if method == "futa":
+        out = {"rate": params["rate"], "wage_base": params["wage_base"],
+               "max_credit": params["max_credit"]}
+        if params.get("credit_reductions"):
+            out["credit_reductions"] = {
+                e["jurisdiction"]: e["rate"] for e in params["credit_reductions"]
+            }
+        return out
+    if method == "sui":
+        out = {"wage_base": params["wage_base"],
+               "new_employer_rate": params["new_employer_rate"],
+               "rate_range": dict(params["rate_range"])}
+        if params.get("new_employer_rate_construction") is not None:
+            out["new_employer_rate_construction"] = params["new_employer_rate_construction"]
+        if params.get("surtaxes"):
+            out["surtaxes"] = [dict(t) for t in params["surtaxes"]]
+        return out
     if method == "custom/us_ny":
         return {
             "deduction": {
@@ -338,8 +360,14 @@ def _transform_params(method: str, params: dict) -> dict:
         }
         return out
     if method == "federal_percentage_2020":
+        bridge = params["computational_bridge"]
         return {
             "wage_adjustment": _status_map(params["wage_adjustment"]),
+            "computational_bridge": {
+                "step4a": {"single": bridge["step4a_single"],
+                           "married_joint": bridge["step4a_married_joint"]},
+                "allowance_amount": bridge["allowance_amount"],
+            },
             "brackets": {
                 "standard": _bracket_map(params["brackets_standard"]),
                 "step2_checkbox": _bracket_map(params["brackets_step2_checkbox"]),
@@ -481,6 +509,10 @@ def assemble_golden_case(
         expect_key = "state_withholding"
     elif tax == "fica":
         expect_key = "fica_withholding"  # no elections apply
+    elif tax == "futa":
+        expect_key = "futa_tax"  # employer liability
+    elif tax == "state_unemployment_insurance":
+        expect_key = "sui_tax"  # employer liability; jurisdiction from input.employer
     elif tax == "local_income_withholding":
         record["locals"] = [{"jurisdiction": jurisdiction, "resident": True}]
         expect_key = "local_withholding"

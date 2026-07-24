@@ -28,7 +28,9 @@
         "federal_income_withholding",
         "state_income_withholding",
         "local_income_withholding",
-        "fica"
+        "fica",
+        "futa",
+        "state_unemployment_insurance"
       ]
     },
     "effective_from": {
@@ -106,6 +108,8 @@
         "federal_percentage_2020",
         "federal_percentage_pre2020",
         "fica",
+        "futa",
+        "sui",
         "wage_bracket_lookup",
         "custom"
       ]
@@ -790,6 +794,36 @@
                     }
                   }
                 }
+              },
+              "computational_bridge": {
+                "type": "object",
+                "required": [
+                  "step4a",
+                  "allowance_amount"
+                ],
+                "additionalProperties": false,
+                "description": "Pub 15-T computational bridge for 2019-or-earlier W-4s",
+                "properties": {
+                  "step4a": {
+                    "type": "object",
+                    "required": [
+                      "single",
+                      "married_joint"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "single": {
+                        "$ref": "#/$defs/money"
+                      },
+                      "married_joint": {
+                        "$ref": "#/$defs/money"
+                      }
+                    }
+                  },
+                  "allowance_amount": {
+                    "$ref": "#/$defs/money"
+                  }
+                }
               }
             }
           }
@@ -1223,6 +1257,129 @@
                     "$ref": "#/$defs/money"
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "futa"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "rate",
+              "wage_base",
+              "max_credit"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "wage_base": {
+                "$ref": "#/$defs/money"
+              },
+              "max_credit": {
+                "$ref": "#/$defs/rate"
+              },
+              "credit_reductions": {
+                "type": "object",
+                "description": "Per-state additional rate for credit-reduction states (Form 940 Schedule A); may be empty",
+                "additionalProperties": false,
+                "patternProperties": {
+                  "^US-[A-Z]{2}$": {
+                    "$ref": "#/$defs/rate"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "sui"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "wage_base",
+              "new_employer_rate",
+              "rate_range"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "wage_base": {
+                "$ref": "#/$defs/money"
+              },
+              "new_employer_rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "new_employer_rate_construction": {
+                "$ref": "#/$defs/rate"
+              },
+              "rate_range": {
+                "type": "object",
+                "required": [
+                  "min",
+                  "max"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "min": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "max": {
+                    "$ref": "#/$defs/rate"
+                  }
+                },
+                "description": "Published schedule bounds INCLUDING bundled surcharges; the entered experience rate must fall inside"
+              },
+              "surtaxes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "name",
+                    "rate",
+                    "wage_base"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "rate": {
+                      "$ref": "#/$defs/rate"
+                    },
+                    "wage_base": {
+                      "$ref": "#/$defs/money"
+                    }
+                  }
+                },
+                "description": "Separately-published flat add-ons NOT included in noticed rates"
               }
             }
           }
