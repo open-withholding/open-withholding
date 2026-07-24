@@ -1,0 +1,412 @@
+{
+  "us-al-whbooklet": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"696fa61e-a9907\"",
+    "last_modified": "Tue, 20 Jan 2026 15:58:22 GMT",
+    "sha256": "11aa9a42eb1ba920918bcb7ed9356d6b2aad5b446079ac14c170b46c7313f628",
+    "url": "https://www.revenue.alabama.gov/wp-content/uploads/2026/01/whbooklet_0126.pdf"
+  },
+  "us-ar-formula": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Fri, 29 May 2026 21:15:19 GMT",
+    "sha256": "8a2d94f074d0a0a59ed8210a43b996a102367b4113f0f9ecec996dace11cbc64",
+    "url": "https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf"
+  },
+  "us-az-a4": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"697cd730-2f211\"",
+    "last_modified": "Fri, 30 Jan 2026 16:07:12 GMT",
+    "sha256": "80a6c71c702824d80d9505575257bb052574a5b1cef17dd3da486c7bfe6b4b54",
+    "url": "https://azdor.gov/sites/default/files/document/FORMS_WITHHOLDING_2026_A-4_f.pdf"
+  },
+  "us-ca-methb": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"1DCB17203A7F800\"",
+    "last_modified": "Wed, 11 Mar 2026 16:13:36 GMT",
+    "sha256": "145b570a333f22ff0b4c230ef8ee04bd6f5dc89f8351eb134754b4820f6c7047",
+    "url": "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/26methb.pdf"
+  },
+  "us-co-dr1098": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Tue, 03 Dec 2024 19:12:17 GMT",
+    "sha256": "997533571c53b9cb226627105fcdf4161de2430a0871c00d8518ef38d644a324",
+    "url": "https://tax.colorado.gov/sites/tax/files/documents/DR_1098_2024.pdf"
+  },
+  "us-ct-tpg211": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "4ae8d2843f104e6b9822fa1941f98c88",
+    "last_modified": "Tue, 09 Dec 2025 19:07:22 GMT",
+    "sha256": "a3df892d72740c5daa7633373b750ee9346ec2c78dea06dd6c22b1b4a63c4aec",
+    "url": "https://portal.ct.gov/-/media/drs/forms/2025/wth/tpg-211_1225.pdf?rev=e16ef13773ec42d4bf0afd2e192e0176&hash=CCF9990D8EE0AA580A11BC6E97235650"
+  },
+  "us-dc-fr230": {
+    "checked_at": "2026-07-24",
+    "documents": {
+      "FR-230, Income Tax Withholding Instructions and Tables (2018)": {
+        "changed_at": null,
+        "etag": null,
+        "last_modified": "Mon, 18 Dec 2017 21:29:31 GMT",
+        "sha256": "a3f017d25cb9b315c73f8599c64762e6d87728e9a7c33b51325d751126ee8cd0",
+        "url": "https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/publication/attachments/2018%20FR-230_12.13.17.pdf"
+      },
+      "OTR Tax Notice 2022-08, District of Columbia Withholding for Tax Year 2022 (updated 10/17/2022)": {
+        "changed_at": null,
+        "etag": null,
+        "last_modified": "Mon, 17 Oct 2022 20:31:08 GMT",
+        "sha256": "60b90d3020faf4170c26cc0f9810632f3157899ddb3ca7f36cc5e1df9a5bcbb0",
+        "url": "https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/release_content/attachments/Important_Information_Regarding_the_District_of_Columbia_Withholding_for_Tax_Year_2022_updated_10_17_2022.pdf"
+      },
+      "OTR release: District of Columbia Tax Changes Take Effect October 1 (TY2022 rate schedule; Wayback snapshot)": {
+        "changed_at": null,
+        "etag": null,
+        "last_modified": null,
+        "sha256": "96eeaf76892c76fd6836fe73483c07e5ea229546619adfa9130718b93b9501bc",
+        "url": "https://web.archive.org/web/20250616055422/https://otr.cfo.dc.gov/release/district-columbia-tax-changes-take-effect-october-1-real-property-individual-income-and"
+      },
+      "Publication 15-T (2022), Federal Income Tax Withholding Methods": {
+        "changed_at": null,
+        "etag": null,
+        "last_modified": "Wed, 22 Dec 2021 03:13:45 GMT",
+        "sha256": "7b08bd6bff8d545b7d999f1e2fe67978c486ad095ff659ce6e63b3873d111562",
+        "url": "https://www.irs.gov/pub/irs-prior/p15t--2022.pdf"
+      }
+    }
+  },
+  "us-de-employers-guide": {
+    "checked_at": "2026-07-24",
+    "documents": {
+      "Employer's Guide, Section 17 Percentage Method Formula (HTML)": {
+        "changed_at": null,
+        "etag": null,
+        "last_modified": null,
+        "sha256": "cdcfd1b1a26895aa51bbfe399997a673a5c93b014411ec0c4c171b3fd93f9dd5",
+        "url": "https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/"
+      },
+      "Weekly payroll period withholding table": {
+        "changed_at": null,
+        "etag": "\"422e-57598d1ecf740\"",
+        "last_modified": "Tue, 11 Sep 2018 13:55:01 GMT",
+        "sha256": "8b19fd5bb9e81a681c40a9fb4b62629692c22395483d3f234e72fbd718066a75",
+        "url": "https://revenuefiles.delaware.gov/docs/weekly16.pdf"
+      }
+    }
+  },
+  "us-federal-p15": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Wed, 17 Dec 2025 17:10:45 GMT",
+    "sha256": "b46c3622439d8521e3a0faca4cd5b5ece3451b526f65f06a5e38d5c9f804c88b",
+    "url": "https://www.irs.gov/pub/irs-pdf/p15.pdf"
+  },
+  "us-federal-p15t": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Thu, 11 Dec 2025 23:10:47 GMT",
+    "sha256": "31b3e2428628e8d2e40f6266c2c8f1b9b0b6ccd24607895f9b3be3d9d306d3fb",
+    "url": "https://www.irs.gov/pub/irs-pdf/p15t.pdf"
+  },
+  "us-ga-employers-guide": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Tue, 21 Jul 2026 15:26:47 GMT",
+    "sha256": "bb8fc0ce2e3d6f208f5215eb0ed65e875bee1bb8105f313589856b78c9852cb0",
+    "url": "https://dor.georgia.gov/document/document/2026-employers-tax-guide-updated-june-2026/download"
+  },
+  "us-hi-bookleta": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"3f62cf-645b55cc3d900\"",
+    "last_modified": "Thu, 11 Dec 2025 23:18:28 GMT",
+    "sha256": "e819a8a48ed9f273014afe0046bc461152228953b545a9aad90e5f7378d3c051",
+    "url": "https://files.hawaii.gov/tax/news/pubs/25BkltA.pdf"
+  },
+  "us-ia-formula": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Sat, 01 Nov 2025 23:42:41 GMT",
+    "sha256": "690911fa64266dffe9b21eac207220c18762dd4d02a4ca4807eb8ff02c8ca0e2",
+    "url": "https://revenue.iowa.gov/media/53/download?inline="
+  },
+  "us-id-epb00744": {
+    "checked_at": "2026-07-24",
+    "documents": {
+      "Computing withholding page with Idaho Child Tax Credit Allowance Table (ICTCAT)": {
+        "changed_at": null,
+        "etag": null,
+        "last_modified": null,
+        "sha256": "ae8c520d777b1984890b06d95fda2dbdbd0dfd1dfbc9311f27fc7bb3da363415",
+        "url": "https://tax.idaho.gov/taxes/income-tax/withholding/computing/"
+      },
+      "EPB00744, Idaho Table for Percentage Computation Method of Withholding": {
+        "changed_at": null,
+        "etag": "\"23f0121d77b8db1:0\"",
+        "last_modified": "Mon, 28 Apr 2025 19:52:46 GMT",
+        "sha256": "a521ba887dc78493c2b0d11dd4a7438710a30f0ab5cb684ecb84d61188e7b3be",
+        "url": "https://tax.idaho.gov/document-mngr/pubs_EPB00744"
+      }
+    }
+  },
+  "us-il-700t": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Wed, 31 Dec 2025 22:58:00 GMT",
+    "sha256": "f8f05eda8025bc8b80b7dee5fa9a69af04e2c32b3320386ace7027b5fc6d635e",
+    "url": "https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf"
+  },
+  "us-in-dn01": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"32012-6459913b502e0\"",
+    "last_modified": "Wed, 10 Dec 2025 13:33:43 GMT",
+    "sha256": "a4c6e71c43295bfe273d5831922565bcd49cb2f0b33208e59d922c4274a0b77d",
+    "url": "https://www.in.gov/dor/files/dn01.pdf"
+  },
+  "us-ks-kw100": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"dfc972cef1fdb1:0\"",
+    "last_modified": "Wed, 16 Oct 2024 17:15:50 GMT",
+    "sha256": "7e521f216548a12e5afc42faff6d3aa170327e9061582ce8e431ed86c67f8fdd",
+    "url": "https://www.ksrevenue.gov/pdf/kw100.pdf"
+  },
+  "us-ky-formula": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"{1C301C97-4836-49D7-9FA4-34235A6D5FC8},3\"",
+    "last_modified": "Wed, 15 Oct 2025 17:52:44 GMT",
+    "sha256": "bb8244c5131e6ba8a932dd7f2cb5359ed962bc705c13a13e185e85e831271243",
+    "url": "https://revenue.ky.gov/Forms/2026%20Withholding%20Formula.pdf"
+  },
+  "us-la-r1306": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "0x8DE48D844A9BD7A",
+    "last_modified": "Thu, 01 Jan 2026 01:51:23 GMT",
+    "sha256": "894da1932daa836b9817ccb1515ba81913838cb2957f7948368c4e67a2daab27",
+    "url": "https://dam.ldr.la.gov/taxforms/1306-1-26.pdf"
+  },
+  "us-ma-circular-m": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Wed, 21 Jan 2026 17:02:15 GMT",
+    "sha256": "d3f12716311bb9977c9597de25c89a79523d50a5bdc293ab7e68368a453f79a8",
+    "url": "https://www.mass.gov/doc/massachusetts-circular-m-income-tax-withholding-tables-at-50-effective-january-1-2026/download"
+  },
+  "us-md-withholding-guide": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"0x8DE6A5DAED6049B\"",
+    "last_modified": "Thu, 12 Feb 2026 17:39:33 GMT",
+    "sha256": "ce61cef90c00bc41ad4f4a4913ea1f9f5be65db9c08b015d43c191d20883e0bf",
+    "url": "https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/2026/withholding-guide.pdf"
+  },
+  "us-me-wh-tab": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"1bd57c-6413822ce7c3f\"",
+    "last_modified": "Wed, 15 Oct 2025 20:13:38 GMT",
+    "sha256": "bdccd833d649038512ab189cf1ce18990892def812fb495735fde3b152f7bfee",
+    "url": "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/26_wh_tab_instr.pdf"
+  },
+  "us-mi-446": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "68d0176d0ad143239945ef502ddec2b7",
+    "last_modified": "Thu, 26 Feb 2026 19:32:27 GMT",
+    "sha256": "5cfe50e6842338649de7f97027f39659d830bb87e64e0c5834cf8e61b3a91b04",
+    "url": "https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY2026/446_Withholding-Guide_2026.pdf"
+  },
+  "us-mn-wh-inst": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Wed, 17 Dec 2025 15:00:11 GMT",
+    "sha256": "47c22acd256bcb85fe6fd49a8012835acc5e97b1ebaec99362e6a154e1795da9",
+    "url": "https://www.revenue.state.mn.us/sites/default/files/2025-12/wh-inst-26.pdf"
+  },
+  "us-mo-4282": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"69b32317-6b0fe\"",
+    "last_modified": "Thu, 12 Mar 2026 20:33:27 GMT",
+    "sha256": "9b24eaa6b065f8bb932bdd2038960c3da20e19ba69cf9e3e98614600468fc93e",
+    "url": "https://dor.mo.gov/forms/4282_2026.pdf"
+  },
+  "us-ms-89-700": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"1fb0d4-6484c1ad516e5\"",
+    "last_modified": "Tue, 13 Jan 2026 21:59:25 GMT",
+    "sha256": "5eabfe62a2d271ab21f72f741c95d1e0b49021b4ef286a644f4270b512a4d585",
+    "url": "https://www.dor.ms.gov/sites/default/files/tax-forms/business/89700251revised1.13.2026.pdf"
+  },
+  "us-mt-employer-guide": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"ebff29c22866dc1:0\"",
+    "last_modified": "Fri, 05 Dec 2025 20:50:15 GMT",
+    "sha256": "be5e53a31b7175ed17fd2457ef40dff1224e4e9737ac18248f1434c6d4b578eb",
+    "url": "https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf"
+  },
+  "us-nc-30": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"1765809265:dtagent10341260622154106vFpx\"",
+    "last_modified": "Mon, 15 Dec 2025 14:34:24 GMT",
+    "sha256": "56a00f942c48c51019c3b78d72da1f1cc04969890678c107fe9d0386c5d655be",
+    "url": "https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open"
+  },
+  "us-nd-rates": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"3a8f17-6472f0676e209\"",
+    "last_modified": "Tue, 30 Dec 2025 17:52:37 GMT",
+    "sha256": "b265477a04e5932a79efc5bbc1be6db812febbe018a4f8b7018b7a72553f0415",
+    "url": "https://www.tax.nd.gov/sites/www/files/documents/forms/individual/2026-iit/2026-income-tax-withholding-rates-booklet.pdf"
+  },
+  "us-ne-cir-en": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"6925f17c-7ed0c\"",
+    "last_modified": "Tue, 25 Nov 2025 18:12:12 GMT",
+    "sha256": "b6a3985ee03873aa1d16c1e9267c6de0acd8598a6e59db6b388dce649c1f3991",
+    "url": "https://revenue.nebraska.gov/sites/default/files/doc/business/Cir_En_2025/2026cir_en_whole.pdf"
+  },
+  "us-nj-njwt": {
+    "checked_at": "2026-07-24",
+    "documents": {
+      "NJ-WT, New Jersey Income Tax Withholding Instructions": {
+        "changed_at": null,
+        "etag": "\"235baf-69304294\"",
+        "last_modified": "Wed, 03 Dec 2025 14:00:52 GMT",
+        "sha256": "0fbd45b2c7e9f5d8858ed4008c1436739e7a3ba655a823516ca4be8041cf01e9",
+        "url": "https://www.nj.gov/treasury/taxation/pdf/current/njwt.pdf"
+      },
+      "Percentage Method Withholding Rate Tables A-E": {
+        "changed_at": null,
+        "etag": "\"753c7-6239ce6f\"",
+        "last_modified": "Tue, 22 Mar 2022 13:26:07 GMT",
+        "sha256": "e7480d096b6126f49181c9f5e9b04a15b1542ca79e7480d01e4a3d6bb359f3f8",
+        "url": "https://www.nj.gov/treasury/taxation/pdf/withholdingtables.pdf"
+      }
+    }
+  },
+  "us-nm-fyi104": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"1ac6dd2a687f9f3ddab5ddd8cc460473\"",
+    "last_modified": "Thu, 20 Nov 2025 19:03:00 GMT",
+    "sha256": "400f141e3cc28d352712cd0cb94f80d7c2dc1c40463fcdcf31561247b5889a82",
+    "url": "https://realfile.tax.newmexico.gov/FYI-104.pdf"
+  },
+  "us-ny-nys50tnys": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"5ddcc-642b27a13e500\"",
+    "last_modified": "Mon, 03 Nov 2025 15:36:20 GMT",
+    "sha256": "e1c2b3440572a10019efe8d8e4d727474c55afb37dd5d18a6a73b94463baf3e8",
+    "url": "https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_nys.pdf"
+  },
+  "us-oh-computer-formula": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"7568ab5b13e929ffc9e35d92d32a16de\"",
+    "last_modified": "Fri, 17 Apr 2026 14:41:19 GMT",
+    "sha256": "25fbf2b0905f52025f3306a1a4dcad3d2bf515a33afa110368533ed05910d405",
+    "url": "https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025%20Withholding%20Tables/WHT_OptionalComputerFormula_2025.pdf"
+  },
+  "us-ok-ow2": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"68ef9-64394388931c0\"",
+    "last_modified": "Fri, 14 Nov 2025 20:55:43 GMT",
+    "sha256": "ec4327fe6153611ce6bf60f8e5914eb75c9b6132cf3122bbaaca0ed9dab478a7",
+    "url": "https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-2026.pdf"
+  },
+  "us-or-formulas": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"{5D478233-2AFF-4E00-9DBC-36F8C1F54B10},7\"",
+    "last_modified": "Thu, 26 Feb 2026 21:22:47 GMT",
+    "sha256": "5beea1190b4072da8fb027d211665a4899ffd43d4488ab9e910bde57261ed37d",
+    "url": "https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf"
+  },
+  "us-pa-rev415": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"0x8DCAA7622C36D78\"",
+    "last_modified": "Mon, 22 Jul 2024 17:45:54 GMT",
+    "sha256": "e64161ea109692f79d6642b5cbc7b56bf67483ad78b7ee369e57b14b5cd9c7e1",
+    "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf"
+  },
+  "us-ri-withholding-booklet": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Mon, 08 Dec 2025 19:04:22 GMT",
+    "sha256": "1e6883fa1a02cc03eaa0be3a62a8e8bf34b2a02ed5246fc8bcc7c54b0bab37c1",
+    "url": "https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-12/2026%20Withholding%20Tax%20Booklet.pdf"
+  },
+  "us-sc-wh1603f": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Wed, 05 Nov 2025 20:15:03 GMT",
+    "sha256": "588edf32e0876bc842d41dea20eebac59c2b12e5457562d052c0c28ac5e9ffff",
+    "url": "https://dor.sc.gov/sites/dor/files/forms/WH1603F_2026.pdf"
+  },
+  "us-ut-pub14": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"8a12d6acb1e5e43e1f524c914872f854\"",
+    "last_modified": "Wed, 03 Jun 2026 19:43:21 GMT",
+    "sha256": "a7662517232b93b21774666e703123d398916a0a1dd1f1791eccca10f4a8d56f",
+    "url": "https://files.tax.utah.gov/tax/forms/pubs/pub-14.pdf"
+  },
+  "us-va-instructions": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Fri, 09 Jan 2026 01:15:55 GMT",
+    "sha256": "52203efabfc3d5314be57279712c01066d0fadf3b98c0f66a63189aba55097c5",
+    "url": "https://www.tax.virginia.gov/sites/default/files/vatax-pdf/employer-withholding-instructions.pdf"
+  },
+  "us-vt-gb1210": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": null,
+    "last_modified": "Mon, 22 Dec 2025 18:48:44 GMT",
+    "sha256": "4656760209691fdd4404f2a10fa4edf57622e24dc7dbaa10ac113f2775f9687d",
+    "url": "https://tax.vermont.gov/sites/tax/files/documents/GB-1210-2026.pdf"
+  },
+  "us-wi-w166": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"{9F372CA7-6250-41E2-9B14-4F11560D3E42},31pub\"",
+    "last_modified": "Thu, 15 Jan 2026 21:11:58 GMT",
+    "sha256": "c400ce62d7a945f111d01f42e541415d27c3cae45eb30f3fbf25ac5220949fb7",
+    "url": "https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf"
+  },
+  "us-wv-it1002a": {
+    "changed_at": null,
+    "checked_at": "2026-07-24",
+    "etag": "\"{92C9646C-64AE-447E-8636-4D196307BA1B},10\"",
+    "last_modified": "Wed, 01 Apr 2026 15:18:49 GMT",
+    "sha256": "c103bacc00f5d3c6c02ce3831c76d328e3ada5ee8af3746a48100b9001ee68b2",
+    "url": "https://tax.wv.gov/Documents/Withholding/it100.2a.pdf"
+  }
+}
