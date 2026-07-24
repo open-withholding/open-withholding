@@ -184,3 +184,77 @@ def test_watch_does_not_import_the_engine():
         "or m == 'jsonschema']; assert not bad, bad" % repo
     )
     subprocess.run([sys.executable, "-c", code], check=True)
+
+
+def test_default_fetcher_falls_back_to_honest_ua_on_403(monkeypatch):
+    # mass.gov 403s the browser UA but accepts the honest UA
+    import io
+    import urllib.error
+    import urllib.request
+    from pipeline import discover, watch
+
+    calls = []
+
+    def fake_urlopen(request, timeout=None, context=None):
+        ua = request.get_header("User-agent")
+        calls.append(ua)
+        if ua == discover.BROWSER_UA:
+            raise urllib.error.HTTPError(request.full_url, 403, "Forbidden", {}, io.BytesIO(b""))
+
+        class R:
+            status = 200
+            headers = {}
+
+            def read(self):
+                return b"%PDF fake"
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            class headers:  # noqa: N801 — minimal stand-in
+                @staticmethod
+                def get(_k):
+                    return None
+
+        return R()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    result = watch.default_fetcher("https://example.gov/x.pdf")
+    assert result["status"] == 200 and result["is_pdf"]
+    assert calls == [discover.BROWSER_UA, discover.HONEST_UA]
+
+
+def test_default_fetcher_threads_insecure_context(monkeypatch):
+    import urllib.request
+    from pipeline import watch
+
+    seen = {}
+
+    def fake_urlopen(request, timeout=None, context=None):
+        seen["context"] = context
+
+        class R:
+            status = 200
+
+            def read(self):
+                return b"%PDF"
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+            class headers:  # noqa: N801
+                @staticmethod
+                def get(_k):
+                    return None
+
+        return R()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    watch.default_fetcher("https://dor.ms.gov/x.pdf", insecure=True)
+    assert seen["context"] is not None and seen["context"].check_hostname is False

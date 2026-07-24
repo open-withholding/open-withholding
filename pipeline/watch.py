@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import functools
 import hashlib
 import json
 import subprocess
@@ -43,14 +44,29 @@ from pipeline.discover import substitute_year as _substitute_year  # noqa: E402
 REPO = "open-withholding/open-withholding"
 
 
-def default_fetcher(url: str, _retry: bool = True) -> dict:
+def default_fetcher(url: str, _retry: bool = True, *, insecure: bool = False,
+                    _ua: str | None = None) -> dict:
     """GET the document; return bytes' hash + caching headers.
+
+    `insecure` disables TLS verification for registry entries flagged
+    insecure_tls (dor.ms.gov's broken chain). A 403 on the browser UA is
+    retried once with the honest UA — mass.gov's Akamai rejects a browser
+    UA from a non-browser TLS stack (the exact inverse of the sites the
+    browser UA exists for).
 
     Returns {"status": int, "sha256": str|None, "etag": str|None,
              "last_modified": str|None, "is_pdf": bool}."""
-    request = urllib.request.Request(url, headers={"User-Agent": discover.BROWSER_UA})
+    request = urllib.request.Request(
+        url, headers={"User-Agent": _ua or discover.BROWSER_UA})
+    context = None
+    if insecure:
+        import ssl
+
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
     try:
-        with urllib.request.urlopen(request, timeout=120) as resp:
+        with urllib.request.urlopen(request, timeout=120, context=context) as resp:
             data = resp.read()
             return {
                 "status": resp.status,
@@ -60,6 +76,9 @@ def default_fetcher(url: str, _retry: bool = True) -> dict:
                 "is_pdf": data[:4] == b"%PDF",
             }
     except urllib.error.HTTPError as exc:
+        if exc.code == 403 and _ua is None:
+            return default_fetcher(url, _retry, insecure=insecure,
+                                   _ua=discover.HONEST_UA)
         return {"status": exc.code, "sha256": None, "etag": None,
                 "last_modified": None, "is_pdf": False}
     except Exception as exc:  # timeout, TLS, DNS — report, don't crash the sweep
@@ -67,7 +86,7 @@ def default_fetcher(url: str, _retry: bool = True) -> dict:
             import time
 
             time.sleep(5)  # several state sites drop the first connection
-            return default_fetcher(url, _retry=False)
+            return default_fetcher(url, _retry=False, insecure=insecure, _ua=_ua)
         return {"status": 0, "error": str(exc)[:200], "sha256": None,
                 "etag": None, "last_modified": None, "is_pdf": False}
 
@@ -280,7 +299,9 @@ def main() -> int:
     summary: dict[str, int] = {}
     for source in sources:
         entry = state.get(source["id"], {})
-        events, new_entry = check_source(source, entry, default_fetcher, today)
+        source_fetcher = functools.partial(
+            default_fetcher, insecure=source.get("insecure_tls", False))
+        events, new_entry = check_source(source, entry, source_fetcher, today)
         state[source["id"]] = new_entry
         for event in events:
             summary[event["type"]] = summary.get(event["type"], 0) + 1
