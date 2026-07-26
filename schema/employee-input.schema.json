@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/open-withholding/schema/employee-input.schema.json",
   "title": "Employee input record",
-  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 \u2014 org URL in $id is a placeholder.",
+  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 — org URL in $id is a placeholder.",
   "type": "object",
   "required": [
     "pay_frequency",
@@ -48,11 +48,11 @@
     },
     "period_federal_income_withholding": {
       "$ref": "#/$defs/money",
-      "description": "Federal income tax withheld this period \u2014 an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
+      "description": "Federal income tax withheld this period — an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
     },
     "period_fica_withholding": {
       "$ref": "#/$defs/money",
-      "description": "FICA/Medicare/retirement-system withholdings this period \u2014 consumed by MA's capped deduction"
+      "description": "FICA/Medicare/retirement-system withholdings this period — consumed by MA's capped deduction"
     },
     "ytd": {
       "type": "object",
@@ -74,6 +74,10 @@
         "retirement_deduction_used": {
           "$ref": "#/$defs/money",
           "description": "Amount already subtracted this year under MA Circular M step 1 (the $2,000 cumulative cap tracker); absent = 0"
+        },
+        "futa_wages": {
+          "$ref": "#/$defs/money",
+          "description": "FUTA-taxable wages paid in prior periods this calendar year"
         }
       }
     },
@@ -92,12 +96,7 @@
           ]
         },
         "filing_status": {
-          "enum": [
-            "single",
-            "married_joint",
-            "head_of_household"
-          ],
-          "description": "single covers Married Filing Separately; married_joint covers Qualifying Surviving Spouse (Pub 15-T table headings)"
+          "description": "2020+ W-4: single | married_joint | head_of_household. Pre-2020 W-4 (line 3 marital status): single | married | married_higher_single."
         },
         "step2_checkbox": {
           "type": "boolean",
@@ -124,7 +123,55 @@
           "minimum": 0,
           "description": "pre_2020 W-4 only"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "w4_version": {
+                "const": "pre_2020"
+              }
+            },
+            "required": [
+              "w4_version"
+            ]
+          },
+          "then": {
+            "properties": {
+              "filing_status": {
+                "enum": [
+                  "single",
+                  "married",
+                  "married_higher_single"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "w4_version": {
+                "const": 2020
+              }
+            },
+            "required": [
+              "w4_version"
+            ]
+          },
+          "then": {
+            "properties": {
+              "filing_status": {
+                "enum": [
+                  "single",
+                  "married_joint",
+                  "head_of_household"
+                ]
+              }
+            }
+          }
+        }
+      ]
     },
     "state": {
       "type": "array",

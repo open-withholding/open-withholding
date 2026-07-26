@@ -24,6 +24,9 @@ PAY_PERIODS_PER_YEAR = {
 }
 
 FEDERAL_FILING_STATUSES = ("single", "married_joint", "head_of_household")
+# A 2019-or-earlier W-4 carries its line-3 marital status; Pub 15-T's
+# computational bridge maps these onto the 2020+ statuses in the method.
+PRE_2020_FILING_STATUSES = ("single", "married", "married_higher_single")
 
 
 def _money(raw: dict, key: str, default: str | None = "0", *, context: str) -> Decimal:
@@ -60,9 +63,11 @@ class FederalElection:
         if version not in (2020, "pre_2020"):
             raise InputError(f"{ctx}.w4_version must be 2020 or 'pre_2020', got {version!r}")
         status = raw.get("filing_status")
-        if status not in FEDERAL_FILING_STATUSES:
+        allowed = PRE_2020_FILING_STATUSES if version == "pre_2020" else FEDERAL_FILING_STATUSES
+        if status not in allowed:
             raise InputError(
-                f"{ctx}.filing_status {status!r} not one of {list(FEDERAL_FILING_STATUSES)}"
+                f"{ctx}.filing_status {status!r} not one of {list(allowed)} "
+                f"for w4_version {version!r}"
             )
         allowances = raw.get("allowances", 0)
         if not isinstance(allowances, int) or allowances < 0:
@@ -145,6 +150,25 @@ class LocalElection:
 
 
 @dataclass(frozen=True)
+class EmployerContext:
+    """Employer-specific values for employer-side taxes. The SUI experience
+    rate comes from the state's annual rate notice — always user-entered,
+    never data (schema/employee-input.schema.json)."""
+
+    sui_jurisdiction: str | None = None
+    sui_experience_rate: Decimal | None = None
+
+    @classmethod
+    def from_dict(cls, raw: dict) -> "EmployerContext":
+        rate = None
+        if raw.get("sui_experience_rate") is not None:
+            rate = D(raw["sui_experience_rate"], context="employer.sui_experience_rate")
+            if not (ZERO <= rate <= Decimal("1")):
+                raise InputError(f"employer.sui_experience_rate must be within 0..1, got {rate}")
+        return cls(sui_jurisdiction=raw.get("sui_jurisdiction"), sui_experience_rate=rate)
+
+
+@dataclass(frozen=True)
 class EmployeeInput:
     pay_frequency: str
     gross_wages: Decimal
@@ -155,6 +179,7 @@ class EmployeeInput:
     ytd: dict[str, Decimal] = field(default_factory=dict)
     period_federal_income_withholding: Decimal | None = None
     period_fica_withholding: Decimal | None = None
+    employer: EmployerContext | None = None
 
     @property
     def pay_periods_per_year(self) -> int:
@@ -187,11 +212,13 @@ class EmployeeInput:
         pfica = None
         if raw.get("period_fica_withholding") is not None:
             pfica = _money(raw, "period_fica_withholding", None, context="input")
+        employer = raw.get("employer")
         return cls(
             pay_frequency=frequency,
             gross_wages=_money(raw, "gross_wages", None, context="input"),
             period_federal_income_withholding=pfw,
             period_fica_withholding=pfica,
+            employer=EmployerContext.from_dict(employer) if employer else None,
             pretax_deductions=tuple(deductions),
             federal=FederalElection.from_dict(federal) if federal else None,
             state=tuple(StateElection.from_dict(s) for s in raw.get("state") or []),

@@ -37,9 +37,15 @@ def test_wrong_jurisdiction_golden_does_not_count():
     assert len(missing_golden(changed, _reader({changed[0]: CO_FILE}))) == 1
 
 
-def test_non_withholding_and_deleted_files_exempt():
+def test_sui_files_now_guarded_and_deleted_files_exempt():
+    # SUI became a computable tax (methods/sui.md): its data files require
+    # goldens like everything else. Deleted files remain exempt.
     changed = ["data/us/co/2026/sui.yaml", "data/us/co/2025/withholding.yaml"]
     reader = _reader({"data/us/co/2026/sui.yaml": SUI_FILE})  # 2025 file deleted -> None
+    errors = missing_golden(changed, reader)
+    assert len(errors) == 1 and "us-co-sui-2026-" in errors[0]
+    # With a matching golden in the changeset, the guard is satisfied.
+    changed.append("tests/golden/us-co-sui-2026-1.yaml")
     assert missing_golden(changed, reader) == []
 
 

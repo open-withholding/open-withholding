@@ -64,6 +64,9 @@ def test_federal_transform_none_bases_dropped():
         "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
         "params": {
             "wage_adjustment": [{"filing_status": "single", "amount": "8600"}],
+            "computational_bridge": {"step4a_single": "8600",
+                                     "step4a_married_joint": "12900",
+                                     "allowance_amount": "4300"},
             "brackets_standard": [{"filing_status": "single", "rows": rows}],
             "brackets_step2_checkbox": [{"filing_status": "single", "rows": rows}],
         },
@@ -78,6 +81,7 @@ def test_federal_transform_none_bases_dropped():
     first_row = raw["params"]["brackets"]["standard"]["single"][0]
     assert "base" not in first_row  # null base omitted, declared base kept
     assert raw["params"]["brackets"]["standard"]["single"][1]["base"] == "0"
+    assert raw["params"]["computational_bridge"]["step4a"]["married_joint"] == "12900"
     load_parameter_dict(raw)
 
 
@@ -696,3 +700,78 @@ def test_fica_golden_case_expect_key():
         as_of="2026-06-15", document="Pub 15 (2026)")
     assert g["expect"] == {"fica_withholding": "153.00"}
     assert "state" not in g["input"] and "federal" not in g["input"]
+
+
+def test_employer_tax_paths_and_slugs():
+    assert assemble.data_path("US", 2026, "futa") == PurePosixPath(
+        "data/us/federal/2026/futa.yaml")
+    assert assemble.data_path("US-WI", 2026, "state_unemployment_insurance") == PurePosixPath(
+        "data/us/wi/2026/sui.yaml")
+    assert assemble.golden_slug("US", "futa") == "us-federal-futa"
+    assert assemble.golden_slug("US-WI", "state_unemployment_insurance") == "us-wi-sui"
+
+
+def test_futa_transform_roundtrip():
+    from engine.pipeline import compute_employer_tax
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+    from decimal import Decimal as _D
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {"rate": "0.060", "wage_base": "7000", "max_credit": "0.054",
+                   "credit_reductions": None},
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US", tax="futa", method="futa",
+        extraction=extraction, source=SOURCE)
+    pf = load_parameter_dict(raw)
+    emp = EmployeeInput.from_dict({"pay_frequency": "biweekly", "gross_wages": "2000.00"})
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    assert compute_employer_tax(pf, emp, taxability) == _D("12.00")
+
+
+def test_sui_transform_roundtrip():
+    from engine.pipeline import compute_employer_tax
+    from engine.inputs import EmployeeInput
+    from engine.taxability import TaxabilityMatrix
+    from decimal import Decimal as _D
+
+    extraction = {
+        "classification": "new_year_edition",
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+        "params": {"wage_base": "14250", "new_employer_rate": "0.03950",
+                   "new_employer_rate_construction": None,
+                   "rate_range": {"min": "0.00750", "max": "0.07050"},
+                   "surtaxes": None},
+    }
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-IL", tax="state_unemployment_insurance", method="sui",
+        extraction=extraction, source=SOURCE)
+    pf = load_parameter_dict(raw)
+    assert "surtaxes" not in pf.params and "new_employer_rate_construction" not in pf.params
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "biweekly", "gross_wages": "2000.00",
+        "employer": {"sui_jurisdiction": "US-IL", "sui_experience_rate": "0.0200"},
+    })
+    taxability = TaxabilityMatrix.from_file(
+        Path(__file__).resolve().parent.parent.parent / "taxability" / "us.yaml")
+    assert compute_employer_tax(pf, emp, taxability) == _D("40.00")
+
+
+def test_sui_golden_case_expect_key():
+    example = {
+        "description": "maintainer-constructed", "page": 1,
+        "pay_frequency": "biweekly", "gross_wages": "2000.00",
+        "filing_status": None, "allowances": None,
+        "additional_withholding": None,
+        "expected_withholding": "63.00",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-WI", tax="state_unemployment_insurance", example=example,
+        as_of="2026-06-15", document="DWD page")
+    assert g["expect"] == {"sui_tax": "63.00"}

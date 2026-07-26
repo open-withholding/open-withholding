@@ -6,7 +6,7 @@ the data is usable and anchors the golden tests.
 """
 
 from engine.errors import EngineError, DataError, InputError
-from engine.pipeline import compute_withholding
+from engine.pipeline import compute_employer_tax, compute_withholding
 from engine.loader import load_parameter_file, select_effective
 from engine.inputs import EmployeeInput
 from engine.taxability import TaxabilityMatrix
@@ -16,6 +16,7 @@ __all__ = [
     "DataError",
     "InputError",
     "compute_withholding",
+    "compute_employer_tax",
     "load_parameter_file",
     "select_effective",
     "EmployeeInput",

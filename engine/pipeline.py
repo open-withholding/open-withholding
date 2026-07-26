@@ -48,6 +48,9 @@ class MethodContext:
     ytd: dict = None
     exemptions: dict = None  # named counts (IN WH-4 lines 5-8)
     rate_schedule: str | None = None  # employer-selected printed schedule (MD)
+    # Employer-side taxes (futa, sui) — from the input's employer block.
+    sui_jurisdiction: str | None = None
+    sui_experience_rate: Decimal | None = None
 
 
 def compute_withholding(
@@ -120,5 +123,62 @@ def compute_withholding(
         raise EngineError(
             f"method {param_file.method!r} produced negative withholding {amount}; "
             f"method implementations must clamp"
+        )
+    return amount
+
+
+_EMPLOYER_TAXES = ("futa", "state_unemployment_insurance")
+
+
+def compute_employer_tax(
+    param_file: ParameterFile,
+    employee: EmployeeInput,
+    taxability: TaxabilityMatrix,
+) -> Decimal:
+    """Employer-side liability (FUTA, SUI) for one pay period. Same pure
+    shape as compute_withholding, but the amount is owed BY the employer —
+    it never reduces the employee's pay. v1 computes taxable wages through
+    the matrix's `futa` column for both (see methods/sui.md notes)."""
+    if param_file.tax not in _EMPLOYER_TAXES:
+        raise EngineError(
+            f"tax type {param_file.tax!r} is not an employer tax; "
+            f"use compute_withholding for withholding taxes"
+        )
+    taxable = taxability.taxable_wages(
+        employee.gross_wages, employee.pretax_deductions, "futa", param_file.jurisdiction
+    )
+    employer = employee.employer
+    if param_file.tax == "state_unemployment_insurance":
+        if employer is None or employer.sui_jurisdiction is None:
+            raise InputError(
+                "sui: input requires an employer block with sui_jurisdiction "
+                "and sui_experience_rate (from the state rate notice)"
+            )
+        if employer.sui_jurisdiction != param_file.jurisdiction:
+            raise InputError(
+                f"sui: employer.sui_jurisdiction {employer.sui_jurisdiction!r} does "
+                f"not match the parameter file's {param_file.jurisdiction!r} — "
+                "the entered rate belongs to a different state's notice"
+            )
+    ctx = MethodContext(
+        taxable_wages=taxable,
+        pay_periods=employee.pay_periods_per_year,
+        params=param_file.params,
+        rounding=param_file.rounding,
+        bracket_tables=param_file.bracket_tables,
+        filing_status=None,
+        allowances=0,
+        secondary_allowances=0,
+        additional_withholding=ZERO,
+        federal=None,
+        ytd=employee.ytd,
+        sui_jurisdiction=employer.sui_jurisdiction if employer else None,
+        sui_experience_rate=employer.sui_experience_rate if employer else None,
+    )
+    method = resolve(param_file.method, param_file.custom_implementation)
+    amount = method(ctx)
+    if amount < ZERO:
+        raise EngineError(
+            f"method {param_file.method!r} produced negative employer tax {amount}"
         )
     return amount

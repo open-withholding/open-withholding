@@ -649,6 +649,74 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "futa": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["rate", "wage_base", "max_credit", "credit_reductions"],
+        "properties": {
+            "rate": {**DECIMAL, "description": "Gross FUTA rate as a decimal fraction"},
+            "wage_base": DECIMAL,
+            "max_credit": {**DECIMAL, "description": "Maximum credit for timely state "
+                           "UI contributions, as a decimal fraction"},
+            "credit_reductions": {
+                "type": ["array", "null"],
+                "description": "Credit-reduction states the publication names, or null "
+                "if it names none / defers to Form 940 Schedule A",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["jurisdiction", "rate"],
+                    "properties": {
+                        "jurisdiction": {"type": "string",
+                                         "description": "e.g. US-CA"},
+                        "rate": DECIMAL,
+                    },
+                },
+            },
+        },
+    },
+    "sui": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["wage_base", "new_employer_rate",
+                     "new_employer_rate_construction", "rate_range", "surtaxes"],
+        "properties": {
+            "wage_base": {**DECIMAL, "description": "Annual taxable wage base for the "
+                          "target year"},
+            "new_employer_rate": {**DECIMAL, "description": "Published new-employer "
+                                  "rate INCLUDING any bundled surcharge, as printed"},
+            "new_employer_rate_construction": {
+                **DECIMAL_OR_NULL,
+                "description": "Separate construction-industry new-employer rate, or null",
+            },
+            "rate_range": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["min", "max"],
+                "properties": {
+                    "min": DECIMAL,
+                    "max": DECIMAL,
+                },
+                "description": "The schedule's minimum and maximum noticed rates "
+                "INCLUDING bundled surcharges (IL Fund Builder, WI solvency)",
+            },
+            "surtaxes": {
+                "type": ["array", "null"],
+                "description": "SEPARATELY-published flat add-on taxes NOT included in "
+                "noticed rates, or null if the state has none",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["name", "rate", "wage_base"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "rate": DECIMAL,
+                        "wage_base": DECIMAL,
+                    },
+                },
+            },
+        },
+    },
     "custom/us_ny": {
         "type": "object",
         "additionalProperties": False,
@@ -961,7 +1029,8 @@ _PARAMS_BY_METHOD = {
     "federal_percentage_2020": {
         "type": "object",
         "additionalProperties": False,
-        "required": ["wage_adjustment", "brackets_standard", "brackets_step2_checkbox"],
+        "required": ["wage_adjustment", "brackets_standard", "brackets_step2_checkbox",
+                     "computational_bridge"],
         "properties": {
             "wage_adjustment": {
                 **PER_STATUS_AMOUNT,
@@ -970,6 +1039,19 @@ _PARAMS_BY_METHOD = {
             },
             "brackets_standard": PER_STATUS_BRACKETS,
             "brackets_step2_checkbox": PER_STATUS_BRACKETS,
+            "computational_bridge": {
+                "type": "object",
+                "additionalProperties": False,
+                "description": "The computational bridge for 2019-or-earlier W-4s: "
+                "the Step 4(a) entries per converted filing status and the per-"
+                "allowance amount, as printed",
+                "required": ["step4a_single", "step4a_married_joint", "allowance_amount"],
+                "properties": {
+                    "step4a_single": DECIMAL,
+                    "step4a_married_joint": DECIMAL,
+                    "allowance_amount": DECIMAL,
+                },
+            },
         },
     },
 }
