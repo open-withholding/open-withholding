@@ -775,3 +775,52 @@ def test_sui_golden_case_expect_key():
         jurisdiction="US-WI", tax="state_unemployment_insurance", example=example,
         as_of="2026-06-15", document="DWD page")
     assert g["expect"] == {"sui_tax": "63.00"}
+
+
+def test_county_jurisdiction_slugs():
+    assert assemble.county_jurisdiction("US-IN", "Adams") == "US-IN-ADAMS"
+    assert assemble.county_jurisdiction("US-IN", "St Joseph") == "US-IN-ST-JOSEPH"
+    assert assemble.county_jurisdiction("US-IN", "LaPorte") == "US-IN-LAPORTE"
+
+
+def test_county_fan_out_files_are_self_contained():
+    extraction = {
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none",
+                     "intermediate_to": None},
+        "params": {
+            "exemption_kinds": [{"kind": "personal", "annual_amount": "1000"}],
+            "periods_per_year": [{"frequency": "weekly", "divisor": 52}],
+            "counties": [{"name": "Adams", "code": "01", "rate": "0.016"},
+                         {"name": "Newton", "code": "56", "rate": "0.01"}],
+        },
+    }
+    pairs = assemble.assemble_county_fan_out(
+        state="US-IN", tax="local_income_withholding",
+        method="deduction_constant_percentage",
+        extraction=extraction, source=SOURCE)
+    assert [j for j, _ in pairs] == ["US-IN-ADAMS", "US-IN-NEWTON"]
+    for _, raw in pairs:
+        load_parameter_dict(raw)  # every file stands alone
+    adams = dict(pairs)["US-IN-ADAMS"]
+    assert adams["params"]["rate"] == "0.016"
+    assert adams["params"]["exemptions"] == {"personal": "1000"}
+    assert "code 01" in adams["source"]["notes"]
+
+
+def test_local_golden_case_carries_parent_state_election():
+    example = {
+        "description": "county example", "page": 2,
+        "pay_frequency": "weekly", "gross_wages": "800",
+        "filing_status": None, "allowances": None,
+        "exemption_counts": [{"kind": "personal", "count": 5}],
+        "additional_withholding": None,
+        "expected_withholding": "4.73",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-IN-NEWTON", tax="local_income_withholding",
+        example=example, as_of="2026-06-15", document="DN #1")
+    assert g["input"]["locals"] == [{"jurisdiction": "US-IN-NEWTON", "resident": True}]
+    assert g["input"]["state"][0]["jurisdiction"] == "US-IN"
+    assert g["input"]["state"][0]["exemptions"] == {"personal": 5}
+    assert g["expect"] == {"local_withholding": "4.73"}

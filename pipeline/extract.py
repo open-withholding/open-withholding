@@ -269,6 +269,159 @@ def run_mechanical_validation(param_dict: dict, golden_dicts: list[dict], taxabi
     return golden_dicts
 
 
+def run_county_fan_out(args, source, extraction, verification, source_block) -> int:
+    """DN #1-style locals fan-out: one extraction -> one parameter file per
+    county. Printed examples are assigned to counties BY ARITHMETIC (the
+    county whose engine output equals the printed amount); every other
+    county gets an engine-computed regression pin so the golden guard holds
+    for each file."""
+    jurisdiction, tax, method = source["jurisdiction"], source["tax"], source["method"]
+    taxability = TaxabilityMatrix.from_file(REPO_ROOT / "taxability" / "us.yaml")
+    as_of = assemble.default_as_of(extraction["effective_from"])
+    effective_year = int(str(extraction["effective_from"])[:4])
+    stamp_edition_year(source_block, effective_year)
+
+    pairs = assemble.assemble_county_fan_out(
+        state=jurisdiction, tax=tax, method=method, extraction=extraction,
+        source={**source_block, "notes": "Extracted by pipeline; pages per PR body"},
+    )
+
+    print(f"[4/5] mechanical validation ({len(pairs)} county files) ...")
+    unconfirmed = [c for c in verification["checks"] if not c["confirmed"]]
+    try:
+        if unconfirmed:
+            raise ExtractionFailure(
+                "verification could not confirm: "
+                + "; ".join(f"{c['path']}={c['candidate_value']} ({c['note']})" for c in unconfirmed)
+            )
+        loaded = {j: load_parameter_dict(raw) for j, raw in pairs}
+        codes = [c["code"] for c in extraction["params"]["counties"]]
+        if len(set(codes)) != len(codes):
+            raise ExtractionFailure("duplicate county codes in transcription")
+
+        # Assign each printed example to the county whose arithmetic it is.
+        goldens: dict[str, list[dict]] = {j: [] for j, _ in pairs}
+        for ex in verification["worked_examples"]:
+            matched = None
+            for j, _raw in pairs:
+                g = assemble.assemble_golden_case(
+                    jurisdiction=j, tax=tax, example=ex, as_of=as_of,
+                    document=source_block.get("document", source["document"]))
+                case = GoldenCase(path=Path("<candidate>"), source=g["source"],
+                                  as_of=dt.date.fromisoformat(g["as_of"]),
+                                  input_record=g["input"], expect=g["expect"])
+                if all(r.ok for r in run_golden_case(case, [loaded[j]], taxability)):
+                    matched = (j, g)
+                    break
+            if matched is None:
+                raise ExtractionFailure(
+                    f"printed example {ex['description']!r} matches NO county's "
+                    "arithmetic — transcription error in the shared tables or rates"
+                )
+            j, g = matched
+            g["source"]["example"] += " [assigned by arithmetic to the first matching county]"
+            goldens[j].append(g)
+        n_printed = sum(len(v) for v in goldens.values())
+        if n_printed == 0:
+            raise ExtractionFailure(
+                "verification pass transcribed no worked examples; "
+                "no worked example -> not mergeable (DESIGN.md §7)"
+            )
+
+        # Engine-computed regression pin for every county without a printed
+        # example, using the first printed example's input shape.
+        template = next(g for v in goldens.values() for g in v)
+        from engine.pipeline import compute_withholding
+        from engine.inputs import EmployeeInput
+        for j, _raw in pairs:
+            if goldens[j]:
+                continue
+            record = json.loads(json.dumps(template["input"]))
+            record["locals"] = [{"jurisdiction": j, "resident": True}]
+            amount = compute_withholding(loaded[j], EmployeeInput.from_dict(record), taxability)
+            goldens[j].append({
+                "source": {"document": template["source"]["document"],
+                           "page": template["source"]["page"],
+                           "example": "pipeline-constructed regression pin: engine-"
+                                      "computed at extraction on the printed example's "
+                                      "input; the county rate is transcribed from the "
+                                      "printed rate table"},
+                "as_of": as_of, "input": record,
+                "expect": {"local_withholding": str(amount)},
+            })
+    except (ExtractionFailure, EngineError) as exc:
+        triage = OUT_DIR / f"{args.source_id}-{args.year}-triage.md"
+        triage.write_text(
+            f"# Triage: {args.source_id} {args.year}\n\n**Failure:** {exc}\n\n"
+            f"## Extraction\n\n```json\n{json.dumps(extraction, indent=2)}\n```\n\n"
+            f"## Verification\n\n```json\n{json.dumps(verification, indent=2)}\n```\n"
+        )
+        print(f"      FAILED — triage report written to {triage.relative_to(REPO_ROOT)}")
+        print(f"      {exc}")
+        return 1
+    print(f"      {len(pairs)} files load; {n_printed} printed example(s) assigned by "
+          f"arithmetic; {len(pairs) - n_printed} regression pins generated")
+
+    print(f"[5/5] writing candidate files ...")
+    target_root = OUT_DIR / f"{args.source_id}-{args.year}" if args.dry_run else REPO_ROOT
+    golden_paths = []
+    for j, raw in pairs:
+        data_file = assemble.data_path(j, effective_year, tax)
+        (target_root / data_file).parent.mkdir(parents=True, exist_ok=True)
+        (target_root / data_file).write_text(dump_yaml(raw))
+        slug = assemble.golden_slug(j, tax)
+        for i, g in enumerate(goldens[j]):
+            rel = f"tests/golden/{slug}-{effective_year}-{i + 1}.yaml"
+            (target_root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (target_root / rel).write_text(dump_yaml(g))
+            golden_paths.append(rel)
+    counties = extraction["params"]["counties"]
+    body_lines = [
+        f"## `{args.source_id}`: {jurisdiction} county income tax — {len(pairs)} files",
+        "",
+        f"- **Method:** `{method}` (per county, self-contained shared tables)",
+        f"- **Classification:** {extraction['classification']}",
+        f"- **Effective from:** {extraction['effective_from']}",
+        f"- **Source:** [{source_block.get('document', source['document'])}]({source_block['url']}) — retrieved {source_block['retrieved']}",
+        f"- **Archived sha256:** `{source_block['sha256']}`",
+        "",
+        "### Extraction citations",
+        "",
+        *(f"- {c['what']} — p.{c['page']}" for c in extraction.get("citations", [])),
+        "",
+        "### Independent verification (separate context)",
+        "",
+        f"- {len(verification['checks'])}/{len(verification['checks'])} values confirmed",
+        "",
+        "### County rate table (transcribed)",
+        "",
+        "| County | Code | Rate |", "|---|---|---|",
+        *(f"| {c['name']} | {c['code']} | {c['rate']} |" for c in counties),
+        "",
+        "### Golden tests",
+        "",
+        f"- {n_printed} printed example(s), assigned by arithmetic",
+        f"- {len(pairs) - n_printed} engine-computed regression pins (one per remaining county)",
+        "",
+        "### Extractor notes",
+        "",
+        extraction.get("notes", "").strip() or "(none)",
+        "",
+        "### Reviewer checklist",
+        "",
+        "- [ ] Spot-checked 5+ county rates against the printed table (including every asterisked rate change)",
+        "- [ ] Row count matches the printed table exactly",
+        "- [ ] Shared exemption/period tables match the state file's",
+        "",
+        "🤖 Extracted by the pipeline; every number above requires human review before merge.",
+    ]
+    pr_file = OUT_DIR / f"{args.source_id}-{args.year}-pr.md"
+    pr_file.write_text("\n".join(body_lines) + "\n")
+    print(f"      {len(pairs)} data files, {len(golden_paths)} goldens")
+    print(f"      PR body: {pr_file.relative_to(REPO_ROOT)}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source_id")
@@ -377,7 +530,7 @@ def main() -> int:
                 f"{prev_note}{hint_note}\n\nTranscribe this document's parameters for the method above.",
             },
         ],
-        extraction_schema(method),
+        extraction_schema(source.get("extraction_schema") or method),
     )
     print(f"      classification: {extraction['classification']}")
     if extraction["classification"] == "cosmetic_reissue" and prev_path is None:
@@ -403,19 +556,29 @@ def main() -> int:
               f"filing under {effective_year}, not {args.year}")
     stamp_edition_year(source_block, effective_year)
 
-    param_dict = assemble.assemble_parameter_file(
-        jurisdiction=jurisdiction,
-        tax=tax,
-        method=method,
-        extraction=extraction,
-        source=(
-            source_block
-            if "sources" in source_block
-            else {**source_block, "notes": "Extracted by pipeline; pages per PR body"}
-        ),
-        supersedes=str(prev_path.relative_to(REPO_ROOT)) if prev_path else None,
-    )
-    candidate_yaml = dump_yaml(param_dict)
+    if source.get("fan_out") == "counties":
+        # Fan-out sources assemble AFTER verification (one file per county);
+        # the verifier confirms the raw transcription, dumped as YAML.
+        param_dict = None
+        candidate_yaml = dump_yaml({
+            "effective_from": extraction["effective_from"],
+            "rounding": extraction["rounding"],
+            "params": extraction["params"],
+        })
+    else:
+        param_dict = assemble.assemble_parameter_file(
+            jurisdiction=jurisdiction,
+            tax=tax,
+            method=method,
+            extraction=extraction,
+            source=(
+                source_block
+                if "sources" in source_block
+                else {**source_block, "notes": "Extracted by pipeline; pages per PR body"}
+            ),
+            supersedes=str(prev_path.relative_to(REPO_ROOT)) if prev_path else None,
+        )
+        candidate_yaml = dump_yaml(param_dict)
 
     print(f"[3/5] independent verification pass (separate context) ...")
     verification = call_model(
@@ -440,6 +603,9 @@ def main() -> int:
         VERIFICATION_SCHEMA,
     )
     unconfirmed = [c for c in verification["checks"] if not c["confirmed"]]
+
+    if source.get("fan_out") == "counties":
+        return run_county_fan_out(args, source, extraction, verification, source_block)
 
     # Maintainer-adjudicated print-defect corrections (registry `adjudications`).
     # Applied AFTER verification — the verifier must confirm the transcription

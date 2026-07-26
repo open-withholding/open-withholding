@@ -458,6 +458,56 @@ def apply_adjudications(params: dict, adjudications: list[dict]) -> list[dict]:
     return results
 
 
+def county_jurisdiction(state: str, county_name: str) -> str:
+    """US-IN + "St Joseph" -> US-IN-ST-JOSEPH (kebab upper; the data path
+    lowercases it to locals/st-joseph.yaml)."""
+    slug = re.sub(r"[^A-Za-z0-9]+", "-", county_name.strip()).strip("-").upper()
+    return f"{state}-{slug}"
+
+
+def assemble_county_fan_out(
+    *,
+    state: str,
+    tax: str,
+    method: str,
+    extraction: dict,
+    source: dict,
+    schema_version: str = "0.1",
+) -> list[tuple[str, dict]]:
+    """DN #1-style fan-out: one shared-table extraction -> one self-contained
+    parameter file per county (CT-codes precedent: shared printed tables
+    duplicated so every file stands alone). Returns [(jurisdiction, raw)]."""
+    shared = {
+        "exemptions": {
+            snake(e["kind"]): e["annual_amount"] for e in extraction["params"]["exemption_kinds"]
+        },
+        "periods_per_year": {
+            e["frequency"]: str(e["divisor"]) for e in extraction["params"]["periods_per_year"]
+        },
+    }
+    out = []
+    for county in extraction["params"]["counties"]:
+        jurisdiction = county_jurisdiction(state, county["name"])
+        raw = {
+            "schema_version": schema_version,
+            "jurisdiction": jurisdiction,
+            "tax": tax,
+            "effective_from": extraction["effective_from"],
+            "effective_to": None,
+            "source": {**source,
+                       "notes": (source.get("notes", "").rstrip() + "; county "
+                                 f"{county['name']} (code {county['code']}) rate from "
+                                 "the printed rate table").lstrip("; ")},
+            "method": method,
+            "rounding": dict(extraction["rounding"]),
+            "params": {"rate": county["rate"], **shared},
+        }
+        if raw["rounding"].get("intermediate_to") is None:
+            raw["rounding"].pop("intermediate_to", None)
+        out.append((jurisdiction, raw))
+    return out
+
+
 def _money(value, default: str = "0") -> str:
     return default if value is None else value
 
@@ -515,6 +565,21 @@ def assemble_golden_case(
         expect_key = "sui_tax"  # employer liability; jurisdiction from input.employer
     elif tax == "local_income_withholding":
         record["locals"] = [{"jurisdiction": jurisdiction, "resident": True}]
+        # Locals inherit the parent state's certificate (engine rule): carry
+        # the example's election on the parent state so the county deduction
+        # constants apply.
+        parent = "-".join(jurisdiction.split("-")[:2])
+        election: dict = {"jurisdiction": parent}
+        if example.get("filing_status"):
+            election["filing_status"] = snake(example["filing_status"])
+        if example.get("allowances"):
+            election["allowances"] = example["allowances"]
+        if example.get("exemption_counts"):
+            election["exemptions"] = {
+                e["kind"]: e["count"] for e in example["exemption_counts"]
+            }
+        if len(election) > 1:
+            record["state"] = [election]
         expect_key = "local_withholding"
     else:
         raise ValueError(f"no golden mapping for tax {tax!r}")
