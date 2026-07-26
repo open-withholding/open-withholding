@@ -1,0 +1,11 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide — FUTA (section 14) (2026)
+  page: 44
+  example: 'maintainer-constructed: biweekly $2,000, first paycheck — net 0.6% rate (6.0% less the full
+    5.4% credit) on the whole period'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  futa_tax: '12.00'
