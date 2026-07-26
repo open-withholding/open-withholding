@@ -23,6 +23,10 @@ on:
         description: "Publication prints no applicable worked examples"
         type: boolean
         default: false
+      force_new_edition:
+        description: "Re-extract an unchanged document (extraction schema gained fields)"
+        type: boolean
+        default: false
 
 jobs:
   extract:
@@ -57,7 +61,8 @@ jobs:
         run: |
           python pipeline/extract.py "${{ inputs.source_id }}" \
             --year "${{ inputs.year }}" \
-            ${{ inputs.no_examples_ok && '--no-examples-ok' || '' }}
+            ${{ inputs.no_examples_ok && '--no-examples-ok' || '' }} \
+            ${{ inputs.force_new_edition && '--force-new-edition' || '' }}
 
       - name: Preserve archived source PDF
         # Stopgap until the durable sha256-keyed archive exists (DESIGN §8.4):

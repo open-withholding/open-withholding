@@ -279,6 +279,14 @@ def main() -> int:
         "--dry-run", action="store_true", help="Write candidates to pipeline/out/ only"
     )
     parser.add_argument(
+        "--force-new-edition",
+        action="store_true",
+        help="Re-extract even when the model classifies the document as a cosmetic "
+        "re-issue relative to the prior data file. Use when the EXTRACTION SCHEMA "
+        "gained fields the prior file lacks (e.g. Pub 15-T's computational bridge) "
+        "so the unchanged document must be read again.",
+    )
+    parser.add_argument(
         "--no-examples-ok",
         action="store_true",
         help="Accept a publication that prints no applicable worked examples: write the "
@@ -311,7 +319,12 @@ def main() -> int:
                 "sha256": sha,
             })
             print(f"      archived {doc['name']} ({doc['kind']}, {len(doc['data'])//1024} KiB) {sha[:12]}...")
-        source_block = {"sources": source_blocks}
+        if len(source_blocks) == 1:
+            # One document = a plain source block; the schema's `sources`
+            # list is for genuinely multi-document citations (2+).
+            source_block = dict(source_blocks[0])
+        else:
+            source_block = {"sources": source_blocks}
     else:
         pdf, pdf_url = fetch_pdf(source, args.year, args.pdf)
         sha = archive_pdf(pdf, source, args.year, pdf_url)
@@ -372,9 +385,14 @@ def main() -> int:
         print("      overriding to new_year_edition: no prior edition exists in the dataset")
         extraction["classification"] = "new_year_edition"
     if extraction["classification"] == "cosmetic_reissue":
-        (OUT_DIR / f"{args.source_id}-{args.year}-cosmetic.json").write_text(json.dumps(extraction, indent=2))
-        print("      cosmetic re-issue — no parameter change; nothing to PR. Details in pipeline/out/.")
-        return 0
+        if args.force_new_edition:
+            print("      cosmetic re-issue overridden by --force-new-edition "
+                  "(schema gained fields; re-reading the unchanged document)")
+            extraction["classification"] = "parameter_change"
+        else:
+            (OUT_DIR / f"{args.source_id}-{args.year}-cosmetic.json").write_text(json.dumps(extraction, indent=2))
+            print("      cosmetic re-issue — no parameter change; nothing to PR. Details in pipeline/out/.")
+            return 0
 
     # Layout follows the document's own effective date, not the requested
     # year: agencies don't reissue when nothing changed (CO's current DR 1098
