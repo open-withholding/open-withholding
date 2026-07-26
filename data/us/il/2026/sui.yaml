@@ -1,0 +1,22 @@
+schema_version: '0.1'
+jurisdiction: US-IL
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: IDES Annual Unemployment Insurance Tax Rate Summary (2026)
+  url: https://ides.illinois.gov/content/dam/soi/en/web/ides/ides_forms_and_publications/UI_tax_rates_2026.pdf
+  retrieved: '2026-07-26'
+  sha256: 040f8e9e106d28578581ece1bf6de6a51cb20cd5d55d28bf63f24e2e173833a5
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '14250'
+  new_employer_rate: '0.03350'
+  rate_range:
+    min: '0.00750'
+    max: '0.07050'
