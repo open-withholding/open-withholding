@@ -1,0 +1,13 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide — FUTA (section 14) (2026)
+  page: 44
+  example: 'maintainer-constructed: biweekly $2,000 with ytd FUTA wages $6,500 — the period crosses the
+    $7,000 wage base; tax on $500 only'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    futa_wages: '6500'
+expect:
+  futa_tax: '3.00'
