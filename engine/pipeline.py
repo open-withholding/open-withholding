@@ -92,7 +92,23 @@ def compute_withholding(
         exemptions = election.exemptions
         rate_schedule = election.rate_schedule
         federal = None
-    else:  # local, fica: no elections apply
+    elif param_file.tax == "local_income_withholding":
+        # Locals compute from the PARENT STATE's certificate: an Indiana
+        # county deduction constant comes from the same WH-4 the state tax
+        # uses (DN #1 computes both on one worksheet). No election for the
+        # parent state means none was filed — zero exemptions/allowances,
+        # which is the certificate default, not an error.
+        parent = "-".join(param_file.jurisdiction.split("-")[:2])
+        election = next(
+            (e for e in employee.state for _ in [0] if e.jurisdiction == parent), None
+        )
+        filing_status = election.filing_status if election else None
+        allowances = election.allowances if election else 0
+        secondary = election.secondary_allowances if election else 0
+        exemptions = election.exemptions if election else {}
+        additional = ZERO  # local additional withholding is not modeled yet
+        federal = None
+    else:  # fica: no elections apply
         filing_status = None
         allowances = 0
         additional = ZERO

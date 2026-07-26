@@ -905,6 +905,58 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    # Fan-out variant: DN #1's county rate table -> one local file per county
+    # (registry: extraction_schema: us_in_counties, fan_out: counties). The
+    # shared exemption/period tables are transcribed once; each county file
+    # is assembled self-contained with its own rate.
+    "us_in_counties": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["exemption_kinds", "periods_per_year", "counties"],
+        "properties": {
+            "exemption_kinds": {
+                "type": "array",
+                "description": "Same shapes as deduction_constant_percentage: the "
+                "WH-4 exemption kinds with per-exemption ANNUAL dollar values "
+                "(county tax computes on the SAME taxable income as state tax).",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["kind", "annual_amount"],
+                    "properties": {"kind": {"type": "string"}, "annual_amount": DECIMAL},
+                },
+            },
+            "periods_per_year": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["frequency", "divisor"],
+                    "properties": {
+                        "frequency": FREQUENCY_ENUM,
+                        "divisor": {"type": "integer"},
+                    },
+                },
+            },
+            "counties": {
+                "type": "array",
+                "description": "EVERY row of the printed county rate table, in "
+                "printed order: county name exactly as printed (without any "
+                "asterisk), the two-digit county code as printed, and the rate as "
+                "a decimal fraction. Do not skip, merge, or reorder rows.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["name", "code", "rate"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "code": {"type": "string"},
+                        "rate": DECIMAL,
+                    },
+                },
+            },
+        },
+    },
     "deduction_constant_percentage": {
         "type": "object",
         "additionalProperties": False,

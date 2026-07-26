@@ -2019,3 +2019,57 @@ def test_pre_2020_rejects_2020_statuses():
 def test_2020_rejects_pre_2020_statuses():
     with pytest.raises(InputError, match="filing_status"):
         _fed_emp("married", 2020)
+
+
+# --- IN county locals: parent-state election inheritance -------------------
+
+IN_NEWTON = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US-IN-NEWTON",
+    "tax": "local_income_withholding",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "deduction_constant_percentage",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        "rate": "0.01",
+        "exemptions": {"personal": "1000", "dependent": "1500",
+                       "first_time_dependent": "1500", "adopted": "3000"},
+        "periods_per_year": {"weekly": "52"},
+    },
+})
+
+_IN_STATE_ELECTION = {"jurisdiction": "US-IN", "filing_status": "all",
+                      "exemptions": {"personal": 5, "dependent": 3,
+                                     "first_time_dependent": 1, "adopted": 2}}
+
+
+def test_in_county_inherits_state_election(taxability):
+    # DN #1 p.2 printed example: $800 weekly, the WH-4 counts above ->
+    # taxable $473.08; county at 0.01 -> $4.73 (printed alongside the
+    # state's $13.96)
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "800.00",
+        "state": [_IN_STATE_ELECTION],
+        "locals": [{"jurisdiction": "US-IN-NEWTON"}],
+    })
+    assert compute_withholding(IN_NEWTON, emp, taxability) == Decimal("4.73")
+
+
+def test_in_county_without_state_election_uses_certificate_defaults(taxability):
+    # No WH-4 on file = zero exemptions: 800 x 0.01 = 8.00
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "800.00",
+        "locals": [{"jurisdiction": "US-IN-NEWTON"}],
+    })
+    assert compute_withholding(IN_NEWTON, emp, taxability) == Decimal("8.00")
+
+
+def test_in_county_ignores_other_states_elections(taxability):
+    # A US-WI election is not the parent of US-IN-NEWTON
+    emp = EmployeeInput.from_dict({
+        "pay_frequency": "weekly", "gross_wages": "800.00",
+        "state": [{"jurisdiction": "US-WI", "filing_status": "single", "allowances": 2}],
+        "locals": [{"jurisdiction": "US-IN-NEWTON"}],
+    })
+    assert compute_withholding(IN_NEWTON, emp, taxability) == Decimal("8.00")

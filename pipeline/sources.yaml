@@ -860,3 +860,33 @@
   expected_window: "11-15..02-28"
   maps_to:
     - data/us/il/{year}/sui.yaml
+
+- id: us-in-counties
+  document: "Departmental Notice #1, How to Compute Withholding for State and County Income Tax — county rate table"
+  jurisdiction: US-IN
+  tax: local_income_withholding
+  method: deduction_constant_percentage
+  extraction_schema: us_in_counties
+  fan_out: counties
+  landing: "https://www.in.gov/dor/business-tax/withholding-income-tax/"
+  # Same document as us-in-dn01 (the state file); this entry fans the
+  # county rate table out into one local file per county. DN #1 is
+  # reissued Oct 1 and Jan 1; county rates change on those dates.
+  document_url_pattern: "https://www.in.gov/dor/files/dn01.pdf"
+  extraction_hint: >-
+    Transcribe the county rate table (pp.4-5, "Indiana County Tax Rates")
+    COMPLETELY: every row, in printed order, with the county name (drop
+    any asterisk - it only marks a rate changed since the prior notice),
+    the two-digit county code, and the rate as a decimal fraction exactly
+    as printed. Also transcribe the shared exemption kinds (WH-4 lines
+    5-8: personal, dependent, first_time_dependent, adopted) and the
+    deduction-constant divisors - county tax computes on the SAME taxable
+    income as the state tax (the p.2 example computes both: state at
+    .0295 and county at .01 on $473.08). Transcribe that example with its
+    COUNTY amount ($4.73) as the expected withholding - the pipeline
+    assigns it to a matching county by arithmetic. The state rate and
+    state amount belong to the us-in-dn01 source, not this one.
+  check: [content_hash]
+  expected_window: "09-15..01-31"
+  maps_to:
+    - data/us/in/{year}/locals/
