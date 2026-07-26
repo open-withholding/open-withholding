@@ -258,3 +258,44 @@ def test_default_fetcher_threads_insecure_context(monkeypatch):
     monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
     watch.default_fetcher("https://dor.ms.gov/x.pdf", insecure=True)
     assert seen["context"] is not None and seen["context"].check_hostname is False
+
+
+def _stale_source():
+    return {"id": "s", "document": "Doc", "jurisdiction": "US-ZZ",
+            "tax": "state_income_withholding", "method": "flat_rate",
+            "landing": "https://x.gov", "document_url_pattern": "https://x.gov/d.pdf",
+            "check": ["content_hash"], "expected_window": "12-01..01-15"}
+
+
+def _ok_fetcher(url, **kw):
+    import hashlib
+    return {"status": 200, "sha256": hashlib.sha256(b"%PDF x").hexdigest(),
+            "etag": None, "last_modified": None, "is_pdf": True}
+
+
+def test_staleness_not_flagged_for_window_before_first_seen():
+    # First seen July 2026; the 12-01..01-15 window ended in January —
+    # the watcher wasn't watching, so nothing was "missed" (#136-#154).
+    import datetime as dt
+    from pipeline.watch import check_source
+    today = dt.date(2026, 7, 25)
+    events, new = check_source(_stale_source(), {}, _ok_fetcher, today)  # baseline
+    assert [e["type"] for e in events] == ["baseline"]
+    assert new["first_seen"] == "2026-07-25"
+    events, new2 = check_source(_stale_source(), new, _ok_fetcher,
+                                dt.date(2026, 7, 26))
+    assert [e["type"] for e in events] == []  # no stale event
+
+
+def test_staleness_flags_once_a_watched_window_passes():
+    import datetime as dt
+    from pipeline.watch import check_source
+    state = {"sha256": _ok_fetcher("u")["sha256"], "first_seen": "2026-07-25",
+             "changed_at": None}
+    # The NEXT season (12-01-2026..01-15-2027) passes with no change:
+    events, new = check_source(_stale_source(), state, _ok_fetcher,
+                               dt.date(2027, 2, 1))
+    assert [e["type"] for e in events] == ["stale"]
+    # ...and only once per season
+    events, _ = check_source(_stale_source(), new, _ok_fetcher, dt.date(2027, 2, 2))
+    assert [e["type"] for e in events] == []

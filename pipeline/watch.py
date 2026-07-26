@@ -110,7 +110,11 @@ def _window_bounds(window: str, today: dt.date) -> tuple[dt.date, dt.date] | Non
 
 def _apply_staleness(source: dict, state: dict, new: dict, events: list[dict],
                      today: dt.date, last_change: dt.date | None) -> None:
-    """Flag a source whose expected_window passed with no observed change."""
+    """Flag a source whose expected_window passed with no observed change —
+    but ONLY for windows the watcher was actually watching. A source first
+    seen AFTER a window closed cannot have "missed" that season's
+    publication (the baseline IS the current edition); the first persisted
+    sweep fired 19 of these at once (#136-#154) before this guard."""
     window = source.get("expected_window")
     if not window:
         return
@@ -118,6 +122,18 @@ def _apply_staleness(source: dict, state: dict, new: dict, events: list[dict],
     if not bounds:
         return
     start, end = bounds
+    # Effective first-seen: the stamped date, else the last recorded change
+    # (proof we were watching then), else backfill today and stay silent —
+    # a freshly-baselined source has missed nothing.
+    first_seen_s = (state.get("first_seen") or new.get("first_seen")
+                    or state.get("changed_at")
+                    or (last_change.isoformat() if last_change else None))
+    if not first_seen_s:
+        new["first_seen"] = today.isoformat()
+        return
+    new.setdefault("first_seen", first_seen_s)
+    if dt.date.fromisoformat(first_seen_s) > start:
+        return  # not watching when this window opened — nothing was missed
     recently_flagged = state.get("stale_flagged_for") == end.isoformat()
     if (last_change is None or last_change < start) and not recently_flagged:
         events.append({"type": "stale",
@@ -175,6 +191,7 @@ def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tupl
         events.append({"type": "changed", "detail": "; ".join(changed_details)})
         return events, new
     if any(e["type"] == "baseline" for e in events):
+        new.setdefault("first_seen", today.isoformat())
         return events, new  # first sighting — no staleness verdict yet
 
     changed_ats = [d.get("changed_at") for d in docs_state.values() if d.get("changed_at")]
@@ -236,7 +253,8 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
         # extracted sources came from these same bytes.
         new.update(sha256=result["sha256"], etag=result.get("etag"),
                    last_modified=result.get("last_modified"),
-                   changed_at=state.get("changed_at"))
+                   changed_at=state.get("changed_at"),
+                   first_seen=state.get("first_seen") or today.isoformat())
         events.append({"type": "baseline", "detail": f"{url} sha256={result['sha256'][:12]}..."})
         return events, new
 
