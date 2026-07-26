@@ -1,0 +1,23 @@
+schema_version: '0.1'
+jurisdiction: US-WI
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: DWD UI Tax Rates page (HTML) (2026)
+  url: https://dwd.wisconsin.gov/ui/employers/taxrates.htm
+  retrieved: '2026-07-26'
+  sha256: e597a731032436ddaebc0436db8fdc4ad6ac75677418e7390d2f13dc920e37e1
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '14000'
+  new_employer_rate: '0.0305'
+  rate_range:
+    min: '0.0000'
+    max: '0.1200'
+  new_employer_rate_construction: '0.0250'

@@ -1,0 +1,13 @@
+source:
+  document: DWD UI Tax Rates page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed: the published new-construction rate 2.50% on biweekly $2,000'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-WI
+    sui_experience_rate: '0.0250'
+expect:
+  sui_tax: '50.00'
