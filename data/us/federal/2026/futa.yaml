@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US
+tax: futa
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide — FUTA (section 14) (2026)
+  url: https://www.irs.gov/pub/irs-pdf/p15.pdf
+  retrieved: '2026-07-26'
+  sha256: b46c3622439d8521e3a0faca4cd5b5ece3451b526f65f06a5e38d5c9f804c88b
+  notes: Extracted by pipeline; pages per PR body
+method: futa
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.060'
+  wage_base: '7000'
+  max_credit: '0.054'
