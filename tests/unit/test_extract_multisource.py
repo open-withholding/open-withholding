@@ -107,3 +107,27 @@ def test_schema_version_bumps_for_sources():
         source={"document": "a", "url": "u", "retrieved": "d", "sha256": "0" * 64})
     assert multi["schema_version"] == "0.2"
     assert single["schema_version"] == "0.1"
+
+
+def test_single_document_list_collapses_to_source_block():
+    # A one-entry `documents:` registry list (WI DWD HTML) must produce a
+    # plain `source` block — the schema's `sources` array is minItems 2
+    # (this exact shape failed the first us-wi-sui dispatch).
+    from pipeline import assemble
+    block = {"document": "DWD UI Tax Rates page (HTML)",
+             "url": "https://dwd.wisconsin.gov/ui/employers/taxrates.htm",
+             "retrieved": "2026-07-26", "sha256": "ab" * 32}
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-WI", tax="state_unemployment_insurance", method="sui",
+        extraction={"classification": "new_year_edition",
+                    "effective_from": "2026-01-01",
+                    "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none"},
+                    "params": {"wage_base": "14000", "new_employer_rate": "0.0305",
+                               "new_employer_rate_construction": None,
+                               "rate_range": {"min": "0.0000", "max": "0.1200"},
+                               "surtaxes": None}},
+        source=block)
+    assert "source" in raw and "sources" not in raw
+    assert raw["schema_version"] == "0.1"
+    from engine.loader import load_parameter_dict
+    load_parameter_dict(raw)
