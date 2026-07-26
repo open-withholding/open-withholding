@@ -1,0 +1,14 @@
+source:
+  document: IDES Annual Unemployment Insurance Tax Rate Summary (2026)
+  page: 1
+  example: 'maintainer-constructed: minimum published rate 0.750% on biweekly $2,000 — exercises the rate_range
+    lower bound'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-IL
+    sui_experience_rate: '0.00750'
+expect:
+  sui_tax: '15.00'
