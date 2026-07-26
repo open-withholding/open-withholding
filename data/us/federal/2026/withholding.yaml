@@ -11,7 +11,9 @@ source:
   notes: Worksheet 1A p.10; annual percentage tables p.12. Rounding per p.9 is optional ('you may round
     the tax for the pay period to the nearest dollar'); this file encodes cents — consumers apply dollar
     rounding downstream if desired. Publication prints no percentage-method worked example; golden cases
-    are maintainer-constructed.
+    are maintainer-constructed.; computational_bridge added from pipeline run 30217765657 (forced re-read
+    of the byte-identical edition after the extraction schema gained the bridge fields; 54/54 verified
+    incl. bridge constants, Pub 15-T pp.4-5)
 method: federal_percentage_2020
 rounding:
   to: '0.01'
@@ -174,3 +176,8 @@ params:
       - over: '332375'
         rate: '0.37'
         base: '95585.50'
+  computational_bridge:
+    step4a:
+      single: '8600'
+      married_joint: '12900'
+    allowance_amount: '4300'
