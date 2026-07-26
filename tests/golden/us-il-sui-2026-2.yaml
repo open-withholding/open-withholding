@@ -1,0 +1,16 @@
+source:
+  document: IDES Annual Unemployment Insurance Tax Rate Summary (2026)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 with ytd SUI wages $13,000 — the period crosses the
+    $14,250 wage base; tax on $1,250 only'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-IL
+    sui_experience_rate: '0.03350'
+  ytd:
+    sui_wages: '13000'
+expect:
+  sui_tax: '41.88'

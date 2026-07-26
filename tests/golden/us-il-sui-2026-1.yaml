@@ -1,0 +1,14 @@
+source:
+  document: IDES Annual Unemployment Insurance Tax Rate Summary (2026)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published standard (new-employer) rate 3.350%,
+    first paycheck'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-IL
+    sui_experience_rate: '0.03350'
+expect:
+  sui_tax: '67.00'
