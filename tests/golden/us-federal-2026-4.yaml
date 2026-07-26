@@ -1,0 +1,16 @@
+source:
+  document: Publication 15-T, Federal Income Tax Withholding Methods (2026)
+  page: 5
+  example: 'maintainer-constructed (the publication prints no numeric bridge example): weekly $1,500,
+    pre-2020 W-4 married with 2 allowances, through the pp.4-5 computational bridge (step 4(a) $12,900,
+    4(b) 2 x $4,300); engine-computed'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1500.00'
+  federal:
+    w4_version: pre_2020
+    filing_status: married
+    allowances: 2
+expect:
+  federal_withholding: '106.08'
