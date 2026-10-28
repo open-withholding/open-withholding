@@ -289,16 +289,41 @@ def _github_issue(title: str, body: str, dry_run: bool) -> None:
     print(f"  opened issue: {title}")
 
 
-def _dispatch_extract(source: dict, year: int, dry_run: bool) -> None:
+def _dispatch_extract(source: dict, year: int, dry_run: bool) -> bool:
+    """Dispatch the Extract workflow; on failure, open an issue and return False.
+
+    A failed dispatch must not abort the sweep: the 2026-07-27 Maine change
+    hit a token without `actions: write`, the uncaught CalledProcessError
+    killed every daily run before state was persisted, and GitHub eventually
+    disabled the schedule for inactivity. The change is still recorded in
+    state (it was observed), so the issue is the hand-off — it carries the
+    exact command for a human to run."""
     args = ["gh", "workflow", "run", "extract.yml", "-R", REPO,
             "-f", f"source_id={source['id']}", "-f", f"year={year}"]
     if source.get("no_printed_examples"):
         args += ["-f", "no_examples_ok=true"]
     if dry_run:
         print(f"  [dry-run] would dispatch: {' '.join(args[3:])}")
-        return
-    subprocess.run(args, check=True, capture_output=True, text=True)
-    print(f"  dispatched extraction for {source['id']}")
+        return True
+    result = subprocess.run(args, capture_output=True, text=True)
+    if result.returncode == 0:
+        print(f"  dispatched extraction for {source['id']}")
+        return True
+    detail = (result.stderr or result.stdout or "").strip() or f"exit status {result.returncode}"
+    print(f"  DISPATCH FAILED for {source['id']}: {detail}", file=sys.stderr)
+    _github_issue(
+        f"Watcher: {source['id']} dispatch_failed",
+        f"**Source:** `{source['id']}` — {source['document']}\n\n"
+        f"**Event:** `dispatch_failed` — the document changed but the watcher could not "
+        f"start the Extract workflow.\n\n**Error:**\n```\n{detail}\n```\n\n"
+        f"The change IS recorded in watcher state, so it will not be re-dispatched. "
+        f"Run the extraction by hand:\n\n```\n{' '.join(args)}\n```\n\n"
+        f"If the error is a permissions failure, the pipeline GitHub App needs "
+        f"**Actions: read & write** (pipeline/README.md, setup step 1).\n\n"
+        f"Opened automatically by the watcher (DESIGN §8.1).",
+        dry_run,
+    )
+    return False
 
 
 def main() -> int:
@@ -315,6 +340,7 @@ def main() -> int:
     today = dt.date.today()
 
     summary: dict[str, int] = {}
+    failures = 0
     for source in sources:
         entry = state.get(source["id"], {})
         source_fetcher = functools.partial(
@@ -327,7 +353,8 @@ def main() -> int:
             if not args.github:
                 continue
             if event["type"] == "changed":
-                _dispatch_extract(source, today.year, args.dry_run)
+                if not _dispatch_extract(source, today.year, args.dry_run):
+                    failures += 1
             elif event["type"] in ("url_404", "stale", "content_type_anomaly"):
                 _github_issue(
                     f"Watcher: {source['id']} {event['type']}",
@@ -343,6 +370,9 @@ def main() -> int:
     checked = len(sources)
     print(f"\nwatched {checked} source(s): " +
           (", ".join(f"{k}={v}" for k, v in sorted(summary.items())) or "all unchanged"))
+    if failures:
+        print(f"{failures} dispatch(es) failed — see the dispatch_failed issue(s)", file=sys.stderr)
+        return 1
     return 0
 
 
