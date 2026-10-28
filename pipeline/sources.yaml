@@ -969,9 +969,9 @@
   extraction_hint: >-
     Transcribe ONLY the EMPLOYEE contributions as two sdi components. (1)
     DBL from the WCB page: rate = one-half of one percent (0.0050),
-    employee_share 1, wage_base null, period_max = the printed 'sixty cents
-    a week' as [{frequency: weekly, amount: 0.60}] ONLY - do not invent
-    other frequencies. (2) PFL from the paidfamilyleave.ny.gov page: the
+    employee_share 1, wage_base null, weekly_max = the printed 'sixty cents
+    a week' (0.60), period_max null - the engine scales the weekly cap to
+    other pay frequencies. (2) PFL from the paidfamilyleave.ny.gov page: the
     employee contribution rate as a decimal fraction (e.g. '0.432%' ->
     0.00432), employee_share 1, period_max null; the page states a MAXIMUM
     ANNUAL CONTRIBUTION in dollars - that is rate x the statewide average
@@ -1095,10 +1095,9 @@
     One sdi component named TDI from the TDI column: rate = the employee
     contribution limit of one-half percent of weekly wages (0.0050),
     employee_share 1, wage_base null (the weekly wage base caps the WEEKLY
-    deduction, not an annual total - encode it through period_max), and
-    period_max = [{frequency: weekly, amount: <the Maximum Weekly
-    Deduction, e.g. 7.50>}] ONLY for weekly - do not prorate to other
-    frequencies. Note the Maximum Weekly Wage Base figure the deduction
+    deduction, not an annual total), weekly_max = the Maximum Weekly
+    Deduction (e.g. 7.50) and period_max null - the engine scales the
+    weekly cap to other pay frequencies. Note the Maximum Weekly Wage Base figure the deduction
     derives from. Ignore the WC and PHC columns and all benefit amounts.
     wage_definition fica.
   check: [content_hash]

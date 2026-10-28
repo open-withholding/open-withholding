@@ -242,6 +242,7 @@ def _transform_params(method: str, params: dict) -> dict:
                     "rate": c["rate"],
                     "employee_share": c["employee_share"],
                     "wage_base": c["wage_base"],
+                    **({"weekly_max": c["weekly_max"]} if c.get("weekly_max") is not None else {}),
                     **({"period_max": {e["frequency"]: e["amount"] for e in c["period_max"]}}
                        if c.get("period_max") else {}),
                 }

@@ -48,9 +48,20 @@ def compute(ctx) -> Decimal:
         # Step 3: this component's contribution, rounded to the cent.
         amount = ctx.rounding.apply(subject * rate * share)
 
-        # Step 4: a printed per-period maximum (NY DBL's 60 cents a week,
-        # HI TDI's maximum weekly deduction) caps the rounded amount. Only
-        # the frequencies the publication prints are allowed.
+        # Step 4: a maximum contribution caps the rounded amount. Two forms:
+        # weekly_max — the publication defines the cap PER WEEK (NY DBL "no
+        # more than sixty cents a week", HI TDI's "maximum weekly deduction"),
+        # so a period's cap is that amount times the weeks the period covers
+        # (52 / pay periods: biweekly 2, semimonthly 2.1667, monthly 4.3333),
+        # rounded to the cent — the figures NY payroll practice uses ($1.20,
+        # $1.30, $2.60). period_max — the publication prints a per-period
+        # table; only the printed frequencies are allowed.
+        weekly_max = component.get("weekly_max")
+        if weekly_max is not None:
+            cap = ctx.rounding.apply(
+                D(weekly_max, context=f"{where}.weekly_max") * Decimal(52) / Decimal(ctx.pay_periods)
+            )
+            amount = min(amount, cap)
         period_max = component.get("period_max")
         if period_max:
             if frequency not in period_max:

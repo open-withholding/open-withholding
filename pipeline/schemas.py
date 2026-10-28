@@ -670,7 +670,7 @@ _PARAMS_BY_METHOD = {
                 "items": {
                     "type": "object",
                     "additionalProperties": False,
-                    "required": ["name", "rate", "employee_share", "wage_base", "period_max"],
+                    "required": ["name", "rate", "employee_share", "wage_base", "weekly_max", "period_max"],
                     "properties": {
                         "name": {"type": "string", "description": "The programme's own label "
                                  "(SDI, TDI, FLI, PFL, DBL, family, medical)"},
@@ -685,11 +685,16 @@ _PARAMS_BY_METHOD = {
                                       "limit for this component; null where none applies. A "
                                       "'maximum annual contribution' is NOT a wage base — "
                                       "transcribe the wage ceiling it derives from, and note it"},
+                        "weekly_max": {**DECIMAL_OR_NULL, "description": "The maximum "
+                                       "contribution where the publication defines it PER WEEK "
+                                       "(NY DBL 'no more than sixty cents a week' -> 0.60; HI TDI "
+                                       "'maximum weekly deduction' -> 7.50); the engine scales it "
+                                       "to other pay frequencies. Null otherwise."},
                         "period_max": {
                             "type": ["array", "null"],
-                            "description": "Printed per-period maximum contribution(s); null "
-                            "unless the publication prints one (NY DBL 60 cents/week, HI TDI "
-                            "maximum weekly deduction)",
+                            "description": "Printed per-period maximum TABLE (one row per "
+                            "payroll period); null unless the publication prints such a table. "
+                            "A cap stated once per week goes in weekly_max, not here.",
                             "items": {
                                 "type": "object",
                                 "additionalProperties": False,
