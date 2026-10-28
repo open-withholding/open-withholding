@@ -1,0 +1,14 @@
+source:
+  document: RI DLT Employer Tax Unit page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with the $100,000 base already reached: nothing withheld),
+    expected value computed by the reference engine: TDI 0.00 = 0.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sdi_wages: '100000'
+expect:
+  sdi_withholding:
+    US-RI: '0.00'
