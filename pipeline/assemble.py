@@ -254,13 +254,26 @@ def _transform_params(method: str, params: dict) -> dict:
                 }
                 for e in params["brackets"]
             },
-            "method_iii_cutover": {
-                e["frequency"]: {"single": e["single"], "married": e["married"]}
-                for e in params["method_iii_cutover"]
-            },
-            "method_iii": {
-                snake(e["filing_status"]): e["bands"] for e in params["method_iii"]
-            },
+            # NYC prints no Method III; Yonkers adds the surcharge and the
+            # nonresident earnings tax. Absent blocks stay absent (not null)
+            # so the method's `params.get` reads are unambiguous.
+            **({"method_iii_cutover": {
+                    e["frequency"]: {"single": e["single"], "married": e["married"]}
+                    for e in params["method_iii_cutover"]
+                },
+                "method_iii": {
+                    snake(e["filing_status"]): e["bands"] for e in params["method_iii"]
+                }} if params.get("method_iii_cutover") else {}),
+            **({"surcharge_rate": params["surcharge_rate"]}
+               if params.get("surcharge_rate") is not None else {}),
+            **({"nonresident_earnings_tax": {
+                    "rate": params["nonresident_earnings_tax"]["rate"],
+                    "annual_factors": {
+                        e["frequency"]: e["periods"]
+                        for e in params["nonresident_earnings_tax"]["annual_factors"]
+                    },
+                    "exclusions": params["nonresident_earnings_tax"]["exclusions"],
+                }} if params.get("nonresident_earnings_tax") else {}),
         }
     if method == "custom/us_ct":
         return {
@@ -564,16 +577,23 @@ def assemble_golden_case(
     elif tax == "state_unemployment_insurance":
         expect_key = "sui_tax"  # employer liability; jurisdiction from input.employer
     elif tax == "local_income_withholding":
-        record["locals"] = [{"jurisdiction": jurisdiction, "resident": True}]
-        # Locals inherit the parent state's certificate (engine rule): carry
-        # the example's election on the parent state so the county deduction
-        # constants apply.
+        # The local election carries what the certificate makes local: the
+        # resident flag (Yonkers prints resident and nonresident examples),
+        # a local allowance count (IT-2104 line 2 for NYC) and the local
+        # additional amount. Filing status and named exemption counts are
+        # the PARENT STATE's certificate (engine rule) and ride on a parent
+        # election so the county/city computation sees them.
+        local: dict = {"jurisdiction": jurisdiction,
+                       "resident": example.get("resident") is not False}
+        if example.get("allowances"):
+            local["allowances"] = example["allowances"]
+        if example.get("additional_withholding") not in (None, "0", "0.00"):
+            local["additional_withholding"] = _money(example["additional_withholding"])
+        record["locals"] = [local]
         parent = "-".join(jurisdiction.split("-")[:2])
         election: dict = {"jurisdiction": parent}
         if example.get("filing_status"):
             election["filing_status"] = snake(example["filing_status"])
-        if example.get("allowances"):
-            election["allowances"] = example["allowances"]
         if example.get("exemption_counts"):
             election["exemptions"] = {
                 e["kind"]: e["count"] for e in example["exemption_counts"]

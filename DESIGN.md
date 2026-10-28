@@ -358,6 +358,12 @@ state:
     additional_withholding: "0"
 locals:
   - { jurisdiction: US-PA-PSD-700102, resident: true }
+  # Locals compute from the parent state's certificate unless the
+  # certificate has local lines: IT-2104 line 2 is a separate NYC
+  # allowance count, lines 4/5 are NYC/Yonkers additional amounts, and
+  # `resident` picks the rule where a locality has two (Yonkers: 16.75%
+  # resident surcharge vs 0.50% nonresident earnings tax; NYC: residents only).
+  - { jurisdiction: US-NY-NYC, resident: true, allowances: 1, additional_withholding: "5.00" }
 employer:
   sui_jurisdiction: US-CA
   sui_experience_rate: "0.0340"   # user-entered from the state rate notice

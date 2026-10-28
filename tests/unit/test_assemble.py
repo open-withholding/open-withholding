@@ -824,3 +824,72 @@ def test_local_golden_case_carries_parent_state_election():
     assert g["input"]["state"][0]["jurisdiction"] == "US-IN"
     assert g["input"]["state"][0]["exemptions"] == {"personal": 5}
     assert g["expect"] == {"local_withholding": "4.73"}
+
+
+# --- custom/us_ny v2: optional Method III / surcharge / nonresident blocks (NYC, Yonkers)
+
+def _ny_core():
+    return {
+        "deduction": [{"frequency": "weekly", "single": "96.15", "married": "105.75"}],
+        "exemption_value": [{"frequency": "weekly", "amount": "19.25"}],
+        "brackets": [{"frequency": "weekly", "statuses": [
+            {"filing_status": "Single", "rows": [{"over": "0", "rate": "0.0205", "base": "0"}]}]}],
+    }
+
+
+def test_us_ny_transform_without_method_iii_omits_the_keys():
+    out = assemble._transform_params("custom/us_ny", {
+        **_ny_core(), "method_iii_cutover": None, "method_iii": None,
+        "surcharge_rate": None, "nonresident_earnings_tax": None})
+    assert set(out) == {"deduction", "exemption_value", "brackets"}
+    assert out["brackets"]["weekly"]["single"][0]["rate"] == "0.0205"
+
+
+def test_us_ny_transform_yonkers_blocks():
+    out = assemble._transform_params("custom/us_ny", {
+        **_ny_core(),
+        "method_iii_cutover": [{"frequency": "weekly", "single": "20722", "married": "41449"}],
+        "method_iii": [{"filing_status": "Single", "bands": [{"over": "1077550", "rate": "0.1045"}]}],
+        "surcharge_rate": "0.1675",
+        "nonresident_earnings_tax": {
+            "rate": "0.0050",
+            "annual_factors": [{"frequency": "weekly", "periods": 52}, {"frequency": "daily", "periods": 260}],
+            "exclusions": [{"over": "0", "exclusion": None}, {"over": "3999.99", "exclusion": "3000"}],
+        },
+    })
+    assert out["method_iii_cutover"] == {"weekly": {"single": "20722", "married": "41449"}}
+    assert out["method_iii"] == {"single": [{"over": "1077550", "rate": "0.1045"}]}
+    assert out["surcharge_rate"] == "0.1675"
+    assert out["nonresident_earnings_tax"]["annual_factors"] == {"weekly": 52, "daily": 260}
+    assert out["nonresident_earnings_tax"]["exclusions"][0]["exclusion"] is None
+
+
+def test_local_golden_case_nonresident_example_sets_resident_false():
+    example = {
+        "description": "Yonkers nonresident Example 2", "page": 25,
+        "pay_frequency": "weekly", "gross_wages": "200",
+        "filing_status": None, "allowances": None, "exemption_counts": None,
+        "additional_withholding": None, "resident": False,
+        "expected_withholding": "0.81",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-NY-YONKERS", tax="local_income_withholding",
+        example=example, as_of="2026-06-15", document="NYS-50-T-Y")
+    assert g["input"]["locals"] == [{"jurisdiction": "US-NY-YONKERS", "resident": False}]
+    assert "state" not in g["input"]
+    assert g["expect"] == {"local_withholding": "0.81"}
+
+
+def test_local_golden_case_puts_allowances_on_the_local_election():
+    example = {
+        "description": "NYC single Example 1", "page": 27,
+        "pay_frequency": "weekly", "gross_wages": "400",
+        "filing_status": "Single", "allowances": 3, "exemption_counts": None,
+        "additional_withholding": None, "resident": None,
+        "expected_withholding": "6.11",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-NY-NYC", tax="local_income_withholding",
+        example=example, as_of="2026-06-15", document="NYS-50-T-NYC")
+    assert g["input"]["locals"] == [{"jurisdiction": "US-NY-NYC", "resident": True, "allowances": 3}]
+    assert g["input"]["state"] == [{"jurisdiction": "US-NY", "filing_status": "single"}]

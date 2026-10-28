@@ -773,6 +773,73 @@
   maps_to:
     - data/us/ny/{year}/withholding.yaml
 
+- id: us-ny-nys50tnyc
+  document: "NYS-50-T-NYC, New York City Withholding Tax Tables and Methods"
+  jurisdiction: US-NY-NYC
+  tax: local_income_withholding
+  method: custom/us_ny
+  landing: "https://www.tax.ny.gov/forms/withholding_cur_forms.htm"
+  # Same structure as NYS-50-T-NYS, reused by the method: Method II exact
+  # calculation with Tables B/C; NO Method III is printed for the City. The
+  # single and married tables are identical in the 2026 edition. NYC
+  # withholds for RESIDENTS only (the nonresident earnings tax was
+  # repealed in 1999) — the method returns 0 for resident: false.
+  document_url_pattern: "https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_nyc.pdf"
+  extraction_hint: >-
+    Transcribe ONLY Method II (Tables B and C on page 24; Tables II-A..E
+    and the Annual Tax Rate Schedule on pages 25 single / 26 married).
+    This publication prints NO Method III: set method_iii_cutover and
+    method_iii to null, surcharge_rate to null, nonresident_earnings_tax
+    to null. Skip the Method I wage-bracket tables, Table A (precomputed
+    B + n x C), Table D, and the dollar to dollar tables. Marital keys are
+    single and married; 'Daily or miscellaneous' maps to daily and
+    'Annual' to annually. over = column 1 'at least', rate = column 4,
+    base = column 5; the final row's blank column 2 means the row is
+    open-ended (it IS a bracket row here, unlike the state's 'use Method
+    III' line). Transcribe ALL EIGHT printed examples on page 27 (four
+    single, four married) with resident null; the exemption count is the
+    example's 'exemptions'.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ny/{year}/locals/nyc.yaml
+
+- id: us-ny-nys50ty
+  document: "NYS-50-T-Y, Yonkers Withholding Tax Tables and Methods"
+  jurisdiction: US-NY-YONKERS
+  tax: local_income_withholding
+  method: custom/us_ny
+  landing: "https://www.tax.ny.gov/forms/withholding_cur_forms.htm"
+  # Part A (residents): the STATE Method II/III tables reprinted, with the
+  # result multiplied by the 16.75% resident surcharge. Part B
+  # (nonresidents): the 0.50% earnings tax after an annualized exclusion
+  # (Method VIII; Method VII is the same computation with per-period
+  # exclusions). One file, both rules; the input's resident flag selects.
+  document_url_pattern: "https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_y.pdf"
+  extraction_hint: >-
+    Part A, Yonkers resident tax surcharge: transcribe Method II (Tables B
+    and C page 14; Tables II-A..E and Annual Tax Rate Schedule pages 17
+    single / 19 married) and Method III (page 22) exactly as for the state
+    publication - over = column 1, rate = column 4, base = column 5, each
+    table's final '& over - use Method III' line goes into
+    method_iii_cutover, NOT a bracket row. surcharge_rate is the printed
+    16.75% (0.1675) multiplier from Step 5. Part B, nonresident earnings
+    tax: transcribe Method VIII (page 25) into nonresident_earnings_tax -
+    rate 0.50%, Table P annual factors (daily 260), and the annual tax
+    rate schedule rows as exclusions with over = column 1 and exclusion =
+    column 3 (line 1 'No tax withheld' has exclusion null). Skip Method I,
+    Table A, Table D, dollar to dollar tables, and Method VI/VII (Method
+    VII is the per-period form of VIII). Transcribe ALL printed examples:
+    the eight resident examples (pages 16 and 18, resident true, expected
+    = the final amount AFTER x 0.1675) and the three nonresident examples
+    on page 25 (resident false; Example 1 withholds $0). Note: the page 18
+    married Example 4 prose prints '0.0811' where the table (page 19 line
+    8) and its own product ($8.47) use 0.0801 - transcribe the table.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ny/{year}/locals/yonkers.yaml
+
 - id: us-federal-p15
   document: "Publication 15 (Circular E), Employer's Tax Guide"
   jurisdiction: US

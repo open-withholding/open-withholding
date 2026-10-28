@@ -6,6 +6,9 @@ hand-computed with the arithmetic shown."""
 from decimal import Decimal
 
 import pytest
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 from engine.errors import InputError
 from engine.inputs import EmployeeInput
@@ -2073,3 +2076,201 @@ def test_in_county_ignores_other_states_elections(taxability):
         "locals": [{"jurisdiction": "US-IN-NEWTON"}],
     })
     assert compute_withholding(IN_NEWTON, emp, taxability) == Decimal("8.00")
+
+
+# --- NY locals on custom/us_ny v2: NYC (NYS-50-T-NYC 1/26) and Yonkers (NYS-50-T-Y 1/26)
+
+def _nyc_table(rows):
+    return [{"over": o, "rate": r, "base": b} for o, r, b in rows]
+
+
+_NYC_ROWS = {  # p.25 (single) == p.26 (married): identical tables in the 2026 edition
+    "weekly": [("0", "0.0205", "0"), ("154", "0.0280", "3.15"), ("167", "0.0325", "3.54"),
+               ("288", "0.0395", "7.46"), ("481", "0.0415", "15.06"), ("1154", "0.0425", "43.00")],
+    "biweekly": [("0", "0.0205", "0"), ("308", "0.0280", "6.31"), ("334", "0.0325", "7.08"),
+                 ("577", "0.0395", "14.92"), ("962", "0.0415", "30.12"), ("2308", "0.0425", "86.00")],
+    "semimonthly": [("0", "0.0205", "0"), ("333", "0.0280", "6.83"), ("362", "0.0325", "7.67"),
+                    ("625", "0.0395", "16.17"), ("1042", "0.0415", "32.63"), ("2500", "0.0425", "93.17")],
+    "monthly": [("0", "0.0205", "0"), ("667", "0.0280", "13.67"), ("725", "0.0325", "15.33"),
+                ("1250", "0.0395", "32.33"), ("2083", "0.0415", "65.25"), ("5000", "0.0425", "186.33")],
+    "daily": [("0", "0.0205", "0"), ("31.00", "0.0280", "0.63"), ("33.50", "0.0325", "0.71"),
+              ("57.50", "0.0395", "1.49"), ("96.00", "0.0415", "3.01"), ("231.00", "0.0425", "8.60")],
+    "annually": [("0", "0.0205", "0"), ("8000", "0.0280", "164.00"), ("8700", "0.0325", "184.00"),
+                 ("15000", "0.0395", "388.00"), ("25000", "0.0415", "783.00"), ("60000", "0.0425", "2236.00")],
+}
+
+NYC = load_parameter_dict({
+    "schema_version": "0.1",
+    "jurisdiction": "US-NY-NYC",
+    "tax": "local_income_withholding",
+    "effective_from": "2026-01-01",
+    "source": SOURCE,
+    "method": "custom",
+    "custom_implementation": "custom/us_ny",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {
+        # p.24 Table B / Table C — no Method III is printed for the City
+        "deduction": {
+            "daily": {"single": "19.25", "married": "21.15"},
+            "weekly": {"single": "96.15", "married": "105.75"},
+            "biweekly": {"single": "192.30", "married": "211.50"},
+            "semimonthly": {"single": "208.35", "married": "229.15"},
+            "monthly": {"single": "416.70", "married": "458.30"},
+            "annually": {"single": "5000", "married": "5500"},
+        },
+        "exemption_value": {"daily": "3.85", "weekly": "19.25", "biweekly": "38.50",
+                            "semimonthly": "41.65", "monthly": "83.30", "annually": "1000"},
+        "brackets": {f: {"single": _nyc_table(rows), "married": _nyc_table(rows)}
+                     for f, rows in _NYC_ROWS.items()},
+    },
+})
+
+
+def _ny_local_emp(freq, gross, status, allowances, local, *, resident=True,
+                  local_allowances=None, local_additional="0"):
+    local_block = {"jurisdiction": local, "resident": resident}
+    if local_allowances is not None:
+        local_block["allowances"] = local_allowances
+    if local_additional != "0":
+        local_block["additional_withholding"] = local_additional
+    return EmployeeInput.from_dict({
+        "pay_frequency": freq, "gross_wages": gross,
+        "state": [{"jurisdiction": "US-NY", "filing_status": status, "allowances": allowances}],
+        "locals": [local_block],
+    })
+
+
+@pytest.mark.parametrize("freq,gross,status,n,expected", [
+    # p.27 — all eight printed examples, exact chain + one final rounding
+    ("weekly", "400.00", "single", 3, "6.11"),
+    ("semimonthly", "5000.00", "single", 1, "188.80"),
+    ("monthly", "50000.00", "single", 3, "2070.50"),
+    ("daily", "750.00", "single", 2, "29.51"),
+    ("weekly", "400.00", "married", 4, "5.17"),
+    ("semimonthly", "5000.00", "married", 3, "184.37"),
+    ("monthly", "50000.00", "married", 3, "2068.73"),
+    ("daily", "750.00", "married", 2, "29.43"),
+])
+def test_nyc_printed_examples(taxability, freq, gross, status, n, expected):
+    emp = _ny_local_emp(freq, gross, status, n, "US-NY-NYC")
+    assert compute_withholding(NYC, emp, taxability) == Decimal(expected)
+
+
+def test_nyc_has_no_method_iii_top_row_is_open_ended(taxability):
+    # $100,000 weekly single, 0 exemptions: net 99,903.85 -> line 6 bracket,
+    # no Method III cutover exists in the City publication.
+    emp = _ny_local_emp("weekly", "100000.00", "single", 0, "US-NY-NYC")
+    net = Decimal("100000.00") - Decimal("96.15")
+    expected = (Decimal("43.00") + (net - Decimal("1154")) * Decimal("0.0425")).quantize(Decimal("0.01"))
+    assert compute_withholding(NYC, emp, taxability) == expected
+
+
+def test_nyc_nonresident_owes_nothing(taxability):
+    emp = _ny_local_emp("weekly", "400.00", "single", 3, "US-NY-NYC", resident=False)
+    assert compute_withholding(NYC, emp, taxability) == Decimal("0")
+
+
+def test_local_allowances_override_the_state_count(taxability):
+    # IT-2104 line 1 (state) = 3, line 2 (NYC) = 0: NYC computes on ITS count.
+    emp = _ny_local_emp("weekly", "400.00", "single", 3, "US-NY-NYC", local_allowances=0)
+    net = Decimal("400.00") - Decimal("96.15")  # 303.85 -> line 4
+    expected = (Decimal("7.46") + (net - Decimal("288")) * Decimal("0.0395")).quantize(Decimal("0.01"))
+    assert compute_withholding(NYC, emp, taxability) == expected
+    assert expected != Decimal("6.11")
+
+
+def test_local_additional_withholding_is_added(taxability):
+    emp = _ny_local_emp("weekly", "400.00", "single", 3, "US-NY-NYC", local_additional="10.00")
+    assert compute_withholding(NYC, emp, taxability) == Decimal("16.11")
+
+
+def _yonkers():
+    """Yonkers = the STATE tables (NYS-50-T-Y reprints them) x 16.75%, plus the
+    nonresident earnings tax. Built from the merged state file so the two
+    cannot drift apart in this test."""
+    import yaml
+    state = yaml.safe_load((REPO_ROOT / "data" / "us" / "ny" / "2026" / "withholding.yaml").read_text())
+    return load_parameter_dict({
+        "schema_version": "0.1",
+        "jurisdiction": "US-NY-YONKERS",
+        "tax": "local_income_withholding",
+        "effective_from": "2026-01-01",
+        "source": SOURCE,
+        "method": "custom",
+        "custom_implementation": "custom/us_ny",
+        "rounding": {"to": "0.01", "mode": "nearest"},
+        "params": {
+            **state["params"],
+            "surcharge_rate": "0.1675",
+            "nonresident_earnings_tax": {   # p.25 Method VIII
+                "rate": "0.0050",
+                "annual_factors": {"daily": 260, "weekly": 52, "biweekly": 26,
+                                   "semimonthly": 24, "monthly": 12},
+                "exclusions": [
+                    {"over": "0", "exclusion": None},          # line 1: no tax withheld
+                    {"over": "3999.99", "exclusion": "3000"},
+                    {"over": "10000", "exclusion": "2000"},
+                    {"over": "20000", "exclusion": "1000"},
+                    {"over": "30000", "exclusion": "0"},
+                ],
+            },
+        },
+    })
+
+
+@pytest.mark.parametrize("freq,gross,status,n,expected", [
+    # p.16 single / p.18 married — all eight resident examples. The exact
+    # (unrounded) state amount x 0.1675, rounded once, reproduces every one,
+    # including the two whose STATE examples are 1 cent off (Example 2s) and
+    # married Example 4, whose prose misprints the rate as 0.0811 (table: 0.0801).
+    ("weekly", "400.00", "single", 3, "1.34"),
+    ("semimonthly", "5000.00", "single", 1, "43.30"),
+    ("monthly", "50000.00", "single", 3, "599.08"),
+    ("daily", "750.00", "single", 2, "7.39"),
+    ("weekly", "400.00", "married", 4, "1.12"),
+    ("semimonthly", "5000.00", "married", 3, "41.56"),
+    ("monthly", "50000.00", "married", 3, "606.70"),
+    ("daily", "750.00", "married", 2, "7.47"),
+])
+def test_yonkers_resident_printed_examples(taxability, freq, gross, status, n, expected):
+    emp = _ny_local_emp(freq, gross, status, n, "US-NY-YONKERS")
+    assert compute_withholding(_yonkers(), emp, taxability) == Decimal(expected)
+
+
+def test_yonkers_resident_method_iii_is_surcharged(taxability):
+    # weekly married $50,000, 0 exemptions: net 49,847.10 >= cutover 41,449
+    # -> annualized 2,592,049.20 -> band 0.1045 -> /52 -> x 0.1675, one rounding
+    emp = _ny_local_emp("weekly", "50000.00", "married", 0, "US-NY-YONKERS")
+    net = Decimal("50000.00") - Decimal("152.90")
+    expected = (net * 52 * Decimal("0.1045") / 52 * Decimal("0.1675")).quantize(Decimal("0.01"))
+    assert compute_withholding(_yonkers(), emp, taxability) == expected
+
+
+@pytest.mark.parametrize("freq,gross,expected", [
+    # p.25 Method VIII examples (p.24 Method VII agrees to the cent)
+    ("weekly", "75.00", "0"),        # 3,900 annualized: line 1, no tax
+    ("weekly", "200.00", "0.81"),    # (10,400 - 2,000) x 0.005 / 52
+    ("semimonthly", "400.00", "1.38"),  # (9,600 - 3,000) x 0.005 / 24
+])
+def test_yonkers_nonresident_printed_examples(taxability, freq, gross, expected):
+    emp = _ny_local_emp(freq, gross, "single", 0, "US-NY-YONKERS", resident=False)
+    assert compute_withholding(_yonkers(), emp, taxability) == Decimal(expected)
+
+
+def test_yonkers_nonresident_exclusion_bounds_are_exclusive_lower(taxability):
+    # annualized exactly 10,000 (weekly 192.31 x 52 = 10,000.12 is over; use
+    # biweekly 384.615... not representable) -> semimonthly 416.67 x 24 =
+    # 10,000.08 > 10,000 -> $2,000 exclusion. Monthly 833.33 x 12 = 9,999.96
+    # -> "not over 10,000" -> $3,000 exclusion.
+    at_most = _ny_local_emp("monthly", "833.33", "single", 0, "US-NY-YONKERS", resident=False)
+    assert compute_withholding(_yonkers(), at_most, taxability) == (
+        (Decimal("9999.96") - 3000) * Decimal("0.005") / 12).quantize(Decimal("0.01"))
+    just_over = _ny_local_emp("semimonthly", "416.67", "single", 0, "US-NY-YONKERS", resident=False)
+    assert compute_withholding(_yonkers(), just_over, taxability) == (
+        (Decimal("10000.08") - 2000) * Decimal("0.005") / 24).quantize(Decimal("0.01"))
+
+
+def test_yonkers_nonresident_unprinted_frequency_fails_loud(taxability):
+    emp = _ny_local_emp("annually", "50000.00", "single", 0, "US-NY-YONKERS", resident=False)
+    with pytest.raises(InputError):
+        compute_withholding(_yonkers(), emp, taxability)

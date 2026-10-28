@@ -145,8 +145,18 @@ class StateElection:
 
 @dataclass(frozen=True)
 class LocalElection:
+    """One local jurisdiction the employee owes. Locals compute from the
+    PARENT STATE's certificate (filing status, exemptions) unless the
+    certificate has local-specific lines: IT-2104 line 2 is a separate NYC
+    allowance count and lines 4/5 are NYC/Yonkers additional amounts, so
+    `allowances` (None = inherit the state's) and `additional_withholding`
+    live here. `resident` selects the resident vs nonresident rule where a
+    locality has both (Yonkers); NYC taxes residents only."""
+
     jurisdiction: str
     resident: bool = True
+    allowances: int | None = None
+    additional_withholding: Decimal = ZERO
 
 
 @dataclass(frozen=True)
@@ -223,7 +233,13 @@ class EmployeeInput:
             federal=FederalElection.from_dict(federal) if federal else None,
             state=tuple(StateElection.from_dict(s) for s in raw.get("state") or []),
             locals=tuple(
-                LocalElection(jurisdiction=l["jurisdiction"], resident=l.get("resident", True))
+                LocalElection(
+                    jurisdiction=l["jurisdiction"],
+                    resident=l.get("resident", True),
+                    allowances=l.get("allowances"),
+                    additional_withholding=D(l.get("additional_withholding", "0"),
+                                             context=f"locals[{l['jurisdiction']}].additional_withholding"),
+                )
                 for l in raw.get("locals") or []
             ),
             ytd=ytd,

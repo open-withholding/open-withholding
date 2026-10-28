@@ -85,7 +85,11 @@ null when the example states one. For each
 example's filing_status, use EXACTLY the filing-status
 key spelled in the candidate parameter file (not the document's prose). If
 an example states only annual wages, divide by the pay periods to per-period
-wages (rounded to the cent). Skip an example and mention it in a check note
+wages (rounded to the cent). For a LOCAL tax whose publication prints
+separate resident and nonresident rules (Yonkers: resident surcharge vs
+nonresident earnings tax), set `resident` false on each nonresident-earnings-
+tax example and true on each resident example; leave it null everywhere
+else. Skip an example and mention it in a check note
 when it uses a mechanism outside the schema (supplemental wages, nonresident
 aliens, pre-2020 W-4s for a federal_percentage_2020 candidate) — or when it
 is computed by LOOKING UP a wage-bracket table instead of the formula:
