@@ -933,6 +933,96 @@
   maps_to:
     - data/us/il/{year}/sui.yaml
 
+- id: us-ca-sui
+  document: "CA EDD Contribution Rates, Withholding Schedules, and Meals and Lodging Values (UI/ETT section)"
+  jurisdiction: US-CA
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
+  documents:
+    - name: "EDD Rates and Withholding page (HTML)"
+      kind: html
+      url: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the UI taxable wage limit per employee; new_employer_rate = the UI rate assigned to new employers (3.4 percent, as a decimal fraction); new_employer_rate_construction null; rate_range = the minimum and maximum of the UI rate schedule in effect for the year (the page names the schedule, e.g. F+ - note it). The Employment Training Tax (ETT) is a SEPARATE flat employer tax with its own rate and the same taxable wage limit - transcribe it as one surtaxes entry named 'ETT'. SDI is an employee contribution registered separately (us-ca-sdi) - exclude it.
+  check: [content_hash]
+  expected_window: "11-01..01-15"
+  maps_to:
+    - data/us/ca/{year}/sui.yaml
+
+- id: us-tx-sui
+  document: "Texas Workforce Commission — Your Tax Rates (unemployment tax)"
+  jurisdiction: US-TX
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://www.twc.texas.gov/programs/unemployment-tax/your-tax-rates"
+  documents:
+    - name: "TWC Your Tax Rates page (HTML)"
+      kind: html
+      url: "https://www.twc.texas.gov/programs/unemployment-tax/your-tax-rates"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the taxable wage base per employee ($9,000 unless the page says otherwise); new_employer_rate = the new-employer (entry-level) rate as a decimal fraction (the page may say new employers pay the greater of a fixed rate or their industry average - transcribe the fixed rate and note the rule); new_employer_rate_construction null. Texas rate notices state an EFFECTIVE rate that already bundles the general (experience) tax, the replenishment tax, any obligation assessment and the employment and training investment assessment - so rate_range = the printed minimum and maximum EFFECTIVE rates for the year, and surtaxes stays null; list the component rates and their values in notes so the reviewer can confirm the bundling.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/tx/{year}/sui.yaml
+
+- id: us-fl-sui
+  document: "Florida Department of Revenue — Reemployment Tax (rates and wage base)"
+  jurisdiction: US-FL
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
+  documents:
+    - name: "Florida DOR reemployment tax page (HTML)"
+      kind: html
+      url: "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the taxable wage base per employee per year ($7,000 unless the page says otherwise); new_employer_rate = the initial rate for new employers as a decimal fraction; new_employer_rate_construction null; rate_range = the minimum and maximum rates the page states experience-rated employers can be assigned. Florida publishes no separate flat surtax - surtaxes null.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/fl/{year}/sui.yaml
+
+- id: us-ny-sui
+  document: "New York DOL — Unemployment Insurance Rate Information"
+  jurisdiction: US-NY
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://dol.ny.gov/unemployment-insurance-rate-information"
+  documents:
+    - name: "NY DOL UI rate information page (HTML)"
+      kind: html
+      url: "https://dol.ny.gov/unemployment-insurance-rate-information"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the UI wage base for the target year. New York rate notices state a NORMAL contribution rate plus a SUBSIDIARY contribution rate - the employer's noticed rate for this method is their SUM: new_employer_rate = new-employer normal rate + the subsidiary rate that applies to new employers (show the addition in notes); new_employer_rate_construction null; rate_range = the printed lowest and highest total (normal + subsidiary) rates. The Re-employment Service Fund contribution (0.075 percent) is a SEPARATE flat charge on the same wage base - transcribe it as one surtaxes entry named 'Re-employment Service Fund'. Benefit, DBL and PFL matters are out of scope.
+  check: [content_hash]
+  expected_window: "12-01..03-31"
+  maps_to:
+    - data/us/ny/{year}/sui.yaml
+
+- id: us-nc-sui
+  document: "North Carolina DES — Tax Rate Information"
+  jurisdiction: US-NC
+  tax: state_unemployment_insurance
+  method: sui
+  landing: "https://www.des.nc.gov/employers/tax-rate-information"
+  documents:
+    - name: "NC DES tax rate information page (HTML)"
+      kind: html
+      url: "https://www.des.nc.gov/employers/tax-rate-information"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the taxable wage base for the target year (the page's table lists several years - take the target year only); new_employer_rate = the standard beginning tax rate for new employers; new_employer_rate_construction null; rate_range = the statutory minimum and maximum experience rates the page states. If the page describes a surtax that applies only when the trust fund falls below a threshold and says it is NOT in effect for the year, leave surtaxes null and note it.
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/nc/{year}/sui.yaml
+
 - id: us-in-counties
   document: "Departmental Notice #1, How to Compute Withholding for State and County Income Tax — county rate table"
   jurisdiction: US-IN
