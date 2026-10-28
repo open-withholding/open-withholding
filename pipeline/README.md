@@ -97,8 +97,11 @@ chooses them. Entries added here are commitments to watch that source.
 during the Nov–Jan publication season). Detection is free and constant;
 every outcome is loud: a `changed` document dispatches the Extract
 workflow for that source, while `url_404`, `stale` (a source's
-`expected_window` passed with no change), and `content_type_anomaly` each
-open a GitHub issue — never a silent skip. State lives on the
+`expected_window` passed with no change), `content_type_anomaly`, and
+`successor_found` (a `successor_pattern` source has a newer year's file
+live beside the watched one — bump the registry) each open a GitHub issue
+— never a silent skip. A `documents[]` entry with `watch: false` is read
+by the extractor but never polled (frozen archive snapshots). State lives on the
 `watcher-state` branch: an auditable history without PR noise on main.
 The watcher deliberately imports only PyYAML-weight modules, never the
 engine — the workflow installs nothing else (regression-guarded in

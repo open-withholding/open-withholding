@@ -373,3 +373,90 @@ def test_main_persists_state_and_exits_nonzero_when_a_dispatch_fails(monkeypatch
     assert persisted["us-aa-changed"]["sha256"] == "n" * 64, "the observed change is recorded"
     assert "checked_at" in persisted["us-bb-quiet"], "the sweep continued past the failure"
     assert len(issues) == 1 and "dispatch_failed" in issues[0][issues[0].index("--title") + 1]
+
+
+# --- successor_pattern (#168): the agency publishes each edition under a NEW
+# filename and never deletes the old one, so a direct-URL watch sees nothing.
+
+SUCC = {
+    "id": "us-co-test",
+    "document": "DR 1098",
+    "landing": "https://tax.x.gov/DR1098",
+    "document_url_pattern": "https://tax.x.gov/files/DR_1098_2024.pdf",
+    "successor_pattern": "https://tax.x.gov/files/DR_1098_{year}.pdf",
+}
+
+
+def _succ_fetcher(live: set[str], sha="a" * 64):
+    calls = []
+
+    def fetcher(url):
+        calls.append(url)
+        if url in live:
+            return {"status": 200, "sha256": sha if "2024" in url else "e" * 64,
+                    "etag": None, "last_modified": None, "is_pdf": True}
+        return {"status": 404, "sha256": None, "etag": None, "last_modified": None, "is_pdf": False}
+
+    fetcher.calls = calls
+    return fetcher
+
+
+def test_successor_probe_finds_a_newer_edition_once():
+    prior = {"sha256": "a" * 64, "changed_at": "2024-01-10", "url": SUCC["document_url_pattern"]}
+    live = {SUCC["document_url_pattern"], "https://tax.x.gov/files/DR_1098_2026.pdf"}
+    fetcher = _succ_fetcher(live)
+    events, state = check_source(SUCC, prior, fetcher, TODAY)  # TODAY is 2026-07-09
+    assert [e["type"] for e in events] == ["successor_found"]
+    assert "DR_1098_2026.pdf is live" in events[0]["detail"]
+    assert state["successors_seen"] == ["https://tax.x.gov/files/DR_1098_2026.pdf"]
+    # Probed the neighbouring years, never re-fetched the file it already watches.
+    probed = [u for u in fetcher.calls if u != SUCC["document_url_pattern"]]
+    assert probed == [f"https://tax.x.gov/files/DR_1098_{y}.pdf" for y in (2025, 2026, 2027)]
+
+    # Next sweep: the successor is remembered; no second event, no re-probe of it.
+    fetcher2 = _succ_fetcher(live)
+    events2, state2 = check_source(SUCC, state, fetcher2, TODAY)
+    assert events2 == []
+    assert "https://tax.x.gov/files/DR_1098_2026.pdf" not in fetcher2.calls
+    assert state2["successors_seen"] == state["successors_seen"]
+
+
+def test_successor_probe_is_quiet_when_nothing_newer_exists():
+    prior = {"sha256": "a" * 64, "changed_at": "2024-01-10", "url": SUCC["document_url_pattern"]}
+    events, state = check_source(SUCC, prior, _succ_fetcher({SUCC["document_url_pattern"]}), TODAY)
+    assert events == []
+    assert "successors_seen" not in state
+
+
+def test_successor_probe_skipped_when_primary_changed():
+    """A changed primary already dispatches an extraction — don't stack a probe on it."""
+    prior = {"sha256": "b" * 64, "changed_at": "2024-01-10", "url": SUCC["document_url_pattern"]}
+    live = {SUCC["document_url_pattern"], "https://tax.x.gov/files/DR_1098_2026.pdf"}
+    fetcher = _succ_fetcher(live)
+    events, _ = check_source(SUCC, prior, fetcher, TODAY)
+    assert [e["type"] for e in events] == ["changed"]
+    assert fetcher.calls == [SUCC["document_url_pattern"]]
+
+
+# --- documents[].watch: false (#169): a Wayback snapshot is frozen by
+# definition; polling it only earns 429s.
+
+def test_unwatched_document_is_skipped_but_siblings_are_checked():
+    src = {
+        "id": "us-dc-test", "document": "FR-230 + friends", "landing": "https://x.gov",
+        "documents": [
+            {"name": "live", "kind": "pdf", "url": "https://x.gov/live.pdf"},
+            {"name": "frozen", "kind": "html", "watch": False,
+             "url": "https://web.archive.org/web/2025/https://x.gov/release"},
+        ],
+    }
+    calls = []
+
+    def fetcher(url):
+        calls.append(url)
+        return {"status": 200, "sha256": "f" * 64, "etag": None, "last_modified": None, "is_pdf": True}
+
+    events, state = check_source(src, {}, fetcher, TODAY)
+    assert calls == ["https://x.gov/live.pdf"]
+    assert [e["type"] for e in events] == ["baseline"]
+    assert set(state["documents"]) == {"live"}
