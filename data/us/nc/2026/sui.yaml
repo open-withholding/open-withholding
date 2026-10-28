@@ -1,0 +1,22 @@
+schema_version: '0.1'
+jurisdiction: US-NC
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: NC DES tax rate information page (HTML) (2026)
+  url: https://www.des.nc.gov/employers/tax-rate-information
+  retrieved: '2026-10-28'
+  sha256: 3356080b756e1ad13aed6b31673281b60d6189c3a5f7d22ab148f636182e922e
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '34200'
+  new_employer_rate: '0.0100'
+  rate_range:
+    min: '0.0006'
+    max: '0.0576'
