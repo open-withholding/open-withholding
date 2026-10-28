@@ -949,18 +949,41 @@
   maps_to:
     - data/us/nj/{year}/sdi.yaml
 
-- id: us-ny-pfl
-  document: "New York Paid Family Leave — annual updates page (employee contribution rate and maximum)"
+- id: us-ny-dbl-pfl
+  document: "New York DBL (WCB employer disability benefits page) + Paid Family Leave annual updates page"
   jurisdiction: US-NY
   tax: state_disability_insurance
   method: sdi
   landing: "https://paidfamilyleave.ny.gov/{year}"
+  # Two employee contributions from two agencies, one state file: DBL
+  # (statutory one-half of one percent of wages, at most 60 cents a week —
+  # Workers' Compensation Board) and PFL (rate and maximum set annually —
+  # paidfamilyleave.ny.gov/<year>, which prints per-paycheck examples).
   documents:
+    - name: "WCB: Disability Benefits and Paid Family Leave Insurance — employer page (HTML)"
+      kind: html
+      url: "https://www.wcb.ny.gov/content/main/DisabilityBenefits/employer-disability-benefits.jsp"
     - name: "NY PFL updates page for the year (HTML)"
       kind: html
       url: "https://paidfamilyleave.ny.gov/{year}"
   extraction_hint: >-
-    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named PFL: the employee contribution rate as a decimal fraction (e.g. '0.432%' -> 0.00432), employee_share 1. The page states a MAXIMUM ANNUAL CONTRIBUTION in dollars - that is rate x the statewide average weekly wage x 52; transcribe wage_base as that annual wage ceiling (compute SAWW x 52 from the stated SAWW and note the arithmetic) rather than the dollar maximum. period_max null; wage_definition fica. The page's per-paycheck examples ('$1,000 x 0.432%' etc.) ARE worked examples - transcribe each with its weekly wages and the stated contribution. NY DBL (the separate 0.5%/60 cents-a-week disability contribution) is NOT on this page and is not part of this source.
+    Transcribe ONLY the EMPLOYEE contributions as two sdi components. (1)
+    DBL from the WCB page: rate = one-half of one percent (0.0050),
+    employee_share 1, wage_base null, period_max = the printed 'sixty cents
+    a week' as [{frequency: weekly, amount: 0.60}] ONLY - do not invent
+    other frequencies. (2) PFL from the paidfamilyleave.ny.gov page: the
+    employee contribution rate as a decimal fraction (e.g. '0.432%' ->
+    0.00432), employee_share 1, period_max null; the page states a MAXIMUM
+    ANNUAL CONTRIBUTION in dollars - that is rate x the statewide average
+    weekly wage x 52; transcribe wage_base as that annual wage ceiling
+    (SAWW x 52, show the arithmetic in notes), not the dollar maximum.
+    wage_definition fica. The PFL page's per-paycheck examples ('$1,000 x
+    0.432%' etc.) ARE worked examples: transcribe each with its weekly
+    wages and the stated PFL amount as expected_withholding - but NOTE in
+    the description that the example covers PFL only (the golden must
+    then be read as PFL-only; the maintainer adjudicates whether to keep
+    it, since the file's total adds DBL). Benefit amounts, employer
+    obligations and insurance-carrier matters are out of scope.
   check: [content_hash]
   expected_window: "09-01..01-15"
   maps_to:
@@ -1055,6 +1078,85 @@
   expected_window: "10-01..01-15"
   maps_to:
     - data/us/co/{year}/sdi.yaml
+
+- id: us-hi-tdi
+  document: "Hawaii DCD — Maximum Weekly Wage Base and Maximum Weekly Benefit Amount (annual TDI/WC/PHC notice)"
+  jurisdiction: US-HI
+  tax: state_disability_insurance
+  method: sdi
+  landing: "https://labor.hawaii.gov/dcd/forms/guidelines/"
+  # The notice is a one-page PDF re-uploaded each December under a dated
+  # WordPress path (files/2025/12/2026-Maximum-Weekly-Wage-Base.pdf), so
+  # the guidelines page is scanned for the current year's link.
+  discovery: link_scan
+  link_pattern: 'Maximum-Weekly-Wage-Base[^"]*\.pdf'
+  no_printed_examples: true
+  extraction_hint: >-
+    One sdi component named TDI from the TDI column: rate = the employee
+    contribution limit of one-half percent of weekly wages (0.0050),
+    employee_share 1, wage_base null (the weekly wage base caps the WEEKLY
+    deduction, not an annual total - encode it through period_max), and
+    period_max = [{frequency: weekly, amount: <the Maximum Weekly
+    Deduction, e.g. 7.50>}] ONLY for weekly - do not prorate to other
+    frequencies. Note the Maximum Weekly Wage Base figure the deduction
+    derives from. Ignore the WC and PHC columns and all benefit amounts.
+    wage_definition fica.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/hi/{year}/sdi.yaml
+
+- id: us-de-paid-leave
+  document: "Delaware DOL — Employers & Third Party Administrators Guide to Delaware Paid Leave"
+  jurisdiction: US-DE
+  tax: state_disability_insurance
+  method: sdi
+  landing: "https://labor.delaware.gov/divisions/paid-leave/employers/"
+  document_url_pattern: "https://laborfiles.delaware.gov/main/pfl/Employer_and_TPAs_Guide_to_DPL.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    Transcribe the EMPLOYEE share of Delaware Paid Leave contributions for
+    the target year as sdi components, one per line of coverage the guide
+    prices separately (medical, family caregiving, parental): rate = the
+    published component rate as a decimal fraction (e.g. 0.40% -> 0.0040)
+    and employee_share = the maximum share employers may deduct from
+    employees (the guide's 'up to 50%' -> 0.50) - keep the guide's framing,
+    never pre-multiplied. wage_base = the Social Security wage base the
+    guide says contributions are capped at (state the figure if printed,
+    else note the reference). period_max null; wage_definition fica.
+    Employer-side amounts, benefit levels and small-employer/private-plan
+    exemptions are out of scope (note them).
+  check: [content_hash]
+  expected_window: "10-01..01-31"
+  maps_to:
+    - data/us/de/{year}/sdi.yaml
+
+- id: us-mn-paid-leave
+  document: "Minnesota Paid Leave — Premium rate and contributions"
+  jurisdiction: US-MN
+  tax: state_disability_insurance
+  method: sdi
+  landing: "https://pl.mn.gov/employers"
+  documents:
+    - name: "pl.mn.gov premium rate and contributions page (HTML)"
+      kind: html
+      url: "https://pl.mn.gov/resources/calculators/premium-rate-and-contributions"
+  no_printed_examples: true
+  extraction_hint: >-
+    One sdi component named paid_leave: rate = the total Paid Leave premium
+    rate for the target year as a decimal fraction (0.88% -> 0.0088) and
+    employee_share = the maximum share that may be deducted from employee
+    wages as a fraction (up to 50% -> 0.50) - keep the page's framing, never
+    pre-multiplied; if the page splits the rate into family and medical
+    portions with distinct employee shares, transcribe one component per
+    portion instead. wage_base = the Social Security taxable maximum the
+    page says premiums are capped at (state the figure if printed, else
+    note the reference). period_max null; wage_definition fica. Employer
+    shares, small-employer reductions and benefit amounts are out of scope.
+  check: [content_hash]
+  expected_window: "10-01..01-31"
+  maps_to:
+    - data/us/mn/{year}/sdi.yaml
 
 - id: us-il-sui
   document: "IDES Annual Unemployment Insurance Tax Rate Summary"
