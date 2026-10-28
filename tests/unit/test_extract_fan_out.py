@@ -11,7 +11,8 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from pipeline import extract  # noqa: E402
+from engine.loader import load_parameter_dict  # noqa: E402
+from pipeline import assemble, extract  # noqa: E402
 
 SOURCE = {
     "id": "us-oh-school-districts", "jurisdiction": "US-OH",
@@ -103,3 +104,33 @@ def test_fan_out_duplicate_codes_fail(tmp_path, monkeypatch):
     rc = extract.run_flat_rate_fan_out(_args(tmp_path), SOURCE, dup, _verification(), dict(SOURCE_BLOCK))
     assert rc == 1
     assert "duplicate district codes" in (tmp_path / "us-oh-school-districts-2026-triage.md").read_text()
+
+
+
+# --- flat-rate list fan-out (Ohio school districts)
+
+def test_flat_rate_fan_out_files_are_self_contained_and_skip_zero_rates():
+    extraction = {
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none",
+                     "intermediate_to": None},
+        "params": {"districts": [
+            {"code": "0505", "name": "Trimble LSD", "counties": "Athens, Morgan",
+             "tax_base": "earned_income", "rate": "0.0100"},
+            {"code": "1505", "name": "East Palestine CSD", "counties": "Columbiana",
+             "tax_base": "earned_income", "rate": "0.0000"},   # expired -> no file
+            {"code": "3301", "name": "Ada EVSD", "counties": "Hardin, Hancock",
+             "tax_base": "traditional", "rate": "0.0150"},
+        ]},
+    }
+    pairs = assemble.assemble_flat_rate_fan_out(
+        state="US-OH", tax="local_income_withholding", method="flat_rate",
+        extraction=extraction, source=SOURCE_BLOCK, id_prefix="SD")
+    assert [j for j, _ in pairs] == ["US-OH-SD-0505", "US-OH-SD-3301"]
+    for j, raw in pairs:
+        load_parameter_dict(raw)  # every file stands alone
+        assert str(assemble.data_path(j, 2026, "local_income_withholding")).startswith("data/us/oh/2026/locals/sd-")
+    trimble = dict(pairs)["US-OH-SD-0505"]
+    assert trimble["params"] == {"rate": "0.0100"}
+    assert "SD 0505 Trimble LSD (Athens, Morgan), earned income tax base" in trimble["source"]["notes"]
+    assert "intermediate_to" not in trimble["rounding"]
