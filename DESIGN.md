@@ -439,9 +439,18 @@ watcher (cron, cheap, no LLM)
   for year-versioned URLs, also probe the next-year pattern),
   `stale` (expected_window passed with no change — catches the case where
   the agency published at a *new* URL and we're watching a dead one),
-  `content_type_anomaly` (HTML error page where a PDF should be).
+  `content_type_anomaly` (HTML error page where a PDF should be),
+  `successor_found` (a source with `successor_pattern` has a newer year's
+  file live beside the one we watch — CMSs never delete the old edition,
+  so a direct-URL watch would otherwise miss the reissue silently; the
+  registry needs a bump, so this opens an issue rather than dispatching).
 - Watch the **landing page** for sources with unstable document URLs;
-  `link_scan` discovery handles "find the current-year PDF link."
+  `link_scan` discovery handles "find the current-year PDF link." When a
+  landing page goes behind a bot wall (CO, #168) the watcher does NOT join
+  the arms race (no TLS-fingerprint or challenge evasion): switch the entry
+  to a direct `document_url_pattern` plus `successor_pattern`.
+- A `documents[]` entry may carry `watch: false`: the extractor still reads
+  it, the watcher never polls it (frozen archive snapshots, #169).
 
 ### 8.2 Extractor
 

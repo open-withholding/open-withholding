@@ -506,13 +506,17 @@
   tax: state_income_withholding
   method: flat_rate_with_annual_allowance
   no_printed_examples: true
-  # Stable form page; the PDF itself lives at a CMS path that moves per
-  # edition (currently DR_1098_2024.pdf — CO hasn't reissued since 2024).
-  # The year in the pattern keeps the *employee* worksheet PDF (undated
-  # filename) from matching.
+  # The form page (landing) went behind a bot wall in autumn 2026 (#168):
+  # 403 to every non-browser TLS stack regardless of User-Agent, so
+  # link_scan discovery can no longer run. Watch the PDF directly instead.
+  # Each edition gets a NEW filename and the old one is never removed, so a
+  # direct watch alone would miss a reissue silently — successor_pattern
+  # makes the watcher probe the neighbouring years' names each sweep and
+  # open a `successor_found` issue when one goes live (CO hasn't reissued
+  # since 2024). On that issue: bump document_url_pattern, dispatch.
   landing: "https://tax.colorado.gov/DR1098"
-  discovery: link_scan              # find the current edition's PDF link
-  link_pattern: 'DR[_ ]?1098[_ ]?20\d{2}.*\.pdf'
+  document_url_pattern: "https://tax.colorado.gov/sites/tax/files/documents/DR_1098_2024.pdf"
+  successor_pattern: "https://tax.colorado.gov/sites/tax/files/documents/DR_1098_{year}.pdf"
   check: [content_hash]
   expected_window: "11-15..01-15"
   maps_to:
@@ -599,6 +603,7 @@
     - name: "OTR release: District of Columbia Tax Changes Take Effect October 1 (TY2022 rate schedule; Wayback snapshot)"
       kind: html
       url: "https://web.archive.org/web/20250616055422/https://otr.cfo.dc.gov/release/district-columbia-tax-changes-take-effect-october-1-real-property-individual-income-and"
+      watch: false   # a dated Wayback snapshot is frozen; polling it only earns 429s (#169)
     - name: "Publication 15-T (2022), Federal Income Tax Withholding Methods"
       kind: pdf
       url: "https://www.irs.gov/pub/irs-prior/p15t--2022.pdf"

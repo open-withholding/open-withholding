@@ -13,6 +13,13 @@ ETag/Last-Modified where honored) against the last-seen state, and reacts:
                         passed with no change (catches publication at a NEW
                         url while we watch a dead one)
 - content_type_anomaly -> GitHub issue (HTML error page where a PDF should be)
+- successor_found    -> GitHub issue: a source with `successor_pattern` has a
+                        NEWER year's file live beside the one we watch (CMSs
+                        never delete the old edition, so a direct-URL watch
+                        would otherwise miss the reissue silently)
+
+A document entry with `watch: false` (a frozen Wayback snapshot, say) is
+skipped by the watcher but still fetched by the extractor.
 
 Never a silent skip. State is a plain JSON mapping kept on the
 `watcher-state` branch by the workflow (auditable history, no PR noise).
@@ -154,6 +161,8 @@ def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tupl
     changed_details: list[str] = []
 
     for doc in source["documents"]:
+        if doc.get("watch", True) is False:
+            continue  # frozen input (archive snapshot): the extractor reads it, nobody polls it
         url = _substitute_year(doc["url"], year)
         kind = doc.get("kind", "pdf")
         prefix = f"[{doc['name']}] "
@@ -198,6 +207,34 @@ def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tupl
     last_change = dt.date.fromisoformat(max(changed_ats)) if changed_ats else None
     _apply_staleness(source, state, new, events, today, last_change)
     return events, new
+
+
+def _probe_successors(source: dict, state: dict, new: dict, events: list[dict],
+                      fetcher, today: dt.date) -> None:
+    """For a source watched at a fixed URL whose agency publishes each edition
+    under a NEW filename (tax.colorado.gov/.../DR_1098_2024.pdf), look for the
+    neighbouring years' names. A live PDF at a name we do not already watch is
+    a `successor_found` event — reported once per URL (state remembers it),
+    and it means the registry needs updating, so it opens an issue rather than
+    dispatching an extraction that would re-read the old file."""
+    pattern = source.get("successor_pattern")
+    if not pattern:
+        return
+    current = new.get("url") or state.get("url")
+    seen = list(state.get("successors_seen", []))
+    for year in (today.year - 1, today.year, today.year + 1):
+        candidate = _substitute_year(pattern, year)
+        if candidate == current or candidate in seen:
+            continue
+        result = fetcher(candidate)
+        if result["status"] == 200 and result.get("is_pdf", True):
+            events.append({"type": "successor_found",
+                           "detail": f"{candidate} is live (sha256={result['sha256'][:12]}...) "
+                                     f"while the registry watches {current}; update "
+                                     f"document_url_pattern and dispatch an extraction"})
+            seen.append(candidate)
+    if seen:
+        new["successors_seen"] = seen
 
 
 def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[list[dict], dict]:
@@ -265,10 +302,12 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
                    last_modified=result.get("last_modified"), changed_at=today.isoformat())
         return events, new
 
-    # Unchanged — staleness check against the most recent completed window.
+    # Unchanged — staleness check against the most recent completed window,
+    # then look for a newer edition published beside this one.
     changed_at = state.get("changed_at")
     last_change = dt.date.fromisoformat(changed_at) if changed_at else None
     _apply_staleness(source, state, new, events, today, last_change)
+    _probe_successors(source, state, new, events, fetcher, today)
     return events, new
 
 
@@ -355,7 +394,7 @@ def main() -> int:
             if event["type"] == "changed":
                 if not _dispatch_extract(source, today.year, args.dry_run):
                     failures += 1
-            elif event["type"] in ("url_404", "stale", "content_type_anomaly"):
+            elif event["type"] in ("url_404", "stale", "content_type_anomaly", "successor_found"):
                 _github_issue(
                     f"Watcher: {source['id']} {event['type']}",
                     f"**Source:** `{source['id']}` — {source['document']}\n\n"
