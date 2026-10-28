@@ -1,0 +1,23 @@
+schema_version: '0.1'
+jurisdiction: US-RI
+tax: state_disability_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: RI DLT Employer Tax Unit page (HTML) (2026)
+  url: https://dlt.ri.gov/employers/employer-tax-unit
+  retrieved: '2026-10-28'
+  sha256: 36a72963ebb0c48759d82f1a9de438cbd69a626b23302fa78df7d036ad842259
+  notes: Extracted by pipeline; pages per PR body
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: fica
+  components:
+  - name: TDI
+    rate: '0.011'
+    employee_share: '1'
+    wage_base: '100000'
