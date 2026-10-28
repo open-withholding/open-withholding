@@ -426,6 +426,177 @@ def run_county_fan_out(args, source, extraction, verification, source_block) -> 
     return 0
 
 
+def _rel(path: Path) -> str:
+    """Repo-relative for display; absolute when OUT_DIR was redirected (tests)."""
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
+
+
+def run_flat_rate_fan_out(args, source, extraction, verification, source_block) -> int:
+    """Flat-rate list fan-out (Ohio school districts): one verified list ->
+    one flat_rate local file per row. Rate lists print no worked examples,
+    so the human gate is the dispatch flag: with --no-examples-ok every file
+    gets an engine-computed regression pin on a canonical input (weekly
+    $1,000, resident), labelled as maintainer-approved at dispatch; without
+    it the run fails as DESIGN §7 requires. Any printed example the verifier
+    does find is assigned to the row whose arithmetic it is, as for counties."""
+    jurisdiction, tax, method = source["jurisdiction"], source["tax"], source["method"]
+    id_prefix = source["fan_out_id_prefix"]
+    taxability = TaxabilityMatrix.from_file(REPO_ROOT / "taxability" / "us.yaml")
+    as_of = assemble.default_as_of(extraction["effective_from"])
+    effective_year = int(str(extraction["effective_from"])[:4])
+    stamp_edition_year(source_block, effective_year)
+    rows = extraction["params"]["districts"]
+
+    pairs = assemble.assemble_flat_rate_fan_out(
+        state=jurisdiction, tax=tax, method=method, extraction=extraction,
+        source={**source_block, "notes": "Extracted by pipeline; pages per PR body"},
+        id_prefix=id_prefix,
+    )
+    zero_rows = len(rows) - len(pairs)
+
+    print(f"[4/5] mechanical validation ({len(pairs)} local files, {zero_rows} zero-rate rows dropped) ...")
+    from engine.inputs import EmployeeInput
+    from engine.pipeline import compute_withholding
+    unconfirmed = [c for c in verification["checks"] if not c["confirmed"]]
+    goldens: dict[str, list[dict]] = {j: [] for j, _ in pairs}
+    try:
+        if unconfirmed:
+            raise ExtractionFailure(
+                "verification could not confirm: "
+                + "; ".join(f"{c['path']}={c['candidate_value']} ({c['note']})" for c in unconfirmed)
+            )
+        codes = [r["code"] for r in rows]
+        if len(set(codes)) != len(codes):
+            dupes = sorted({c for c in codes if codes.count(c) > 1})
+            raise ExtractionFailure(f"duplicate district codes in transcription: {dupes}")
+        if not pairs:
+            raise ExtractionFailure("every transcribed row has a zero rate — nothing to fan out")
+        loaded = {j: load_parameter_dict(raw) for j, raw in pairs}
+
+        document = source_block.get("document", source["document"])
+        for ex in verification["worked_examples"]:
+            matched = None
+            for j, _raw in pairs:
+                g = assemble.assemble_golden_case(
+                    jurisdiction=j, tax=tax, example=ex, as_of=as_of, document=document)
+                case = GoldenCase(path=Path("<candidate>"), source=g["source"],
+                                  as_of=dt.date.fromisoformat(g["as_of"]),
+                                  input_record=g["input"], expect=g["expect"])
+                if all(r.ok for r in run_golden_case(case, [loaded[j]], taxability)):
+                    matched = (j, g)
+                    break
+            if matched is None:
+                raise ExtractionFailure(
+                    f"printed example {ex['description']!r} matches NO row's arithmetic — "
+                    "transcription error in the rate list"
+                )
+            j, g = matched
+            g["source"]["example"] += " [assigned by arithmetic to the first matching row]"
+            goldens[j].append(g)
+        n_printed = sum(len(v) for v in goldens.values())
+        if n_printed == 0 and not args.no_examples_ok:
+            raise ExtractionFailure(
+                "verification pass transcribed no worked examples and --no-examples-ok was "
+                "not given; a rate list prints none, so the maintainer must approve "
+                "engine-computed pins at dispatch (DESIGN.md §7)"
+            )
+        pin_input = {"pay_frequency": "weekly", "gross_wages": "1000.00"}
+        for j, _raw in pairs:
+            if goldens[j]:
+                continue
+            record = {**pin_input, "locals": [{"jurisdiction": j, "resident": True}]}
+            amount = compute_withholding(loaded[j], EmployeeInput.from_dict(record), taxability)
+            goldens[j].append({
+                "source": {"document": document, "page": 0,
+                           "example": "maintainer-approved (no_examples_ok at dispatch) "
+                                      "pipeline-constructed regression pin: engine-computed "
+                                      "at extraction on weekly $1,000 gross; the rate is "
+                                      "transcribed from the printed list"},
+                "as_of": as_of, "input": record,
+                "expect": {"local_withholding": str(amount)},
+            })
+    except (ExtractionFailure, EngineError) as exc:
+        triage = OUT_DIR / f"{args.source_id}-{args.year}-triage.md"
+        triage.write_text(
+            f"# Triage: {args.source_id} {args.year}\n\n**Failure:** {exc}\n\n"
+            f"## Extraction\n\n```json\n{json.dumps(extraction, indent=2)}\n```\n\n"
+            f"## Verification\n\n```json\n{json.dumps(verification, indent=2)}\n```\n"
+        )
+        print(f"      FAILED — triage report written to {_rel(triage)}")
+        print(f"      {exc}")
+        return 1
+    print(f"      {len(pairs)} files load; {n_printed} printed example(s) assigned by "
+          f"arithmetic; {len(pairs) - n_printed} regression pins generated")
+
+    print(f"[5/5] writing candidate files ...")
+    target_root = OUT_DIR / f"{args.source_id}-{args.year}" if args.dry_run else REPO_ROOT
+    golden_paths = []
+    for j, raw in pairs:
+        data_file = assemble.data_path(j, effective_year, tax)
+        (target_root / data_file).parent.mkdir(parents=True, exist_ok=True)
+        (target_root / data_file).write_text(dump_yaml(raw))
+        slug = assemble.golden_slug(j, tax)
+        for i, g in enumerate(goldens[j]):
+            rel = f"tests/golden/{slug}-{effective_year}-{i + 1}.yaml"
+            (target_root / rel).parent.mkdir(parents=True, exist_ok=True)
+            (target_root / rel).write_text(dump_yaml(g))
+            golden_paths.append(rel)
+    by_base: dict[str, int] = {}
+    for r in rows:
+        by_base[r.get("tax_base") or "?"] = by_base.get(r.get("tax_base") or "?", 0) + 1
+    body_lines = [
+        f"## `{args.source_id}`: {jurisdiction} {id_prefix} local income tax — {len(pairs)} files",
+        "",
+        f"- **Method:** `{method}` (one self-contained file per row)",
+        f"- **Classification:** {extraction['classification']}",
+        f"- **Effective from:** {extraction['effective_from']}",
+        f"- **Source:** [{source_block.get('document', source['document'])}]({source_block['url']}) — retrieved {source_block['retrieved']}",
+        f"- **Archived sha256:** `{source_block['sha256']}`",
+        f"- **Rows transcribed:** {len(rows)} ({', '.join(f'{k}: {v}' for k, v in sorted(by_base.items()))}); "
+        f"{zero_rows} zero-rate (expired) rows produce no file",
+        "",
+        "### Extraction citations",
+        "",
+        *(f"- {c['what']} — p.{c['page']}" for c in extraction.get("citations", [])),
+        "",
+        "### Independent verification (separate context)",
+        "",
+        f"- {len(verification['checks'])}/{len(verification['checks'])} values confirmed",
+        "",
+        "### Rate list (transcribed)",
+        "",
+        "| Code | District | Counties | Tax base | Rate |", "|---|---|---|---|---|",
+        *(f"| {r['code']} | {r['name']} | {r.get('counties') or ''} | {r.get('tax_base') or ''} | {r['rate']} |"
+          for r in rows),
+        "",
+        "### Golden tests",
+        "",
+        f"- {n_printed} printed example(s), assigned by arithmetic",
+        f"- {len(pairs) - n_printed} engine-computed regression pins (maintainer-approved via "
+        "--no-examples-ok; weekly $1,000 gross)",
+        "",
+        "### Extractor notes",
+        "",
+        extraction.get("notes", "").strip() or "(none)",
+        "",
+        "### Reviewer checklist",
+        "",
+        "- [ ] Row count matches the printed list (both columns of every page, both tax-base tables)",
+        "- [ ] Spot-checked 10+ rates against the printed list, including every [r] change/renewal",
+        "- [ ] Every zero-rate (expired) row is genuinely expired on the changes page",
+        "",
+        "🤖 Extracted by the pipeline; every number above requires human review before merge.",
+    ]
+    pr_file = OUT_DIR / f"{args.source_id}-{args.year}-pr.md"
+    pr_file.write_text("\n".join(body_lines) + "\n")
+    print(f"      {len(pairs)} data files, {len(golden_paths)} goldens")
+    print(f"      PR body: {_rel(pr_file)}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("source_id")
@@ -560,9 +731,9 @@ def main() -> int:
               f"filing under {effective_year}, not {args.year}")
     stamp_edition_year(source_block, effective_year)
 
-    if source.get("fan_out") == "counties":
-        # Fan-out sources assemble AFTER verification (one file per county);
-        # the verifier confirms the raw transcription, dumped as YAML.
+    if source.get("fan_out") in ("counties", "flat_rate_list"):
+        # Fan-out sources assemble AFTER verification (one file per county /
+        # district); the verifier confirms the raw transcription, dumped as YAML.
         param_dict = None
         candidate_yaml = dump_yaml({
             "effective_from": extraction["effective_from"],
@@ -610,6 +781,8 @@ def main() -> int:
 
     if source.get("fan_out") == "counties":
         return run_county_fan_out(args, source, extraction, verification, source_block)
+    if source.get("fan_out") == "flat_rate_list":
+        return run_flat_rate_fan_out(args, source, extraction, verification, source_block)
 
     # Maintainer-adjudicated print-defect corrections (registry `adjudications`).
     # Applied AFTER verification — the verifier must confirm the transcription

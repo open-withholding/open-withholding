@@ -1297,3 +1297,42 @@
   expected_window: "09-15..01-31"
   maps_to:
     - data/us/in/{year}/locals/
+
+- id: us-oh-school-districts
+  document: "Ohio Department of Taxation — School Districts With an Income Tax (employer withholding rate list)"
+  jurisdiction: US-OH
+  tax: local_income_withholding
+  method: flat_rate
+  extraction_schema: us_oh_school_districts
+  fan_out: flat_rate_list
+  fan_out_id_prefix: SD          # US-OH-SD-<four-digit ODT school district number>
+  landing: "https://tax.ohio.gov/business/employer-withholding"
+  # The employer-withholding page links a year-named PDF
+  # (School_Districts_<year>.pdf on dam.assets.ohio.gov): page 1 summarises
+  # the year's changes (new / expired / rate changes / renewals), pages 2+
+  # list EVERY taxing district in two columns, split into Earned Income
+  # Only and Traditional tax-base tables. Employers withhold at the listed
+  # rate on Ohio wages for both bases (the base distinction affects the
+  # employee's return, not withholding). ~214 districts; 68 earned-income.
+  discovery: link_scan
+  link_pattern: 'School_Districts_20\d{2}\.pdf'
+  no_printed_examples: true
+  extraction_hint: >-
+    Transcribe EVERY district from the full list pages ("School Districts
+    With an Income Tax for <year>"): each page has TWO columns of rows -
+    read both columns, left column top to bottom then right column - and
+    there are two tables, Earned Income Only Tax Base and Traditional Tax
+    Base; set tax_base from the table a row appears in. code = the SD#
+    (four digits, keep leading zeros), name = the district name without
+    the parenthesised counties and without any [r] marker, counties = the
+    parenthesised list, rate = the decimal Rate column (.0075 -> 0.0075),
+    NOT the Percent column. Then check page 1 (changes): a district listed
+    there as Expired at 0.00% that is absent from the full list is added
+    with rate 0; new districts and rate changes should already be in the
+    full list at their new rate - confirm and note any discrepancy. Do not
+    skip, merge or reorder rows; state the total row count per table in
+    notes. There are no worked examples in this document.
+  check: [content_hash]
+  expected_window: "11-15..02-15"
+  maps_to:
+    - data/us/oh/{year}/locals/

@@ -1053,6 +1053,45 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    # Fan-out variant for a flat-rate local list (registry: extraction_schema:
+    # us_oh_school_districts, fan_out: flat_rate_list, fan_out_id_prefix: SD):
+    # Ohio's "School Districts With an Income Tax" list -> one flat_rate
+    # local file per district, keyed by the Department of Taxation's
+    # four-digit school district number.
+    "us_oh_school_districts": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["districts"],
+        "properties": {
+            "districts": {
+                "type": "array",
+                "description": "EVERY row of the full district list (the pages titled "
+                "'School Districts With an Income Tax', BOTH columns of each two-column "
+                "page, both the Earned Income Only and the Traditional tax base tables), "
+                "plus any row on the changes page that is not in the list. One entry per "
+                "district: do not skip, merge, or reorder rows. Expired districts printed at "
+                "0.00% are transcribed as printed (the assembler drops zero rates).",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["code", "name", "counties", "tax_base", "rate"],
+                    "properties": {
+                        "code": {"type": "string", "pattern": "^[0-9]{4}$",
+                                 "description": "The four-digit school district number as printed"},
+                        "name": {"type": "string", "description": "District name as printed, "
+                                 "without the parenthesised counties or any [r]/[a] marker"},
+                        "counties": {"type": ["string", "null"],
+                                     "description": "The parenthesised county list as printed"},
+                        "tax_base": {"enum": ["traditional", "earned_income"],
+                                     "description": "Which table the row appears in (or the [a] "
+                                     "marker on the changes page)"},
+                        "rate": {**DECIMAL, "description": "The decimal 'Rate' column (e.g. "
+                                 ".0075 -> 0.0075), not the fraction 'Percent' column"},
+                    },
+                },
+            },
+        },
+    },
     "deduction_constant_percentage": {
         "type": "object",
         "additionalProperties": False,
