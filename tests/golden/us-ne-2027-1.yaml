@@ -1,0 +1,18 @@
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2027)
+  page: 0
+  example: "maintainer-constructed (same inputs as the 2026 case 1 \u2014 shows the rate cut directly;\
+    \ booklet prints no computation example), expected value computed by the reference engine: single,\
+    \ biweekly $1,700, 1 allowance -> annual 44,200 - 2,510 = 41,690; base 1,283.24 + (41,690-41,310)\
+    \ x 3.93% = 1,298.17; / 26 = 49.93"
+as_of: '2027-01-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1700.00'
+  state:
+  - jurisdiction: US-NE
+    filing_status: single
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '49.93'

@@ -1,0 +1,18 @@
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2027)
+  page: 0
+  example: 'maintainer-constructed (same inputs as the 2026 case 2, with additional withholding; booklet
+    prints no computation example), expected value computed by the reference engine: married, monthly
+    $5,200, 2 allowances, $10 additional -> annual 62,400 - 5,020 = 57,380; base 1,438.89 + (57,380-51,890)
+    x 3.81% = 1,648.06; / 12 = 137.34 + 10.00'
+as_of: '2027-01-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '5200.00'
+  state:
+  - jurisdiction: US-NE
+    filing_status: married
+    allowances: 2
+    additional_withholding: '10.00'
+expect:
+  state_withholding: '147.34'

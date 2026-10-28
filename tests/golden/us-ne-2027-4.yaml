@@ -1,0 +1,17 @@
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2027)
+  page: 0
+  example: 'maintainer-constructed (below the first married bracket -> zero withholding; booklet prints
+    no computation example), expected value computed by the reference engine: married, weekly $200, 1
+    allowance -> annual 10,400 - 2,510 = 7,890; below the first bracket (0) -> 0.00'
+as_of: '2027-01-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '200.00'
+  state:
+  - jurisdiction: US-NE
+    filing_status: married
+    allowances: 1
+    additional_withholding: '0'
+expect:
+  state_withholding: '0.00'
