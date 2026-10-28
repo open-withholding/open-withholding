@@ -1,0 +1,17 @@
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2027)
+  page: 0
+  example: 'maintainer-constructed (top bracket (4.03%) with zero allowances; booklet prints no computation
+    example), expected value computed by the reference engine: single, weekly $2,000, 0 allowances ->
+    annual 104,000 - 0 = 104,000; base 2,709.04 + (104,000-77,590) x 4.03% = 3,773.36; / 52 = 72.56'
+as_of: '2027-01-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '2000.00'
+  state:
+  - jurisdiction: US-NE
+    filing_status: single
+    allowances: 0
+    additional_withholding: '0'
+expect:
+  state_withholding: '72.56'

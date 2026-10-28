@@ -1,0 +1,65 @@
+schema_version: '0.1'
+jurisdiction: US-NE
+tax: state_income_withholding
+effective_from: '2027-01-01'
+effective_to: null
+supersedes: data/us/ne/2026/withholding.yaml
+source:
+  document: Circular EN, Nebraska Income Tax Withholding (2027)
+  url: https://revenue.nebraska.gov/sites/default/files/doc/business/Cir_En_2026/2027cir_en_whole.pdf
+  retrieved: '2026-10-28'
+  sha256: 89fd17545c174583295dd25ea47a2e509fc10d07435a623197c819bb7a470ba6
+  notes: Extracted by pipeline; pages per PR body
+method: annualized_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  allowance_amount: '2510.00'
+  credit_per_allowance: null
+  brackets:
+    single:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '3530'
+      rate: '0.0226'
+      base: '0'
+    - over: '6910'
+      rate: '0.0322'
+      base: '76.39'
+    - over: '22450'
+      rate: '0.0369'
+      base: '576.78'
+    - over: '32540'
+      rate: '0.0381'
+      base: '949.10'
+    - over: '41310'
+      rate: '0.0393'
+      base: '1283.24'
+    - over: '77590'
+      rate: '0.0403'
+      base: '2709.04'
+    married:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '8430'
+      rate: '0.0226'
+      base: '0'
+    - over: '13390'
+      rate: '0.0322'
+      base: '112.10'
+    - over: '33360'
+      rate: '0.0369'
+      base: '755.13'
+    - over: '51890'
+      rate: '0.0381'
+      base: '1438.89'
+    - over: '64370'
+      rate: '0.0393'
+      base: '1914.38'
+    - over: '85370'
+      rate: '0.0403'
+      base: '2739.68'
