@@ -1,0 +1,17 @@
+source:
+  document: NYS-50-T-NYC, New York City Withholding Tax Tables and Methods (2026)
+  page: 27
+  example: 'Married Example 4: Daily payroll, $750 gross wages, married, 2 exemptions'
+as_of: '2026-06-15'
+input:
+  pay_frequency: daily
+  gross_wages: '750'
+  locals:
+  - jurisdiction: US-NY-NYC
+    resident: true
+    allowances: 2
+  state:
+  - jurisdiction: US-NY
+    filing_status: married
+expect:
+  local_withholding: '29.43'
