@@ -299,3 +299,77 @@ def test_staleness_flags_once_a_watched_window_passes():
     # ...and only once per season
     events, _ = check_source(_stale_source(), new, _ok_fetcher, dt.date(2027, 2, 2))
     assert [e["type"] for e in events] == []
+
+
+def test_dispatch_failure_opens_issue_and_does_not_raise(monkeypatch):
+    """Regression: 2026-07-27..09-25 every daily sweep died on an uncaught
+    CalledProcessError from `gh workflow run` (the App token lacked
+    actions:write), state was never persisted, and GitHub disabled the
+    schedule for inactivity. A failed dispatch is an issue, not a crash."""
+    from pipeline import watch
+
+    calls = []
+
+    def fake_run(args, **kwargs):
+        calls.append(args)
+        import subprocess
+        if args[:3] == ["gh", "workflow", "run"]:
+            return subprocess.CompletedProcess(
+                args, 1, stdout="", stderr="HTTP 403: Resource not accessible by integration")
+        if args[:3] == ["gh", "issue", "list"]:
+            return subprocess.CompletedProcess(args, 0, stdout="0\n", stderr="")
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(watch.subprocess, "run", fake_run)
+    ok_ = watch._dispatch_extract(SRC, 2026, dry_run=False)
+    assert ok_ is False
+    created = [c for c in calls if c[:3] == ["gh", "issue", "create"]]
+    assert len(created) == 1
+    title = created[0][created[0].index("--title") + 1]
+    body = created[0][created[0].index("--body") + 1]
+    assert title == "Watcher: us-zz-test dispatch_failed"
+    assert "Resource not accessible by integration" in body
+    assert "gh workflow run extract.yml -R" in body and "source_id=us-zz-test" in body
+    assert "Actions: read & write" in body
+
+
+def test_main_persists_state_and_exits_nonzero_when_a_dispatch_fails(monkeypatch, tmp_path):
+    """The sweep finishes, state is written (the change was observed), and
+    the run is red so the failure is visible — but it is not a traceback."""
+    import json
+    import subprocess
+
+    from pipeline import watch
+
+    changed = dict(SRC, id="us-aa-changed")
+    quiet = dict(SRC, id="us-bb-quiet", document_url_pattern="https://y.gov/q_{year}.pdf")
+    monkeypatch.setattr(watch.yaml, "safe_load", lambda _text: [changed, quiet])
+
+    def fetcher(url, _retry=True, *, insecure=False, _ua=None):
+        sha = ("n" if "x.gov" in url else "q") * 64
+        return {"status": 200, "sha256": sha, "etag": None, "last_modified": None, "is_pdf": True}
+
+    monkeypatch.setattr(watch, "default_fetcher", fetcher)
+    issues = []
+
+    def fake_run(args, **kwargs):
+        if args[:3] == ["gh", "workflow", "run"]:
+            return subprocess.CompletedProcess(args, 1, stdout="", stderr="boom")
+        if args[:3] == ["gh", "issue", "list"]:
+            return subprocess.CompletedProcess(args, 0, stdout="0\n", stderr="")
+        issues.append(args)
+        return subprocess.CompletedProcess(args, 0, stdout="", stderr="")
+
+    monkeypatch.setattr(watch.subprocess, "run", fake_run)
+    state_path = tmp_path / "state.json"
+    state_path.write_text(json.dumps({
+        "us-aa-changed": {"sha256": "o" * 64, "changed_at": "2026-01-05"},
+        "us-bb-quiet": {"sha256": "q" * 64, "changed_at": "2026-01-05"},
+    }))
+    monkeypatch.setattr(sys, "argv", ["watch.py", "--state", str(state_path), "--github"])
+
+    assert watch.main() == 1
+    persisted = json.loads(state_path.read_text())
+    assert persisted["us-aa-changed"]["sha256"] == "n" * 64, "the observed change is recorded"
+    assert "checked_at" in persisted["us-bb-quiet"], "the sweep continued past the failure"
+    assert len(issues) == 1 and "dispatch_failed" in issues[0][issues[0].index("--title") + 1]

@@ -4,7 +4,7 @@
 # human reviewed and merged it" (maintainer). Never auto-merges.
 #
 # One-time setup this workflow depends on (see pipeline/README.md):
-#   - a GitHub App (contents: rw, pull requests: rw, issues: rw) installed
+#   - a GitHub App (contents: rw, pull requests: rw, issues: rw, actions: rw) installed
 #     on this repo
 #   - secrets: PIPELINE_APP_ID, PIPELINE_APP_PRIVATE_KEY, ANTHROPIC_API_KEY
 

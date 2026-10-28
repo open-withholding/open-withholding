@@ -60,8 +60,11 @@ jobs:
           python pipeline/watch.py --state watch-state.json --github \
             ${{ inputs.dry_run && '--dry-run' || '' }}
 
+      # Runs even when the sweep exits non-zero (a failed dispatch is reported
+      # as an issue and the run goes red, but what was observed is still
+      # recorded — otherwise the same change re-fires every day).
       - name: Persist watcher state
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !cancelled() && !inputs.dry_run }}
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
@@ -80,3 +83,15 @@ jobs:
           git add watch-state.json
           git commit -m "watcher state $(date -u +%Y-%m-%dT%H:%MZ)" || { echo "no state change"; exit 0; }
           git push https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git watcher-state
+
+      # GitHub disables scheduled workflows after 60 days without repository
+      # activity (it did exactly that on 2026-09-25 while the sweeps were
+      # failing and pushing nothing). Re-enabling an enabled workflow is a
+      # no-op that resets that clock. Needs the App's actions:write.
+      - name: Keep the schedule alive
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          gh workflow enable watch.yml -R "$GITHUB_REPOSITORY" || \
+            echo "::warning::could not re-enable watch.yml — the pipeline App needs Actions: read & write"

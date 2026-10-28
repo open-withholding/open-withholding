@@ -58,8 +58,11 @@ separates "pipeline proposed" (bot author) from "human reviewed and merged"
 1. **Create a GitHub App** (Settings → Developer settings → GitHub Apps →
    New): name it something like `open-withholding-pipeline`; disable the
    webhook; repository permissions **Contents: read & write**, **Pull
-   requests: read & write**, **Issues: read & write** (triage reports);
-   installable only on your account.
+   requests: read & write**, **Issues: read & write** (triage reports),
+   **Actions: read & write** (the watcher dispatches the Extract workflow
+   and keeps its own schedule enabled — without this every detected change
+   lands as a `dispatch_failed` issue instead); installable only on your
+   account.
 2. After creating: note the **App ID**, then **generate a private key**
    (downloads a `.pem`).
 3. **Install the app** on this repository (app page → Install App).
