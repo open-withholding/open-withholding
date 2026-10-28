@@ -1,0 +1,13 @@
+source:
+  document: 'NYS-50-T-style: WCB employer DBL page + paidfamilyleave.ny.gov/2026 (2026)'
+  page: 1
+  example: maintainer-adjudicated (derived from the printed PFL example 'employee earning $1,000/week
+    contributes $1,000 x 0.432%' = 4.32, plus the statutory DBL weekly cap 0.60); expected value computed
+    by the reference engine
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1000.00'
+expect:
+  sdi_withholding:
+    US-NY: '4.92'

@@ -1,0 +1,38 @@
+schema_version: '0.2'
+jurisdiction: US-NY
+tax: state_disability_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'WCB: Disability Benefits and Paid Family Leave Insurance — employer page (HTML) (2026)'
+  url: https://www.wcb.ny.gov/content/main/DisabilityBenefits/employer-disability-benefits.jsp
+  retrieved: '2026-10-28'
+  sha256: ca711a3a89325ef1ca3f8b8a63927adc03a28377f3c9cb9d0e80732bb0417ff5
+  notes: 'Maintainer-assembled from pipeline run 40738838921 (extraction + independent verification, 7/7 values
+    confirmed); the run''s mechanical validation failed only because the PFL page''s two printed examples are PFL-only
+    while this file''s total adds DBL — adjudicated into full-file goldens by adding the statutory DBL weekly cap
+    (see tests/golden/us-ny-sdi-2026-1,2). DBL: one-half of one percent of wages, no more than sixty cents a week
+    (weekly_max, scaled to the pay frequency by the method). PFL: 0.432% of wages; the page states a maximum annual
+    contribution of $411.91 = 0.432% x NYSAWW $1,833.63 x 52 — encoded as the wage ceiling 95,348.76 (95,348.76
+    x 0.00432 = 411.906, consistent). No DBL/PFL example in either document covers both contributions.'
+- document: NY PFL updates page for the year (HTML) (2026)
+  url: https://paidfamilyleave.ny.gov/2026
+  retrieved: '2026-10-28'
+  sha256: c2c8e4c648f9f4b132eb175ecb9ebd4d96ed20dc14da96eabe427fcfec5fe987
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: fica
+  components:
+  - name: DBL
+    rate: '0.0050'
+    employee_share: '1'
+    wage_base: null
+    weekly_max: '0.60'
+  - name: PFL
+    rate: '0.00432'
+    employee_share: '1'
+    wage_base: '95348.76'
