@@ -1,0 +1,17 @@
+source:
+  document: EDD Rates and Withholding page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 3.4% with $6,000 already paid this year: UI and
+    ETT each apply to the $1,000 left under the $7,000 base), expected value computed by the reference
+    engine: 1,000 x 3.40% = 34.00 + ETT 1,000 x 0.10% = 1.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '6000'
+  employer:
+    sui_jurisdiction: US-CA
+    sui_experience_rate: '0.034'
+expect:
+  sui_tax: '35.00'
