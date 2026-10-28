@@ -575,8 +575,10 @@ Government publications are public domain — redistribution is fine.
 2. Wage-bracket tables (the printed lookup grids) as data: skip entirely
    (percentage method suffices) or include for states whose guides *only*
    publish grids?
-3. Local tax identifiers: PA PSD codes are official; OH/KY need a chosen
-   canonical ID scheme.
+3. Local tax identifiers: PA PSD codes are official; **Ohio school
+   districts use the Department of Taxation's four-digit school district
+   number** (`US-OH-SD-0505`, the code employers already put on W-2s);
+   OH municipalities and KY still need a chosen scheme.
 4. Reciprocity representation (Tier 2) — reserve `jurisdiction_rules/`?
 5. How to represent states with elective employee rates (AZ's
    percentage-election model) in the employee input schema.

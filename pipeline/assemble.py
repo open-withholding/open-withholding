@@ -521,6 +521,55 @@ def assemble_county_fan_out(
     return out
 
 
+def assemble_flat_rate_fan_out(
+    *,
+    state: str,
+    tax: str,
+    method: str,
+    extraction: dict,
+    source: dict,
+    id_prefix: str,
+    list_key: str = "districts",
+    schema_version: str = "0.1",
+) -> list[tuple[str, dict]]:
+    """Flat-rate list fan-out (Ohio school districts; later OH/PA
+    municipalities): one transcribed list -> one self-contained flat_rate
+    file per row, jurisdiction <state>-<id_prefix>-<code> (US-OH-SD-0505 ->
+    data/us/oh/<year>/locals/sd-0505.yaml). Rows printed at a zero rate
+    (expired levies) produce no file: no file means no tax, which is what a
+    consumer looking the district up should find. Returns [(jurisdiction, raw)]."""
+    from decimal import Decimal
+
+    out = []
+    for row in extraction["params"][list_key]:
+        if Decimal(str(row["rate"])) == 0:
+            continue
+        jurisdiction = f"{state}-{id_prefix}-{row['code']}"
+        detail = row["name"]
+        if row.get("counties"):
+            detail += f" ({row['counties']})"
+        if row.get("tax_base"):
+            detail += f", {row['tax_base'].replace('_', ' ')} tax base"
+        raw = {
+            "schema_version": schema_version,
+            "jurisdiction": jurisdiction,
+            "tax": tax,
+            "effective_from": extraction["effective_from"],
+            "effective_to": None,
+            "source": {**source,
+                       "notes": (source.get("notes", "").rstrip() + f"; {id_prefix} "
+                                 f"{row['code']} {detail}; rate from the printed list"
+                                 ).lstrip("; ")},
+            "method": method,
+            "rounding": dict(extraction["rounding"]),
+            "params": {"rate": row["rate"]},
+        }
+        if raw["rounding"].get("intermediate_to") is None:
+            raw["rounding"].pop("intermediate_to", None)
+        out.append((jurisdiction, raw))
+    return out
+
+
 def _money(value, default: str = "0") -> str:
     return default if value is None else value
 

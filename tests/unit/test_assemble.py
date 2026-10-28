@@ -893,3 +893,32 @@ def test_local_golden_case_puts_allowances_on_the_local_election():
         example=example, as_of="2026-06-15", document="NYS-50-T-NYC")
     assert g["input"]["locals"] == [{"jurisdiction": "US-NY-NYC", "resident": True, "allowances": 3}]
     assert g["input"]["state"] == [{"jurisdiction": "US-NY", "filing_status": "single"}]
+
+
+# --- flat-rate list fan-out (Ohio school districts)
+
+def test_flat_rate_fan_out_files_are_self_contained_and_skip_zero_rates():
+    extraction = {
+        "effective_from": "2026-01-01",
+        "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none",
+                     "intermediate_to": None},
+        "params": {"districts": [
+            {"code": "0505", "name": "Trimble LSD", "counties": "Athens, Morgan",
+             "tax_base": "earned_income", "rate": "0.0100"},
+            {"code": "1505", "name": "East Palestine CSD", "counties": "Columbiana",
+             "tax_base": "earned_income", "rate": "0.0000"},   # expired -> no file
+            {"code": "3301", "name": "Ada EVSD", "counties": "Hardin, Hancock",
+             "tax_base": "traditional", "rate": "0.0150"},
+        ]},
+    }
+    pairs = assemble.assemble_flat_rate_fan_out(
+        state="US-OH", tax="local_income_withholding", method="flat_rate",
+        extraction=extraction, source=SOURCE, id_prefix="SD")
+    assert [j for j, _ in pairs] == ["US-OH-SD-0505", "US-OH-SD-3301"]
+    for j, raw in pairs:
+        load_parameter_dict(raw)  # every file stands alone
+        assert str(assemble.data_path(j, 2026, "local_income_withholding")).startswith("data/us/oh/2026/locals/sd-")
+    trimble = dict(pairs)["US-OH-SD-0505"]
+    assert trimble["params"] == {"rate": "0.0100"}
+    assert "SD 0505 Trimble LSD (Athens, Morgan), earned income tax base" in trimble["source"]["notes"]
+    assert "intermediate_to" not in trimble["rounding"]
