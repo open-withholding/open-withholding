@@ -649,6 +649,59 @@ _PARAMS_BY_METHOD = {
             },
         },
     },
+    "sdi": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["wage_definition", "components"],
+        "description": "State disability / paid family & medical leave EMPLOYEE contributions: "
+        "one entry per published component (NJ: TDI and FLI; NY: PFL; MA: family and medical "
+        "shares). Employer-side contributions are out of scope — never transcribe them as "
+        "components.",
+        "properties": {
+            "wage_definition": {
+                "enum": ["fica", "futa", "state_income"],
+                "description": "Which wage base defines the programme's wages; 'fica' unless "
+                "the publication says the programme follows the state's income-tax wage "
+                "definition",
+            },
+            "components": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "required": ["name", "rate", "employee_share", "wage_base", "period_max"],
+                    "properties": {
+                        "name": {"type": "string", "description": "The programme's own label "
+                                 "(SDI, TDI, FLI, PFL, DBL, family, medical)"},
+                        "rate": {**DECIMAL, "description": "The published rate as a decimal "
+                                 "fraction, exactly as framed by the publication (the total "
+                                 "rate where a split is stated, else the employee rate)"},
+                        "employee_share": {**DECIMAL, "description": "Fraction of `rate` the "
+                                           "employee pays: '1' when `rate` IS the employee rate; "
+                                           "the printed share (e.g. '0.60') when the publication "
+                                           "states a total rate and a split"},
+                        "wage_base": {**DECIMAL_OR_NULL, "description": "Annual taxable wage "
+                                      "limit for this component; null where none applies. A "
+                                      "'maximum annual contribution' is NOT a wage base — "
+                                      "transcribe the wage ceiling it derives from, and note it"},
+                        "period_max": {
+                            "type": ["array", "null"],
+                            "description": "Printed per-period maximum contribution(s); null "
+                            "unless the publication prints one (NY DBL 60 cents/week, HI TDI "
+                            "maximum weekly deduction)",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": False,
+                                "required": ["frequency", "amount"],
+                                "properties": {"frequency": FREQUENCY_ENUM, "amount": DECIMAL},
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
     "futa": {
         "type": "object",
         "additionalProperties": False,

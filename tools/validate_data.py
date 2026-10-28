@@ -29,6 +29,7 @@ WITHHOLDING_TAXES = (
     "fica",
     "futa",
     "state_unemployment_insurance",
+    "state_disability_insurance",
 )
 
 

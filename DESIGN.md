@@ -208,6 +208,17 @@ params:
 employer_rate_is_user_input: true             # always true; engine requires it
 ```
 
+```yaml
+tax: state_disability_insurance              # SDI / TDI / PFL / PFML — EMPLOYEE contributions
+method: sdi                                  # methods/sdi.md
+params:
+  wage_definition: fica                      # taxability-matrix column defining programme wages
+  components:                                # one per published contribution; rounded independently
+    - { name: DBL, rate: "0.0050", employee_share: "1", wage_base: null, period_max: { weekly: "0.60" } }
+    - { name: PFL, rate: "0.00432", employee_share: "1", wage_base: "95200" }
+```
+Employer-side programme contributions are not withholding and are out of scope.
+
 ### 3.5 Taxability matrix
 
 `/taxability/us.yaml` maps deduction types to the wage bases they reduce:

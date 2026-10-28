@@ -893,3 +893,38 @@ def test_local_golden_case_puts_allowances_on_the_local_election():
         example=example, as_of="2026-06-15", document="NYS-50-T-NYC")
     assert g["input"]["locals"] == [{"jurisdiction": "US-NY-NYC", "resident": True, "allowances": 3}]
     assert g["input"]["state"] == [{"jurisdiction": "US-NY", "filing_status": "single"}]
+
+
+# --- sdi (state disability / paid leave)
+
+def test_sdi_paths_and_slug():
+    assert str(assemble.data_path("US-CA", 2026, "state_disability_insurance")) == "data/us/ca/2026/sdi.yaml"
+    assert assemble.golden_slug("US-CA", "state_disability_insurance") == "us-ca-sdi"
+
+
+def test_sdi_transform_roundtrip():
+    out = assemble._transform_params("sdi", {
+        "wage_definition": "fica",
+        "components": [
+            {"name": "DBL", "rate": "0.0050", "employee_share": "1", "wage_base": None,
+             "period_max": [{"frequency": "weekly", "amount": "0.60"}]},
+            {"name": "PFL", "rate": "0.00432", "employee_share": "1", "wage_base": "95200", "period_max": None},
+        ],
+    })
+    assert out["components"][0]["period_max"] == {"weekly": "0.60"}
+    assert "period_max" not in out["components"][1]
+    assert out["components"][1]["wage_base"] == "95200"
+
+
+def test_sdi_golden_case_is_jurisdiction_keyed():
+    example = {
+        "description": "$1,000 weekly x 0.432%", "page": 1,
+        "pay_frequency": "weekly", "gross_wages": "1000.00",
+        "filing_status": None, "allowances": None, "additional_withholding": None,
+        "expected_withholding": "4.32",
+    }
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-NY", tax="state_disability_insurance", example=example,
+        as_of="2026-06-15", document="PFL 2026 page")
+    assert g["expect"] == {"sdi_withholding": {"US-NY": "4.32"}}
+    assert "state" not in g["input"] and "locals" not in g["input"]
