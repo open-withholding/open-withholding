@@ -1,0 +1,27 @@
+schema_version: '0.1'
+jurisdiction: US-NJ
+tax: state_disability_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2026)
+  url: https://www.nj.gov/labor/ea/employer-services/rate-info/
+  retrieved: '2026-10-28'
+  sha256: 60a09aeab90418c9d1f5f5a4412e6ed535aee0911847c4d27307ea2c64a7fe1d
+  notes: Extracted by pipeline; pages per PR body
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: fica
+  components:
+  - name: TDI
+    rate: '0.0019'
+    employee_share: '1'
+    wage_base: '171100'
+  - name: FLI
+    rate: '0.0023'
+    employee_share: '1'
+    wage_base: '171100'
