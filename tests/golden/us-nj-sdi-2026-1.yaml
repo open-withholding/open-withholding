@@ -1,0 +1,12 @@
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000, first paycheck: TDI and FLI computed and rounded
+    separately, then summed), expected value computed by the reference engine: TDI 3.80 + FLI 4.60 = 8.40'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  sdi_withholding:
+    US-NJ: '8.40'

@@ -1,0 +1,14 @@
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with the workers'' wage base already reached: nothing
+    withheld), expected value computed by the reference engine: TDI 0.00 + FLI 0.00 = 0.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sdi_wages: '171100'
+expect:
+  sdi_withholding:
+    US-NJ: '0.00'
