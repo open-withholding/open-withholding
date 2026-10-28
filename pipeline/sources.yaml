@@ -1220,13 +1220,19 @@
   tax: state_unemployment_insurance
   method: sui
   landing: "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
+  # The overview page prints only the $7,000 base and the 2.7% initial
+  # rate; the schedule's minimum and maximum live on the Rate Information
+  # page (first run failed honestly with a blank rate_range — issue #181).
   documents:
     - name: "Florida DOR reemployment tax page (HTML)"
       kind: html
       url: "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
+    - name: "Florida DOR Reemployment Tax Rate Information page (HTML)"
+      kind: html
+      url: "https://floridarevenue.com/taxes/taxesfees/Pages/rt_rate.aspx"
   no_printed_examples: true
   extraction_hint: >-
-    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the taxable wage base per employee per year ($7,000 unless the page says otherwise); new_employer_rate = the initial rate for new employers as a decimal fraction; new_employer_rate_construction null; rate_range = the minimum and maximum rates the page states experience-rated employers can be assigned. Florida publishes no separate flat surtax - surtaxes null.
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the taxable wage base per employee per year ($7,000 unless the page says otherwise); new_employer_rate = the initial rate for new employers as a decimal fraction; new_employer_rate_construction null; rate_range = the minimum and maximum rates for wages paid in the target year as stated on the Rate Information page (printed both as decimals, e.g. 0.0010 and 0.0540, and as dollars per employee - transcribe the decimals). Florida publishes no separate flat surtax - surtaxes null.
   check: [content_hash]
   expected_window: "11-15..01-31"
   maps_to:
@@ -1238,13 +1244,19 @@
   tax: state_unemployment_insurance
   method: sui
   landing: "https://dol.ny.gov/unemployment-insurance-rate-information"
+  # The rate page prints rates only; the wage base (and its 18%-of-average-
+  # annual-wage rule from 2026) is on the NYS-50 employer guide page (first
+  # run failed honestly with a blank wage_base — issue #180).
   documents:
     - name: "NY DOL UI rate information page (HTML)"
       kind: html
       url: "https://dol.ny.gov/unemployment-insurance-rate-information"
+    - name: "NYS-50 Employer's Guide to Unemployment Insurance, Wage Reporting, and Withholding Tax (HTML page)"
+      kind: html
+      url: "https://dol.ny.gov/employers-guide-unemployment-insurance-wage-reporting-and-withholding-tax-nys-50-0"
   no_printed_examples: true
   extraction_hint: >-
-    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the UI wage base for the target year. New York rate notices state a NORMAL contribution rate plus a SUBSIDIARY contribution rate - the employer's noticed rate for this method is their SUM: new_employer_rate = new-employer normal rate + the subsidiary rate that applies to new employers (show the addition in notes); new_employer_rate_construction null; rate_range = the printed lowest and highest total (normal + subsidiary) rates. The Re-employment Service Fund contribution (0.075 percent) is a SEPARATE flat charge on the same wage base - transcribe it as one surtaxes entry named 'Re-employment Service Fund'. Benefit, DBL and PFL matters are out of scope.
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the page publishes for everyone, for the target year. wage_base = the UI wage base for the target year, taken from the NYS-50 employer guide page ('The <year> UI wage base is $X'); the Re-employment Service Fund surtax uses the same base. New York rate notices state a NORMAL contribution rate plus a SUBSIDIARY contribution rate - the employer's noticed rate for this method is their SUM: new_employer_rate = new-employer normal rate + the subsidiary rate that applies to new employers (show the addition in notes); new_employer_rate_construction null; rate_range = the printed lowest and highest total (normal + subsidiary) rates. The Re-employment Service Fund contribution (0.075 percent) is a SEPARATE flat charge on the same wage base - transcribe it as one surtaxes entry named 'Re-employment Service Fund'. Benefit, DBL and PFL matters are out of scope.
   check: [content_hash]
   expected_window: "12-01..03-31"
   maps_to:
