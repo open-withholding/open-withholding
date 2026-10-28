@@ -1,0 +1,30 @@
+schema_version: '0.1'
+jurisdiction: US-IN-PERRY
+tax: local_income_withholding
+effective_from: '2026-10-01'
+effective_to: null
+source:
+  document: 'Departmental Notice #1, How to Compute Withholding for State and County Income Tax — county
+    rate table (2026) (2026)'
+  url: https://www.in.gov/dor/files/dn01.pdf
+  retrieved: '2026-10-28'
+  sha256: 5eb64923aaa1b0f21c105dd64ab318fef290b232864109cd571d7bb9375b5315
+  notes: Extracted by pipeline; pages per PR body; county Perry (code 62) rate from the printed rate table
+method: deduction_constant_percentage
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.014'
+  exemptions:
+    personal: '1000'
+    dependent: '1500'
+    first_time_dependent: '1500'
+    adopted: '3000'
+  periods_per_year:
+    daily: '365'
+    weekly: '52'
+    biweekly: '26'
+    semimonthly: '24'
+    monthly: '12'
