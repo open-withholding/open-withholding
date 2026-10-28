@@ -1,0 +1,17 @@
+source:
+  document: EPB00744 (percentage computation) + ICTCAT allowance table (HTML)
+  page: 1
+  example: 'Percentage Computation method: unmarried employee paid $1,212 biweekly, claims four Idaho
+    withholding allowances (each worth $0). Amount subject to withholding $1,212; tax = 5.3% of amount
+    over $619.'
+as_of: '2026-07-23'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1212'
+  state:
+  - jurisdiction: US-ID
+    filing_status: single
+    allowances: 4
+    additional_withholding: '0'
+expect:
+  state_withholding: '31'

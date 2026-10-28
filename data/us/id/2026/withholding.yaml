@@ -1,0 +1,38 @@
+schema_version: '0.2'
+jurisdiction: US-ID
+tax: state_income_withholding
+effective_from: '2026-07-23'
+effective_to: null
+supersedes: data/us/id/2025/withholding.yaml
+sources:
+- document: EPB00744, Idaho Table for Percentage Computation Method of Withholding
+  url: https://tax.idaho.gov/document-mngr/pubs_EPB00744
+  retrieved: '2026-10-28'
+  sha256: c52b383684af433b12eb3b712fbb0de6b61326b5061562440b43464b332cb3d8
+- document: Computing withholding page with Idaho Child Tax Credit Allowance Table (ICTCAT)
+  url: https://tax.idaho.gov/taxes/income-tax/withholding/computing/
+  retrieved: '2026-10-28'
+  sha256: 8a946123e2c67aa88271b3c7514e2eea9a89cf598c9248f251801e56504991e2
+method: annualized_percentage
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: annual
+params:
+  allowance_amount: '0'
+  credit_per_allowance: null
+  brackets:
+    single:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '16100'
+      rate: '0.053'
+      base: '0'
+    married:
+    - over: '0'
+      rate: '0'
+      base: '0'
+    - over: '32200'
+      rate: '0.053'
+      base: '0'
