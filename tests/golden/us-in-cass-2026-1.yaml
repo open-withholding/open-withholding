@@ -1,0 +1,22 @@
+source:
+  document: 'Departmental Notice #1, How to Compute Withholding for State and County Income Tax — county
+    rate table (2026) (2026)'
+  page: 3
+  example: 'pipeline-constructed regression pin: engine-computed at extraction on the printed example''s
+    input; the county rate is transcribed from the printed rate table'
+as_of: '2026-10-01'
+input:
+  pay_frequency: weekly
+  gross_wages: '800.00'
+  locals:
+  - jurisdiction: US-IN-CASS
+    resident: true
+  state:
+  - jurisdiction: US-IN
+    exemptions:
+      personal: 5
+      dependent: 3
+      first_time_dependent: 1
+      adopted: 2
+expect:
+  local_withholding: '13.96'
