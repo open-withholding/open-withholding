@@ -1,0 +1,17 @@
+source:
+  document: NYS-50-T-Y, Yonkers Withholding Tax Tables and Methods (2026)
+  page: 25
+  example: Nonresident earnings tax, Method VIII, weekly payroll, $200 gross wages; annualized 10400 line
+    3, exclusion 2000
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '200'
+  locals:
+  - jurisdiction: US-NY-YONKERS
+    resident: false
+  state:
+  - jurisdiction: US-NY
+    filing_status: single
+expect:
+  local_withholding: '0.81'

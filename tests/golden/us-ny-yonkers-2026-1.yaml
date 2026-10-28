@@ -1,0 +1,17 @@
+source:
+  document: NYS-50-T-Y, Yonkers Withholding Tax Tables and Methods (2026)
+  page: 16
+  example: Weekly payroll, $400 gross wages, single, 3 exemptions; net wages 199.95; table II-A line 2
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '400'
+  locals:
+  - jurisdiction: US-NY-YONKERS
+    resident: true
+    allowances: 3
+  state:
+  - jurisdiction: US-NY
+    filing_status: single
+expect:
+  local_withholding: '1.34'

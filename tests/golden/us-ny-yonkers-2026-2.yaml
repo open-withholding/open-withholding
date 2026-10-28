@@ -1,0 +1,18 @@
+source:
+  document: NYS-50-T-Y, Yonkers Withholding Tax Tables and Methods (2026)
+  page: 16
+  example: Semimonthly payroll, $5,000 gross wages, single, 1 exemption; net wages 4650.00; table II-C
+    line 7
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '5000'
+  locals:
+  - jurisdiction: US-NY-YONKERS
+    resident: true
+    allowances: 1
+  state:
+  - jurisdiction: US-NY
+    filing_status: single
+expect:
+  local_withholding: '43.30'
