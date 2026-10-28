@@ -1,0 +1,15 @@
+source:
+  document: Paid Leave Oregon employers page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with $184,000 already paid this year: only the $500
+    left under the wage ceiling is subject), expected value computed by the reference engine: paid_leave
+    3.00 = 3.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sdi_wages: '184000'
+expect:
+  sdi_withholding:
+    US-OR: '3.00'
