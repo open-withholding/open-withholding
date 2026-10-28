@@ -2274,3 +2274,80 @@ def test_yonkers_nonresident_unprinted_frequency_fails_loud(taxability):
     emp = _ny_local_emp("annually", "50000.00", "single", 0, "US-NY-YONKERS", resident=False)
     with pytest.raises(InputError):
         compute_withholding(_yonkers(), emp, taxability)
+
+
+# --- sdi: state disability / paid family & medical leave employee contributions
+
+def _sdi(jur, components, wage_definition="fica"):
+    return load_parameter_dict({
+        "schema_version": "0.1", "jurisdiction": jur, "tax": "state_disability_insurance",
+        "effective_from": "2026-01-01", "source": SOURCE, "method": "sdi",
+        "rounding": {"to": "0.01", "mode": "nearest"},
+        "params": {"wage_definition": wage_definition, "components": components},
+    })
+
+
+def _sdi_emp(gross, freq="biweekly", ytd=None, deductions=None):
+    raw = {"pay_frequency": freq, "gross_wages": gross}
+    if ytd:
+        raw["ytd"] = ytd
+    if deductions:
+        raw["pretax_deductions"] = deductions
+    return EmployeeInput.from_dict(raw)
+
+
+SDI_SINGLE = _sdi("US-ZA", [{"name": "SDI", "rate": "0.0120", "employee_share": "1", "wage_base": None}])
+
+
+def test_sdi_flat_rate_no_wage_base(taxability):
+    # 2,000 x 1.2% = 24.00; no base -> ytd irrelevant
+    assert compute_withholding(SDI_SINGLE, _sdi_emp("2000.00"), taxability) == Decimal("24.00")
+    assert compute_withholding(SDI_SINGLE, _sdi_emp("2000.00", ytd={"sdi_wages": "999999"}),
+                               taxability) == Decimal("24.00")
+
+
+def test_sdi_wage_base_cap_via_ytd(taxability):
+    pf = _sdi("US-ZB", [{"name": "TDI", "rate": "0.0100", "employee_share": "1", "wage_base": "10000"}])
+    # ytd 9,500 of 10,000: on 500 -> 5.00; past cap -> 0
+    assert compute_withholding(pf, _sdi_emp("2000.00", ytd={"sdi_wages": "9500"}), taxability) == Decimal("5.00")
+    assert compute_withholding(pf, _sdi_emp("2000.00", ytd={"sdi_wages": "10000"}), taxability) == Decimal("0")
+
+
+def test_sdi_employee_share_of_total_rate(taxability):
+    # OR-style: 1.0% total, employee 60% -> 2,000 x 0.006 = 12.00 (exact chain, one rounding)
+    pf = _sdi("US-ZC", [{"name": "paid_leave", "rate": "0.0100", "employee_share": "0.60", "wage_base": "176100"}])
+    assert compute_withholding(pf, _sdi_emp("2000.00"), taxability) == Decimal("12.00")
+    # WA-style odd share: 1,234.56 x 0.0113 x 0.7071 = 9.8636... -> 9.86
+    pf = _sdi("US-ZD", [{"name": "pfml", "rate": "0.0113", "employee_share": "0.7071", "wage_base": None}])
+    assert compute_withholding(pf, _sdi_emp("1234.56"), taxability) == Decimal("9.86")
+
+
+def test_sdi_components_round_independently_and_sum(taxability):
+    # NJ-style: TDI 0.23% + FLI 0.33% on 1,001.00 -> 2.3023->2.30 + 3.3033->3.30 = 5.60
+    # (a single combined rate 0.56% would give 5.6056 -> 5.61)
+    pf = _sdi("US-ZE", [
+        {"name": "TDI", "rate": "0.0023", "employee_share": "1", "wage_base": "165400"},
+        {"name": "FLI", "rate": "0.0033", "employee_share": "1", "wage_base": "165400"},
+    ])
+    assert compute_withholding(pf, _sdi_emp("1001.00"), taxability) == Decimal("5.60")
+
+
+def test_sdi_period_max_caps_the_component(taxability):
+    # NY DBL-style: 0.5% of wages, not more than 60 cents per week
+    pf = _sdi("US-ZF", [{"name": "DBL", "rate": "0.0050", "employee_share": "1", "wage_base": None,
+                          "period_max": {"weekly": "0.60", "biweekly": "1.20"}}])
+    assert compute_withholding(pf, _sdi_emp("100.00", freq="weekly"), taxability) == Decimal("0.50")
+    assert compute_withholding(pf, _sdi_emp("1000.00", freq="weekly"), taxability) == Decimal("0.60")
+    assert compute_withholding(pf, _sdi_emp("1000.00", freq="biweekly"), taxability) == Decimal("1.20")
+    with pytest.raises(InputError):
+        compute_withholding(pf, _sdi_emp("1000.00", freq="monthly"), taxability)
+
+
+def test_sdi_wage_definition_routes_the_taxability_column(taxability):
+    # 401(k) traditional reduces federal/state income wages but NOT fica wages
+    ded = [{"type": "401k_traditional", "amount": "200.00"}]
+    fica_based = _sdi("US-ZG", [{"name": "x", "rate": "0.0100", "employee_share": "1", "wage_base": None}])
+    income_based = _sdi("US-ZH", [{"name": "x", "rate": "0.0100", "employee_share": "1", "wage_base": None}],
+                        wage_definition="state_income")
+    assert compute_withholding(fica_based, _sdi_emp("2000.00", deductions=ded), taxability) == Decimal("20.00")
+    assert compute_withholding(income_based, _sdi_emp("2000.00", deductions=ded), taxability) == Decimal("18.00")

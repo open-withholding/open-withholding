@@ -23,6 +23,8 @@ _WAGE_BASE_BY_TAX = {
     "state_income_withholding": "state_income",
     "local_income_withholding": "state_income",  # locals follow their state's treatment
     "fica": "fica",
+    # state_disability_insurance: the column is a PARAM (params.wage_definition,
+    # default "fica") — resolved in compute_withholding.
 }
 
 
@@ -62,7 +64,10 @@ def compute_withholding(
     employee: EmployeeInput,
     taxability: TaxabilityMatrix,
 ) -> Decimal:
-    wage_base = _WAGE_BASE_BY_TAX.get(param_file.tax)
+    if param_file.tax == "state_disability_insurance":
+        wage_base = param_file.params.get("wage_definition", "fica")
+    else:
+        wage_base = _WAGE_BASE_BY_TAX.get(param_file.tax)
     if wage_base is None:
         raise EngineError(f"tax type {param_file.tax!r} is not computable by this engine version")
 
@@ -122,7 +127,7 @@ def compute_withholding(
         additional = local.additional_withholding if local is not None else ZERO
         resident = local.resident if local is not None else True
         federal = None
-    else:  # fica: no elections apply
+    else:  # fica, state_disability_insurance: no elections apply
         filing_status = None
         allowances = 0
         additional = ZERO

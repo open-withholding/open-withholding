@@ -35,16 +35,20 @@ excluded examples documented in `source.notes` (New Jersey, New York),
 and defect reports to the issuing agencies — nine states so far (ND, KY,
 MT, OK, AR, OR, NJ, MD, NY).
 
+Also covered: **FICA** and **FUTA** (federal), **SUI** for Wisconsin and
+Illinois (the employer's experience rate is always an input), and
+**Indiana's 92 county** income taxes (Maryland's county rates are embedded
+in its state schedules). The taxability matrix is `cited`.
+
 Not yet covered, in rough priority order:
 
-- **FICA / FUTA and annual limits** — in progress, gating the first
-  release tag
-- **Local income taxes** — NYC/Yonkers, Indiana's 92 counties, the
-  Ohio/Pennsylvania registries (Maryland's county rates are already
-  embedded in its state schedules)
-- **SUI / SDI** schedules
-- Supplemental-wage rates; and the taxability matrix is still
-  `draft_uncited` — a declared release blocker
+- **Local income taxes** — NYC/Yonkers (method shipped, data pending),
+  Ohio school districts, Michigan cities, the Ohio/Pennsylvania municipal
+  registries
+- **State disability / paid family & medical leave** employee
+  contributions — method `sdi` shipped; the first eight programmes (CA,
+  NJ, NY PFL, MA, RI, WA, OR, CO) are registered and awaiting extraction
+- **SUI** for the remaining states; supplemental-wage rates
 
 ## Layout
 
