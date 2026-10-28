@@ -241,7 +241,18 @@
           },
           "resident": {
             "type": "boolean",
-            "default": true
+            "default": true,
+            "description": "Resident of the locality. Selects the resident vs nonresident rule where both exist (Yonkers: 16.75% surcharge vs 0.50% earnings tax); NYC withholds for residents only."
+          },
+          "allowances": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Local allowance count where the certificate has a separate line (IT-2104 line 2 for NYC). Omit to inherit the parent state's count."
+          },
+          "additional_withholding": {
+            "$ref": "#/$defs/money",
+            "default": "0",
+            "description": "Additional amount per period for this locality (IT-2104 line 4 NYC / line 5 Yonkers)"
           }
         }
       }

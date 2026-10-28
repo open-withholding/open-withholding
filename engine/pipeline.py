@@ -48,6 +48,10 @@ class MethodContext:
     ytd: dict = None
     exemptions: dict = None  # named counts (IN WH-4 lines 5-8)
     rate_schedule: str | None = None  # employer-selected printed schedule (MD)
+    # Locals only: the LocalElection's resident flag (Yonkers has distinct
+    # resident / nonresident rules; NYC taxes residents only). None for
+    # federal/state/employer taxes.
+    resident: bool | None = None
     # Employer-side taxes (futa, sui) — from the input's employer block.
     sui_jurisdiction: str | None = None
     sui_experience_rate: Decimal | None = None
@@ -74,6 +78,7 @@ def compute_withholding(
     elected_amount = None
     exemptions = {}
     rate_schedule = None
+    resident = None
     if param_file.tax == "federal_income_withholding":
         if employee.federal is None:
             raise InputError("federal withholding requested but input has no federal block")
@@ -97,16 +102,25 @@ def compute_withholding(
         # county deduction constant comes from the same WH-4 the state tax
         # uses (DN #1 computes both on one worksheet). No election for the
         # parent state means none was filed — zero exemptions/allowances,
-        # which is the certificate default, not an error.
+        # which is the certificate default, not an error. The LocalElection
+        # itself may override the allowance count (IT-2104 line 2 is a
+        # separate NYC count) and carries the local additional amount
+        # (IT-2104 lines 4/5) and the resident flag.
         parent = "-".join(param_file.jurisdiction.split("-")[:2])
         election = next(
             (e for e in employee.state for _ in [0] if e.jurisdiction == parent), None
         )
+        local = next(
+            (l for l in employee.locals if l.jurisdiction == param_file.jurisdiction), None
+        )
         filing_status = election.filing_status if election else None
         allowances = election.allowances if election else 0
+        if local is not None and local.allowances is not None:
+            allowances = local.allowances
         secondary = election.secondary_allowances if election else 0
         exemptions = election.exemptions if election else {}
-        additional = ZERO  # local additional withholding is not modeled yet
+        additional = local.additional_withholding if local is not None else ZERO
+        resident = local.resident if local is not None else True
         federal = None
     else:  # fica: no elections apply
         filing_status = None
@@ -129,6 +143,7 @@ def compute_withholding(
         elected_annual_amount=elected_amount,
         exemptions=exemptions,
         rate_schedule=rate_schedule,
+        resident=resident,
         period_federal_income_withholding=employee.period_federal_income_withholding,
         period_fica_withholding=employee.period_fica_withholding,
         ytd=employee.ytd,

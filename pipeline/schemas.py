@@ -721,8 +721,51 @@ _PARAMS_BY_METHOD = {
         "type": "object",
         "additionalProperties": False,
         "required": ["deduction", "exemption_value", "brackets",
-                     "method_iii_cutover", "method_iii"],
+                     "method_iii_cutover", "method_iii",
+                     "surcharge_rate", "nonresident_earnings_tax"],
+        "description": "NYS-50-T-NYS (state), NYS-50-T-NYC (New York City: Method II only — "
+        "method_iii_cutover and method_iii are null) and NYS-50-T-Y (Yonkers: the STATE "
+        "tables plus surcharge_rate 0.1675 and the nonresident earnings tax block) share "
+        "this shape. Fields a publication does not print are null, never invented.",
         "properties": {
+            "surcharge_rate": {
+                **DECIMAL_OR_NULL,
+                "description": "Yonkers resident surcharge: the decimal the Method II/III "
+                "result is multiplied by (0.1675). Null for the state and NYC.",
+            },
+            "nonresident_earnings_tax": {
+                "type": ["object", "null"],
+                "additionalProperties": False,
+                "required": ["rate", "annual_factors", "exclusions"],
+                "description": "Yonkers nonresident earnings tax, Method VIII (annualized): "
+                "Table P factors, the annual exclusion schedule, the flat rate. Null for the "
+                "state and NYC.",
+                "properties": {
+                    "rate": DECIMAL,
+                    "annual_factors": {
+                        "type": "array",
+                        "description": "Table P: one entry per printed payroll period",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["frequency", "periods"],
+                            "properties": {"frequency": FREQUENCY_ENUM, "periods": {"type": "integer"}},
+                        },
+                    },
+                    "exclusions": {
+                        "type": "array",
+                        "description": "Annual tax rate schedule rows: over = column 1 (exclusive "
+                        "lower bound), exclusion = column 3; the 'No tax withheld' line has "
+                        "exclusion null",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["over", "exclusion"],
+                            "properties": {"over": DECIMAL, "exclusion": DECIMAL_OR_NULL},
+                        },
+                    },
+                },
+            },
             "deduction": {
                 "type": "array",
                 "description": "Table B deduction allowance, one entry per printed "
@@ -778,7 +821,7 @@ _PARAMS_BY_METHOD = {
                 },
             },
             "method_iii_cutover": {
-                "type": "array",
+                "type": ["array", "null"],
                 "description": "Each bracket table's FINAL printed line ('$X & over -> "
                 "use Method III'): the per-period net-wage amount at which Method III "
                 "takes over, per period and marital status",
@@ -794,7 +837,7 @@ _PARAMS_BY_METHOD = {
                 },
             },
             "method_iii": {
-                "type": "array",
+                "type": ["array", "null"],
                 "description": "Method III top-rate bands on ANNUALIZED net wages, one "
                 "entry per marital status; each band: over = column 1 'at least', rate "
                 "= column 3",
@@ -1168,11 +1211,18 @@ WORKED_EXAMPLE = {
         "additional_withholding",
         "elected_annual_amount",
         "period_federal_income_withholding",
+        "resident",
         "expected_withholding",
     ],
     "properties": {
         "page": {"type": "integer"},
         "description": {"type": "string"},
+        "resident": {
+            "type": ["boolean", "null"],
+            "description": "Local taxes with distinct resident / nonresident rules "
+            "(Yonkers): false for a nonresident earnings tax example, true for a "
+            "resident example; null for every other jurisdiction",
+        },
         "pay_frequency": {
             "enum": ["daily", "weekly", "biweekly", "semimonthly", "monthly", "quarterly", "semiannually", "annually"]
         },

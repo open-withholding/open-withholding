@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/open-withholding/schema/withholding.schema.json",
   "title": "Withholding parameter file",
-  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 — org URL in $id is a placeholder.",
+  "description": "One jurisdiction-year(-revision) income tax withholding parameter set. Draft v0.1 \u2014 org URL in $id is a placeholder.",
   "type": "object",
   "required": [
     "schema_version",
@@ -150,7 +150,7 @@
         },
         "intermediate_to": {
           "$ref": "#/$defs/money",
-          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` — e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
+          "description": "Granularity for the intermediate (annual) rounding when it differs from `to` \u2014 e.g. VA rounds the annual tax to \"1.00\" but the final amount to \"0.01\""
         }
       }
     }
@@ -1404,9 +1404,7 @@
             "required": [
               "deduction",
               "exemption_value",
-              "brackets",
-              "method_iii_cutover",
-              "method_iii"
+              "brackets"
             ],
             "additionalProperties": false,
             "properties": {
@@ -1514,8 +1512,68 @@
                     }
                   }
                 }
+              },
+              "surcharge_rate": {
+                "$ref": "#/$defs/rate",
+                "description": "Yonkers resident surcharge multiplier on the Method II/III result (0.1675)"
+              },
+              "nonresident_earnings_tax": {
+                "type": "object",
+                "required": [
+                  "rate",
+                  "annual_factors",
+                  "exclusions"
+                ],
+                "additionalProperties": false,
+                "description": "Yonkers nonresident earnings tax, Method VIII (annualized)",
+                "properties": {
+                  "rate": {
+                    "$ref": "#/$defs/rate"
+                  },
+                  "annual_factors": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": false,
+                    "description": "Table P: pay periods per year per printed payroll period",
+                    "patternProperties": {
+                      "^(daily|weekly|biweekly|semimonthly|monthly|quarterly|semiannually|annually)$": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    }
+                  },
+                  "exclusions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Annual tax rate schedule: over = exclusive lower bound, exclusion = annual exclusion (null on the no-tax line)",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "over",
+                        "exclusion"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "over": {
+                          "$ref": "#/$defs/money"
+                        },
+                        "exclusion": {
+                          "oneOf": [
+                            {
+                              "$ref": "#/$defs/money"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
               }
-            }
+            },
+            "description": "NYS-50-T-NYS (state), NYS-50-T-NYC (NYC: no Method III) and NYS-50-T-Y (Yonkers: surcharge_rate + nonresident_earnings_tax) share this shape; blocks a publication does not print are absent"
           }
         }
       }
