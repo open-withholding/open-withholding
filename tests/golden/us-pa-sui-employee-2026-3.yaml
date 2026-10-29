@@ -1,0 +1,12 @@
+source:
+  document: L&I Employee Withholding page (HTML)
+  page: 1
+  example: 'maintainer-constructed (weekly $1,234.56: rate applied to gross, one rounding), expected value
+    computed by the reference engine: employee_uc 0.86 = 0.86'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1234.56'
+expect:
+  sui_employee_withholding:
+    US-PA: '0.86'

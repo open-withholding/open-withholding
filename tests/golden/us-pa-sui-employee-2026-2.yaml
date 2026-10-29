@@ -1,0 +1,15 @@
+source:
+  document: L&I Employee Withholding page (HTML)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with $999,999 already paid this year: no wage base
+    applies to the employee contribution (gross wages)), expected value computed by the reference engine:
+    employee_uc 1.40 = 1.40'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '999999'
+expect:
+  sui_employee_withholding:
+    US-PA: '1.40'
