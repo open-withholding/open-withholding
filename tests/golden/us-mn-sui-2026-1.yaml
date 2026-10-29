@@ -1,0 +1,16 @@
+source:
+  document: uimn.org Unemployment Tax Rates page (HTML)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at the schedule maximum 9.300% (no single new-employer
+    rate is published - industry-based), first paycheck (plus the separately published surtax)), expected
+    value computed by the reference engine: 2,000 x 9.300% = 186.00 + Additional Assessment 2,000 x 14.00%
+    = 280.00 + Special Assessment (Federal Loan Interest Assessment) 2,000 x 0.0000% = 0.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-MN
+    sui_experience_rate: '0.0930'
+expect:
+  sui_tax: '466.00'
