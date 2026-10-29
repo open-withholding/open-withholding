@@ -1,0 +1,14 @@
+source:
+  document: EDD Rates and Withholding page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $10,000 with $250,000 already paid this year: no cap, so
+    the full period is subject), expected value computed by the reference engine: SDI 130.00 = 130.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '10000.00'
+  ytd:
+    sdi_wages: '250000'
+expect:
+  sdi_withholding:
+    US-CA: '130.00'
