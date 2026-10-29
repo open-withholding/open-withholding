@@ -1,0 +1,29 @@
+schema_version: '0.2'
+jurisdiction: US-VA
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'VEC FAQ: What is the wage base for each employee (HTML)'
+  url: https://www.vec.virginia.gov/FAQs/employers/what-wage-base-each-employee-i-will-pay-taxes
+  retrieved: '2026-10-29'
+  sha256: 50134e1270cbef29b59d80e23cc2c4af040b8f9e30dabb1f0ce11702a783910d
+- document: 'VEC FAQ: How are tax rates assigned (HTML)'
+  url: https://www.vec.virginia.gov/FAQs/employers/how-are-tax-rates-assigned
+  retrieved: '2026-10-29'
+  sha256: eca462c5ee182822eb3a7297c5634ed396e9200cb8e84d581c95bf3c7644ee97
+- document: 'VEC FAQ: What factors determine my tax rate (HTML)'
+  url: https://vec.virginia.gov/FAQs/employers/what-factors-determine-my-tax-rate
+  retrieved: '2026-10-29'
+  sha256: e79a3d7e5f819afe7397352f8e15a140f0ecdbb696b8db3b2073ca81ea044549
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '8000'
+  new_employer_rate: '0.025'
+  rate_range:
+    min: '0.001'
+    max: '0.062'
