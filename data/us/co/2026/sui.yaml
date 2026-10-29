@@ -1,0 +1,26 @@
+schema_version: '0.2'
+jurisdiction: US-CO
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: CDLE Premium Rates page (HTML)
+  url: https://cdle.colorado.gov/employers/unemployment-insurance-premiums/premium-rates
+  retrieved: '2026-10-29'
+  sha256: d06f6d0d7827c6ba7559eeb877b31aa0f58217b3c69550aa6fbbcdad2bbf07c7
+- document: CDLE Introductory Rates page (HTML)
+  url: https://cdle.colorado.gov/employers/unemployment-insurance-premiums/introductory-rates
+  retrieved: '2026-10-29'
+  sha256: e290a6564e8557af835c359714bc5cbf37993095b62f26e2d4f1627cc2e298d9
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '30600'
+  new_employer_rate: '0.0305'
+  rate_range:
+    min: '0.0058'
+    max: '0.0740'
+  new_employer_rate_construction: '0.062850'
