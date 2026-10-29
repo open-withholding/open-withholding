@@ -1,0 +1,14 @@
+source:
+  document: NC DES tax rate information page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at the standard beginning rate 1.0%, first paycheck),
+    expected value computed by the reference engine: 2,000 x 1.00% = 20.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-NC
+    sui_experience_rate: '0.0100'
+expect:
+  sui_tax: '20.00'

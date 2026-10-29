@@ -1,0 +1,14 @@
+source:
+  document: NC DES tax rate information page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (weekly $1,500 at the statutory minimum rate 0.06%, first paycheck),
+    expected value computed by the reference engine: 1,500 x 0.06% = 0.90'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1500.00'
+  employer:
+    sui_jurisdiction: US-NC
+    sui_experience_rate: '0.0006'
+expect:
+  sui_tax: '0.90'
