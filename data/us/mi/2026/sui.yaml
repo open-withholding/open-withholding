@@ -1,0 +1,22 @@
+schema_version: '0.1'
+jurisdiction: US-MI
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Michigan UIA Tax Rates and Liability FAQ (HTML) (2026)
+  url: https://www.michigan.gov/leo/bureaus-agencies/uia/employers/frequently-asked-questions-for-employers/for-employers/tax-rates-and-liability
+  retrieved: '2026-10-29'
+  sha256: 79ba94d45500e1b950251e8b728eed322adbff671f9f52d38a293fdab70182d4
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '9000'
+  new_employer_rate: '0.027'
+  rate_range:
+    min: '0.0006'
+    max: '0.081'
