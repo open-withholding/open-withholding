@@ -1710,6 +1710,17 @@
                           "$ref": "#/$defs/money"
                         }
                       }
+                    },
+                    "weekly_max": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/$defs/money"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ],
+                      "description": "Per-week maximum contribution; scaled to the pay frequency by the engine"
                     }
                   }
                 }

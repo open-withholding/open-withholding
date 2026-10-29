@@ -2351,3 +2351,19 @@ def test_sdi_wage_definition_routes_the_taxability_column(taxability):
                         wage_definition="state_income")
     assert compute_withholding(fica_based, _sdi_emp("2000.00", deductions=ded), taxability) == Decimal("20.00")
     assert compute_withholding(income_based, _sdi_emp("2000.00", deductions=ded), taxability) == Decimal("18.00")
+
+
+def test_sdi_weekly_max_scales_to_the_pay_frequency(taxability):
+    # NY DBL: 0.5% of wages, "no more than sixty cents a week" -> 0.60 / 1.20 / 1.30 / 2.60
+    pf = _sdi("US-ZI", [{"name": "DBL", "rate": "0.0050", "employee_share": "1", "wage_base": None,
+                          "weekly_max": "0.60"}])
+    assert compute_withholding(pf, _sdi_emp("1000.00", freq="weekly"), taxability) == Decimal("0.60")
+    assert compute_withholding(pf, _sdi_emp("2000.00", freq="biweekly"), taxability) == Decimal("1.20")
+    assert compute_withholding(pf, _sdi_emp("2000.00", freq="semimonthly"), taxability) == Decimal("1.30")
+    assert compute_withholding(pf, _sdi_emp("4000.00", freq="monthly"), taxability) == Decimal("2.60")
+    # under the cap the rate applies: $100 weekly -> 0.50
+    assert compute_withholding(pf, _sdi_emp("100.00", freq="weekly"), taxability) == Decimal("0.50")
+    # HI TDI: max weekly deduction 7.50 -> biweekly cap 15.00
+    hi = _sdi("US-ZJ", [{"name": "TDI", "rate": "0.0050", "employee_share": "1", "wage_base": None,
+                          "weekly_max": "7.50"}])
+    assert compute_withholding(hi, _sdi_emp("5000.00", freq="biweekly"), taxability) == Decimal("15.00")

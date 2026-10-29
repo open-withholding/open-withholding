@@ -1,4 +1,4 @@
-# Method: `sdi` (v1)
+# Method: `sdi` (v1.1)
 
 State disability insurance and paid family / medical leave — the EMPLOYEE
 contribution withheld from wages each pay period (CA SDI, NJ TDI + FLI,
@@ -35,10 +35,16 @@ From params (all printed values transcribed verbatim):
     rate and a share (WA, OR, CO, MN, DE)
   - `wage_base` — annual taxable wage limit, or null where the programme
     has none (CA SDI since 2024, NY DBL)
-  - `period_max` — `{frequency: amount}` printed per-period maximum
-    contribution, or null (NY DBL: 60¢ per week; HI TDI: the maximum
-    weekly deduction). Only printed frequencies are encoded; an unprinted
-    frequency fails loud rather than prorating.
+  - `weekly_max` — the maximum contribution where the publication defines
+    it PER WEEK (NY DBL: "no more than sixty cents a week"; HI TDI: the
+    "maximum weekly deduction"). A period's cap is `weekly_max × 52 ÷
+    pay periods`, rounded to the cent — weekly 0.60, biweekly 1.20,
+    semimonthly 1.30, monthly 2.60 for NY DBL, the figures payroll
+    practice uses. Null where the publication defines no weekly cap.
+  - `period_max` — `{frequency: amount}` where the publication prints a
+    per-period maximum TABLE, or null. Only printed frequencies are
+    encoded; an unprinted frequency fails loud rather than prorating.
+    (A cap stated once per week is `weekly_max`, not a one-row table.)
 - envelope `rounding` (cents, nearest)
 
 ## Algorithm
@@ -52,7 +58,8 @@ for each component:
   2. subject = wages                                   if wage_base is null
              = min(wages, max(0, wage_base − ytd))     otherwise
   3. amount  = r(subject × effective_rate)
-  4. amount  = min(amount, period_max[frequency])      if period_max printed
+  4. amount  = min(amount, r(weekly_max × 52 ÷ periods))  if weekly_max
+     amount  = min(amount, period_max[frequency])          if period_max printed
 withhold = Σ amount
 ```
 
@@ -71,4 +78,7 @@ withhold = Σ amount
 - The wage base caps WAGES, not contributions: a published "maximum
   annual contribution" that is rate × a wage ceiling is transcribed as
   that wage ceiling (NY PFL: the statewide average weekly wage × 52).
+- v1.1 (2026-10-28): `weekly_max` added. v1's `period_max` alone made a
+  weekly-defined cap unusable for any other payroll frequency (the NY
+  DBL file would have failed loud for every biweekly employer).
 - Withholding is never negative; all params are non-negative.
