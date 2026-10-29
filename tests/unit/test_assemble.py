@@ -939,3 +939,16 @@ def test_sdi_golden_case_is_jurisdiction_keyed():
         as_of="2026-06-15", document="PFL 2026 page")
     assert g["expect"] == {"sdi_withholding": {"US-NY": "4.32"}}
     assert "state" not in g["input"] and "locals" not in g["input"]
+
+
+def test_every_extraction_schema_uses_only_api_supported_keywords():
+    """The model API's structured output rejects oneOf/anyOf/allOf (the
+    MA/WA/CO reruns died on one). Keep every extraction schema to plain types."""
+    import json
+    from pipeline import schemas
+    for method in schemas._PARAMS_BY_METHOD:
+        dumped = json.dumps(schemas.extraction_schema(method))
+        for kw in ('"oneOf"', '"anyOf"', '"allOf"', '"not"'):
+            assert kw not in dumped, f"{method}: extraction schema uses {kw}"
+    dumped = json.dumps(schemas.VERIFICATION_SCHEMA)
+    assert '"oneOf"' not in dumped and '"anyOf"' not in dumped
