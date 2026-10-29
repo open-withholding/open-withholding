@@ -1,0 +1,15 @@
+source:
+  document: 'NYS-50-T-style: WCB employer DBL page + paidfamilyleave.ny.gov/2026 (2026)'
+  page: 1
+  example: 'maintainer-constructed: biweekly $4,000 with the PFL wage ceiling (95,348.76) already reached
+    this year -> PFL 0; DBL 0.5% x 4,000 = 20.00 capped at the biweekly scaling of 60 cents a week, 1.20;
+    expected value computed by the reference engine'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '4000.00'
+  ytd:
+    sdi_wages: '95348.76'
+expect:
+  sdi_withholding:
+    US-NY: '1.20'
