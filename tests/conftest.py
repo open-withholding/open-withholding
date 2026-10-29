@@ -17,3 +17,10 @@ def taxability():
 @pytest.fixture(scope="session")
 def fixture_params():
     return load_data_root(FIXTURES / "data")
+
+
+@pytest.fixture(scope="session")
+def real_params():
+    """The repo's /data loaded ONCE per session. Loading per golden case
+    cost ~0.8 s x 485 cases (15-minute CI runs after Ohio's 214 files)."""
+    return load_data_root(REPO_ROOT / "data")
