@@ -20,6 +20,7 @@ WITHHOLDING_TAXES = (
     "futa",
     "state_unemployment_insurance",
     "state_disability_insurance",
+    "state_unemployment_insurance_employee",
 )
 
 
@@ -29,7 +30,8 @@ def data_path(
     """Repo-relative path for a jurisdiction-year parameter file."""
     filename = {"fica": "fica.yaml", "futa": "futa.yaml",
                 "state_unemployment_insurance": "sui.yaml",
-                "state_disability_insurance": "sdi.yaml"}.get(tax, "withholding.yaml")
+                "state_disability_insurance": "sdi.yaml",
+                "state_unemployment_insurance_employee": "sui-employee.yaml"}.get(tax, "withholding.yaml")
     parts = jurisdiction.split("-")
     if jurisdiction == "US":
         return PurePosixPath(f"data/us/federal/{year}/{filename}")
@@ -46,7 +48,8 @@ def golden_slug(jurisdiction: str, tax: str = "state_income_withholding") -> str
     base = "us-federal" if jurisdiction == "US" else jurisdiction.lower()
     suffix = {"fica": "-fica", "futa": "-futa",
               "state_unemployment_insurance": "-sui",
-              "state_disability_insurance": "-sdi"}.get(tax, "")
+              "state_disability_insurance": "-sdi",
+              "state_unemployment_insurance_employee": "-sui-employee"}.get(tax, "")
     return base + suffix
 
 
@@ -251,6 +254,7 @@ def _transform_params(method: str, params: dict) -> dict:
     if method == "sdi":
         return {
             "wage_definition": params["wage_definition"],
+            **({"ytd_tracker": params["ytd_tracker"]} if params.get("ytd_tracker") else {}),
             "components": [
                 {
                     "name": c["name"],
@@ -659,14 +663,15 @@ def assemble_golden_case(
         expect_key = "futa_tax"  # employer liability
     elif tax == "state_unemployment_insurance":
         expect_key = "sui_tax"  # employer liability; jurisdiction from input.employer
-    elif tax == "state_disability_insurance":
+    elif tax in ("state_disability_insurance", "state_unemployment_insurance_employee"):
         # No election names the state: the expectation is jurisdiction-keyed.
+        key = "sdi_withholding" if tax == "state_disability_insurance" else "sui_employee_withholding"
         return {
             "source": {"document": document, "page": example["page"],
                        "example": example["description"]},
             "as_of": as_of,
             "input": record,
-            "expect": {"sdi_withholding": {jurisdiction: example["expected_withholding"]}},
+            "expect": {key: {jurisdiction: example["expected_withholding"]}},
         }
     elif tax == "local_income_withholding":
         # The local election carries what the certificate makes local: the

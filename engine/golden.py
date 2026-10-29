@@ -30,6 +30,7 @@ _WITHHOLDING_TAXES = (
     "futa",
     "state_unemployment_insurance",
     "state_disability_insurance",
+    "state_unemployment_insurance_employee",
 )
 
 
@@ -93,6 +94,10 @@ def _expected_pairs(case: GoldenCase, employee: EmployeeInput, key: str, expecte
         return [("US", "fica", expected)]
     if key == "futa_tax":
         return [("US", "futa", expected)]
+    if key == "sui_employee_withholding":
+        if not isinstance(expected, dict):
+            raise DataError(f"{case.path}: sui_employee_withholding must be a jurisdiction-keyed mapping")
+        return [(jur, "state_unemployment_insurance_employee", amount) for jur, amount in expected.items()]
     if key == "sdi_withholding":
         # No election names the state, so the expectation is always a
         # jurisdiction-keyed mapping: {US-CA: "26.00"}.

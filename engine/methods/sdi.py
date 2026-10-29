@@ -21,7 +21,12 @@ from engine.money import ZERO, D
 def compute(ctx) -> Decimal:
     params = ctx.params
     ytd = ctx.ytd or {}
-    ytd_wages = D(ytd.get("sdi_wages", "0"), context="ytd.sdi_wages")
+    # Which year-to-date wage tracker caps the components: sdi_wages for
+    # disability / paid-leave files, sui_wages for employee UI shares (AK,
+    # NJ, PA), so an employer's SUI and the employee's share count the same
+    # dollars against the same base.
+    tracker = params.get("ytd_tracker", "sdi_wages")
+    ytd_wages = D(ytd.get(tracker, "0"), context=f"ytd.{tracker}")
     frequency = next(
         (f for f, p in PAY_PERIODS_PER_YEAR.items() if p == ctx.pay_periods), None
     )

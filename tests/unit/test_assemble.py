@@ -952,3 +952,17 @@ def test_every_extraction_schema_uses_only_api_supported_keywords():
         assert '"oneOf"' not in json.dumps(schemas.extraction_schema(method)), \
             f"{method}: extraction schema uses oneOf"
     assert '"oneOf"' not in json.dumps(schemas.VERIFICATION_SCHEMA)
+
+
+def test_sui_employee_paths_slug_and_golden_key():
+    assert str(assemble.data_path("US-AK", 2026, "state_unemployment_insurance_employee")) == "data/us/ak/2026/sui-employee.yaml"
+    assert assemble.golden_slug("US-AK", "state_unemployment_insurance_employee") == "us-ak-sui-employee"
+    g = assemble.assemble_golden_case(
+        jurisdiction="US-AK", tax="state_unemployment_insurance_employee",
+        example={"description": "x", "page": 1, "pay_frequency": "biweekly", "gross_wages": "2000.00",
+                 "filing_status": None, "allowances": None, "additional_withholding": None, "expected_withholding": "10.00"},
+        as_of="2026-06-15", document="AK page")
+    assert g["expect"] == {"sui_employee_withholding": {"US-AK": "10.00"}}
+    out = assemble._transform_params("sdi", {"wage_definition": "futa", "ytd_tracker": "sui_wages", "components": [
+        {"name": "employee_ui", "rate": "0.0050", "employee_share": "1", "wage_base": {"amount": "54200", "ref": None}, "weekly_max": None, "period_max": None}]})
+    assert out["ytd_tracker"] == "sui_wages" and out["components"][0]["wage_base"] == "54200"

@@ -64,7 +64,7 @@ def compute_withholding(
     employee: EmployeeInput,
     taxability: TaxabilityMatrix,
 ) -> Decimal:
-    if param_file.tax == "state_disability_insurance":
+    if param_file.tax in ("state_disability_insurance", "state_unemployment_insurance_employee"):
         wage_base = param_file.params.get("wage_definition", "fica")
     else:
         wage_base = _WAGE_BASE_BY_TAX.get(param_file.tax)
@@ -127,7 +127,7 @@ def compute_withholding(
         additional = local.additional_withholding if local is not None else ZERO
         resident = local.resident if local is not None else True
         federal = None
-    else:  # fica, state_disability_insurance: no elections apply
+    else:  # fica, state_disability_insurance, sui employee share: no elections apply
         filing_status = None
         allowances = 0
         additional = ZERO

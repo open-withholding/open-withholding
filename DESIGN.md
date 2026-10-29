@@ -228,6 +228,12 @@ params:
 ```
 Employer-side programme contributions are not withholding and are out of scope.
 
+The same component shape serves the employee share of state unemployment
+insurance where one exists (AK, NJ, PA): `tax:
+state_unemployment_insurance_employee`, method `sdi`, `ytd_tracker: sui_wages`
+so the employee's share and the employer's SUI count the same dollars
+against the same base (`data/us/<st>/<year>/sui-employee.yaml`).
+
 ### 3.5 Taxability matrix
 
 `/taxability/us.yaml` maps deduction types to the wage bases they reduce:
