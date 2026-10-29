@@ -1,0 +1,17 @@
+source:
+  document: NY DOL UI rate information page (HTML)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 4.025% with $16,600 already paid this year: only
+    the $1,000 left under the $17,600 base is taxed), expected value computed by the reference engine:
+    1,000 x 4.025% = 40.25 + Re-employment Service Fund 1,000 x 0.07500% = 0.75'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '16600'
+  employer:
+    sui_jurisdiction: US-NY
+    sui_experience_rate: '0.04025'
+expect:
+  sui_tax: '41.00'
