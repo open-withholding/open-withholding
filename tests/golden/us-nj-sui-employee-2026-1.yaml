@@ -1,0 +1,12 @@
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000, first paycheck: employee share computed per component
+    and summed), expected value computed by the reference engine: U.I. 7.65 + W.F./S.W.F. 0.85 = 8.50'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  sui_employee_withholding:
+    US-NJ: '8.50'
