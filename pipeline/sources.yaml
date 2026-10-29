@@ -1031,13 +1031,19 @@
   tax: state_disability_insurance
   method: sdi
   landing: "https://paidleave.wa.gov/updates/"
+  # The updates page announces whichever year is next (it carried only the
+  # 2027 split when the 2026 run happened); the ESD news release for the
+  # target year is the dated statement of that year's rate and split.
   documents:
+    - name: "ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)"
+      kind: html
+      url: "https://esd.wa.gov/about-us/news-release/2025/paid-family-medical-leave-premium-rate-increases-113-2026"
     - name: "paidleave.wa.gov updates page (HTML)"
       kind: html
       url: "https://paidleave.wa.gov/updates/"
   no_printed_examples: true
   extraction_hint: >-
-    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named pfml: rate = the TOTAL premium rate for the target year as a decimal fraction (e.g. 1.13% -> 0.0113) and employee_share = the employees' percentage of the total premium as a fraction (e.g. 70.7% -> 0.707) - keep both as printed, never pre-multiplied. wage_base = the Social Security taxable maximum the page says premiums stop at: the printed figure if any, else {"ref": "federal.social_security_wage_base"} - never null, since null means no cap. The page announces multiple years - take the target year's figures only. period_max null; wage_definition fica.
+    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named pfml: rate = the TOTAL premium rate for the target year as a decimal fraction (e.g. 1.13% -> 0.0113) and employee_share = the employees' percentage of the total premium for THAT year as a fraction (e.g. 71.43% -> 0.7143), taken from the ESD news release dated for the target year - keep both as printed, never pre-multiplied; a split stated only for a later year must not be used. wage_base = the Social Security taxable maximum the page says premiums stop at: the printed figure if any, else {"ref": "federal.social_security_wage_base"} - never null, since null means no cap. The page announces multiple years - take the target year's figures only. period_max null; wage_definition fica.
   check: [content_hash]
   expected_window: "09-15..01-15"
   maps_to:
@@ -1126,7 +1132,9 @@
     dataset resolves the actual federal base) and record the printed projection
     in notes; never a dollar figure, never null. period_max null; wage_definition fica.
     Employer-side amounts, benefit levels and small-employer/private-plan
-    exemptions are out of scope (note them).
+    exemptions are out of scope (note them). The guide's cost illustrations
+    ('~$7.70 per paycheck') are rounded approximations, not computations -
+    do not transcribe them as worked examples.
   check: [content_hash]
   expected_window: "10-01..01-31"
   maps_to:

@@ -253,6 +253,16 @@ def run_mechanical_validation(param_dict: dict, golden_dicts: list[dict], taxabi
             "verification pass transcribed no worked examples; "
             "no worked example -> not mergeable (DESIGN.md §7)"
         )
+    # Cross-file references (wage_base: {ref: ...}) resolve against the
+    # repo's data set; the candidate stands in for its own jurisdiction.
+    # (DE's first reference run failed here: only the no-examples path
+    # resolved.)
+    from engine.golden import load_data_root
+    from engine.refs import find_refs, resolve_refs
+    if find_refs(pf.params):
+        others = [f for f in load_data_root(REPO_ROOT / "data")
+                  if not (f.jurisdiction == pf.jurisdiction and f.tax == pf.tax)]
+        pf = resolve_refs([pf] + others)[0]
     failures = []
     for g in golden_dicts:
         case = GoldenCase(
