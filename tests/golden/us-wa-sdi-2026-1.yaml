@@ -1,0 +1,13 @@
+source:
+  document: 'ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)'
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000, first paycheck: total premium 1.13% x employee share
+    71.43%, exact chain, one rounding), expected value computed by the reference engine: pfml 16.14 =
+    16.14'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  sdi_withholding:
+    US-WA: '16.14'

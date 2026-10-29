@@ -1,0 +1,15 @@
+source:
+  document: 'ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)'
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with $184,000 already paid this year: the Social Security
+    wage base cap (resolved from the federal FICA file via the cross-file reference) leaves $500 subject),
+    expected value computed by the reference engine: pfml 4.04 = 4.04'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sdi_wages: '184000'
+expect:
+  sdi_withholding:
+    US-WA: '4.04'
