@@ -1,0 +1,24 @@
+schema_version: '0.1'
+jurisdiction: US-AK
+tax: state_unemployment_insurance_employee
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Alaska {year} UI Tax Rates for Experienced Employers (HTML) (2026)
+  url: https://labor.alaska.gov/estax/2026-experience-rates.html
+  retrieved: '2026-10-29'
+  sha256: b95b9cf46e729994db7e60dea97da3de315cab71a4254b44e5807434ed2e447f
+  notes: Extracted by pipeline; pages per PR body
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: futa
+  ytd_tracker: sui_wages
+  components:
+  - name: employee_ui
+    rate: '0.0050'
+    employee_share: '1'
+    wage_base: '54200.00'
