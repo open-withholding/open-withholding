@@ -480,6 +480,17 @@ watcher (cron, cheap, no LLM)
 
 ### 8.2 Extractor
 
+Every registry entry declares an `authority` tier — `publication` (a
+numbered booklet, guide, formula sheet or notice), `release` (a dated agency
+news release or bulletin), `rule`, `statute`, or `agency_page` (an official
+agency web page that states the values but is not itself a formal
+instrument). The PR body prints the tier so the reviewer knows what the
+numbers rest on. Agency pages are acceptable sources — the verifier confirms
+every value against them and the bytes are archived by hash — but where the
+formal instrument exists (OAR/CCR rule text, a DFS rate decision, a dated ESD
+or OED release, DE 44/DE 201), it is registered as the primary document and
+the page kept as the cross-check.
+
 Per changed document, an LLM-assisted job that must produce a PR or a
 triage issue — never a silent failure:
 

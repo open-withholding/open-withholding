@@ -714,6 +714,19 @@ def default_as_of(effective_from: str) -> str:
     return dt.date(start.year, 6, 15).isoformat() if start.month == 1 else str(effective_from)
 
 
+# Registry `authority:` tiers, surfaced in every PR body so the reviewer knows
+# what kind of source the numbers rest on (DESIGN §8.2). Tabled follow-up:
+# register the formal instrument (rule / statute / dated notice) for each
+# agency_page source and keep the page as the cross-check.
+AUTHORITY_LABELS = {
+    "publication": "formal publication (numbered booklet, guide, formula sheet or notice)",
+    "release": "dated agency news release / bulletin",
+    "rule": "administrative rule text",
+    "statute": "statute text",
+    "agency_page": "official agency web page (not a formal instrument — see DESIGN §8.2)",
+}
+
+
 def build_pr_body(
     *,
     source_id: str,
@@ -736,6 +749,7 @@ def build_pr_body(
         "",
         f"- **Method:** `{method}`",
         f"- **Classification:** {extraction['classification']}",
+        f"- **Source authority:** {AUTHORITY_LABELS.get(source.get('authority'), source.get('authority') or 'unclassified')}",
         f"- **Effective from:** {extraction['effective_from']}",
         *(
             [
