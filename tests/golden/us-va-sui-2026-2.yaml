@@ -1,0 +1,17 @@
+source:
+  document: 'VEC FAQ: What is the wage base for each employee (HTML)'
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 2.500% with $7,000 already paid this year: only
+    the $1,000 left under the $8,000 base is taxed), expected value computed by the reference engine:
+    1,000 x 2.500% = 25.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '7000'
+  employer:
+    sui_jurisdiction: US-VA
+    sui_experience_rate: '0.025'
+expect:
+  sui_tax: '25.00'
