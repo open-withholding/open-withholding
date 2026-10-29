@@ -1,0 +1,13 @@
+source:
+  document: Mass.gov PFML contribution rates page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $1,001: each share rounds independently (1.8018 -> 1.80;
+    2.8028 -> 2.80), not the combined 0.46%), expected value computed by the reference engine: family
+    1.80 + medical 2.80 = 4.60'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1001.00'
+expect:
+  sdi_withholding:
+    US-MA: '4.60'
