@@ -81,3 +81,30 @@ def test_distinct_basenames_still_ambiguous():
     import pytest as _pytest
     with _pytest.raises(DiscoveryError, match="ambiguous"):
         select_document_url(links, r"20\d{2}", 2026)
+
+
+# --- per-document link scan (documents[] entries with landing + link_pattern)
+
+def test_resolve_document_url_plain_entry_substitutes_year():
+    from pipeline.discover import resolve_document_url
+    assert resolve_document_url({"url": "https://x.gov/{year}/a.pdf"}, 2027) == "https://x.gov/2027/a.pdf"
+
+
+def test_resolve_document_url_scans_then_falls_back(monkeypatch):
+    from pipeline import discover
+    calls = []
+
+    def fake_discover(landing, pattern, year, *, insecure=False):
+        calls.append((landing, pattern, year))
+        if year == 2027:
+            return "https://esd.x.gov/release/2026/rate-increases-12-2027"
+        raise discover.DiscoveryError("no link matches")
+
+    monkeypatch.setattr(discover, "discover_document_url", fake_discover)
+    doc = {"name": "release", "kind": "html", "landing": "https://esd.x.gov/news",
+           "link_pattern": "rate-increases", "url": "https://esd.x.gov/release/2025/rate-increases-113-2026"}
+    assert discover.resolve_document_url(doc, 2027).endswith("-12-2027")
+    assert discover.resolve_document_url(doc, 2026) == doc["url"]  # aged off the listing -> last known
+    with pytest.raises(discover.DiscoveryError):
+        discover.resolve_document_url({"name": "x", "landing": "https://esd.x.gov/news", "link_pattern": "zzz"}, 2026)
+    assert calls[0] == ("https://esd.x.gov/news", "rate-increases", 2027)

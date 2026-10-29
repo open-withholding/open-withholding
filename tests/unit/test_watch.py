@@ -471,3 +471,39 @@ def test_registry_entries_declare_an_authority_tier():
     root = Path(__file__).resolve().parents[2]
     for entry in yaml.safe_load((root / "pipeline" / "sources.yaml").read_text()):
         assert entry.get("authority") in AUTHORITY_LABELS, f"{entry['id']}: authority missing or unknown"
+
+
+def test_multi_document_entry_discovered_by_link_scan(monkeypatch):
+    """A documents[] entry with landing + link_pattern is resolved each sweep;
+    a newer release on the listing is a `changed` event (WA's ESD release)."""
+    from pipeline import discover
+    monkeypatch.setattr(discover, "discover_document_url",
+                        lambda landing, pattern, year, *, insecure=False: "https://esd.x.gov/release/2026/rate-12-2027")
+    src = {"id": "us-wa-test", "document": "WA PFML", "landing": "https://x.gov",
+           "documents": [{"name": "release", "kind": "html", "landing": "https://esd.x.gov/news",
+                          "link_pattern": "rate-", "url": "https://esd.x.gov/release/2025/rate-113-2026"}]}
+    prior = {"documents": {"release": {"url": "https://esd.x.gov/release/2025/rate-113-2026",
+                                       "sha256": "a" * 64, "changed_at": "2025-12-01"}}}
+    seen = []
+
+    def fetcher(url):
+        seen.append(url)
+        return {"status": 200, "sha256": "b" * 64, "etag": None, "last_modified": None, "is_pdf": False}
+
+    events, state = check_source(src, prior, fetcher, TODAY)
+    assert seen == ["https://esd.x.gov/release/2026/rate-12-2027"]
+    assert [e["type"] for e in events] == ["changed"]
+    assert state["documents"]["release"]["url"].endswith("rate-12-2027")
+
+
+def test_multi_document_link_scan_failure_without_fallback_is_url_404(monkeypatch):
+    from pipeline import discover
+
+    def boom(landing, pattern, year, *, insecure=False):
+        raise discover.DiscoveryError("no link matches")
+
+    monkeypatch.setattr(discover, "discover_document_url", boom)
+    src = {"id": "us-zz-test", "document": "d", "landing": "https://x.gov",
+           "documents": [{"name": "rel", "kind": "html", "landing": "https://x.gov/news", "link_pattern": "zzz"}]}
+    events, _ = check_source(src, {}, lambda url: None, TODAY)
+    assert [e["type"] for e in events] == ["url_404"] and "link_scan failed" in events[0]["detail"]
