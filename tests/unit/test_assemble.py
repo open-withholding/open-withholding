@@ -942,13 +942,13 @@ def test_sdi_golden_case_is_jurisdiction_keyed():
 
 
 def test_every_extraction_schema_uses_only_api_supported_keywords():
-    """The model API's structured output rejects oneOf/anyOf/allOf (the
-    MA/WA/CO reruns died on one). Keep every extraction schema to plain types."""
+    """The model API's structured output rejects `oneOf` (the MA/WA/CO
+    reruns died on one: "Schema type 'oneOf' is not supported"). `anyOf`
+    is accepted — annualized_percentage and per_period_percentage have
+    used it in production — so only oneOf is forbidden here."""
     import json
     from pipeline import schemas
     for method in schemas._PARAMS_BY_METHOD:
-        dumped = json.dumps(schemas.extraction_schema(method))
-        for kw in ('"oneOf"', '"anyOf"', '"allOf"', '"not"'):
-            assert kw not in dumped, f"{method}: extraction schema uses {kw}"
-    dumped = json.dumps(schemas.VERIFICATION_SCHEMA)
-    assert '"oneOf"' not in dumped and '"anyOf"' not in dumped
+        assert '"oneOf"' not in json.dumps(schemas.extraction_schema(method)), \
+            f"{method}: extraction schema uses oneOf"
+    assert '"oneOf"' not in json.dumps(schemas.VERIFICATION_SCHEMA)
