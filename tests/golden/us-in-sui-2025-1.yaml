@@ -1,0 +1,14 @@
+source:
+  document: DWD State Premium Rate Computation (HTML)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at the new-employer rate 2.500%, first paycheck),
+    expected value computed by the reference engine: 2,000 x 2.500% = 50.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-IN
+    sui_experience_rate: '0.025'
+expect:
+  sui_tax: '50.00'
