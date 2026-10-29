@@ -10,6 +10,7 @@
   jurisdiction: US
   tax: federal_income_withholding
   method: federal_percentage_2020
+  authority: publication
   no_printed_examples: true
   landing: "https://www.irs.gov/forms-pubs/about-publication-15-t"
   document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15t.pdf"
@@ -23,6 +24,7 @@
   jurisdiction: US-MO
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://dor.mo.gov/taxation/business/tax-types/withholding/"
   # Stable year-versioned pattern (verified for 2025 and 2026).
   document_url_pattern: "https://dor.mo.gov/forms/4282_{year}.pdf"
@@ -36,6 +38,7 @@
   jurisdiction: US-SC
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://dor.sc.gov/tax/withholding/forms"
   # Site migrated in 2025; the old /forms-site/Forms/ pattern is dead for 2026+.
   document_url_pattern: "https://dor.sc.gov/sites/dor/files/forms/WH1603F_{year}.pdf"
@@ -49,6 +52,7 @@
   jurisdiction: US-RI
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://tax.ri.gov/forms/business-tax-forms/withholding-tax-forms"
   discovery: link_scan
   # Drupal hash path with upload-month segment; suffix variants across years.
@@ -63,6 +67,7 @@
   jurisdiction: US-AZ
   tax: state_income_withholding
   method: elective_flat_rate
+  authority: publication
   landing: "https://azdor.gov/forms/withholding-forms/arizona-withholding-percentage-election"
   # The published rate elections are printed on the form itself; the A-4i
   # employer instructions (same landing) carry the 2.0% no-election default.
@@ -77,6 +82,7 @@
   jurisdiction: US-IA
   tax: state_income_withholding
   method: per_period_percentage
+  authority: agency_page
   landing: "https://revenue.iowa.gov/taxes/tax-guidance/withholding-tax/iowa-withholding-tax-information"
   # Drupal media node re-pointed to each year's file; tables doc is media/52.
   document_url_pattern: "https://revenue.iowa.gov/media/53/download?inline="
@@ -90,6 +96,7 @@
   jurisdiction: US-MS
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://www.dor.ms.gov/business/withholding-tax"
   discovery: link_scan
   # Ad-hoc revised-date suffixes; a guessable STALE sibling exists at
@@ -107,6 +114,7 @@
   jurisdiction: US-UT
   tax: state_income_withholding
   method: per_period_credit_phaseout
+  authority: publication
   landing: "https://tax.utah.gov/forms-pubs/pubs/pub-14/"
   # Stable URL revised IN PLACE, incl. mid-year (current Rev. 4/26 is
   # effective 2026-06-01); the Rev. date on p.1 is the only version signal.
@@ -122,6 +130,7 @@
   jurisdiction: US-AR
   tax: state_income_withholding
   method: annualized_subtraction_percentage
+  authority: publication
   landing: "https://www.dfa.arkansas.gov/office/taxes/income-tax-administration/withholding-tax-branch/withholding-tax-forms-instructions/"
   document_url_pattern: "https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf"
   check: [content_hash]
@@ -134,6 +143,7 @@
   jurisdiction: US-CT
   tax: state_income_withholding
   method: custom/us_ct
+  authority: publication
   landing: "https://portal.ct.gov/drs/drs-forms/current-year-forms/withholding-forms"
   discovery: link_scan
   # Filename is year-versioned (tpg-211_12{yy}.pdf, Dec revision for the
@@ -152,6 +162,7 @@
   jurisdiction: US-OR
   tax: state_income_withholding
   method: custom/us_or
+  authority: publication
   landing: "https://www.oregon.gov/dor/forms/Pages/default.aspx"
   document_url_pattern: "https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_{year}.pdf"
   # KNOWN DOC DEFECTS (2026): Example 1 prose figures stale vs its own
@@ -170,6 +181,7 @@
   jurisdiction: US-AL
   tax: state_income_withholding
   method: custom/us_al
+  authority: publication
   landing: "https://www.revenue.alabama.gov/forms/withholding-tax-tables-and-instructions-for-employers-and-withholding-agents-2/"
   discovery: link_scan
   link_pattern: 'whbooklet[^"]*\.pdf'
@@ -182,6 +194,7 @@
   jurisdiction: US-MA
   tax: state_income_withholding
   method: custom/us_ma
+  authority: publication
   # mass.gov (Akamai) 403s plain fetches — needs full browser headers; the
   # /doc/ slug embeds year AND rate, so always link-scan.
   landing: "https://www.mass.gov/lists/massachusetts-dor-withholding-tax-forms"
@@ -198,6 +211,7 @@
   jurisdiction: US-MN
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   no_printed_examples: true
   landing: "https://www.revenue.state.mn.us/withholding-tax"
   discovery: link_scan
@@ -213,6 +227,7 @@
   jurisdiction: US-OH
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   no_printed_examples: true
   # Landing is JS-rendered (no hrefs for curl); the DAM URL keeps its _2025
   # name but is revised IN PLACE (current: Rev. 09/25, eff. 2025-10-01; OH
@@ -230,6 +245,7 @@
   jurisdiction: US-OK
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://oklahoma.gov/tax/reporting-resources/publications.html"
   document_url_pattern: "https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-{year}.pdf"
   check: [content_hash]
@@ -242,6 +258,7 @@
   jurisdiction: US-MT
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   # Stable URL revised in place. Known doc defect: rounding text says
   # "round UP" but every worked example rounds to nearest — examples decide.
   landing: "https://revenue.mt.gov/publications/montana-employer-and-information-agent-guide"
@@ -255,6 +272,7 @@
   jurisdiction: US-LA
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://revenue.louisiana.gov/tax-policy/tax-manuals"
   document_url_pattern: "https://dam.ldr.la.gov/taxforms/1306-1-{yy}.pdf"
   check: [content_hash]
@@ -267,6 +285,7 @@
   jurisdiction: US-ME
   tax: state_income_withholding
   method: annualized_percentage_phaseout
+  authority: publication
   landing: "https://www.maine.gov/revenue/tax-return-forms/employment-tax-returns-2026"
   document_url_pattern: "https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/{yy}_wh_tab_instr.pdf"
   check: [content_hash]
@@ -279,6 +298,7 @@
   jurisdiction: US-VT
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://tax.vermont.gov/business/withholding"
   document_url_pattern: "https://tax.vermont.gov/sites/tax/files/documents/GB-1210-{year}.pdf"
   check: [content_hash]
@@ -291,6 +311,7 @@
   jurisdiction: US-HI
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   # Rev. {yy} booklet governs wages paid in {yy+1} (Rev. 2025 -> 2026 wages).
   landing: "https://tax.hawaii.gov/forms/a1_b1_5whhold/"
   discovery: link_scan
@@ -304,6 +325,7 @@
   jurisdiction: US-GA
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   # Drupal slug changes with every mid-year revision; always link-scan.
   landing: "https://dor.georgia.gov/employers-tax-guide"
   discovery: link_scan
@@ -317,6 +339,7 @@
   jurisdiction: US-NM
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://www.tax.newmexico.gov/businesses/wage-withholding-tax/"
   # Canonical publication path, revised in place annually.
   document_url_pattern: "https://realfile.tax.newmexico.gov/FYI-104.pdf"
@@ -330,6 +353,7 @@
   jurisdiction: US-ID
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://tax.idaho.gov/taxes/income-tax/withholding/computing/"
   # Multi-source: EPB00744 prints the brackets but NOT the child-tax-credit
   # allowance value — that lives only in the ICTCAT table rendered inline on
@@ -352,6 +376,7 @@
   jurisdiction: US-KY
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://revenue.ky.gov/Software-Developer/Pages/default.aspx"
   # KY renames this file differently every year (2024: 42A003(TCF).pdf;
   # 2025: Withholding Computer Formula.pdf; 2026: {year} Withholding
@@ -368,6 +393,7 @@
   jurisdiction: US-NC
   tax: state_income_withholding
   method: annualized_percentage
+  authority: agency_page
   landing: "https://www.ncdor.gov/taxes-forms/withholding-tax/withholding-tax-forms-and-instructions"
   # Drupal alias without a year; currently serves the latest edition.
   document_url_pattern: "https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open"
@@ -381,6 +407,7 @@
   jurisdiction: US-VA
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://www.tax.virginia.gov/withholding-tax"
   # Stable path, revised in place. Formula p.21: $8,750 standard deduction
   # (all employees), $930 personal exemptions (E1) -> allowance_amount,
@@ -395,6 +422,7 @@
   jurisdiction: US-MI
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   no_printed_examples: true
   landing: "https://www.michigan.gov/taxes/business-taxes/withholding/calendar-year-tax-information"
   document_url_pattern: "https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY{year}/446_Withholding-Guide_{year}.pdf"
@@ -408,6 +436,7 @@
   jurisdiction: US-WV
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://tax.wv.gov/business/withholding/pages/withholdingtaxforms.aspx"
   # Stable path, revised in place (successor to the legacy IT-100.1.A).
   # Two schedule sets (two-earner default / optional one-earner) model as
@@ -423,6 +452,7 @@
   jurisdiction: US-IL
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://tax.illinois.gov/forms/withholding/currentyear.html"
   # Stable currentyear path, revised in place. Two allowance kinds:
   # Line 1 -> allowance_amount, Line 2 -> secondary_allowance_amount;
@@ -438,6 +468,7 @@
   jurisdiction: US-WI
   tax: state_income_withholding
   method: annualized_percentage_phaseout
+  authority: publication
   landing: "https://www.revenue.wi.gov/Pages/HTML/withhold.aspx"
   # Stable URL, revised in place. The 'alternate method' section is the
   # normative formula; its three worked examples become goldens.
@@ -451,6 +482,7 @@
   jurisdiction: US-KS
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://www.ksrevenue.gov/bustaxtypeswh.html"
   # Stable URL, revised in place when parameters change.
   document_url_pattern: "https://www.ksrevenue.gov/pdf/kw100.pdf"
@@ -463,6 +495,7 @@
   jurisdiction: US-NE
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   no_printed_examples: true
   landing: "https://revenue.nebraska.gov/businesses/circular-en-nebraska-income-tax-withholding-wages-pensions-and-annuities-and-gambling"
   discovery: link_scan
@@ -479,6 +512,7 @@
   jurisdiction: US-PA
   tax: state_income_withholding
   method: flat_rate
+  authority: publication
   no_printed_examples: true
   landing: "https://www.pa.gov/agencies/revenue.html"
   # Stable dam path; PA's flat rate has not changed since 2004.
@@ -492,6 +526,7 @@
   jurisdiction: US-ND
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   landing: "https://www.tax.nd.gov/business/income-tax-withholding"
   discovery: link_scan
   link_pattern: '20\d{2}-income-tax-withholding-rates-booklet\.pdf'
@@ -505,6 +540,7 @@
   jurisdiction: US-CO
   tax: state_income_withholding
   method: flat_rate_with_annual_allowance
+  authority: publication
   no_printed_examples: true
   # The form page (landing) went behind a bot wall in autumn 2026 (#168):
   # 403 to every non-browser TLS stack regardless of User-Agent, so
@@ -527,6 +563,7 @@
   jurisdiction: US-DE
   tax: state_income_withholding
   method: annualized_percentage
+  authority: agency_page
   landing: "https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/"
   # Multi-source: the formula (Section 17) and its worked examples exist ONLY
   # in the HTML guide; the per-period tables are separate PDFs (rates static
@@ -549,6 +586,7 @@
   jurisdiction: US-NJ
   tax: state_income_withholding
   method: per_period_percentage
+  authority: publication
   landing: "https://www.nj.gov/treasury/taxation/businesses/payroll/index.shtml"
   # Multi-source: the rate tables PDF holds the five rate-letter schedules
   # (A-E, selected via NJ-W4; eff. 10/2020, still current) but the allowance
@@ -571,6 +609,7 @@
   jurisdiction: US-DC
   tax: state_income_withholding
   method: annualized_percentage
+  authority: publication
   no_printed_examples: true
   landing: "https://otr.cfo.dc.gov/page/income-tax-withholding-instructions-and-tables"
   # Multi-source reconciliation (issue #26). FR-230 was last issued for 2018;
@@ -616,6 +655,7 @@
   jurisdiction: US-IN
   tax: state_income_withholding
   method: deduction_constant_percentage
+  authority: publication
   landing: "https://www.in.gov/dor/business-tax/withholding-income-tax/"
   # Stable in-place URL, REISSUED TWICE YEARLY (Oct 1 and Jan 1) — asterisks
   # in the county table mark rate changes since the prior issue. The county
@@ -646,6 +686,7 @@
   jurisdiction: US-MD
   tax: state_income_withholding
   method: rate_schedule_percentage
+  authority: publication
   no_printed_examples: true
   # Landing is a ServiceNow KB page (JS-rendered) — probe the DAM path
   # directly; filename case has varied across years.
@@ -715,6 +756,7 @@
   jurisdiction: US-CA
   tax: state_income_withholding
   method: custom/us_ca
+  authority: publication
   landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
   # Year-versioned filename ({yy}methb.pdf); Method A ({yy}metha.pdf) is the
   # wage-bracket lookup and is NOT extracted.
@@ -744,6 +786,7 @@
   jurisdiction: US-NY
   tax: state_income_withholding
   method: custom/us_ny
+  authority: publication
   landing: "https://www.tax.ny.gov/forms/withholding_cur_forms.htm"
   # The unversioned URL serves the current edition; the cover carries the
   # revision mark, e.g. (1/26), and an explicit effective date range.
@@ -778,6 +821,7 @@
   jurisdiction: US-NY-NYC
   tax: local_income_withholding
   method: custom/us_ny
+  authority: publication
   landing: "https://www.tax.ny.gov/forms/withholding_cur_forms.htm"
   # Same structure as NYS-50-T-NYS, reused by the method: Method II exact
   # calculation with Tables B/C; NO Method III is printed for the City. The
@@ -809,6 +853,7 @@
   jurisdiction: US-NY-YONKERS
   tax: local_income_withholding
   method: custom/us_ny
+  authority: publication
   landing: "https://www.tax.ny.gov/forms/withholding_cur_forms.htm"
   # Part A (residents): the STATE Method II/III tables reprinted, with the
   # result multiplied by the 16.75% resident surcharge. Part B
@@ -845,6 +890,7 @@
   jurisdiction: US
   tax: fica
   method: fica
+  authority: publication
   landing: "https://www.irs.gov/forms-pubs/about-publication-15"
   # The unversioned URL serves the current edition (like Pub 15-T).
   document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15.pdf"
@@ -870,6 +916,7 @@
   jurisdiction: US
   tax: futa
   method: futa
+  authority: publication
   landing: "https://www.irs.gov/forms-pubs/about-publication-15"
   document_url_pattern: "https://www.irs.gov/pub/irs-pdf/p15.pdf"
   no_printed_examples: true
@@ -892,6 +939,7 @@
   jurisdiction: US-WI
   tax: state_unemployment_insurance
   method: sui
+  authority: agency_page
   landing: "https://dwd.wisconsin.gov/ui/employers/taxrates.htm"
   documents:
     - name: "DWD UI Tax Rates page (HTML)"
@@ -918,6 +966,7 @@
   jurisdiction: US-CA
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
   documents:
     - name: "EDD Rates and Withholding page (HTML)"
@@ -936,6 +985,7 @@
   jurisdiction: US-NJ
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
   documents:
     - name: "NJ Division of Employer Accounts rate information page (HTML)"
@@ -954,6 +1004,7 @@
   jurisdiction: US-NY
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://paidfamilyleave.ny.gov/{year}"
   # Two employee contributions from two agencies, one state file: DBL
   # (statutory one-half of one percent of wages, at most 60 cents a week —
@@ -994,6 +1045,7 @@
   jurisdiction: US-MA
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://www.mass.gov/info-details/family-and-medical-leave-contribution-rates-for-employers"
   documents:
     - name: "Mass.gov PFML contribution rates page (HTML)"
@@ -1012,6 +1064,7 @@
   jurisdiction: US-RI
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://dlt.ri.gov/employers/employer-tax-unit"
   documents:
     - name: "RI DLT Employer Tax Unit page (HTML)"
@@ -1030,6 +1083,7 @@
   jurisdiction: US-WA
   tax: state_disability_insurance
   method: sdi
+  authority: release
   landing: "https://paidleave.wa.gov/updates/"
   # The updates page announces whichever year is next (it carried only the
   # 2027 split when the 2026 run happened); the ESD news release for the
@@ -1060,6 +1114,7 @@
   jurisdiction: US-OR
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://paidleave.oregon.gov/employers/Pages/default.aspx"
   documents:
     - name: "Paid Leave Oregon employers page (HTML)"
@@ -1078,6 +1133,7 @@
   jurisdiction: US-CO
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://famli.colorado.gov/employers"
   documents:
     - name: "famli.colorado.gov employers page (HTML)"
@@ -1096,6 +1152,7 @@
   jurisdiction: US-HI
   tax: state_disability_insurance
   method: sdi
+  authority: publication
   landing: "https://labor.hawaii.gov/dcd/forms/guidelines/"
   # The notice is a one-page PDF re-uploaded each December under a dated
   # WordPress path (files/2025/12/2026-Maximum-Weekly-Wage-Base.pdf), so
@@ -1122,6 +1179,7 @@
   jurisdiction: US-DE
   tax: state_disability_insurance
   method: sdi
+  authority: publication
   landing: "https://labor.delaware.gov/divisions/paid-leave/employers/"
   document_url_pattern: "https://laborfiles.delaware.gov/main/pfl/Employer_and_TPAs_Guide_to_DPL.pdf"
   no_printed_examples: true
@@ -1151,6 +1209,7 @@
   jurisdiction: US-MN
   tax: state_disability_insurance
   method: sdi
+  authority: agency_page
   landing: "https://pl.mn.gov/employers"
   documents:
     - name: "pl.mn.gov premium rate and contributions page (HTML)"
@@ -1178,6 +1237,7 @@
   jurisdiction: US-IL
   tax: state_unemployment_insurance
   method: sui
+  authority: publication
   landing: "https://ides.illinois.gov/employer-resources/taxes-reporting.html"
   document_url_pattern: "https://ides.illinois.gov/content/dam/soi/en/web/ides/ides_forms_and_publications/UI_tax_rates_{year}.pdf"
   no_printed_examples: true
@@ -1198,6 +1258,7 @@
   jurisdiction: US-CA
   tax: state_unemployment_insurance
   method: sui
+  authority: agency_page
   landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
   documents:
     - name: "EDD Rates and Withholding page (HTML)"
@@ -1216,6 +1277,7 @@
   jurisdiction: US-TX
   tax: state_unemployment_insurance
   method: sui
+  authority: agency_page
   landing: "https://www.twc.texas.gov/programs/unemployment-tax/your-tax-rates"
   documents:
     - name: "TWC Your Tax Rates page (HTML)"
@@ -1234,6 +1296,7 @@
   jurisdiction: US-FL
   tax: state_unemployment_insurance
   method: sui
+  authority: agency_page
   landing: "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
   # The overview page prints only the $7,000 base and the 2.7% initial
   # rate; the schedule's minimum and maximum live on the Rate Information
@@ -1258,6 +1321,7 @@
   jurisdiction: US-NY
   tax: state_unemployment_insurance
   method: sui
+  authority: agency_page
   landing: "https://dol.ny.gov/unemployment-insurance-rate-information"
   # The rate page prints rates only; the wage base (and its 18%-of-average-
   # annual-wage rule from 2026) is on the NYS-50 employer guide page (first
@@ -1282,6 +1346,7 @@
   jurisdiction: US-NC
   tax: state_unemployment_insurance
   method: sui
+  authority: agency_page
   landing: "https://www.des.nc.gov/employers/tax-rate-information"
   documents:
     - name: "NC DES tax rate information page (HTML)"
@@ -1300,6 +1365,7 @@
   jurisdiction: US-IN
   tax: local_income_withholding
   method: deduction_constant_percentage
+  authority: publication
   extraction_schema: us_in_counties
   fan_out: counties
   landing: "https://www.in.gov/dor/business-tax/withholding-income-tax/"
@@ -1330,6 +1396,7 @@
   jurisdiction: US-OH
   tax: local_income_withholding
   method: flat_rate
+  authority: publication
   extraction_schema: us_oh_school_districts
   fan_out: flat_rate_list
   fan_out_id_prefix: SD          # US-OH-SD-<four-digit ODT school district number>

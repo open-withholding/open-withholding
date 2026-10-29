@@ -462,6 +462,17 @@ def test_unwatched_document_is_skipped_but_siblings_are_checked():
     assert set(state["documents"]) == {"live"}
 
 
+def test_registry_entries_declare_an_authority_tier():
+    """Every source states what kind of document its numbers rest on; the
+    PR body surfaces it (DESIGN §8.2). New entries must pick a tier."""
+    import yaml
+    from pathlib import Path
+    from pipeline.assemble import AUTHORITY_LABELS
+    root = Path(__file__).resolve().parents[2]
+    for entry in yaml.safe_load((root / "pipeline" / "sources.yaml").read_text()):
+        assert entry.get("authority") in AUTHORITY_LABELS, f"{entry['id']}: authority missing or unknown"
+
+
 def test_multi_document_entry_discovered_by_link_scan(monkeypatch):
     """A documents[] entry with landing + link_pattern is resolved each sweep;
     a newer release on the listing is a `changed` event (WA's ESD release)."""

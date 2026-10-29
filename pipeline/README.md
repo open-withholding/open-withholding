@@ -78,7 +78,7 @@ stopgap until the durable sha256-keyed archive (DESIGN §8.4) exists.
 
 ## Registry
 
-`sources.yaml` — one entry per watched publication. `jurisdiction`, `tax`,
+`sources.yaml` — one entry per watched publication. Each entry declares an `authority` tier (publication / release / rule / statute / agency_page) that the bot PR body surfaces. `jurisdiction`, `tax`,
 and `method` tell the extractor what it's transcribing; the model never
 chooses them. Entries added here are commitments to watch that source.
 
