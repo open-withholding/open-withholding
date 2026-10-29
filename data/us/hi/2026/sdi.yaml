@@ -1,0 +1,25 @@
+schema_version: '0.1'
+jurisdiction: US-HI
+tax: state_disability_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Hawaii DCD — Maximum Weekly Wage Base and Maximum Weekly Benefit Amount (annual TDI/WC/PHC
+    notice) (2026)
+  url: https://labor.hawaii.gov/dcd/files/2025/12/2026-Maximum-Weekly-Wage-Base.pdf
+  retrieved: '2026-10-28'
+  sha256: 91303976983f33164d0c3a823d6f577a1d42e4ce46ab2c38f40d7563b23814d2
+  notes: Extracted by pipeline; pages per PR body
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: fica
+  components:
+  - name: TDI
+    rate: '0.0050'
+    employee_share: '1'
+    wage_base: null
+    weekly_max: '7.50'

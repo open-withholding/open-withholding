@@ -1,0 +1,13 @@
+source:
+  document: "Hawaii DCD \u2014 Maximum Weekly Wage Base and Maximum Weekly Benefit Amount (annual TDI/WC/PHC\
+    \ notice) (2026)"
+  page: 1
+  example: 'maintainer-constructed (weekly $400: 0.5% = 2.00), expected value computed by the reference
+    engine: TDI 2.00 = 2.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '400.00'
+expect:
+  sdi_withholding:
+    US-HI: '2.00'
