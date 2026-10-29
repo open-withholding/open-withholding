@@ -1,0 +1,14 @@
+source:
+  document: Michigan UIA Tax Rates and Liability FAQ (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published minimum rate 0.0600%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 0.0600% = 1.80'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-MI
+    sui_experience_rate: '0.0006'
+expect:
+  sui_tax: '1.80'
