@@ -1,0 +1,15 @@
+source:
+  document: NY DOL UI rate information page (HTML)
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published maximum rate 9.425%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 9.425% = 282.75 + Re-employment Service Fund
+    3,000 x 0.07500% = 2.25'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-NY
+    sui_experience_rate: '0.09425'
+expect:
+  sui_tax: '285.00'
