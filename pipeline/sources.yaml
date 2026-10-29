@@ -1035,8 +1035,14 @@
   # 2027 split when the 2026 run happened); the ESD news release for the
   # target year is the dated statement of that year's rate and split.
   documents:
+    # The release slug embeds its year AND the rate (".../2025/...-increases-113-2026"),
+    # so it is discovered from ESD's news-release listing each sweep; `url` is the
+    # last known edition, used when no premium-rate release is on the listing.
+    # A newer release appearing there is a `changed` event -> next year's file.
     - name: "ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)"
       kind: html
+      landing: "https://esd.wa.gov/about-us/news-releases"
+      link_pattern: 'paid-family-medical-leave-premium-rate-increases'
       url: "https://esd.wa.gov/about-us/news-release/2025/paid-family-medical-leave-premium-rate-increases-113-2026"
     - name: "paidleave.wa.gov updates page (HTML)"
       kind: html
