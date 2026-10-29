@@ -148,3 +148,24 @@ def discover_document_url(
     return select_document_url(
         extract_links(html, landing), link_pattern, year, landing=landing
     )
+
+
+def resolve_document_url(doc: dict, year: int, *, insecure: bool = False) -> str:
+    """URL for one `documents[]` entry. A plain entry has `url` (with {year}/
+    {yy} substitution). An entry with `landing` + `link_pattern` is link-scanned
+    like a single-document source — for publications whose slug cannot be
+    patterned (ESD's ".../2025/...-premium-rate-increases-113-2026"); when
+    the scan finds nothing (the release aged off the listing) it falls back
+    to `url`, the last known edition, so the watcher stays quiet until a
+    newer release appears. No match and no `url` raises DiscoveryError."""
+    if doc.get("link_pattern"):
+        try:
+            return discover_document_url(
+                doc["landing"], substitute_year(doc["link_pattern"], year), year,
+                insecure=insecure,
+            )
+        except DiscoveryError:
+            if doc.get("url"):
+                return substitute_year(doc["url"], year)
+            raise
+    return substitute_year(doc["url"], year)

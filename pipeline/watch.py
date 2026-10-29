@@ -163,10 +163,18 @@ def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tupl
     for doc in source["documents"]:
         if doc.get("watch", True) is False:
             continue  # frozen input (archive snapshot): the extractor reads it, nobody polls it
-        url = _substitute_year(doc["url"], year)
         kind = doc.get("kind", "pdf")
         prefix = f"[{doc['name']}] "
         old = docs_state.get(doc["name"], {})
+        try:
+            url = discover.resolve_document_url(
+                doc, year, insecure=source.get("insecure_tls", False))
+        except discover.DiscoveryError as exc:
+            events.append({"type": "url_404", "detail": prefix + f"link_scan failed: {exc}"})
+            continue
+        except Exception as exc:  # landing fetch failed
+            events.append({"type": "url_404", "detail": prefix + f"landing fetch failed: {exc}"})
+            continue
         result = fetcher(url)
         if result["status"] == 404 or result["status"] == 0:
             detail = f"{url} -> {result.get('error', result['status'])}"

@@ -149,7 +149,7 @@ def fetch_documents(source: dict, year: int) -> list[dict]:
     [{name, kind, url, data, text?}] — PDFs keep bytes, HTML becomes text."""
     out = []
     for doc in source["documents"]:
-        url = _substitute_year(doc["url"], year)
+        url = discover.resolve_document_url(doc, year, insecure=source.get("insecure_tls", False))
         data = discover.fetch(url, insecure=source.get("insecure_tls", False))
         kind = doc.get("kind", "pdf")
         if kind == "pdf" and not data.startswith(b"%PDF"):
