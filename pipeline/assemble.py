@@ -96,6 +96,21 @@ def _bracket_map(entries: list[dict]) -> dict:
     return out
 
 
+def _sdi_wage_base(value):
+    """Extraction {amount, ref} -> data-file form: a decimal string, a
+    {ref: name} cross-file reference, or null. (The extraction schema keeps
+    the two as separate nullable fields because the model API's structured
+    output supports no oneOf.) Legacy plain strings/None pass through."""
+    if not isinstance(value, dict):
+        return value
+    amount, ref = value.get("amount"), value.get("ref")
+    if amount is not None and ref is not None:
+        raise ValueError(f"sdi wage_base has both amount {amount!r} and ref {ref!r}")
+    if ref is not None:
+        return {"ref": ref}
+    return amount
+
+
 def _transform_params(method: str, params: dict) -> dict:
     if method == "flat_rate":
         return {"rate": params["rate"]}
@@ -241,7 +256,7 @@ def _transform_params(method: str, params: dict) -> dict:
                     "name": c["name"],
                     "rate": c["rate"],
                     "employee_share": c["employee_share"],
-                    "wage_base": c["wage_base"],
+                    "wage_base": _sdi_wage_base(c["wage_base"]),
                     **({"weekly_max": c["weekly_max"]} if c.get("weekly_max") is not None else {}),
                     **({"period_max": {e["frequency"]: e["amount"] for e in c["period_max"]}}
                        if c.get("period_max") else {}),

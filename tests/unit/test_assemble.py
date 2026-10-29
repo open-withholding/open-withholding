@@ -906,14 +906,25 @@ def test_sdi_transform_roundtrip():
     out = assemble._transform_params("sdi", {
         "wage_definition": "fica",
         "components": [
-            {"name": "DBL", "rate": "0.0050", "employee_share": "1", "wage_base": None,
+            {"name": "DBL", "rate": "0.0050", "employee_share": "1",
+             "wage_base": {"amount": None, "ref": None},
              "period_max": [{"frequency": "weekly", "amount": "0.60"}]},
-            {"name": "PFL", "rate": "0.00432", "employee_share": "1", "wage_base": "95200", "period_max": None},
+            {"name": "PFL", "rate": "0.00432", "employee_share": "1",
+             "wage_base": {"amount": "95200", "ref": None}, "period_max": None},
+            {"name": "pfml", "rate": "0.0088", "employee_share": "0.50",
+             "wage_base": {"amount": None, "ref": "federal.social_security_wage_base"}, "period_max": None},
         ],
     })
     assert out["components"][0]["period_max"] == {"weekly": "0.60"}
+    assert out["components"][0]["wage_base"] is None
     assert "period_max" not in out["components"][1]
     assert out["components"][1]["wage_base"] == "95200"
+    assert out["components"][2]["wage_base"] == {"ref": "federal.social_security_wage_base"}
+
+
+def test_sdi_wage_base_both_fields_set_is_an_error():
+    with pytest.raises(ValueError, match="both amount"):
+        assemble._sdi_wage_base({"amount": "1", "ref": "federal.social_security_wage_base"})
 
 
 def test_sdi_golden_case_is_jurisdiction_keyed():
@@ -928,3 +939,16 @@ def test_sdi_golden_case_is_jurisdiction_keyed():
         as_of="2026-06-15", document="PFL 2026 page")
     assert g["expect"] == {"sdi_withholding": {"US-NY": "4.32"}}
     assert "state" not in g["input"] and "locals" not in g["input"]
+
+
+def test_every_extraction_schema_uses_only_api_supported_keywords():
+    """The model API's structured output rejects `oneOf` (the MA/WA/CO
+    reruns died on one: "Schema type 'oneOf' is not supported"). `anyOf`
+    is accepted — annualized_percentage and per_period_percentage have
+    used it in production — so only oneOf is forbidden here."""
+    import json
+    from pipeline import schemas
+    for method in schemas._PARAMS_BY_METHOD:
+        assert '"oneOf"' not in json.dumps(schemas.extraction_schema(method)), \
+            f"{method}: extraction schema uses oneOf"
+    assert '"oneOf"' not in json.dumps(schemas.VERIFICATION_SCHEMA)
