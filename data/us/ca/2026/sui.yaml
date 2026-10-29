@@ -1,0 +1,26 @@
+schema_version: '0.1'
+jurisdiction: US-CA
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: EDD Rates and Withholding page (HTML) (2026)
+  url: https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/
+  retrieved: '2026-10-28'
+  sha256: 3ee838b72fe43f5d45ac16f0554cc16216441e6d1fae4389602b75dca9803004
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '7000'
+  new_employer_rate: '0.034'
+  rate_range:
+    min: '0.015'
+    max: '0.062'
+  surtaxes:
+  - name: ETT
+    rate: '0.001'
+    wage_base: '7000'
