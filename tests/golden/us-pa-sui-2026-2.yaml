@@ -1,0 +1,17 @@
+source:
+  document: UC-748 Contribution Rates effective January 1 (PDF)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 3.822% with $9,000 already paid this year: only
+    the $1,000 left under the $10,000 base is taxed), expected value computed by the reference engine:
+    1,000 x 3.822% = 38.22'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '9000'
+  employer:
+    sui_jurisdiction: US-PA
+    sui_experience_rate: '0.038220'
+expect:
+  sui_tax: '38.22'

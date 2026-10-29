@@ -1,0 +1,14 @@
+source:
+  document: UC-748 Contribution Rates effective January 1 (PDF)
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published minimum rate 1.419%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 1.419% = 42.57'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-PA
+    sui_experience_rate: '0.014190'
+expect:
+  sui_tax: '42.57'
