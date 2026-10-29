@@ -1,0 +1,17 @@
+source:
+  document: CDLE Premium Rates page (HTML)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 3.050% with $29,600 already paid this year: only
+    the $1,000 left under the $30,600 base is taxed), expected value computed by the reference engine:
+    1,000 x 3.050% = 30.50'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '29600'
+  employer:
+    sui_jurisdiction: US-CO
+    sui_experience_rate: '0.0305'
+expect:
+  sui_tax: '30.50'
