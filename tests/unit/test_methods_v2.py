@@ -2367,3 +2367,27 @@ def test_sdi_weekly_max_scales_to_the_pay_frequency(taxability):
     hi = _sdi("US-ZJ", [{"name": "TDI", "rate": "0.0050", "employee_share": "1", "wage_base": None,
                           "weekly_max": "7.50"}])
     assert compute_withholding(hi, _sdi_emp("5000.00", freq="biweekly"), taxability) == Decimal("15.00")
+
+
+def test_sui_employee_share_tracks_sui_wages(taxability):
+    """AK-style employee UI share: 0.5% up to the state's UI base, capped by
+    ytd.sui_wages (the same dollars the employer's SUI counts), not sdi_wages."""
+    pf = load_parameter_dict({
+        "schema_version": "0.1", "jurisdiction": "US-ZK", "tax": "state_unemployment_insurance_employee",
+        "effective_from": "2026-01-01", "source": SOURCE, "method": "sdi",
+        "rounding": {"to": "0.01", "mode": "nearest"},
+        "params": {"wage_definition": "futa", "ytd_tracker": "sui_wages",
+                   "components": [{"name": "employee_ui", "rate": "0.0050", "employee_share": "1", "wage_base": "54200"}]},
+    })
+    assert compute_withholding(pf, _sdi_emp("2000.00"), taxability) == Decimal("10.00")
+    assert compute_withholding(pf, _sdi_emp("2000.00", ytd={"sui_wages": "53700"}), taxability) == Decimal("2.50")
+    assert compute_withholding(pf, _sdi_emp("2000.00", ytd={"sdi_wages": "53700"}), taxability) == Decimal("10.00")  # wrong tracker ignored
+    # PA-style: 0.07% of GROSS with no base
+    pa = load_parameter_dict({
+        "schema_version": "0.1", "jurisdiction": "US-ZP", "tax": "state_unemployment_insurance_employee",
+        "effective_from": "2026-01-01", "source": SOURCE, "method": "sdi",
+        "rounding": {"to": "0.01", "mode": "nearest"},
+        "params": {"wage_definition": "futa", "ytd_tracker": "sui_wages",
+                   "components": [{"name": "employee_uc", "rate": "0.0007", "employee_share": "1", "wage_base": None}]},
+    })
+    assert compute_withholding(pa, _sdi_emp("2000.00", ytd={"sui_wages": "999999"}), taxability) == Decimal("1.40")

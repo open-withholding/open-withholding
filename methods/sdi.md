@@ -1,7 +1,9 @@
 # Method: `sdi` (v1.1)
 
 State disability insurance and paid family / medical leave — the EMPLOYEE
-contribution withheld from wages each pay period (CA SDI, NJ TDI + FLI,
+contribution withheld from wages each pay period — and, under
+`tax: state_unemployment_insurance_employee`, the employee's share of state
+unemployment insurance where one exists (AK, NJ, PA) (CA SDI, NJ TDI + FLI,
 NY DBL + PFL, MA PFML, RI TDI, HI TDI, WA/OR/CO/MN/DE paid leave, …).
 One parameter file per state (`tax: state_disability_insurance`,
 `data/us/<st>/<year>/sdi.yaml`) lists the programme's **components**;
@@ -22,6 +24,11 @@ conservative otherwise). No filing status or elections apply.
 
 From params (all printed values transcribed verbatim):
 
+- `ytd_tracker` — which `ytd` field caps the components: `sdi_wages`
+  (default) for disability / paid-leave files, `sui_wages` for employee
+  unemployment-insurance shares (`tax: state_unemployment_insurance_employee`
+  — AK, NJ, PA), so the employee's share and the employer's SUI count the
+  same dollars against the same base.
 - `wage_definition` — which taxability-matrix wage base defines the
   programme's wages: `fica` (default — most programmes follow the UI /
   FICA treatment of pre-tax deductions), `futa`, or `state_income`.

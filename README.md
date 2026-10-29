@@ -48,7 +48,7 @@ Not yet covered, in rough priority order:
 - **State disability / paid family & medical leave** employee
   contributions — method `sdi` shipped; the first eight programmes (CA,
   NJ, NY PFL, MA, RI, WA, OR, CO) are registered and awaiting extraction
-- **SUI** for the remaining states; supplemental-wage rates
+- **SUI** for the remaining states (employee shares for AK/NJ/PA now modelled); supplemental-wage rates
 
 ## Layout
 

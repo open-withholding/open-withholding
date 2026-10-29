@@ -1167,6 +1167,170 @@
   maps_to:
     - data/us/mn/{year}/sdi.yaml
 
+- id: us-ak-sui
+  document: "Alaska DOLWD — Unemployment Insurance Tax Rates (experienced and new/industry employers)"
+  jurisdiction: US-AK
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://labor.alaska.gov/estax/"
+  documents:
+    - name: "Alaska {year} UI Tax Rates for Experienced Employers (HTML)"
+      kind: html
+      url: "https://labor.alaska.gov/estax/{year}-experience-rates.html"
+    - name: "Alaska {year} UI Tax Rates for New (Industry) Employers (HTML)"
+      kind: html
+      url: "https://labor.alaska.gov/estax/{year}-industry-rates.html"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base for the year ($54,200 for 2026); rate_range = the minimum and maximum EMPLOYER rates in the experienced-employer table (not the total rate, which adds the employee rate). Alaska assigns new employers an industry rate: new_employer_rate null unless the industry page prints one default figure (then transcribe it and note the industry list), new_employer_rate_construction = the construction industry rate if printed. The employee rate (0.50%) is NOT this file - it is the companion employee-share source. surtaxes null.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ak/{year}/sui.yaml
+
+- id: us-ak-sui-employee
+  document: "Alaska DOLWD — UI Tax Rates: employee rate and taxable wage base"
+  jurisdiction: US-AK
+  tax: state_unemployment_insurance_employee
+  method: sdi
+  authority: agency_page
+  landing: "https://labor.alaska.gov/estax/"
+  documents:
+    - name: "Alaska {year} UI Tax Rates for Experienced Employers (HTML)"
+      kind: html
+      url: "https://labor.alaska.gov/estax/{year}-experience-rates.html"
+  no_printed_examples: true
+  extraction_hint: >-
+    This file is the EMPLOYEE share of unemployment insurance withheld from wages, modelled as sdi components with ytd_tracker 'sui_wages' and wage_definition 'futa'. Transcribe only the employee-side rate(s); the employer's own rate belongs to the separate employer file. One component named employee_ui: rate = the published employee rate (0.50% -> 0.0050), employee_share 1, wage_base = the taxable wage base for the year ($54,200 for 2026, amount field), weekly_max null, period_max null; ytd_tracker sui_wages; wage_definition futa.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ak/{year}/sui-employee.yaml
+
+- id: us-pa-sui
+  document: "Pennsylvania L&I — UC-748 Contribution Rates and Yearly Tax Highlights"
+  jurisdiction: US-PA
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights"
+  documents:
+    - name: "UC-748 Contribution Rates effective January 1 (PDF)"
+      kind: pdf
+      url: "https://www.pa.gov/content/dam/copapwp-pagov/en/dli/documents/uc/employer/uc-tax-rates/uc-748%20rev%2009-25.pdf"
+    - name: "L&I Yearly Tax Highlights (HTML)"
+      kind: html
+      url: "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base ($10,000); rate_range = the published computed rate range for the year as decimals (e.g. .014190 to .103734), which already includes the surcharge adjustment, additional contributions and interest factor - say so in notes and list those factors; new_employer_rate = the standard new-employer rate stated on UC-748 (as a decimal fraction), new_employer_rate_construction = the new construction-employer rate if stated; surtaxes null (everything is bundled in the computed rate). The 0.07% EMPLOYEE withholding is NOT this file.
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/pa/{year}/sui.yaml
+
+- id: us-pa-sui-employee
+  document: "Pennsylvania L&I — UC Employee Withholding (employee contribution rate on gross wages)"
+  jurisdiction: US-PA
+  tax: state_unemployment_insurance_employee
+  method: sdi
+  authority: agency_page
+  landing: "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/employee-withholding"
+  documents:
+    - name: "L&I Employee Withholding page (HTML)"
+      kind: html
+      url: "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/employee-withholding"
+    - name: "L&I Yearly Tax Highlights (HTML)"
+      kind: html
+      url: "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights"
+  no_printed_examples: true
+  extraction_hint: >-
+    This file is the EMPLOYEE share of unemployment insurance withheld from wages, modelled as sdi components with ytd_tracker 'sui_wages' and wage_definition 'futa'. Transcribe only the employee-side rate(s); the employer's own rate belongs to the separate employer file. One component named employee_uc: rate = the employee contribution rate for the target year from the rate table (0.07% -> 0.0007), employee_share 1, wage_base BOTH fields null - the page states employee contributions are based on total GROSS wages and are NOT limited to the employer taxable wage base - weekly_max null, period_max null; ytd_tracker sui_wages; wage_definition futa.
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/pa/{year}/sui-employee.yaml
+
+- id: us-nj-sui
+  document: "NJ DOL Division of Employer Accounts — employer UI contribution rates, wage base, new employer rate"
+  jurisdiction: US-NJ
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
+  documents:
+    - name: "NJ Division of Employer Accounts rate information page (HTML)"
+      kind: html
+      url: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. The page lists several years and fiscal-year rate tables - use the EMPLOYER figures that apply to the target calendar year (note the July-June fiscal-year rate schedule that straddles it). wage_base = the Taxable Wage Base for UI and WF/SWF (workers and employers) for the target year; new_employer_rate = the new-employer total UI rate stated for that period as a decimal fraction (note whether it includes the WF/SWF components); rate_range = the minimum and maximum employer rates of the schedule in effect (state the schedule column). Worker/employee rates are NOT this file.
+  check: [content_hash]
+  expected_window: "06-15..08-15"
+  maps_to:
+    - data/us/nj/{year}/sui.yaml
+
+- id: us-nj-sui-employee
+  document: "NJ DOL Division of Employer Accounts — worker UI / WF / SWF contribution rates"
+  jurisdiction: US-NJ
+  tax: state_unemployment_insurance_employee
+  method: sdi
+  authority: agency_page
+  landing: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
+  documents:
+    - name: "NJ Division of Employer Accounts rate information page (HTML)"
+      kind: html
+      url: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
+  no_printed_examples: true
+  extraction_hint: >-
+    This file is the EMPLOYEE share of unemployment insurance withheld from wages, modelled as sdi components with ytd_tracker 'sui_wages' and wage_definition 'futa'. Transcribe only the employee-side rate(s); the employer's own rate belongs to the separate employer file. Components = the WORKER (employee) rates for the target calendar year as the page itemises them (e.g. worker UI, workforce development / supplemental workforce fund) - one component per itemised rate, employee_share 1 each, wage_base (amount) = the Taxable Wage Base for UI and WF/SWF (workers and employers) for that year; weekly_max and period_max null. TDI and FLI worker rates are a SEPARATE source (us-nj-tdi-fli) - exclude them. Note the fiscal-year schedule the worker rate follows. ytd_tracker sui_wages; wage_definition futa.
+  check: [content_hash]
+  expected_window: "06-15..08-15"
+  maps_to:
+    - data/us/nj/{year}/sui-employee.yaml
+
+- id: us-oh-sui
+  document: "Ohio ODJFS — Unemployment Insurance Rate Details (annual rate summary)"
+  jurisdiction: US-OH
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://jfs.ohio.gov/job-services-and-unemployment/unemployment/employer-resources"
+  document_url_pattern: "https://dam.assets.ohio.gov/image/upload/jfs.ohio.gov/ouio/uctax/{year}RateDetails.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base stated for the target year; new_employer_rate = the new-employer rate excluding construction; new_employer_rate_construction = the construction new-employer rate if stated; rate_range = the minimum and maximum TOTAL experience rates for the year (contribution rate including the mutualized rate - state the mutualized rate and whether it is in the range, in notes); surtaxes null unless a separately billed flat rate is printed.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/oh/{year}/sui.yaml
+
+- id: us-va-sui
+  document: "Virginia Employment Commission — employer UI tax FAQs (wage base, rate assignment, rate factors)"
+  jurisdiction: US-VA
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://www.vec.virginia.gov/employers"
+  documents:
+    - name: "VEC FAQ: What is the wage base for each employee (HTML)"
+      kind: html
+      url: "https://www.vec.virginia.gov/FAQs/employers/what-wage-base-each-employee-i-will-pay-taxes"
+    - name: "VEC FAQ: How are tax rates assigned (HTML)"
+      kind: html
+      url: "https://www.vec.virginia.gov/FAQs/employers/how-are-tax-rates-assigned"
+    - name: "VEC FAQ: What factors determine my tax rate (HTML)"
+      kind: html
+      url: "https://vec.virginia.gov/FAQs/employers/what-factors-determine-my-tax-rate"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the first $8,000 of wages; new_employer_rate = the initial base tax rate for new employers (2.5%) - note that pool-cost and fund-building add-ons apply on top; new_employer_rate_construction null; rate_range = the normal base-rate range (.1% to 6.2%) - note that the noticed rate adds the pool cost charge and any fund-building charge; the 0.05% administrative fee is a separately billed flat charge - transcribe it as a surtaxes entry if its rate is printed on these pages, else note it.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/va/{year}/sui.yaml
+
 - id: us-il-sui
   document: "IDES Annual Unemployment Insurance Tax Rate Summary"
   jurisdiction: US-IL

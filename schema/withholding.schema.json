@@ -31,7 +31,8 @@
         "fica",
         "futa",
         "state_unemployment_insurance",
-        "state_disability_insurance"
+        "state_disability_insurance",
+        "state_unemployment_insurance_employee"
       ]
     },
     "effective_from": {
@@ -1727,6 +1728,13 @@
                     }
                   }
                 }
+              },
+              "ytd_tracker": {
+                "enum": [
+                  "sdi_wages",
+                  "sui_wages"
+                ],
+                "default": "sdi_wages"
               }
             }
           }

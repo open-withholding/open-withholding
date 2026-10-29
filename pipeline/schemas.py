@@ -652,12 +652,18 @@ _PARAMS_BY_METHOD = {
     "sdi": {
         "type": "object",
         "additionalProperties": False,
-        "required": ["wage_definition", "components"],
-        "description": "State disability / paid family & medical leave EMPLOYEE contributions: "
+        "required": ["wage_definition", "ytd_tracker", "components"],
+        "description": "State disability / paid family & medical leave EMPLOYEE contributions "
+        "(and, for tax state_unemployment_insurance_employee, the employee share of SUI): "
         "one entry per published component (NJ: TDI and FLI; NY: PFL; MA: family and medical "
         "shares). Employer-side contributions are out of scope — never transcribe them as "
         "components.",
         "properties": {
+            "ytd_tracker": {
+                "type": ["string", "null"],
+                "description": "'sui_wages' for an employee SUI share (its wage base is the state's "
+                "UI base, shared with the employer's SUI); null for disability / paid-leave files",
+            },
             "wage_definition": {
                 "enum": ["fica", "futa", "state_income"],
                 "description": "Which wage base defines the programme's wages; 'fica' unless "
