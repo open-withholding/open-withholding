@@ -1,0 +1,28 @@
+schema_version: '0.1'
+jurisdiction: US-NJ
+tax: state_unemployment_insurance_employee
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2026)
+  url: https://www.nj.gov/labor/ea/employer-services/rate-info/
+  retrieved: '2026-10-29'
+  sha256: 3d86c31ee0ff4b4c81bf783b1ef69193f30c68e716295fd2cf90f5044c010079
+  notes: Extracted by pipeline; pages per PR body
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: futa
+  ytd_tracker: sui_wages
+  components:
+  - name: U.I.
+    rate: '0.003825'
+    employee_share: '1'
+    wage_base: '44800'
+  - name: W.F./S.W.F.
+    rate: '0.000425'
+    employee_share: '1'
+    wage_base: '44800'
