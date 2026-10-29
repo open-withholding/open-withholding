@@ -1,0 +1,13 @@
+source:
+  document: 'ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)'
+  page: 1
+  example: 'maintainer-constructed (weekly $500: 500 x 0.012 x 0.707 = 4.242 -> 4.24), expected value
+    computed by the reference engine; kept below the Social Security wage base on purpose: the cap is
+    a cross-file reference whose 2027 value arrives with the 2027 Pub 15 extraction'
+as_of: '2027-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '500.00'
+expect:
+  sdi_withholding:
+    US-WA: '4.24'

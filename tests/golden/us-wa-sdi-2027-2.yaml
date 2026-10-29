@@ -1,0 +1,13 @@
+source:
+  document: 'ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)'
+  page: 1
+  example: 'maintainer-constructed (biweekly $1,234.56: 1,234.56 x 0.012 x 0.707 = 10.4740 -> 10.47),
+    expected value computed by the reference engine; kept below the Social Security wage base on purpose:
+    the cap is a cross-file reference whose 2027 value arrives with the 2027 Pub 15 extraction'
+as_of: '2027-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '1234.56'
+expect:
+  sdi_withholding:
+    US-WA: '10.47'
