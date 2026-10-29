@@ -1,0 +1,13 @@
+source:
+  document: "Delaware DOL \u2014 Employers & Third Party Administrators Guide to Delaware Paid Leave (2026)"
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000, first paycheck: three lines of coverage at 50% employee
+    share, each rounded separately), expected value computed by the reference engine: parental 3.20 +
+    medical 4.00 + family 0.80 = 8.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  sdi_withholding:
+    US-DE: '8.00'

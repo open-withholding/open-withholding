@@ -1,0 +1,15 @@
+source:
+  document: "Delaware DOL \u2014 Employers & Third Party Administrators Guide to Delaware Paid Leave (2026)"
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with $184,000 already paid this year: the Social Security
+    wage base cap (resolved from the federal FICA file via the cross-file reference) leaves $500 subject),
+    expected value computed by the reference engine: parental 0.80 + medical 1.00 + family 0.20 = 2.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sdi_wages: '184000'
+expect:
+  sdi_withholding:
+    US-DE: '2.00'
