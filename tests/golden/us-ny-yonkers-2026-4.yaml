@@ -1,0 +1,17 @@
+source:
+  document: NYS-50-T-Y, Yonkers Withholding Tax Tables and Methods (2026)
+  page: 16
+  example: Daily payroll, $750 gross wages, single, 2 exemptions; net wages 713.85; table II-E line 8
+as_of: '2026-06-15'
+input:
+  pay_frequency: daily
+  gross_wages: '750'
+  locals:
+  - jurisdiction: US-NY-YONKERS
+    resident: true
+    allowances: 2
+  state:
+  - jurisdiction: US-NY
+    filing_status: single
+expect:
+  local_withholding: '7.39'
