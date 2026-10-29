@@ -1,0 +1,15 @@
+source:
+  document: Ohio Department of Taxation — School Districts With an Income Tax (employer withholding rate
+    list) (2026) (2026)
+  page: 0
+  example: 'maintainer-approved (no_examples_ok at dispatch) pipeline-constructed regression pin: engine-computed
+    at extraction on weekly $1,000 gross; the rate is transcribed from the printed list'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1000.00'
+  locals:
+  - jurisdiction: US-OH-SD-8303
+    resident: true
+expect:
+  local_withholding: '10.00'

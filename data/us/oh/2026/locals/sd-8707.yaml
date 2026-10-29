@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US-OH-SD-8707
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Ohio Department of Taxation — School Districts With an Income Tax (employer withholding rate
+    list) (2026) (2026)
+  url: https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025-2026%20NYP%20Updates/School_Districts_2026.pdf
+  retrieved: '2026-10-28'
+  sha256: 3b13e9c6fd9ee63392401035322082b89ce9764a777c9637a0ef15a50a3d80e2
+  notes: Extracted by pipeline; pages per PR body; SD 8707 Otsego LSD (Wood, Henry, Lucas), traditional
+    tax base; rate from the printed list
+method: flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0100'
