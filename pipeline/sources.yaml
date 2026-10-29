@@ -1120,9 +1120,11 @@
     published component rate as a decimal fraction (e.g. 0.40% -> 0.0040)
     and employee_share = the maximum share employers may deduct from
     employees (the guide's 'up to 50%' -> 0.50) - keep the guide's framing,
-    never pre-multiplied. wage_base = the Social Security wage base the
-    guide says contributions are capped at (state the figure if printed,
-    else note the reference). period_max null; wage_definition fica.
+    never pre-multiplied. wage_base: the guide defines the cap as the FICA wage limit
+    ('just like Social Security') and prints only a PROJECTED figure for the
+    next year - transcribe {"ref": "federal.social_security_wage_base"} (the
+    dataset resolves the actual federal base) and record the printed projection
+    in notes; never a dollar figure, never null. period_max null; wage_definition fica.
     Employer-side amounts, benefit levels and small-employer/private-plan
     exemptions are out of scope (note them).
   check: [content_hash]
