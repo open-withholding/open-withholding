@@ -1,0 +1,17 @@
+source:
+  document: "Ohio ODJFS \u2014 Unemployment Insurance Rate Details (annual rate summary) (2026)"
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 2.700% with $8,000 already paid this year: only
+    the $1,000 left under the $9,000 base is taxed), expected value computed by the reference engine:
+    1,000 x 2.700% = 27.00 + Technology & Customer Service Fee 1,000 x 0.1500% = 1.50'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '8000'
+  employer:
+    sui_jurisdiction: US-OH
+    sui_experience_rate: '0.0270'
+expect:
+  sui_tax: '28.50'
