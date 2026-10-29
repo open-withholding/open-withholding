@@ -1,0 +1,27 @@
+schema_version: '0.2'
+jurisdiction: US-WA
+tax: state_disability_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'ESD news release: Paid Family & Medical Leave premium rate for the target year (HTML)'
+  url: https://esd.wa.gov/about-us/news-release/2025/paid-family-medical-leave-premium-rate-increases-113-2026
+  retrieved: '2026-10-29'
+  sha256: 170059b7babd946ee0c8b310828bd81e16ff8f40a0fede0eec1727e8f08757f4
+- document: paidleave.wa.gov updates page (HTML)
+  url: https://paidleave.wa.gov/updates/
+  retrieved: '2026-10-29'
+  sha256: dbf932b2d17f4abe2d06d0d2c014a921db9781ec6b1df80927118e8450c6fe6b
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: fica
+  components:
+  - name: pfml
+    rate: '0.0113'
+    employee_share: '0.7143'
+    wage_base:
+      ref: federal.social_security_wage_base
