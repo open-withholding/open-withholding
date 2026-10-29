@@ -695,8 +695,13 @@ _PARAMS_BY_METHOD = {
                             "derives from, and note it.",
                             "properties": {
                                 "amount": DECIMAL_OR_NULL,
-                                "ref": {"type": ["string", "null"],
-                                        "enum": ["federal.social_security_wage_base", None]},
+                                # anyOf is in the structured-output-supported set (oneOf is
+                                # not), and an enum must sit under a single declared type —
+                                # `type: [string, null]` + `enum: [..., null]` was rejected.
+                                "ref": {"anyOf": [
+                                    {"type": "string", "enum": ["federal.social_security_wage_base"]},
+                                    {"type": "null"},
+                                ]},
                             },
                         },
                         "weekly_max": {**DECIMAL_OR_NULL, "description": "The maximum "
