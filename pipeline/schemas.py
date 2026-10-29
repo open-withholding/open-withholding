@@ -760,7 +760,7 @@ _PARAMS_BY_METHOD = {
         "properties": {
             "wage_base": {**DECIMAL, "description": "Annual taxable wage base for the "
                           "target year"},
-            "new_employer_rate": {**DECIMAL, "description": "Published new-employer "
+            "new_employer_rate": {**DECIMAL_OR_NULL, "description": "NULL where the state assigns new employers an industry-average rate instead of one published figure (WA, MN) - say so in notes. Otherwise Published new-employer "
                                   "rate INCLUDING any bundled surcharge, as printed"},
             "new_employer_rate_construction": {
                 **DECIMAL_OR_NULL,

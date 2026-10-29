@@ -1360,6 +1360,163 @@
   maps_to:
     - data/us/nc/{year}/sui.yaml
 
+- id: us-mi-sui
+  document: "Michigan UIA — Tax Rates and Liability (employer FAQ)"
+  jurisdiction: US-MI
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://www.michigan.gov/leo/bureaus-agencies/uia/employers"
+  documents:
+    - name: "Michigan UIA Tax Rates and Liability FAQ (HTML)"
+      kind: html
+      url: "https://www.michigan.gov/leo/bureaus-agencies/uia/employers/frequently-asked-questions-for-employers/for-employers/tax-rates-and-liability"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base for QUALIFIED (non-delinquent) employers ($9,000 unless the page says otherwise; note the higher delinquent-employer base in notes); new_employer_rate = the rate set by law for a new employer's first years (2.7%); new_employer_rate_construction = the construction-industry new-employer rate if stated; rate_range = the published minimum and maximum TOTAL rates for the target year as stated (Michigan's noticed rate bundles its components - surtaxes null; list the components in notes).
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/mi/{year}/sui.yaml
+
+- id: us-ga-sui
+  document: "Georgia DOL — Employer Handbook (DOL-224) and 2026 employer tax rates notice"
+  jurisdiction: US-GA
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://dol.georgia.gov/employer-tax-rates"
+  documents:
+    - name: "Georgia DOL Employer Handbook DOL-224 (PDF)"
+      kind: pdf
+      url: "https://dol.georgia.gov/documents/employer-handbook"
+    - name: "Georgia DOL blog: 2026 Employer Tax Rates Available Now (HTML)"
+      kind: html
+      url: "https://dol.georgia.gov/blog-post/2025-12-23/2026-employer-tax-rates-available-now"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base ($9,500 unless stated otherwise); new_employer_rate = the beginning contribution rate for newly liable employers (2.70%); new_employer_rate_construction null unless stated; rate_range = the published minimum and maximum CONTRIBUTION rates. Georgia's rate notice (DOL-626) states the contribution rate and the ADMINISTRATIVE ASSESSMENT separately: transcribe the administrative assessment as one surtaxes entry on the same wage base (state its rate and whether it applies to minimum/maximum-rated employers, in notes).
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ga/{year}/sui.yaml
+
+- id: us-wa-sui
+  document: "Washington ESD — How we determine tax rates (taxable wage base, rate caps)"
+  jurisdiction: US-WA
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://esd.wa.gov/employer-requirements/unemployment-taxes"
+  documents:
+    - name: "ESD How we determine tax rates (HTML)"
+      kind: html
+      url: "https://esd.wa.gov/employer-requirements/unemployment-taxes/how-we-determine-tax-rates"
+    - name: "ESD news release: new average annual wage estimates (taxable wage base) (HTML)"
+      kind: html
+      url: "https://esd.wa.gov/about-us/news-release/2026/new-average-annual-wage-estimates-adjust-unemployment-insurance-and-paid-leave-benefits"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base for the target year from the year table ($78,200 for 2026). Washington assigns NEW employers their industry's average rate, not one published figure: new_employer_rate null, new_employer_rate_construction null, and say so in notes. rate_range: the noticed rate is experience rate + flat social-cost tax, capped at 6.0% total - min = the lowest rate class's combined rate if printed (else 0.0000 and note), max = the 6.0% statutory total cap (or the printed maximum). The Employment Administration Fund (EAF) rate is a separate flat charge on the same base - transcribe it as a surtaxes entry if its rate is printed, else note it.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/wa/{year}/sui.yaml
+
+- id: us-co-sui
+  document: "Colorado CDLE — Unemployment Insurance premium rates and chargeable wage limit"
+  jurisdiction: US-CO
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://cdle.colorado.gov/employers/unemployment-insurance-premiums"
+  documents:
+    - name: "CDLE Premium Rates page (HTML)"
+      kind: html
+      url: "https://cdle.colorado.gov/employers/unemployment-insurance-premiums/premium-rates"
+    - name: "CDLE Introductory Rates page (HTML)"
+      kind: html
+      url: "https://cdle.colorado.gov/employers/unemployment-insurance-premiums/introductory-rates"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the chargeable wage limit for the target year ($30,600 for 2026); new_employer_rate = the introductory rate for standard (non-construction) new employers as a decimal fraction if a single figure is printed, else null with a note that introductory rates are industry-based; new_employer_rate_construction = the construction introductory rate if printed; rate_range = the minimum and maximum TOTAL premium rates for the target year (standard rate schedule plus any solvency/support surcharges that the notice bundles - state the bundling in notes); separately billed flat assessments go in surtaxes.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/co/{year}/sui.yaml
+
+- id: us-mn-sui
+  document: "Minnesota UI — tax rate factors, taxable wage base, new employer rates"
+  jurisdiction: US-MN
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://www.uimn.org/employers/wages-taxes/tax-rates/index.jsp"
+  documents:
+    - name: "uimn.org Unemployment Tax Rates page (HTML)"
+      kind: html
+      url: "https://www.uimn.org/employers/wages-taxes/tax-rates/index.jsp"
+    - name: "uimn.org New employer tax rates page (HTML)"
+      kind: html
+      url: "https://www.uimn.org/employers/wages-taxes/tax-rates/new-employer-rates.jsp"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base for the target year ($44,000 for 2026). Minnesota assigns NEW employers their industry's average rate: new_employer_rate null, new_employer_rate_construction = the construction rate if the new-employer page states one, note the industry list. rate_range = base tax rate (minimum) to base + maximum experience rating (0.40% to 0.40% + 8.90% unless the page states a different total). The target year's assessments (workforce development fee, federal loan interest assessment, additional assessment) are separately stated percentages - transcribe each as a surtaxes entry on the same wage base with its printed rate.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/mn/{year}/sui.yaml
+
+- id: us-ma-sui
+  document: "Massachusetts DUA — UI contribution rates (new employer, construction) and schedules"
+  jurisdiction: US-MA
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://www.mass.gov/service-details/learn-about-unemployment-insurance-ui-contributions"
+  documents:
+    - name: "Mass.gov Learn about UI contributions (HTML)"
+      kind: html
+      url: "https://www.mass.gov/service-details/learn-about-unemployment-insurance-ui-contributions"
+    - name: "Mass.gov Employers that need to pay unemployment insurance (HTML)"
+      kind: html
+      url: "https://www.mass.gov/info-details/learn-about-employer-contributions-to-dua"
+    - name: "DUA Table of Contribution Rates and Schedules A-G (PDF)"
+      kind: pdf
+      url: "https://www.mass.gov/doc/massachusetts-ui-tax-rate-schedules-a-g/download"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the UI taxable wage base per employee ($15,000 unless the pages state otherwise - if no page prints it, say so in notes rather than guessing); new_employer_rate = the rate for employers registered less than 3 years (2.42% for 2026); new_employer_rate_construction = the new construction-industry rate (6.08%); rate_range = the minimum and maximum of the contribution schedule in effect for the target year (name the schedule letter in notes). Massachusetts bills the COVID Recovery Assessment and EMAC separately - transcribe the COVID Recovery Assessment as a surtaxes entry only if its target-year rate is printed; EMAC is not UI and is out of scope.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ma/{year}/sui.yaml
+
+- id: us-in-sui
+  document: "Indiana DWD — premium rate computation and new employer premium rate"
+  jurisdiction: US-IN
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://www.in.gov/dwd/indiana-unemployment/employers/employer-guide/rate-computation"
+  documents:
+    - name: "DWD State Premium Rate Computation (HTML)"
+      kind: html
+      url: "https://www.in.gov/dwd/indiana-unemployment/employers/employer-guide/rate-computation/state-premium-rate-computation"
+    - name: "DWD New Employer Premium Rate (HTML)"
+      kind: html
+      url: "https://www.in.gov/dwd/indiana-unemployment/employers/employer-guide/rate-computation/new-employer-premium-rate"
+    - name: "DWD Unemployment Insurance Employer Handbook (PDF)"
+      kind: pdf
+      url: "https://www.in.gov/dwd/files/Employer_Handbook.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the first $9,500 of each employee's wages (confirm on the pages or handbook); new_employer_rate = the standard new-employer premium rate (2.5%); new_employer_rate_construction = the construction new-employer rate if stated; rate_range = the minimum and maximum premium rates on the schedule in effect (0.50% to 7.40% unless stated otherwise; note any delinquency rate separately in notes, it is not the maximum for employers in good standing). No separate flat surtax - surtaxes null unless one is printed.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/in/{year}/sui.yaml
+
 - id: us-in-counties
   document: "Departmental Notice #1, How to Compute Withholding for State and County Income Tax — county rate table"
   jurisdiction: US-IN
