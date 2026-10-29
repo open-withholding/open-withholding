@@ -1,0 +1,30 @@
+schema_version: '0.2'
+jurisdiction: US-NY
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: NY DOL UI rate information page (HTML)
+  url: https://dol.ny.gov/unemployment-insurance-rate-information
+  retrieved: '2026-10-29'
+  sha256: cd7fede9c46ebac2e879b3a9a3a4aa5cdc9c50ad9a3e4bd1ce46b4ca13cd2d60
+- document: NYS-50 Employer's Guide to Unemployment Insurance, Wage Reporting, and Withholding Tax (HTML
+    page)
+  url: https://dol.ny.gov/employers-guide-unemployment-insurance-wage-reporting-and-withholding-tax-nys-50-0
+  retrieved: '2026-10-29'
+  sha256: a4509256ffa7e3a36ef8d5a6c8db7224f0a4896071e2ab68868240dc83250102
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '17600'
+  new_employer_rate: '0.04025'
+  rate_range:
+    min: '0.01625'
+    max: '0.09425'
+  surtaxes:
+  - name: Re-employment Service Fund
+    rate: '0.00075'
+    wage_base: '17600'
