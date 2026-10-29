@@ -134,3 +134,26 @@ def test_flat_rate_fan_out_files_are_self_contained_and_skip_zero_rates():
     assert trimble["params"] == {"rate": "0.0100"}
     assert "SD 0505 Trimble LSD (Athens, Morgan), earned income tax base" in trimble["source"]["notes"]
     assert "intermediate_to" not in trimble["rounding"]
+
+
+def test_mechanical_validation_resolves_cross_file_references():
+    """A candidate with wage_base: {ref: federal.social_security_wage_base}
+    must validate its goldens against the resolved federal base (DE's first
+    reference run died with 'unresolved cross-file reference' here)."""
+    from engine.taxability import TaxabilityMatrix
+    from pipeline.extract import REPO_ROOT, run_mechanical_validation
+    param_dict = {
+        "schema_version": "0.1", "jurisdiction": "US-ZZ", "tax": "state_disability_insurance",
+        "effective_from": "2026-01-01",
+        "source": {"document": "FIXTURE", "url": "https://example.gov/x", "retrieved": "2026-01-01", "sha256": "0" * 64},
+        "method": "sdi", "rounding": {"to": "0.01", "mode": "nearest"},
+        "params": {"wage_definition": "fica", "components": [
+            {"name": "x", "rate": "0.0100", "employee_share": "0.50",
+             "wage_base": {"ref": "federal.social_security_wage_base"}}]},
+    }
+    # Past the real 2026 federal base (184,500) nothing is subject -> 0.00
+    golden = {"source": {"document": "FIXTURE", "page": 1, "example": "past the cap"}, "as_of": "2026-06-15",
+              "input": {"pay_frequency": "biweekly", "gross_wages": "2000.00", "ytd": {"sdi_wages": "184500"}},
+              "expect": {"sdi_withholding": {"US-ZZ": "0.00"}}}
+    taxability = TaxabilityMatrix.from_file(REPO_ROOT / "taxability" / "us.yaml")
+    run_mechanical_validation(param_dict, [golden], taxability)  # raises on failure
