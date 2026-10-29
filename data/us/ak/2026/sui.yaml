@@ -1,0 +1,26 @@
+schema_version: '0.2'
+jurisdiction: US-AK
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Alaska {year} UI Tax Rates for Experienced Employers (HTML)
+  url: https://labor.alaska.gov/estax/2026-experience-rates.html
+  retrieved: '2026-10-29'
+  sha256: b95b9cf46e729994db7e60dea97da3de315cab71a4254b44e5807434ed2e447f
+- document: Alaska {year} UI Tax Rates for New (Industry) Employers (HTML)
+  url: https://labor.alaska.gov/estax/2026-industry-rates.html
+  retrieved: '2026-10-29'
+  sha256: d050271a19977b6c801875c54ea2f07182b295b81743896833d8f63987e1f65c
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '54200.00'
+  new_employer_rate: '0.0100'
+  rate_range:
+    min: '0.0100'
+    max: '0.0540'
+  new_employer_rate_construction: '0.0100'
