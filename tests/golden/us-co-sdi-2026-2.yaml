@@ -1,0 +1,12 @@
+source:
+  document: famli.colorado.gov employers page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $3,333.33: 3,333.33 x 0.0088 x 0.50 = 14.66665 -> 14.67),
+    expected value computed by the reference engine: famli 14.67 = 14.67'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '3333.33'
+expect:
+  sdi_withholding:
+    US-CO: '14.67'
