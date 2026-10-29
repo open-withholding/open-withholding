@@ -81,7 +81,8 @@ def load_data_root(data_root: str | Path) -> list[ParameterFile]:
         raw = yaml.safe_load(path.read_text())
         if isinstance(raw, dict) and raw.get("tax") in _WITHHOLDING_TAXES:
             files.append(load_parameter_dict(raw, path=path))
-    return files
+    from engine.refs import resolve_refs  # local import: refs depends on loader
+    return resolve_refs(files)
 
 
 def _expected_pairs(case: GoldenCase, employee: EmployeeInput, key: str, expected):

@@ -1001,7 +1001,7 @@
       url: "https://www.mass.gov/info-details/family-and-medical-leave-contribution-rates-for-employers"
   no_printed_examples: true
   extraction_hint: >-
-    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. Two components for the 25-or-more-covered-individuals case: family (the share that may be withheld from the covered individual for family leave, e.g. 0.18% -> 0.0018) and medical (the withholdable medical share, e.g. 0.28% -> 0.0028), each employee_share 1 - transcribe the withholdable percentages of eligible wages directly, not the 0.88% total. Note the fewer-than-25 case in notes (same employee shares; the employer share differs). wage_base = the Social Security contribution and benefit base the page says caps contributions (state the dollar figure if printed, else note that it references the federal SS wage base for the year). period_max null; wage_definition fica.
+    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. Two components for the 25-or-more-covered-individuals case: family (the share that may be withheld from the covered individual for family leave, e.g. 0.18% -> 0.0018) and medical (the withholdable medical share, e.g. 0.28% -> 0.0028), each employee_share 1 - transcribe the withholdable percentages of eligible wages directly, not the 0.88% total. Note the fewer-than-25 case in notes (same employee shares; the employer share differs). wage_base = the Social Security contribution and benefit base the page says caps contributions: the printed dollar figure if the page prints one, else {"ref": "federal.social_security_wage_base"} (the dataset resolves it from the federal FICA file) - never null, since null means no cap. period_max null; wage_definition fica.
   check: [content_hash]
   expected_window: "10-01..01-15"
   maps_to:
@@ -1037,7 +1037,7 @@
       url: "https://paidleave.wa.gov/updates/"
   no_printed_examples: true
   extraction_hint: >-
-    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named pfml: rate = the TOTAL premium rate for the target year as a decimal fraction (e.g. 1.13% -> 0.0113) and employee_share = the employees' percentage of the total premium as a fraction (e.g. 70.7% -> 0.707) - keep both as printed, never pre-multiplied. wage_base = the Social Security taxable maximum the page says premiums stop at (state the figure if printed, else note). The page announces multiple years - take the target year's figures only. period_max null; wage_definition fica.
+    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named pfml: rate = the TOTAL premium rate for the target year as a decimal fraction (e.g. 1.13% -> 0.0113) and employee_share = the employees' percentage of the total premium as a fraction (e.g. 70.7% -> 0.707) - keep both as printed, never pre-multiplied. wage_base = the Social Security taxable maximum the page says premiums stop at: the printed figure if any, else {"ref": "federal.social_security_wage_base"} - never null, since null means no cap. The page announces multiple years - take the target year's figures only. period_max null; wage_definition fica.
   check: [content_hash]
   expected_window: "09-15..01-15"
   maps_to:
@@ -1073,7 +1073,7 @@
       url: "https://famli.colorado.gov/employers"
   no_printed_examples: true
   extraction_hint: >-
-    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named famli: rate = the total premium rate as a decimal fraction (e.g. 0.88% -> 0.0088) and employee_share = the employee's share of it as a fraction (0.44 of 0.88 -> 0.50) - keep the publication's framing. wage_base = the Social Security wage base the premium is capped at (state the figure if printed, else note). The under-10-employee rule changes only the employer share - note it. period_max null; wage_definition fica.
+    Transcribe ONLY the EMPLOYEE contribution(s) for the target year as sdi components; employer-side contributions, UI/ETT/SUI rates, benefit amounts and weekly benefit maximums are out of scope. One component named famli: rate = the total premium rate as a decimal fraction (e.g. 0.88% -> 0.0088) and employee_share = the employee's share of it as a fraction (0.44 of 0.88 -> 0.50) - keep the publication's framing. wage_base = the Social Security wage base the premium is capped at: the printed figure if any, else {"ref": "federal.social_security_wage_base"} - never null, since null means no cap. The under-10-employee rule changes only the employer share - note it. period_max null; wage_definition fica.
   check: [content_hash]
   expected_window: "10-01..01-15"
   maps_to:
@@ -1149,8 +1149,8 @@
     pre-multiplied; if the page splits the rate into family and medical
     portions with distinct employee shares, transcribe one component per
     portion instead. wage_base = the Social Security taxable maximum the
-    page says premiums are capped at (state the figure if printed, else
-    note the reference). period_max null; wage_definition fica. Employer
+    page says premiums are capped at: the printed figure if any, else
+    {"ref": "federal.social_security_wage_base"} - never null, since null means no cap. period_max null; wage_definition fica. Employer
     shares, small-employer reductions and benefit amounts are out of scope.
   check: [content_hash]
   expected_window: "10-01..01-31"

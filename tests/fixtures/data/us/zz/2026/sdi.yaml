@@ -1,0 +1,20 @@
+# ILLUSTRATIVE FIXTURE — a paid-leave premium capped at "the Social Security
+# wage base" the way MA/WA/CO statutes phrase it: the file records the
+# reference, the loader resolves it from the federal fica file (100000 here).
+schema_version: "0.1"
+jurisdiction: US-ZZ
+tax: state_disability_insurance
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — illustrative paid-leave premium page"
+  url: "https://example.gov/fixtures/pfml.html"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: sdi
+rounding: { to: "0.01", mode: nearest }
+params:
+  wage_definition: fica
+  components:
+    - { name: pfml, rate: "0.0100", employee_share: "0.50", wage_base: { ref: federal.social_security_wage_base } }

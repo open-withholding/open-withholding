@@ -835,7 +835,12 @@ def main() -> int:
                 + "; ".join(f"{c['path']}={c['candidate_value']} ({c['note']})" for c in unconfirmed)
             )
         if not golden_dicts and args.no_examples_ok:
-            load_parameter_dict(param_dict)  # schema + bracket validation still gates
+            pf0 = load_parameter_dict(param_dict)  # schema + bracket validation still gates
+            from engine.golden import load_data_root
+            from engine.refs import find_refs, resolve_refs
+            if find_refs(pf0.params):  # a dangling cross-file reference fails here, not at merge
+                resolve_refs([pf0] + [f for f in load_data_root(REPO_ROOT / "data")
+                                      if not (f.jurisdiction == pf0.jurisdiction and f.tax == pf0.tax)])
             print("      schema OK; no worked examples in publication (--no-examples-ok); "
                   "maintainer-constructed golden cases required before merge")
         else:

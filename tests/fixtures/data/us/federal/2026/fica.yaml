@@ -1,0 +1,18 @@
+# ILLUSTRATIVE FIXTURE — every number here is fake. Real FICA parameters
+# enter /data only through the pipeline with Pub 15 citations.
+schema_version: "0.1"
+jurisdiction: US
+tax: fica
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — illustrative Pub 15 stand-in"
+  url: "https://example.gov/fixtures/p15.pdf"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: fica
+rounding: { to: "0.01", mode: nearest }
+params:
+  social_security: { employee_rate: "0.062", employer_rate: "0.062", wage_base: "100000" }
+  medicare: { employee_rate: "0.0145", employer_rate: "0.0145", additional_employee_rate: "0.009", additional_threshold: "200000" }

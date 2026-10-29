@@ -681,10 +681,21 @@ _PARAMS_BY_METHOD = {
                                            "employee pays: '1' when `rate` IS the employee rate; "
                                            "the printed share (e.g. '0.60') when the publication "
                                            "states a total rate and a split"},
-                        "wage_base": {**DECIMAL_OR_NULL, "description": "Annual taxable wage "
-                                      "limit for this component; null where none applies. A "
-                                      "'maximum annual contribution' is NOT a wage base — "
-                                      "transcribe the wage ceiling it derives from, and note it"},
+                        "wage_base": {
+                            "oneOf": [
+                                DECIMAL,
+                                {"type": "null"},
+                                {"type": "object", "additionalProperties": False, "required": ["ref"],
+                                 "properties": {"ref": {"enum": ["federal.social_security_wage_base"]}}},
+                            ],
+                            "description": "Annual taxable wage limit for this component. A printed "
+                            "dollar figure as a decimal string; null where the publication says no "
+                            "limit applies; or {\"ref\": \"federal.social_security_wage_base\"} "
+                            "when the publication says contributions stop at the Social Security "
+                            "wage base WITHOUT printing the figure (the dataset resolves it from the "
+                            "federal file). A 'maximum annual contribution' is NOT a wage base — "
+                            "transcribe the wage ceiling it derives from, and note it.",
+                        },
                         "weekly_max": {**DECIMAL_OR_NULL, "description": "The maximum "
                                        "contribution where the publication defines it PER WEEK "
                                        "(NY DBL 'no more than sixty cents a week' -> 0.60; HI TDI "

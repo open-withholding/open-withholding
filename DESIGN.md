@@ -138,6 +138,15 @@ Design rules:
 - **One tax per file.** Withholding, SUI, and SDI are separate files even
   for the same state, because they update on different schedules and cite
   different documents.
+- **Cross-file references where the law cross-references.** A statute
+  that defines a parameter by pointing at another jurisdiction's — "premiums
+  stop at the Social Security wage base" (MA, WA, CO) — is recorded as
+  exactly that: `wage_base: {ref: federal.social_security_wage_base}`. The
+  reference stays visible in the file and is resolved at load time against
+  the referenced file for the same effective date (`engine/refs.py`); a
+  missing target or an unresolved reference fails loud, never acts as "no
+  cap". This is the only exception to "every file stands alone": printed
+  shared tables are still duplicated (the Indiana county fan-out).
 
 ### 3.2 Withholding params by example
 
