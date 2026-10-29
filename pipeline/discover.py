@@ -96,7 +96,10 @@ class _AnchorParser(HTMLParser):
 def extract_links(html: str, base_url: str) -> list[tuple[str, str]]:
     parser = _AnchorParser()
     parser.feed(html)
-    return [(urljoin(base_url, href), text) for href, text in parser.links if href]
+    # Agencies link filenames with literal spaces ("FY20262027 TABLE C.pdf" on
+    # nj.gov); urllib refuses to fetch those, so percent-encode what the
+    # browser would.
+    return [(urljoin(base_url, href.replace(" ", "%20")), text) for href, text in parser.links if href]
 
 
 def select_document_url(

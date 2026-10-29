@@ -966,9 +966,12 @@
   jurisdiction: US-CA
   tax: state_disability_insurance
   method: sdi
-  authority: agency_page
+  authority: publication
   landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
   documents:
+    - name: "EDD DE 201, California Payroll Taxes for the year (PDF; unversioned URL serves the current edition)"
+      kind: pdf
+      url: "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/de201.pdf"
     - name: "EDD Rates and Withholding page (HTML)"
       kind: html
       url: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
@@ -1004,13 +1007,16 @@
   jurisdiction: US-NY
   tax: state_disability_insurance
   method: sdi
-  authority: agency_page
+  authority: publication
   landing: "https://paidfamilyleave.ny.gov/{year}"
   # Two employee contributions from two agencies, one state file: DBL
   # (statutory one-half of one percent of wages, at most 60 cents a week —
   # Workers' Compensation Board) and PFL (rate and maximum set annually —
   # paidfamilyleave.ny.gov/<year>, which prints per-paycheck examples).
   documents:
+    - name: "NYS DFS: Decision on the Premium Rate for Paid Family Leave for the target year (HTML)"
+      kind: html
+      url: "https://www.dfs.ny.gov/apps-and-licensing/health-insurers/pfl-rate-decision-{year}-page"
     - name: "WCB: Disability Benefits and Paid Family Leave Insurance — employer page (HTML)"
       kind: html
       url: "https://www.wcb.ny.gov/content/main/DisabilityBenefits/employer-disability-benefits.jsp"
@@ -1022,7 +1028,7 @@
     DBL from the WCB page: rate = one-half of one percent (0.0050),
     employee_share 1, wage_base null, weekly_max = the printed 'sixty cents
     a week' (0.60), period_max null - the engine scales the weekly cap to
-    other pay frequencies. (2) PFL from the paidfamilyleave.ny.gov page: the
+    other pay frequencies. (2) PFL from the DFS premium-rate decision for the target year (the formal instrument; the paidfamilyleave.ny.gov page must agree): the
     employee contribution rate as a decimal fraction (e.g. '0.432%' ->
     0.00432), employee_share 1, period_max null; the page states a MAXIMUM
     ANNUAL CONTRIBUTION in dollars - that is rate x the statewide average
@@ -1064,9 +1070,12 @@
   jurisdiction: US-RI
   tax: state_disability_insurance
   method: sdi
-  authority: agency_page
+  authority: release
   landing: "https://dlt.ri.gov/employers/employer-tax-unit"
   documents:
+    - name: "RI DLT press release: Tax Rates for Unemployment Insurance and Temporary Disability Insurance for the target year (HTML; year-specific URL, bump annually)"
+      kind: html
+      url: "https://dlt.ri.gov/press-releases/2026-tax-rates-unemployment-insurance-and-temporary-disability-insurance"
     - name: "RI DLT Employer Tax Unit page (HTML)"
       kind: html
       url: "https://dlt.ri.gov/employers/employer-tax-unit"
@@ -1114,9 +1123,12 @@
   jurisdiction: US-OR
   tax: state_disability_insurance
   method: sdi
-  authority: agency_page
+  authority: release
   landing: "https://paidleave.oregon.gov/employers/Pages/default.aspx"
   documents:
+    - name: "Oregon Employment Department press release: UI tax and Paid Leave Oregon rates for the target year (PDF; year-specific URL, bump annually)"
+      kind: pdf
+      url: "https://www.oregon.gov/employ/NewsAndMedia/Documents/2025-11-18_Tax_Rate_2026_Press_Release.pdf"
     - name: "Paid Leave Oregon employers page (HTML)"
       kind: html
       url: "https://paidleave.oregon.gov/employers/Pages/default.aspx"
@@ -1322,15 +1334,20 @@
   jurisdiction: US-NJ
   tax: state_unemployment_insurance
   method: sui
-  authority: agency_page
+  authority: publication
   landing: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
   documents:
+    - name: "NJ DOL Unemployment Insurance Contribution Rates table for the fiscal year in effect (PDF)"
+      kind: pdf
+      landing: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
+      link_pattern: 'TABLE'
+      url: "https://www.nj.gov/labor/ea/assets/PDFs/FY20262027%20TABLE%20C.pdf"
     - name: "NJ Division of Employer Accounts rate information page (HTML)"
       kind: html
       url: "https://www.nj.gov/labor/ea/employer-services/rate-info/"
   no_printed_examples: true
   extraction_hint: >-
-    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. The page lists several years and fiscal-year rate tables - use the EMPLOYER figures that apply to the target calendar year (note the July-June fiscal-year rate schedule that straddles it). wage_base = the Taxable Wage Base for UI and WF/SWF (workers and employers) for the target year; new_employer_rate = the new-employer total UI rate stated for that period as a decimal fraction (note whether it includes the WF/SWF components); rate_range = the minimum and maximum employer rates of the schedule in effect (state the schedule column). Worker/employee rates are NOT this file.
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. The page lists several years and fiscal-year rate tables - use the EMPLOYER figures that apply to the target calendar year (note the July-June fiscal-year rate schedule that straddles it). wage_base = the Taxable Wage Base for UI and WF/SWF (workers and employers) for the target year; new_employer_rate = the new-employer total UI rate stated for that period as a decimal fraction (note whether it includes the WF/SWF components); rate_range = the lowest and highest 'CURRENT RATE' (the total noticed employer rate) in the fiscal-year contribution-rate table PDF - e.g. 0.5% at 17.00%-and-over to 5.8% at the bottom / special assigned rate - naming the table column (A-E) and its July-June period in notes; new_employer_rate = that table's NEW EMPLOYER RATE line (total rate). Worker/employee rates are NOT this file.
   check: [content_hash]
   expected_window: "06-15..08-15"
   maps_to:
@@ -1422,9 +1439,12 @@
   jurisdiction: US-CA
   tax: state_unemployment_insurance
   method: sui
-  authority: agency_page
+  authority: publication
   landing: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
   documents:
+    - name: "EDD DE 201, California Payroll Taxes for the year (PDF; unversioned URL serves the current edition)"
+      kind: pdf
+      url: "https://edd.ca.gov/siteassets/files/pdf_pub_ctr/de201.pdf"
     - name: "EDD Rates and Withholding page (HTML)"
       kind: html
       url: "https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/"
@@ -1441,9 +1461,12 @@
   jurisdiction: US-TX
   tax: state_unemployment_insurance
   method: sui
-  authority: agency_page
+  authority: publication
   landing: "https://www.twc.texas.gov/programs/unemployment-tax/your-tax-rates"
   documents:
+    - name: "TWC Commission discussion paper: unemployment insurance tax rates for the target year (PDF; year-specific URL, bump annually)"
+      kind: pdf
+      url: "https://www.twc.texas.gov/sites/default/files/ogc/mtg25/commission-meeting-material-111725-item9b-dp-2026-tax-rates-twc.pdf"
     - name: "TWC Your Tax Rates page (HTML)"
       kind: html
       url: "https://www.twc.texas.gov/programs/unemployment-tax/your-tax-rates"
@@ -1570,9 +1593,14 @@
   jurisdiction: US-WA
   tax: state_unemployment_insurance
   method: sui
-  authority: agency_page
+  authority: publication
   landing: "https://esd.wa.gov/employer-requirements/unemployment-taxes"
   documents:
+    - name: "ESD tax rates for employers — rate-class table for the target year (PDF)"
+      kind: pdf
+      landing: "https://esd.wa.gov/employer-requirements/unemployment-taxes/how-we-determine-tax-rates"
+      link_pattern: 'unemployment-tax-rates-employers'
+      url: "https://esd.wa.gov/media/pdf/4819/2026-unemployment-tax-rates-employerspdf/download?inline="
     - name: "ESD How we determine tax rates (HTML)"
       kind: html
       url: "https://esd.wa.gov/employer-requirements/unemployment-taxes/how-we-determine-tax-rates"
@@ -1581,7 +1609,7 @@
       url: "https://esd.wa.gov/about-us/news-release/2026/new-average-annual-wage-estimates-adjust-unemployment-insurance-and-paid-leave-benefits"
   no_printed_examples: true
   extraction_hint: >-
-    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base for the target year from the year table ($78,200 for 2026). Washington assigns NEW employers their industry's average rate, not one published figure: new_employer_rate null, new_employer_rate_construction null, and say so in notes. rate_range: the noticed rate is experience rate + flat social-cost tax, capped at 6.0% total - min = the lowest rate class's combined rate if printed (else 0.0000 and note), max = the 6.0% statutory total cap (or the printed maximum). The Employment Administration Fund (EAF) rate is a separate flat charge on the same base - transcribe it as a surtaxes entry if its rate is printed, else note it.
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the taxable wage base for the target year from the year table ($78,200 for 2026). Washington assigns NEW employers their industry's average rate, not one published figure: new_employer_rate null, new_employer_rate_construction null, and say so in notes. rate_range = the lowest and highest TOTAL UI rate (experience rate + graduated social cost rate) across the 40 rate classes in the year's rate-table PDF - read them from the table, not from the prose caps. The Employment Administration Fund (EAF) rate is a separate flat charge on the same base - transcribe it as a surtaxes entry if its rate is printed, else note it.
   check: [content_hash]
   expected_window: "11-15..01-31"
   maps_to:
@@ -1639,6 +1667,9 @@
   authority: agency_page
   landing: "https://www.mass.gov/service-details/learn-about-unemployment-insurance-ui-contributions"
   documents:
+    - name: "M.G.L. c.151A s.14 — unemployment insurance taxable wage base (statute text, HTML)"
+      kind: html
+      url: "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXXI/Chapter151A/Section14"
     - name: "Mass.gov Learn about UI contributions (HTML)"
       kind: html
       url: "https://www.mass.gov/service-details/learn-about-unemployment-insurance-ui-contributions"
@@ -1650,7 +1681,7 @@
       url: "https://www.mass.gov/doc/massachusetts-ui-tax-rate-schedules-a-g/download"
   no_printed_examples: true
   extraction_hint: >-
-    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the UI taxable wage base per employee ($15,000 unless the pages state otherwise - if no page prints it, say so in notes rather than guessing); new_employer_rate = the rate for employers registered less than 3 years (2.42% for 2026); new_employer_rate_construction = the new construction-industry rate (6.08%); rate_range = the minimum and maximum of the contribution schedule in effect for the target year (name the schedule letter in notes). Massachusetts bills the COVID Recovery Assessment and EMAC separately - transcribe the COVID Recovery Assessment as a surtaxes entry only if its target-year rate is printed; EMAC is not UI and is out of scope.
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year. wage_base = the unemployment insurance taxable wage base as defined in the statute text (M.G.L. c.151A s.14(a)(4): "$15,000" for 2015 and after) - cite the statute, not the rate pages, which do not print it; new_employer_rate = the rate for employers registered less than 3 years (2.42% for 2026); new_employer_rate_construction = the new construction-industry rate (6.08%); rate_range = the minimum and maximum of the contribution schedule in effect for the target year (name the schedule letter in notes). Massachusetts bills the COVID Recovery Assessment and EMAC separately - transcribe the COVID Recovery Assessment as a surtaxes entry only if its target-year rate is printed; EMAC is not UI and is out of scope.
   check: [content_hash]
   expected_window: "12-01..01-31"
   maps_to:
