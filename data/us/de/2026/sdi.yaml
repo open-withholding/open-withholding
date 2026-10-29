@@ -1,0 +1,34 @@
+schema_version: '0.1'
+jurisdiction: US-DE
+tax: state_disability_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Delaware DOL — Employers & Third Party Administrators Guide to Delaware Paid Leave (2026)
+  url: https://laborfiles.delaware.gov/main/pfl/Employer_and_TPAs_Guide_to_DPL.pdf
+  retrieved: '2026-10-29'
+  sha256: 5d3f315ba895b0d5c0d2c6ba51c10dc8c9f735b37579b1b5757bab515847214c
+  notes: Extracted by pipeline; pages per PR body
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: fica
+  components:
+  - name: parental
+    rate: '0.0032'
+    employee_share: '0.50'
+    wage_base:
+      ref: federal.social_security_wage_base
+  - name: medical
+    rate: '0.0040'
+    employee_share: '0.50'
+    wage_base:
+      ref: federal.social_security_wage_base
+  - name: family
+    rate: '0.0008'
+    employee_share: '0.50'
+    wage_base:
+      ref: federal.social_security_wage_base
