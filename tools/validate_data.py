@@ -39,6 +39,7 @@ def main() -> int:
     checked = 0
 
     data_root = REPO_ROOT / "data"
+    loaded_files = []
     for path in sorted(data_root.rglob("*.yaml")):
         rel = path.relative_to(REPO_ROOT)
         try:
@@ -52,7 +53,7 @@ def main() -> int:
         tax = raw.get("tax")
         if tax in WITHHOLDING_TAXES:
             try:
-                load_parameter_dict(raw, path=path)
+                loaded_files.append(load_parameter_dict(raw, path=path))
                 checked += 1
             except EngineError as exc:
                 errors.append(str(exc))
@@ -60,6 +61,17 @@ def main() -> int:
             errors.append(f"{rel}: missing `tax` field")
         else:
             notes.append(f"{rel}: tax={tax} has no schema yet — NOT validated")
+
+    # Cross-file references must resolve against the set (engine/refs.py):
+    # a dangling {ref: ...} is a release blocker, never a silent "no cap".
+    try:
+        from engine.refs import find_refs, resolve_refs
+        resolve_refs(loaded_files)
+        n_refs = sum(len(find_refs(f.params)) for f in loaded_files)
+        if n_refs:
+            notes.append(f"{n_refs} cross-file reference(s) resolved")
+    except EngineError as exc:
+        errors.append(str(exc))
 
     try:
         TaxabilityMatrix.from_file(REPO_ROOT / "taxability" / "us.yaml")

@@ -1,0 +1,11 @@
+# ILLUSTRATIVE golden case: the cross-file wage-base reference resolves to the
+# fixture federal fica base (100,000): 99,000 YTD leaves 1,000 subject ->
+# 1,000 x 1% x 50% = 5.00 (a null/unresolved cap would give 10.00).
+source: { document: "FIXTURE — illustrative paid-leave premium page", page: 1, example: 1 }
+as_of: 2026-06-15
+input:
+  pay_frequency: biweekly
+  gross_wages: "2000.00"
+  ytd: { sdi_wages: "99000" }
+expect:
+  sdi_withholding: { US-ZZ: "5.00" }

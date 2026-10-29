@@ -1698,6 +1698,9 @@
                         },
                         {
                           "type": "null"
+                        },
+                        {
+                          "$ref": "#/$defs/ref"
                         }
                       ]
                     },
@@ -1843,6 +1846,21 @@
               }
             ]
           }
+        }
+      }
+    },
+    "ref": {
+      "type": "object",
+      "required": [
+        "ref"
+      ],
+      "additionalProperties": false,
+      "description": "Cross-file parameter reference, resolved at load time against the referenced file for the same effective date (engine/refs.py). Allowed only where the law itself cross-references.",
+      "properties": {
+        "ref": {
+          "enum": [
+            "federal.social_security_wage_base"
+          ]
         }
       }
     }

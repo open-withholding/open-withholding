@@ -39,6 +39,12 @@ def compute(ctx) -> Decimal:
 
         # Step 2: wages subject, capped at the annual base if one applies.
         wage_base = component.get("wage_base")
+        if isinstance(wage_base, dict):
+            raise InputError(
+                f"{where}: wage_base is an unresolved cross-file reference {wage_base!r}; "
+                "load the data root as a set (engine.golden.load_data_root / "
+                "engine.refs.resolve_refs) so the referenced file supplies the value"
+            )
         if wage_base is None:
             subject = ctx.taxable_wages
         else:
