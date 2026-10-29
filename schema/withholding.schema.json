@@ -1337,7 +1337,15 @@
                 "$ref": "#/$defs/money"
               },
               "new_employer_rate": {
-                "$ref": "#/$defs/rate"
+                "oneOf": [
+                  {
+                    "$ref": "#/$defs/rate"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Published new-employer rate; null where the state assigns new employers an industry-average rate (WA, MN)"
               },
               "new_employer_rate_construction": {
                 "$ref": "#/$defs/rate"

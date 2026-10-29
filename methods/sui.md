@@ -25,6 +25,8 @@ From params (transcribed from the publication):
 - `new_employer_rate` — the published default for new employers
   (informational; the engine still requires the entered rate — a new
   employer enters this value from their own notice)
+  — null where the state assigns new employers an industry-average rate
+  instead of one published figure (WA, MN); the entered rate still governs
 - `new_employer_rate_construction` — where the state publishes a
   separate construction-industry new-employer rate (optional)
 - `rate_range` — `{min, max}` of the published schedule INCLUDING any
