@@ -682,19 +682,22 @@ _PARAMS_BY_METHOD = {
                                            "the printed share (e.g. '0.60') when the publication "
                                            "states a total rate and a split"},
                         "wage_base": {
-                            "oneOf": [
-                                DECIMAL,
-                                {"type": "null"},
-                                {"type": "object", "additionalProperties": False, "required": ["ref"],
-                                 "properties": {"ref": {"enum": ["federal.social_security_wage_base"]}}},
-                            ],
-                            "description": "Annual taxable wage limit for this component. A printed "
-                            "dollar figure as a decimal string; null where the publication says no "
-                            "limit applies; or {\"ref\": \"federal.social_security_wage_base\"} "
-                            "when the publication says contributions stop at the Social Security "
-                            "wage base WITHOUT printing the figure (the dataset resolves it from the "
-                            "federal file). A 'maximum annual contribution' is NOT a wage base — "
-                            "transcribe the wage ceiling it derives from, and note it.",
+                            "type": "object",
+                            "additionalProperties": False,
+                            "required": ["amount", "ref"],
+                            "description": "Annual taxable wage limit for this component. Exactly one "
+                            "of the two fields is non-null: `amount` = a printed dollar figure as a "
+                            "decimal string; `ref` = 'federal.social_security_wage_base' when the "
+                            "publication says contributions stop at the Social Security wage base "
+                            "WITHOUT printing the figure (the dataset resolves it from the federal "
+                            "file). Both null = the publication says no limit applies. A 'maximum "
+                            "annual contribution' is NOT a wage base — transcribe the wage ceiling it "
+                            "derives from, and note it.",
+                            "properties": {
+                                "amount": DECIMAL_OR_NULL,
+                                "ref": {"type": ["string", "null"],
+                                        "enum": ["federal.social_security_wage_base", None]},
+                            },
                         },
                         "weekly_max": {**DECIMAL_OR_NULL, "description": "The maximum "
                                        "contribution where the publication defines it PER WEEK "

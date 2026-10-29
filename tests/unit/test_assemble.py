@@ -906,14 +906,25 @@ def test_sdi_transform_roundtrip():
     out = assemble._transform_params("sdi", {
         "wage_definition": "fica",
         "components": [
-            {"name": "DBL", "rate": "0.0050", "employee_share": "1", "wage_base": None,
+            {"name": "DBL", "rate": "0.0050", "employee_share": "1",
+             "wage_base": {"amount": None, "ref": None},
              "period_max": [{"frequency": "weekly", "amount": "0.60"}]},
-            {"name": "PFL", "rate": "0.00432", "employee_share": "1", "wage_base": "95200", "period_max": None},
+            {"name": "PFL", "rate": "0.00432", "employee_share": "1",
+             "wage_base": {"amount": "95200", "ref": None}, "period_max": None},
+            {"name": "pfml", "rate": "0.0088", "employee_share": "0.50",
+             "wage_base": {"amount": None, "ref": "federal.social_security_wage_base"}, "period_max": None},
         ],
     })
     assert out["components"][0]["period_max"] == {"weekly": "0.60"}
+    assert out["components"][0]["wage_base"] is None
     assert "period_max" not in out["components"][1]
     assert out["components"][1]["wage_base"] == "95200"
+    assert out["components"][2]["wage_base"] == {"ref": "federal.social_security_wage_base"}
+
+
+def test_sdi_wage_base_both_fields_set_is_an_error():
+    with pytest.raises(ValueError, match="both amount"):
+        assemble._sdi_wage_base({"amount": "1", "ref": "federal.social_security_wage_base"})
 
 
 def test_sdi_golden_case_is_jurisdiction_keyed():
