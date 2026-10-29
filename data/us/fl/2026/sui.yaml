@@ -1,0 +1,25 @@
+schema_version: '0.2'
+jurisdiction: US-FL
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Florida DOR reemployment tax page (HTML)
+  url: https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx
+  retrieved: '2026-10-29'
+  sha256: 8ebf36e40a002d022a1062ff8d53d00caff11ee20ff17d4fc49b29352e5a1b42
+- document: Florida DOR Reemployment Tax Rate Information page (HTML)
+  url: https://floridarevenue.com/taxes/taxesfees/Pages/rt_rate.aspx
+  retrieved: '2026-10-29'
+  sha256: db223ec79bf4873edca7f2e9312f023bfbd2955fa0997ec8547f90627d24fb87
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '7000'
+  new_employer_rate: '0.0270'
+  rate_range:
+    min: '0.0010'
+    max: '0.0540'
