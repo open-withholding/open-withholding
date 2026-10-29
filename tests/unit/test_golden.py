@@ -25,10 +25,9 @@ def test_fixture_golden_case(path, fixture_params, taxability):
 
 
 @pytest.mark.parametrize("path", REAL_CASES, ids=lambda p: p.stem)
-def test_real_golden_case(path, taxability):
-    files = load_data_root(REPO_ROOT / "data")
+def test_real_golden_case(path, taxability, real_params):
     case = load_golden_case(path)
-    results = run_golden_case(case, files, taxability)
+    results = run_golden_case(case, real_params, taxability)
     assert results, f"{path}: no expectations ran"
     for result in results:
         assert result.ok, (
