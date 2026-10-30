@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-SAGINAW
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Saginaw Withholding Tax Guide (1.5% residents, 0.75% nonresidents, $750 per exemption)
+  url: https://www.saginaw-mi.com/DocumentCenter/View/711/2020-Withholding-Tax-Guide-PDF
+  retrieved: '2026-10-30'
+  sha256: 53a38b4e049997c404c3779764078d2256759530d6508332c31951ceb8d632e4
+  notes: Extracted by pipeline; pages per PR body
+- document: Saginaw Income Tax page (1.50% / 0.75%)
+  url: https://www.saginaw-mi.com/416/Income-Tax
+  retrieved: '2026-10-30'
+  sha256: 61c30799ed025b955fd9fc3b45c281030dcc51e7092bf0250b9ede2fba87ddbf
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.015'
+  nonresident_rate: '0.0075'
+  exemption_amount: '750'
