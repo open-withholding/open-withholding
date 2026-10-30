@@ -66,3 +66,6 @@ All arithmetic in Decimal; `r(x)` = the envelope rounding rule.
 - An employee's wages count toward one state's base at a time in this
   model; multi-state transfers-of-wage-credit are out of scope for v1.
 - Never negative; employer liability only.
+- `rate_range` may be `null` where the state publishes no schedule bounds
+  (UT, WY, ME publish a formula or a lookup table); the entered experience
+  rate is then accepted unchecked. Neither bound is ever invented.

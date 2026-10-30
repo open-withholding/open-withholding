@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install "PyYAML>=6" "jsonschema>=4" "pytest>=8"
+        run: pip install "PyYAML>=6" "jsonschema>=4" "pytest>=8" "xlrd>=2"
       - name: Validate data artifacts
         run: python tools/validate_data.py
       - name: Run engine and golden tests
@@ -32,6 +32,6 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install dependencies
-        run: pip install "PyYAML>=6"
+        run: pip install "PyYAML>=6" "xlrd>=2"
       - name: Require golden tests for changed data
         run: python tools/check_data_golden.py "origin/${{ github.base_ref || 'main' }}"

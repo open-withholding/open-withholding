@@ -896,7 +896,9 @@ def main() -> int:
         jurisdiction=jurisdiction,
         tax=tax,
         method=method,
-        source=source_block,
+        # The authority tier lives on the registry entry; the source block is
+        # provenance only (DESIGN §8.2).
+        source={**source_block, "authority": source.get("authority")},
         extraction=extraction,
         verification=verification,
         golden_paths=golden_paths,

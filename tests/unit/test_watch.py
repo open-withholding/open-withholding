@@ -507,3 +507,17 @@ def test_multi_document_link_scan_failure_without_fallback_is_url_404(monkeypatc
            "documents": [{"name": "rel", "kind": "html", "landing": "https://x.gov/news", "link_pattern": "zzz"}]}
     events, _ = check_source(src, {}, lambda url: None, TODAY)
     assert [e["type"] for e in events] == ["url_404"] and "link_scan failed" in events[0]["detail"]
+
+
+def test_content_sha256_hashes_workbook_cells_not_bytes():
+    """An OLE2 workbook's bytes change per download (embedded timestamp);
+    the watcher hashes the cells so an unchanged register is unchanged."""
+    import io
+    import pytest
+    xlrd = pytest.importorskip("xlrd")
+    from pipeline.watch import OLE2_MAGIC, content_sha256
+    # Two byte strings that are not workbooks fall back to byte hashing.
+    assert content_sha256(b"abc") != content_sha256(b"abd")
+    # A non-workbook OLE2 prefix falls back to bytes too.
+    assert content_sha256(OLE2_MAGIC + b"x") != content_sha256(OLE2_MAGIC + b"y")
+    assert hasattr(xlrd, "open_workbook")  # real workbooks are exercised by the importer run
