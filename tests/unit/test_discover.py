@@ -108,3 +108,9 @@ def test_resolve_document_url_scans_then_falls_back(monkeypatch):
     with pytest.raises(discover.DiscoveryError):
         discover.resolve_document_url({"name": "x", "landing": "https://esd.x.gov/news", "link_pattern": "zzz"}, 2026)
     assert calls[0] == ("https://esd.x.gov/news", "rate-increases", 2027)
+
+
+def test_extract_links_percent_encodes_spaces_in_hrefs():
+    from pipeline.discover import extract_links
+    links = extract_links('<a href="/labor/ea/assets/PDFs/FY20262027 TABLE C.pdf">Table C</a>', "https://www.nj.gov/x/")
+    assert links == [("https://www.nj.gov/labor/ea/assets/PDFs/FY20262027%20TABLE%20C.pdf", "Table C")]
