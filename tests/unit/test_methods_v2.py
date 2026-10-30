@@ -2391,3 +2391,57 @@ def test_sui_employee_share_tracks_sui_wages(taxability):
                    "components": [{"name": "employee_uc", "rate": "0.0007", "employee_share": "1", "wage_base": None}]},
     })
     assert compute_withholding(pa, _sdi_emp("2000.00", ytd={"sui_wages": "999999"}), taxability) == Decimal("1.40")
+
+
+# --- city_flat_rate (Michigan Uniform City Income Tax Ordinance cities)
+
+DETROIT = load_parameter_dict({
+    "schema_version": "0.1", "jurisdiction": "US-MI-DETROIT", "tax": "local_income_withholding",
+    "effective_from": "2026-01-01", "source": SOURCE, "method": "city_flat_rate",
+    "rounding": {"to": "0.01", "mode": "nearest"},
+    "params": {"resident_rate": "0.024", "nonresident_rate": "0.012", "exemption_amount": "600"},
+})
+
+
+def _city_emp(freq, gross, resident, allowances=None, state_allowances=1, additional="0"):
+    local = {"jurisdiction": "US-MI-DETROIT", "resident": resident}
+    if allowances is not None:
+        local["allowances"] = allowances
+    if additional != "0":
+        local["additional_withholding"] = additional
+    return EmployeeInput.from_dict({"pay_frequency": freq, "gross_wages": gross,
+                                    "state": [{"jurisdiction": "US-MI", "allowances": state_allowances}],
+                                    "locals": [local]})
+
+
+def test_city_resident_rate_with_exemptions(taxability):
+    # biweekly $2,000 x 26 = 52,000 - 2 x 600 = 50,800 x 2.4% = 1,219.20 / 26 = 46.8923 -> 46.89
+    assert compute_withholding(DETROIT, _city_emp("biweekly", "2000.00", True, allowances=2), taxability) == Decimal("46.89")
+
+
+def test_city_nonresident_rate_is_selected_by_the_local_election(taxability):
+    # same wages, nonresident: 50,800 x 1.2% / 26 = 23.4461 -> 23.45
+    assert compute_withholding(DETROIT, _city_emp("biweekly", "2000.00", False, allowances=2), taxability) == Decimal("23.45")
+
+
+def test_city_exemptions_inherit_from_the_state_when_not_given(taxability):
+    # state MI-W4 says 1 allowance; no city count -> 52,000 - 600 = 51,400 x 2.4% / 26 = 47.4461 -> 47.45
+    assert compute_withholding(DETROIT, _city_emp("biweekly", "2000.00", True, state_allowances=1), taxability) == Decimal("47.45")
+
+
+def test_city_exemptions_cannot_make_wages_negative_and_additional_adds(taxability):
+    emp = _city_emp("weekly", "100.00", True, allowances=10, additional="5.00")  # 5,200 - 6,000 -> 0 + 5.00
+    assert compute_withholding(DETROIT, emp, taxability) == Decimal("5.00")
+
+
+def test_city_file_without_a_resident_flag_fails_loud(taxability):
+    # compute_withholding for a local with no matching LocalElection defaults resident=True;
+    # the method's guard is for direct callers — exercise it through a MethodContext.
+    from engine.pipeline import MethodContext
+    from engine.loader import Rounding
+    from engine.methods.city_flat_rate import compute
+    ctx = MethodContext(taxable_wages=Decimal("1000"), pay_periods=52, params=DETROIT.params,
+                        rounding=DETROIT.rounding, bracket_tables={}, filing_status=None, allowances=0,
+                        secondary_allowances=0, additional_withholding=Decimal("0"), federal=None, resident=None)
+    with pytest.raises(InputError):
+        compute(ctx)

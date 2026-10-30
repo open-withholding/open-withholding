@@ -26,6 +26,7 @@ from engine.methods import futa
 from engine.methods import rate_schedule_percentage
 from engine.methods import sui
 from engine.methods import sdi
+from engine.methods import city_flat_rate
 from engine.methods.custom import us_ny as custom_us_ny
 from engine.methods.custom import us_or as custom_us_or
 
@@ -45,6 +46,7 @@ REGISTRY = {
     "futa": futa.compute,
     "sui": sui.compute,
     "sdi": sdi.compute,
+    "city_flat_rate": city_flat_rate.compute,
     "custom/us_ca": custom_us_ca.compute,
     "custom/us_ct": custom_us_ct.compute,
     "custom/us_ny": custom_us_ny.compute,

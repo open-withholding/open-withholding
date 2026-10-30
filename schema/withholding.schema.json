@@ -98,6 +98,7 @@
       "enum": [
         "flat_rate",
         "flat_rate_with_annual_allowance",
+        "city_flat_rate",
         "annualized_percentage",
         "annualized_percentage_phaseout",
         "annualized_subtraction_percentage",
@@ -1743,6 +1744,42 @@
                   "sui_wages"
                 ],
                 "default": "sdi_wages"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "city_flat_rate"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "resident_rate",
+              "nonresident_rate",
+              "exemption_amount"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "resident_rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "nonresident_rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "exemption_amount": {
+                "$ref": "#/$defs/money"
               }
             }
           }
