@@ -1,0 +1,17 @@
+source:
+  document: NJ DOL Unemployment Insurance Contribution Rates table for the fiscal year in effect (PDF)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 at 2.800% with $43,800 already paid this year: only
+    the $1,000 left under the $44,800 base is taxed), expected value computed by the reference engine:
+    1,000 x 2.800% = 28.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '43800'
+  employer:
+    sui_jurisdiction: US-NJ
+    sui_experience_rate: '0.028'
+expect:
+  sui_tax: '28.00'
