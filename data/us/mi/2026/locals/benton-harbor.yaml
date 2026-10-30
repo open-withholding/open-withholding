@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US-MI-BENTON-HARBOR
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Benton Harbor Income Tax page (1% / 1/2%, exemptions $750) (2026)
+  url: https://www.bhcity.us/pview.aspx?id=55010&catid=292
+  retrieved: '2026-10-30'
+  sha256: fdc6c0f638d5c1df9838928decbaadd16dd69d4bffb1ec0b99994d34570cce25
+  notes: Extracted by pipeline; pages per PR body
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '750'
