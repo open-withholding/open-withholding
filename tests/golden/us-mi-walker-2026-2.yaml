@@ -1,0 +1,18 @@
+source:
+  document: City of Walker — Withholding Tax Guide
+  page: 3
+  example: 'Residents Example No. 2 (Walker portion): resident whose predominant place of employment is
+    another Michigan taxing city; $110/week, 3 exemptions; full salary less exemptions times 1/2% = $.38'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '110'
+  locals:
+  - jurisdiction: US-MI-WALKER
+    resident: false
+    allowances: 3
+  state:
+  - jurisdiction: US-MI
+    filing_status: default
+expect:
+  local_withholding: '0.38'
