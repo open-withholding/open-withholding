@@ -1,0 +1,26 @@
+schema_version: '0.2'
+jurisdiction: US-MD
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Maryland DOL tax rates and quarterly reporting page (HTML)
+  url: https://labor.maryland.gov/unemployment-insurance/employer-agent/tax-rate.shtml
+  retrieved: '2026-10-30'
+  sha256: bc75b456733b0e129a461241d8f4a2c37892821d3c15b081bbb99e0a3a259c05
+  notes: Extracted by pipeline; pages per PR body
+- document: Maryland DOL tax rate table for the year (HTML)
+  url: https://labor.maryland.gov/unemployment-insurance/employer-agent/tax-rate-table.shtml
+  retrieved: '2026-10-30'
+  sha256: ed84dc3db181e5d2ed1f9ce615c6b94a6a5cde2e6681a9036202ff35e855ad65
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '8500'
+  new_employer_rate: '0.0260'
+  rate_range:
+    min: '0.0030'
+    max: '0.0750'
