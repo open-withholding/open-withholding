@@ -1,0 +1,41 @@
+- id: us-ca-sui-p01
+  tier: core
+  jurisdiction: US-CA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.034
+  input:
+    employer:
+      sui_jurisdiction: US-CA
+      sui_experience_rate: '0.034'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '70.00'
+- id: us-ca-sui-p02
+  tier: core
+  jurisdiction: US-CA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $6000 | employer rate 0.034
+  input:
+    employer:
+      sui_jurisdiction: US-CA
+      sui_experience_rate: '0.034'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '6000'
+  ours: '35.00'
+- id: us-ca-sui-p03
+  tier: core
+  jurisdiction: US-CA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.062
+  input:
+    employer:
+      sui_jurisdiction: US-CA
+      sui_experience_rate: '0.062'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '126.00'
