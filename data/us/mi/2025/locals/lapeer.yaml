@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-LAPEER
+tax: local_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+sources:
+- document: Lapeer Income Tax FAQ (Individual Resident 1%, Non-Resident .5%)
+  url: https://www.ci.lapeer.mi.us/finance/income_tax/faqs/it.php
+  retrieved: '2026-10-30'
+  sha256: 139c3da13f65d69133bccebc5f4a3296504628c8f6c37e10268f6192d40da286
+  notes: Extracted by pipeline; pages per PR body
+- document: 2025 L-1040 pages 1 & 2 (exemption amount of $600.00)
+  url: https://www.ci.lapeer.mi.us/Forms%20-%20Income%20Tax/2025%20L-1040%20page%201%20&%202.pdf
+  retrieved: '2026-10-30'
+  sha256: 7c0d51ecfc014053b76456411df24765a84afa6f66235032eb931148123514ff
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
