@@ -1,0 +1,12 @@
+source:
+  document: Alaska {year} UI Tax Rates for Experienced Employers (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000, first paycheck: employee share computed per component
+    and summed), expected value computed by the reference engine: employee_ui 10.00 = 10.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  sui_employee_withholding:
+    US-AK: '10.00'

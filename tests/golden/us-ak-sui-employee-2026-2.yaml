@@ -1,0 +1,15 @@
+source:
+  document: Alaska {year} UI Tax Rates for Experienced Employers (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with $53,200 already paid this year (ytd.sui_wages):
+    only the $1,000 left under the $54,200 UI base is subject), expected value computed by the reference
+    engine: employee_ui 5.00 = 5.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '53200.00'
+expect:
+  sui_employee_withholding:
+    US-AK: '5.00'
