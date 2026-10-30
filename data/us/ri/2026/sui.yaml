@@ -1,0 +1,31 @@
+schema_version: '0.2'
+jurisdiction: US-RI
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'RI DLT press release: Tax Rates for Unemployment Insurance and Temporary Disability Insurance
+    for the target year (HTML; year-specific URL, bump annually)'
+  url: https://dlt.ri.gov/press-releases/2026-tax-rates-unemployment-insurance-and-temporary-disability-insurance
+  retrieved: '2026-10-30'
+  sha256: 83fdd6a7b5576dab1df0fdc44f4857052d575d10bfcf08ea4dd6b05b9349d9da
+  notes: Extracted by pipeline; pages per PR body
+- document: RI DLT Employer Tax Unit page (HTML)
+  url: https://dlt.ri.gov/employers/employer-tax-unit
+  retrieved: '2026-10-30'
+  sha256: 387f8a27d17b8cd11d68cf783906fc65d7585d5ef0b86f9189e19c250980b90a
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '30800'
+  new_employer_rate: '0.0100'
+  rate_range:
+    min: '0.0069'
+    max: '0.0919'
+  surtaxes:
+  - name: Job Development Fund Assessment
+    rate: '0.0021'
+    wage_base: '30800'
