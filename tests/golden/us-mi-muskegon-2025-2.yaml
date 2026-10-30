@@ -1,0 +1,15 @@
+source:
+  document: 2025 CF-M1040 Form and Instructions (1% / .5%; exemption value $600) (2025)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, nonresident with 0 exemption(s) at 600 each, rate
+    0.005; annualize x26, deduct exemptions, tax, divide by 26'
+as_of: '2025-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  locals:
+  - jurisdiction: US-MI-MUSKEGON
+    resident: false
+    allowances: 0
+expect:
+  local_withholding: '10.00'
