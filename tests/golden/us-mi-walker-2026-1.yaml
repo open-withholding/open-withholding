@@ -1,0 +1,18 @@
+source:
+  document: City of Walker — Withholding Tax Guide
+  page: 3
+  example: 'Residents Example No. 1: City of Walker resident works at out-of-town location in a city with
+    no income tax; $110/week, 3 exemptions; withheld at 1% resident rate = $.75'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '110'
+  locals:
+  - jurisdiction: US-MI-WALKER
+    resident: true
+    allowances: 3
+  state:
+  - jurisdiction: US-MI
+    filing_status: default
+expect:
+  local_withholding: '0.75'

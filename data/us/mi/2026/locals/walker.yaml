@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-WALKER
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Walker Withholding Tax Guide (1% / .5%; $600 per exemption)
+  url: https://www.walker.city/DocumentCenter/View/751
+  retrieved: '2026-10-30'
+  sha256: 5ee0314830ab9b6759709d03327178bf548ee958ee99577596746944cb8c9ba7
+  notes: Extracted by pipeline; pages per PR body
+- document: Walker Income Tax FAQ (cross-check)
+  url: https://www.walker.city/FAQ.aspx?TID=20
+  retrieved: '2026-10-30'
+  sha256: 15d768c42a9ec7aa4c95cc999bdee6ea9ade96499b058060905a8fbcb6839093
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
