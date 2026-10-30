@@ -1,0 +1,27 @@
+schema_version: '0.2'
+jurisdiction: US-OR
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'OED press release: UI tax and Paid Leave Oregon rates for the target year (PDF; year-specific
+    URL, bump annually)'
+  url: https://www.oregon.gov/employ/NewsAndMedia/Documents/2025-11-18_Tax_Rate_2026_Press_Release.pdf
+  retrieved: '2026-10-30'
+  sha256: e2d04f2af8d35856f023821613eddfc68ce88e87075bfe3f9d3d087b5488a1f9
+  notes: Extracted by pipeline; pages per PR body
+- document: OED Current Tax and Contribution Rates page (HTML)
+  url: https://www.oregon.gov/employ/businesses/pages/current-tax-rate.aspx
+  retrieved: '2026-10-30'
+  sha256: 478010fb30ce9564a875bbdb9e14a9643a24b0dcc1a811b89f4dab93c3d9d184
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '56700'
+  new_employer_rate: '0.024'
+  rate_range:
+    min: '0.009'
+    max: '0.054'
