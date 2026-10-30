@@ -1,0 +1,25 @@
+schema_version: '0.2'
+jurisdiction: US-MI-HAMTRAMCK
+tax: local_income_withholding
+effective_from: '2020-01-01'
+effective_to: null
+sources:
+- document: 2020 H-1040 Individual Tax Booklet with Instructions (Resident 1%, Nonresident 0.5%, exemption
+    $600)
+  url: https://hamtramckcity.gov/wp-content/uploads/2024/07/2020-H-1040-Individual-Tax-Booklet-with-Instructions.pdf
+  retrieved: '2026-10-30'
+  sha256: 46c576e9c36babd69cfaa3751bf1d96b2c0f8ae92ca987b9f4a625e43d3de795
+  notes: Extracted by pipeline; pages per PR body
+- document: H-SS-4 New Business Withholding Registration and Instructions (rates)
+  url: https://hamtramckcity.gov/wp-content/uploads/2024/06/H-SS-4-Hamtramck-New-Business-Withholding-Registration-Form-and-Instructions.pdf
+  retrieved: '2026-10-30'
+  sha256: f9333b11d8e94d7c66099aac02d334d820191970fe062a47750ac35e743b6099
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
