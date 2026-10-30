@@ -1,0 +1,66 @@
+- id: us-federal-fica-p01
+  tier: core
+  jurisdiction: US
+  tax: fica
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00
+  input:
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '153.00'
+- id: us-federal-fica-p02
+  tier: extended
+  jurisdiction: US
+  tax: fica
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00
+  input:
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '68.85'
+- id: us-federal-fica-p03
+  tier: extended
+  jurisdiction: US
+  tax: fica
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00
+  input:
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '918.00'
+- id: us-federal-fica-p04
+  tier: extended
+  jurisdiction: US
+  tax: fica
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00
+  input:
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '344.25'
+- id: us-federal-fica-p05
+  tier: extended
+  jurisdiction: US
+  tax: fica
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00
+  input:
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '153.00'
+- id: us-federal-fica-p06
+  tier: extended
+  jurisdiction: US
+  tax: fica
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00
+  input:
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '1147.50'

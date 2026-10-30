@@ -1,0 +1,41 @@
+- id: us-wa-sui-p01
+  tier: core
+  jurisdiction: US-WA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0600
+  input:
+    employer:
+      sui_jurisdiction: US-WA
+      sui_experience_rate: '0.0600'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '120.00'
+- id: us-wa-sui-p02
+  tier: core
+  jurisdiction: US-WA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $77200 | employer rate 0.0600
+  input:
+    employer:
+      sui_jurisdiction: US-WA
+      sui_experience_rate: '0.0600'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '77200'
+  ours: '60.00'
+- id: us-wa-sui-p03
+  tier: core
+  jurisdiction: US-WA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0024
+  input:
+    employer:
+      sui_jurisdiction: US-WA
+      sui_experience_rate: '0.0024'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '4.80'

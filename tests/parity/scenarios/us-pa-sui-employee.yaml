@@ -1,0 +1,10 @@
+- id: us-pa-sui-employee-p01
+  tier: core
+  jurisdiction: US-PA
+  tax: state_unemployment_insurance_employee
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00
+  input:
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '1.40'

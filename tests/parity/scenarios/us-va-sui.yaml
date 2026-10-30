@@ -1,0 +1,41 @@
+- id: us-va-sui-p01
+  tier: core
+  jurisdiction: US-VA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.025
+  input:
+    employer:
+      sui_jurisdiction: US-VA
+      sui_experience_rate: '0.025'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '50.00'
+- id: us-va-sui-p02
+  tier: core
+  jurisdiction: US-VA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $7000 | employer rate 0.025
+  input:
+    employer:
+      sui_jurisdiction: US-VA
+      sui_experience_rate: '0.025'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '7000'
+  ours: '25.00'
+- id: us-va-sui-p03
+  tier: core
+  jurisdiction: US-VA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.001
+  input:
+    employer:
+      sui_jurisdiction: US-VA
+      sui_experience_rate: '0.001'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '2.00'
