@@ -1,0 +1,27 @@
+schema_version: '0.1'
+jurisdiction: US-SD
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: SD DLR Reemployment Assistance Tax FAQ (HTML) (2026)
+  url: https://dlr.sd.gov/ra/businesses/faq.aspx
+  retrieved: '2026-10-30'
+  sha256: 11b6aea0b735ce33480f907edeb3df6b9f55f0d1b7ed22c485296d5f79c9e97e
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '15000'
+  new_employer_rate: '0.0120'
+  rate_range:
+    min: '0.0000'
+    max: '0.0945'
+  new_employer_rate_construction: '0.0600'
+  surtaxes:
+  - name: Administrative Fee
+    rate: '0.0008'
+    wage_base: '15000'
