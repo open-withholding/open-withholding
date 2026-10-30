@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-HIGHLAND-PARK
+tax: local_income_withholding
+effective_from: '2024-01-01'
+effective_to: null
+sources:
+- document: 2024 HP-1040 Individual Tax Booklet (Resident 2%, Nonresident 1%, exemption $600)
+  url: https://www.highlandparkmi.gov/media/otocfr0s/hp-1040-individual-tax-booklet-with-instructions-2024.pdf
+  retrieved: '2026-10-30'
+  sha256: 3412c2e801fbe0acb1313a073bccabbe32d8b89fbf5947bd1372083fe22136b3
+  notes: Extracted by pipeline; pages per PR body
+- document: Highland Park Income Tax page (2.0% / 1.0%)
+  url: https://www.highlandparkmi.gov/incometax/
+  retrieved: '2026-10-30'
+  sha256: a21eea50f74a3937c485febb05b2958d897359ef61829a83204661cdf8f91a1a
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.02'
+  nonresident_rate: '0.01'
+  exemption_amount: '600'
