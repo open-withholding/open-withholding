@@ -39,7 +39,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install "PyYAML>=6" "jsonschema>=4" "anthropic>=0.116"
+        run: pip install "PyYAML>=6" "jsonschema>=4" "anthropic>=0.116" "xlrd>=2"
 
       - name: Mint app token
         id: app-token

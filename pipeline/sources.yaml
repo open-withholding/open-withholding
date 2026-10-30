@@ -2150,3 +2150,29 @@
   expected_window: "11-15..02-15"
   maps_to:
     - data/us/oh/{year}/locals/
+
+# --- Registry-backed locals (deterministic import; DESIGN §3.6 / §8.2) -------
+
+- id: us-pa-act32
+  document: "Pennsylvania DCED Municipal Statistics — Official EIT / PIT Tax Register (Act 32), all municipalities with collectors (Excel export)"
+  jurisdiction: US-PA
+  tax: local_income_withholding
+  method: resident_nonresident_flat_rate
+  # The register DCED is required to keep under Act 32 (53 P.S. § 6924.511):
+  # the formal instrument for PSD codes and EIT rates. Read deterministically
+  # by pipeline/registry_import.py — no model — into data/us/pa/{year}/locals/
+  # act32.csv + a `kind: registry` sidecar. `type=O` is the Official register
+  # (employers withhold from it); `R` is the real-time working copy.
+  authority: publication
+  importer: pa_act32
+  no_printed_examples: true
+  landing: "https://dced.pa.gov/local-government/local-income-tax-information/"
+  documents:
+    - name: "Official EIT/PIT register with collectors (Excel, all municipalities)"
+      kind: xls
+      url: "https://apps.dced.pa.gov/munstats-public/ReportToPdf.aspx?report=EitWithCollector_Dyn_Excel&paramList=O;{year}"
+  # DCED opens next year's register as all zeros in autumn and fills it as
+  # municipalities certify; the importer refuses an unpopulated edition.
+  maps_to:
+    - data/us/pa/{year}/locals/act32.yaml
+    - data/us/pa/{year}/locals/act32.csv

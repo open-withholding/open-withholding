@@ -39,8 +39,19 @@ def missing_golden(changed: list[str], read_yaml) -> list[str]:
         raw = read_yaml(path)
         if not isinstance(raw, dict) or raw.get("tax") not in WITHHOLDING_TAXES:
             continue
-        slug = golden_slug(raw["jurisdiction"], raw["tax"])
         year = str(raw["effective_from"])[:4]
+        if raw.get("kind") == "registry":
+            # A registry sidecar expands to US-PA-PSD-<code> files; its pins
+            # are named after the expanded jurisdictions (us-pa-psd-700102-2026-1).
+            template = raw["expansion"]["jurisdiction"]          # US-PA-PSD-{psd_code}
+            prefix = f"tests/golden/{template.split('{')[0].lower()}"
+            if not any(p.startswith(prefix) and f"-{year}-" in p for p in changed):
+                errors.append(
+                    f"{path}: changes the {raw['jurisdiction']} register but no golden test "
+                    f"matching {prefix}*-{year}-* was added or updated in this PR"
+                )
+            continue
+        slug = golden_slug(raw["jurisdiction"], raw["tax"])
         prefix = f"tests/golden/{slug}-{year}-"
         if not any(p.startswith(prefix) for p in changed):
             errors.append(

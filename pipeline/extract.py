@@ -633,9 +633,15 @@ def main() -> int:
     )
     args = parser.parse_args()
 
+    source = load_source(args.source_id)
+    if source.get("importer"):
+        # Registry sources (PA Act 32) are read deterministically — no model,
+        # no API key — by pipeline/registry_import.py.
+        from pipeline import registry_import
+        return registry_import.run(args, source)
+
     import anthropic
 
-    source = load_source(args.source_id)
     jurisdiction, tax, method = source["jurisdiction"], source["tax"], source["method"]
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 

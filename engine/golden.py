@@ -77,10 +77,16 @@ def load_data_root(data_root: str | Path) -> list[ParameterFile]:
     """Load every withholding parameter file under a data root. Files for
     tax types the engine doesn't compute yet (SUI, SDI, limits) are skipped
     here; tools/validate_data.py still checks what it can."""
+    from engine.registry import is_registry, load_registry  # local import: registry depends on loader
+
     files = []
     for path in sorted(Path(data_root).rglob("*.yaml")):
         raw = yaml.safe_load(path.read_text())
-        if isinstance(raw, dict) and raw.get("tax") in _WITHHOLDING_TAXES:
+        if is_registry(raw):
+            # Registry-backed locals (PA Act 32): one sidecar + CSV expand to
+            # one ParameterFile per row (engine/registry.py, DESIGN §3.6).
+            files.extend(load_registry(raw, path=path))
+        elif isinstance(raw, dict) and raw.get("tax") in _WITHHOLDING_TAXES:
             files.append(load_parameter_dict(raw, path=path))
     from engine.refs import resolve_refs  # local import: refs depends on loader
     return resolve_refs(files)
