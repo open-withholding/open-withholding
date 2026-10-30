@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-FLINT
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 2025 F-1040 Complete Booklet (1% / 0.5%, $600 per exemption)
+  url: https://www.cityofflint.com/wp-content/uploads/2026/01/2025-F-1040-Complete-Booklet.pdf
+  retrieved: '2026-10-30'
+  sha256: 6128fa7f7760f14b868e25143c79e12368f8e2b06ddee0bffa55c1a75b607fd8
+  notes: Extracted by pipeline; pages per PR body
+- document: City of Flint Employers Withholding Forms and Instruction Booklet (Use 1% / Use 0.5%)
+  url: https://www.cityofflint.com/wp-content/uploads/2026/01/2025-City-of-Flint-Employers-Withholding-Forms-and-Instruction-Booklet.pdf
+  retrieved: '2026-10-30'
+  sha256: e4a2c94133de0a9f3e39ec0cc589003387812c5aba766774ffffe261dd90ec5f
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
