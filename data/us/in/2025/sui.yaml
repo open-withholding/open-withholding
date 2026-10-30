@@ -1,0 +1,30 @@
+schema_version: '0.2'
+jurisdiction: US-IN
+tax: state_unemployment_insurance
+effective_from: '2025-01-01'
+effective_to: null
+sources:
+- document: DWD State Premium Rate Computation (HTML)
+  url: https://www.in.gov/dwd/indiana-unemployment/employers/employer-guide/rate-computation/state-premium-rate-computation
+  retrieved: '2026-10-29'
+  sha256: e4b77915e27af4405226f770532ab52fd9cc0db183517a83f493d9bffec22f1a
+- document: DWD New Employer Premium Rate (HTML)
+  url: https://www.in.gov/dwd/indiana-unemployment/employers/employer-guide/rate-computation/new-employer-premium-rate
+  retrieved: '2026-10-29'
+  sha256: a723abfc3f5731d4b82251fc3269cd596a9052a372d57783c679257ba40b6fcb
+- document: DWD Unemployment Insurance Employer Handbook (PDF)
+  url: https://www.in.gov/dwd/files/Employer_Handbook.pdf
+  retrieved: '2026-10-29'
+  sha256: f67a997a8ee5edd34be52847e43f21b3e7d31e6b522a62153bd8032497c32fec
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '9500'
+  new_employer_rate: '0.025'
+  rate_range:
+    min: '0.0050'
+    max: '0.0740'
+  new_employer_rate_construction: '0.025'
