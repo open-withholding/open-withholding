@@ -1,0 +1,26 @@
+schema_version: '0.2'
+jurisdiction: US-ID
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Idaho DOL tax rate class array for the year (PDF)
+  url: https://www.labor.idaho.gov/wp-content/uploads/2024/12/Tax-rate_Class-array_2026.pdf
+  retrieved: '2026-10-30'
+  sha256: dbaea7028c4b371d963eaf4fa490ad7fb95957d880a35ade811ed9cf405351fc
+  notes: Extracted by pipeline; pages per PR body
+- document: Idaho DOL unemployment tax rates page (HTML)
+  url: https://www.labor.idaho.gov/businesses/unemployment-tax-rates/
+  retrieved: '2026-10-30'
+  sha256: 036e69f2615715962d7d1038a92bd9e6992cd94fe0a60edcc2f8f91219938d2a
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '58300'
+  new_employer_rate: '0.01000'
+  rate_range:
+    min: '0.00208'
+    max: '0.05400'
