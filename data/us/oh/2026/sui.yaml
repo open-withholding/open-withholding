@@ -1,0 +1,27 @@
+schema_version: '0.1'
+jurisdiction: US-OH
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Ohio ODJFS — Unemployment Insurance Rate Details (annual rate summary) (2026)
+  url: https://dam.assets.ohio.gov/image/upload/jfs.ohio.gov/ouio/uctax/2026RateDetails.pdf
+  retrieved: '2026-10-29'
+  sha256: ae61d0a526e8715fbf8715a9d1c00ba309ff4772f86f812f6ef65c5eb9ba2a60
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '9000'
+  new_employer_rate: '0.0270'
+  rate_range:
+    min: '0.0040'
+    max: '0.1010'
+  new_employer_rate_construction: '0.0570'
+  surtaxes:
+  - name: Technology & Customer Service Fee
+    rate: '0.0015'
+    wage_base: '9000'

@@ -1,0 +1,15 @@
+source:
+  document: "Ohio ODJFS \u2014 Unemployment Insurance Rate Details (annual rate summary) (2026)"
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published minimum rate 0.4000%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 0.4000% = 12.00 + Technology & Customer Service
+    Fee 3,000 x 0.1500% = 4.50'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-OH
+    sui_experience_rate: '0.0040'
+expect:
+  sui_tax: '16.50'
