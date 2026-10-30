@@ -1,0 +1,27 @@
+schema_version: '0.2'
+jurisdiction: US-PA
+tax: state_unemployment_insurance_employee
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: L&I Employee Withholding page (HTML)
+  url: https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/employee-withholding
+  retrieved: '2026-10-29'
+  sha256: 31062627509317ca00034c7e87d55c000533e8068042a9c8ef52725b8bb0672a
+- document: L&I Yearly Tax Highlights (HTML)
+  url: https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights
+  retrieved: '2026-10-29'
+  sha256: 998e6e312fbc73130a8c821879165e84906233671e054899f2c85559bcbf3ba8
+method: sdi
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_definition: futa
+  ytd_tracker: sui_wages
+  components:
+  - name: employee_uc
+    rate: '0.0007'
+    employee_share: '1'
+    wage_base: null
