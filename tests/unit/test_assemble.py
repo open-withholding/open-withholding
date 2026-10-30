@@ -966,3 +966,12 @@ def test_sui_employee_paths_slug_and_golden_key():
     out = assemble._transform_params("sdi", {"wage_definition": "futa", "ytd_tracker": "sui_wages", "components": [
         {"name": "employee_ui", "rate": "0.0050", "employee_share": "1", "wage_base": {"amount": "54200", "ref": None}, "weekly_max": None, "period_max": None}]})
     assert out["ytd_tracker"] == "sui_wages" and out["components"][0]["wage_base"] == "54200"
+
+
+def test_sui_transform_null_rate_range():
+    # UT/WY/ME publish no schedule bounds: a null range assembles as null
+    # (the extractor crashed here on 'NoneType' before).
+    out = assemble._transform_params("sui", {"wage_base": "50700", "new_employer_rate": None,
+                                             "new_employer_rate_construction": None,
+                                             "rate_range": None, "surtaxes": None})
+    assert out == {"wage_base": "50700", "new_employer_rate": None, "rate_range": None}
