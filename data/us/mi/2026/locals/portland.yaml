@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-PORTLAND
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 2026 Employer Withholding Booklet (Use 1% residents / 1/2% nonresidents)
+  url: https://www.portland-michigan.org/DocumentCenter/View/5434
+  retrieved: '2026-10-30'
+  sha256: f4acdd242c942af14d01893ca8b83cba72e08417f5d780cedd6436a1e96e5ba2
+  notes: Extracted by pipeline; pages per PR body
+- document: '2025 P-1040 Resident return (exemptions: multiply by 1000)'
+  url: https://www.portland-michigan.org/DocumentCenter/View/5461
+  retrieved: '2026-10-30'
+  sha256: 9fdd04561f4fb82583dfb119323231c2388c3f13ac0ebd51a4cd1af2a167ac30
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '1000'
