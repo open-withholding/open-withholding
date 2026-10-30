@@ -1,0 +1,14 @@
+source:
+  document: 'VDOL press release: taxable wage base for the year (HTML; year-specific URL, bump annually)'
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.01, first paycheck
+    (YTD 0; wage base 15400)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-VT
+    sui_experience_rate: '0.01'
+expect:
+  sui_tax: '20.00'
