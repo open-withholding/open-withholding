@@ -1,0 +1,24 @@
+schema_version: '0.1'
+jurisdiction: US-NE
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Nebraska DOL — A Guide to Understanding Nebraska's Unemployment Insurance Combined Tax Rates
+    for the year (2026)
+  url: https://dol.nebraska.gov/webdocs/Resources/Items/2026%20UI%20guide%20to%20understanding.pdf
+  retrieved: '2026-10-30'
+  sha256: 0235d5945e4c517e7f46eb6381d9c80101dc74093d21b6fe232b88183573950c
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '9000'
+  new_employer_rate: '0.0125'
+  rate_range:
+    min: '0.0000'
+    max: '0.0540'
+  new_employer_rate_construction: '0.0540'
