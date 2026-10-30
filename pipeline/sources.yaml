@@ -2218,9 +2218,12 @@
     rate, the nonresident rate, and the ANNUAL dollar exemption allowed for
     the taxpayer, spouse and each dependent (e.g. "$600 exemption"); ignore
     filing thresholds, penalty/interest rates, convenience fees and
-    corporate rates. effective_from is January 1 of the tax year of the
-    newest document (an undated page: the current year). Rounding: cents,
-    nearest.
+    corporate rates. A worked example for a RESIDENT whose predominant
+    place of employment is another Michigan city with an income tax is
+    withheld at the nonresident (half) rate - transcribe such examples
+    with resident false (methods/city_flat_rate.md). effective_from is
+    January 1 of the tax year of the newest document (an undated page:
+    the current year). Rounding: cents, nearest.
   maps_to:
     - data/us/mi/{year}/locals/albion.yaml
 
@@ -2554,6 +2557,7 @@
   tax: local_income_withholding
   method: city_flat_rate
   authority: publication
+  no_printed_examples: true   # the one printed example is defective (see hint)
   landing: "https://www.saginaw-mi.com/418/Employer-Withholding"
   documents:
     - name: "Saginaw Withholding Tax Guide (1.5% residents, 0.75% nonresidents, $750 per exemption)"
@@ -2565,8 +2569,9 @@
   extraction_hint: >-
     Michigan Uniform City Income Tax Ordinance city. Transcribe the resident
     rate, the nonresident rate and the ANNUAL exemption ($750 per year);
-    transcribe the guide's withholding example (gross pay per week and
-    exemptions) with its resident flag if the arithmetic is complete. Ignore
+    do NOT transcribe the guide's weekly example as a worked example: it
+    prints "withhold $2.03" where .015 x $156.74 = $2.35, a print defect
+    (set worked_examples to [] and describe the defect in notes). Ignore
     the 60% vacation/holiday allocation discussion, filing thresholds and
     penalty rates. effective_from is January 1 of the newest document's tax
     year. Rounding: cents, nearest.
@@ -2604,6 +2609,9 @@
     - name: "Walker Income Tax FAQ (cross-check)"
       kind: html
       url: "https://www.walker.city/FAQ.aspx?TID=20"
+  # The guide prints several worked examples; those for Walker residents
+  # predominantly employed in another taxing city (City A / City B) use the
+  # 1/2% rate and are transcribed with resident false, per the shared hint.
   extraction_hint: *mi_city_hint
   maps_to:
     - data/us/mi/{year}/locals/walker.yaml
