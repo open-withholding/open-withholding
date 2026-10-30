@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-WY
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: WY DWS Unemployment Taxable Wage Base page (HTML)
+  url: https://dws.wyo.gov/dws-division/unemployment-insurance/wyui/unemployment-taxable-wage-base/
+  retrieved: '2026-10-30'
+  sha256: 2c45184909d4492ebe41327f30de7091ce499afe9d11882197ad8bc5cd5fc3e1
+  notes: Extracted by pipeline; pages per PR body
+- document: WY DWS Unemployment Tax Rates page (HTML)
+  url: https://dws.wyo.gov/dws-division/unemployment-insurance/employers/unemployment-tax-rates/
+  retrieved: '2026-10-30'
+  sha256: bf74f5d7fd7e481f2f40d4d2cafac6aaba996b6e3d557d06c79d061c09d63ce2
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '33800'
+  new_employer_rate: null
+  rate_range: null
