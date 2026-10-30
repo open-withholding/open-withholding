@@ -1,0 +1,14 @@
+source:
+  document: CTDOL information on unemployment tax rate for the calendar year (HTML)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.0190, first paycheck
+    (YTD 0; wage base 27000)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-CT
+    sui_experience_rate: '0.0190'
+expect:
+  sui_tax: '38.00'

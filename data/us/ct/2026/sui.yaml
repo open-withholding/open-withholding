@@ -1,0 +1,26 @@
+schema_version: '0.2'
+jurisdiction: US-CT
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: CTDOL information on unemployment tax rate for the calendar year (HTML)
+  url: https://portal.ct.gov/dol/divisions/unemployment-insurance-tax/information-on-unemployment-tax-rate-for-calendar-year-2026
+  retrieved: '2026-10-30'
+  sha256: a9918b3bacfd12213d6eeaf3fe8d22fb6ba9f5a513ccc14560f66a69f8a235f9
+  notes: Extracted by pipeline; pages per PR body
+- document: 'CTDOL knowledge base: tax rates and taxable wage base by year (HTML)'
+  url: https://portal.ct.gov/dol/knowledge-base/articles/unemployment-taxes/tax-rates-and-taxable-wage-base
+  retrieved: '2026-10-30'
+  sha256: 8e87ef35a82d9cc82bb2c089bc36ad769dea1a0ff08ebcac07d3159a81043c84
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '27000'
+  new_employer_rate: '0.0190'
+  rate_range:
+    min: '0.0110'
+    max: '0.0990'
