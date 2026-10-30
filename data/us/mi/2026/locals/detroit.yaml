@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US-MI-DETROIT
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Michigan Treasury Form 5469, City of Detroit Income Tax Withholding Guide (2026)
+  url: https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/City-Withholding/TY2026/5469_ty2026.pdf
+  retrieved: '2026-10-30'
+  sha256: 56a4347e4149f22e20744e2bd76c3cb63ac3c4d74c73db434ae0971206aa7b13
+  notes: Extracted by pipeline; pages per PR body
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.024'
+  nonresident_rate: '0.012'
+  exemption_amount: '600'
