@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-GRAND-RAPIDS
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Withholding Tax Tables effective July 1, 2010 (1.5% / 0.75%, $600 exemption allowance)
+  url: https://media-002-us.cdn.govstack.com/grandrapidsmi-us/media/rjtig3c0/13264_withholding-tax-tables-effective-07-01-10.pdf
+  retrieved: '2026-10-30'
+  sha256: 9aa1b678bd2b55cfa6e947d68e5caebe1a19a8d876b2acf555f920e87d0b59c2
+  notes: Extracted by pipeline; pages per PR body
+- document: Income Tax Guide for Withholders (HTML; current rates 1.5% / 0.75%)
+  url: https://www.grandrapidsmi.gov/departments/fiscal-services/income-tax/employers-and-withholders/income-tax-guide-for-withholders/
+  retrieved: '2026-10-30'
+  sha256: 584d15cd17a39637021bd2e2f33e9799c2dd5e88b15f3b0c980d3f652c8bad1c
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.015'
+  nonresident_rate: '0.0075'
+  exemption_amount: '600'
