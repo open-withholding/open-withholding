@@ -1,0 +1,14 @@
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2026)
+  page: 1
+  example: 'maintainer-constructed (biweekly $2,000 with the $44,800 UI base already reached: nothing
+    withheld), expected value computed by the reference engine: U.I. 0.00 + W.F./S.W.F. 0.00 = 0.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  ytd:
+    sui_wages: '44800'
+expect:
+  sui_employee_withholding:
+    US-NJ: '0.00'
