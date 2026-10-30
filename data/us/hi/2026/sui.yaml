@@ -1,0 +1,30 @@
+schema_version: '0.2'
+jurisdiction: US-HI
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: DLIR Tax Rate Schedule and Weekly Benefit Amount (HTML)
+  url: https://labor.hawaii.gov/ui/tax-rate-schedule-and-weekly-benefit-amount/
+  retrieved: '2026-10-30'
+  sha256: f0da3b126750b4ded7fb5d0ee3efc387cf2f17a5298b0d5b6fee90826ad5ad1a
+  notes: Extracted by pipeline; pages per PR body
+- document: DLIR Contribution Rates Explained (HTML)
+  url: https://labor.hawaii.gov/ui/contribution-rates-explained/
+  retrieved: '2026-10-30'
+  sha256: 80b4b3c84f95df4e9b693d084401396bf6ba784152df9bdd806a558af94ed92d
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '64500'
+  new_employer_rate: '0.0240'
+  rate_range:
+    min: '0.0000'
+    max: '0.0560'
+  surtaxes:
+  - name: Employment & Training (E&T) Assessment
+    rate: '0.0001'
+    wage_base: '64500'
