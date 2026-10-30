@@ -1,0 +1,27 @@
+# ILLUSTRATIVE FIXTURE — a three-row stand-in for the DCED Act 32 register.
+# All figures invented. The CSV hash below is of the fixture CSV.
+schema_version: "0.1"
+kind: registry
+registry: pa_act32
+jurisdiction: US-PA
+tax: local_income_withholding
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — illustrative DCED register stand-in"
+  url: "https://example.gov/fixtures/act32.xls"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: resident_nonresident_flat_rate
+rounding: { to: "0.01", mode: nearest }
+expansion:
+  file: act32.csv
+  sha256: "407c9826e53e5be2b9e0fc02a5ab471c34cb827b5c9b7a0593ea64431a7335d8"
+  key: psd_code
+  jurisdiction: US-PA-PSD-{psd_code}
+  params:
+    resident_rate: total_resident_rate
+    nonresident_rate: municipal_nonresident_eit
+  rows: 3
+  expanded_rows: 2

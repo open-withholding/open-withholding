@@ -1,0 +1,4 @@
+psd_code,tax_collection_district,county,municipality_id,municipality,school_district_id,school_district,municipal_resident_eit,municipal_nonresident_eit,school_district_eit,school_district_pit,total_resident_rate,municipal_resident_eit_effective,municipal_nonresident_eit_effective,school_district_eit_effective
+990101,FIXTURE TAX COLLECTION DISTRICT,FIXTURE,990001,ALPHA BORO,991001,ALPHA AREA S D,0.010000,0.010000,0.005000,0.000000,0.015000,2012-01-01,2012-01-01,
+990102,FIXTURE TAX COLLECTION DISTRICT,FIXTURE,990002,BETA TWP,991001,ALPHA AREA S D,0.005000,0.000000,0.005000,0.000000,0.010000,,,
+990103,FIXTURE TAX COLLECTION DISTRICT,FIXTURE,990003,GAMMA TWP,991002,GAMMA S D,0.000000,0.000000,0.000000,0.000000,0.000000,,,

@@ -113,6 +113,7 @@
         "futa",
         "sui",
         "sdi",
+        "resident_nonresident_flat_rate",
         "wage_bracket_lookup",
         "custom"
       ]
@@ -202,6 +203,38 @@
             "additionalProperties": false,
             "properties": {
               "rate": {
+                "$ref": "#/$defs/rate"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "resident_nonresident_flat_rate"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "resident_rate",
+              "nonresident_rate"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "resident_rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "nonresident_rate": {
                 "$ref": "#/$defs/rate"
               }
             }
