@@ -1,0 +1,14 @@
+source:
+  document: Alaska {year} UI Tax Rates for Experienced Employers (HTML)
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published minimum rate 1.000%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 1.000% = 30.00'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-AK
+    sui_experience_rate: '0.0100'
+expect:
+  sui_tax: '30.00'
