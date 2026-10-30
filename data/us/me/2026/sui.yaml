@@ -1,0 +1,25 @@
+schema_version: '0.2'
+jurisdiction: US-ME
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'MDOL news release: employer unemployment tax schedule for the year (HTML; year-specific URL,
+    bump annually)'
+  url: https://www.maine.gov/labor/news_events/article.shtml?id=13331230
+  retrieved: '2026-10-30'
+  sha256: bb62c265101f715e8c42d6b570e4526a9372c5fcf3aed3fc77effed80adb2f86
+  notes: Extracted by pipeline; pages per PR body
+- document: 'MDOL Unemployment: Employers Frequently Asked Questions (HTML)'
+  url: https://www.maine.gov/unemployment/employersfaq/
+  retrieved: '2026-10-30'
+  sha256: ae41eac1b4fd95c32fd4d9950cf0e247bcc761f4ed63ca9f658e21916b763ba9
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '12000'
+  new_employer_rate: null
+  rate_range: null
