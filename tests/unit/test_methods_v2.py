@@ -1823,6 +1823,13 @@ FUTA = load_parameter_dict({
     },
 })
 
+def _load_raw(pf):
+    """Rebuild the raw mapping a ParameterFile was loaded from (tests only)."""
+    return {"schema_version": "0.1", "jurisdiction": pf.jurisdiction, "tax": pf.tax,
+            "effective_from": str(pf.effective_from), "source": pf.source, "method": pf.method,
+            "rounding": {"to": str(pf.rounding.to), "mode": pf.rounding.mode}, "params": dict(pf.params)}
+
+
 SUI_WI = load_parameter_dict({
     "schema_version": "0.1",
     "jurisdiction": "US-WI",
@@ -2445,3 +2452,13 @@ def test_city_file_without_a_resident_flag_fails_loud(taxability):
                         secondary_allowances=0, additional_withholding=Decimal("0"), federal=None, resident=None)
     with pytest.raises(InputError):
         compute(ctx)
+
+
+def test_sui_null_rate_range_accepts_any_rate(taxability):
+    # UT/WY/ME publish no schedule bounds: rate_range null -> the entered
+    # rate is used unchecked (never checked against an invented bound).
+    raw = {**_load_raw(SUI_WI), "jurisdiction": "US-UT"}
+    raw["params"] = {k: v for k, v in raw["params"].items() if k != "surtaxes"} | {"rate_range": None}
+    pf = load_parameter_dict(raw)
+    emp = _emp("2000.00", employer={"sui_jurisdiction": "US-UT", "sui_experience_rate": "0.0730"})
+    assert compute_employer_tax(pf, emp, taxability) == Decimal("146.00")

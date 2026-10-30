@@ -24,13 +24,17 @@ def compute(ctx) -> Decimal:
             "state's annual rate notice (a new employer enters the published "
             f"new-employer rate, {params.get('new_employer_rate')!r})"
         )
-    lo = D(params["rate_range"]["min"], context="sui.rate_range.min")
-    hi = D(params["rate_range"]["max"], context="sui.rate_range.max")
-    if not (lo <= rate <= hi):
-        raise InputError(
-            f"sui: experience rate {rate} is outside the published schedule "
-            f"range {lo}..{hi} — check the rate notice's year and decimal form"
-        )
+    # rate_range is null where the state publishes no schedule bounds (UT,
+    # WY, ME print a formula or table, not a min/max): the entered rate is
+    # then unchecked rather than checked against an invented bound.
+    if params.get("rate_range") is not None:
+        lo = D(params["rate_range"]["min"], context="sui.rate_range.min")
+        hi = D(params["rate_range"]["max"], context="sui.rate_range.max")
+        if not (lo <= rate <= hi):
+            raise InputError(
+                f"sui: experience rate {rate} is outside the published schedule "
+                f"range {lo}..{hi} — check the rate notice's year and decimal form"
+            )
 
     # Step 2: cap against the annual taxable wage base.
     ytd_sui = D(ytd.get("sui_wages", "0"), context="ytd.sui_wages")

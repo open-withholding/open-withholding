@@ -346,6 +346,14 @@ def run(args, source: dict) -> int:
     as_of = assemble.default_as_of(effective_from)
     csv_data = csv_bytes(rows)
     csv_sha = hashlib.sha256(csv_data).hexdigest()
+    if prev_path and str(prev_path).endswith(f"{year}/locals/act32.csv") and \
+            hashlib.sha256(prev_path.read_bytes()).hexdigest() == csv_sha:
+        # DCED's export embeds a timestamp, so the .xls bytes differ on every
+        # download while the register does not: a cosmetic re-issue. No PR body
+        # means the workflow opens nothing.
+        print(f"      register unchanged: {_rel(prev_path)} already has this content (sha {csv_sha[:12]}...) — "
+              "cosmetic re-issue, no candidate")
+        return 0
     sidecar = {
         "schema_version": "0.1",
         "kind": "registry",

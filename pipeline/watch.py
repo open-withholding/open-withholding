@@ -51,6 +51,33 @@ from pipeline.discover import substitute_year as _substitute_year  # noqa: E402
 REPO = "open-withholding/open-withholding"
 
 
+OLE2_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+
+
+def content_sha256(data: bytes) -> str:
+    """sha256 of the document as watched. Legacy Excel exports (PA DCED's
+    Act 32 register) embed a generation timestamp, so their bytes differ on
+    every download while the cells do not; for an OLE2 workbook the hash is
+    of the cell values instead (xlrd; falls back to bytes when xlrd is not
+    installed)."""
+    if data[:8] == OLE2_MAGIC:
+        try:
+            import io
+            import xlrd
+            book = xlrd.open_workbook(file_contents=data, logfile=io.StringIO())
+            h = hashlib.sha256()
+            for sheet in book.sheets():
+                h.update(sheet.name.encode())
+                for r in range(sheet.nrows):
+                    h.update(repr(sheet.row_values(r)).encode())
+            return h.hexdigest()
+        except ImportError:
+            pass
+        except Exception:
+            pass  # not a workbook xlrd can read: hash the bytes
+    return hashlib.sha256(data).hexdigest()
+
+
 def default_fetcher(url: str, _retry: bool = True, *, insecure: bool = False,
                     _ua: str | None = None) -> dict:
     """GET the document; return bytes' hash + caching headers.
@@ -77,7 +104,7 @@ def default_fetcher(url: str, _retry: bool = True, *, insecure: bool = False,
             data = resp.read()
             return {
                 "status": resp.status,
-                "sha256": hashlib.sha256(data).hexdigest(),
+                "sha256": content_sha256(data),
                 "etag": resp.headers.get("ETag"),
                 "last_modified": resp.headers.get("Last-Modified"),
                 "is_pdf": data[:4] == b"%PDF",

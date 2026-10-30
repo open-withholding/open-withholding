@@ -787,15 +787,19 @@ _PARAMS_BY_METHOD = {
                 "description": "Separate construction-industry new-employer rate, or null",
             },
             "rate_range": {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["min", "max"],
-                "properties": {
-                    "min": DECIMAL,
-                    "max": DECIMAL,
-                },
+                "anyOf": [
+                    {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["min", "max"],
+                        "properties": {"min": DECIMAL, "max": DECIMAL},
+                    },
+                    {"type": "null"},
+                ],
                 "description": "The schedule's minimum and maximum noticed rates "
-                "INCLUDING bundled surcharges (IL Fund Builder, WI solvency)",
+                "INCLUDING bundled surcharges (IL Fund Builder, WI solvency). NULL when "
+                "the documents print no schedule bounds (UT, WY, ME publish the formula "
+                "or a table lookup, not a min/max) - never invent either bound; say so in notes",
             },
             "surtaxes": {
                 "type": ["array", "null"],

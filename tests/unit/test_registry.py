@@ -212,3 +212,26 @@ def test_run_unpopulated_register_writes_triage(tmp_path, monkeypatch):
     assert ri.run(args, source) == 1
     assert "not populated" in (tmp_path / "out" / "us-pa-act32-2027-triage.md").read_text()
     assert not (tmp_path / "out" / "us-pa-act32-2027-pr.md").exists()
+
+
+def test_run_identical_register_is_a_cosmetic_reissue_with_no_pr(tmp_path, monkeypatch):
+    """DCED's .xls bytes carry a timestamp; when the parsed register equals the
+    committed CSV for the year, nothing is proposed."""
+    from pipeline import extract
+    monkeypatch.setattr(extract, "OUT_DIR", tmp_path / "out")
+    monkeypatch.setattr(extract, "ARCHIVE_DIR", tmp_path / "archive")
+    raw_rows = [_raw(code="010101"), _raw(code="010102", res=1.0, non=1.0, sd=0.5, total=1.5)]
+    monkeypatch.setattr(ri, "read_act32_workbook", lambda data: (copy.deepcopy(raw_rows), {"2026"}))
+    prev = tmp_path / "data/us/pa/2026/locals/act32.csv"
+    prev.parent.mkdir(parents=True)
+    prev.write_bytes(ri.csv_bytes(ri.build_register(copy.deepcopy(raw_rows), {"2026"}, year=2026)))
+    monkeypatch.setattr(ri, "find_prev_register", lambda year: prev)
+    source = {"id": "us-pa-act32", "jurisdiction": "US-PA", "tax": "local_income_withholding",
+              "method": "resident_nonresident_flat_rate", "importer": "pa_act32", "authority": "publication",
+              "document": "register", "documents": [{"name": "r", "kind": "xls", "url": "https://x.gov/r?y={year}"}]}
+    xls = tmp_path / "r.xls"
+    xls.write_bytes(b"same cells, new timestamp")
+    args = argparse.Namespace(source_id="us-pa-act32", year=2026, pdf=str(xls), dry_run=True)
+    assert ri.run(args, source) == 0
+    assert not (tmp_path / "out" / "us-pa-act32-2026-pr.md").exists()
+    assert not (tmp_path / "out" / "us-pa-act32-2026-triage.md").exists()
