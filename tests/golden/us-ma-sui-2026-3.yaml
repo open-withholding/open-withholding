@@ -1,0 +1,14 @@
+source:
+  document: "M.G.L. c.151A s.14 \u2014 unemployment insurance taxable wage base (statute text, HTML)"
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published minimum rate 0.9400%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 0.9400% = 28.20'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-MA
+    sui_experience_rate: '0.0094'
+expect:
+  sui_tax: '28.20'
