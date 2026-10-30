@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-IONIA
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Ionia City Income Tax page (1% / 1/2%; $700 per exemption)
+  url: https://www.ci.ionia.mi.us/229/City-Income-Tax
+  retrieved: '2026-10-30'
+  sha256: 9df4c36a20cd1d378e56c604f274522ecaac2259ce44f0334db116e9898dfc98
+  notes: Extracted by pipeline; pages per PR body
+- document: Employer Withholding Tax Forms and Instructions 2026 (Use 1% / Use 1/2%)
+  url: https://www.ci.ionia.mi.us/DocumentCenter/View/2311/Employer-Withholding-Tax-Forms-and-Instructions-2026-PDF
+  retrieved: '2026-10-30'
+  sha256: 34ad1c1332c7f9c3619224da03993292c6645b31f09534b9c78026755f30835d
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '700'
