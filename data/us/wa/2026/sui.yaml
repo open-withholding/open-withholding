@@ -1,0 +1,29 @@
+schema_version: '0.2'
+jurisdiction: US-WA
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: ESD tax rates for employers — rate-class table for the target year (PDF)
+  url: https://esd.wa.gov/media/pdf/4819/2026-unemployment-tax-rates-employerspdf
+  retrieved: '2026-10-30'
+  sha256: 28a5a99266e0d76d0785191d6d3ec493739e9012204f0ca1c36d5fa384869873
+- document: ESD How we determine tax rates (HTML)
+  url: https://esd.wa.gov/employer-requirements/unemployment-taxes/how-we-determine-tax-rates
+  retrieved: '2026-10-30'
+  sha256: 66926d588898ffab0b1f524f647c29f362c5a5698862b7142f6317a4bc6ee67f
+- document: 'ESD news release: new average annual wage estimates (taxable wage base) (HTML)'
+  url: https://esd.wa.gov/about-us/news-release/2026/new-average-annual-wage-estimates-adjust-unemployment-insurance-and-paid-leave-benefits
+  retrieved: '2026-10-30'
+  sha256: 5df05a23fb3e094a4263ab20c1180791dce22868e71345a4ad867501910ae071
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '78200'
+  new_employer_rate: null
+  rate_range:
+    min: '0.0024'
+    max: '0.0600'

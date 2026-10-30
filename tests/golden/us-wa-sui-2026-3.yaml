@@ -1,0 +1,14 @@
+source:
+  document: "ESD tax rates for employers \u2014 rate-class table for the target year (PDF)"
+  page: 1
+  example: 'maintainer-constructed (semimonthly $3,000 at the published minimum rate 0.2400%, first paycheck),
+    expected value computed by the reference engine: 3,000 x 0.2400% = 7.20'
+as_of: '2026-06-15'
+input:
+  pay_frequency: semimonthly
+  gross_wages: '3000.00'
+  employer:
+    sui_jurisdiction: US-WA
+    sui_experience_rate: '0.0024'
+expect:
+  sui_tax: '7.20'
