@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-EAST-LANSING
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: East Lansing Income Tax page (residents 1%, nonresidents 0.5%)
+  url: https://www.cityofeastlansing.com/1812/Income-Tax
+  retrieved: '2026-10-30'
+  sha256: 6aab1aacc63abffccd702c0f5e984cf302a05b508bb7fcdbca52a2068ade35f5
+  notes: Extracted by pipeline; pages per PR body
+- document: Income Tax Fact Sheets (Exemptions allowed - $600 each)
+  url: https://www.cityofeastlansing.com/DocumentCenter/View/8032/Income-Tax-Fact-Sheets-PDF
+  retrieved: '2026-10-30'
+  sha256: 7e274f14367f6557281a75184cd4063ed792304a98a4ce2c3df24927d86fbd84
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
