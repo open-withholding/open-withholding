@@ -46,6 +46,19 @@ no worked examples dispatch with `no_examples_ok`; maintainer-constructed,
 engine-computed golden cases are then required on the PR before the
 data-golden-guard check passes.
 
+Registry sources (`importer: pa_act32` — Pennsylvania's DCED Act 32
+register, a spreadsheet) take a deterministic path instead of the model
+passes: `pipeline/registry_import.py` reads the cells (xlrd), writes
+`data/us/pa/<year>/locals/act32.csv` + its `kind: registry` sidecar, expands
+them through the engine and writes sampled regression pins (DESIGN §3.6,
+§8.2). The same workflow and bot PR; the PR body lists every changed row
+against the superseded register. Locally:
+
+```sh
+python pipeline/extract.py us-pa-act32 --year 2026 --dry-run        # fetches the register
+python pipeline/extract.py us-pa-act32 --year 2026 --pdf register.xls --dry-run
+```
+
 **Never auto-merge.** The human merge is the trust product.
 
 ## Running in GitHub Actions (bot-authored PRs)

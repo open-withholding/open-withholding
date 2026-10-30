@@ -258,6 +258,42 @@ State overrides each require a `source` citation (usually a line in that
 state's withholding guide). This matrix is small but high-stakes; it gets
 its own golden tests.
 
+### 3.6 Registry-backed locals (PA Act 32)
+
+Pennsylvania's local earned income tax is published not as a document but
+as a register: DCED's Official EIT/PIT Tax Register lists every political
+subdivision (PSD) — ~2,620 rows — with the municipal resident and
+nonresident EIT, the school district EIT, and the total resident rate.
+One YAML per PSD would bury the dataset, so a register is kept as data in
+two files per year:
+
+```
+data/us/pa/2026/locals/act32.csv     the register: every row, rates as fractions
+data/us/pa/2026/locals/act32.yaml    `kind: registry` sidecar (schema/registry.schema.json)
+```
+
+The sidecar carries the shared envelope — provenance (the archived
+spreadsheet's sha256), `method: resident_nonresident_flat_rate`, rounding —
+plus the CSV's own sha256 and an `expansion` block naming the key column,
+the jurisdiction template (`US-PA-PSD-{psd_code}`) and which CSV columns
+feed `resident_rate` (Act 32's *total* resident rate) and
+`nonresident_rate` (the municipal nonresident EIT). The engine
+(`engine/registry.py`) expands each row with a nonzero rate into a
+ParameterFile indistinguishable from a hand-written local file; rows with
+both rates zero produce none (no file = no tax). Validation checks the
+CSV hash, so the register is only ever rewritten by its importer.
+
+Act 32's employer rule — withhold the greater of the employee's residence
+PSD resident rate and the work PSD nonresident rate — compares two
+jurisdictions and is the caller's step (compute both, take the larger);
+a PSD file never knows about another. Philadelphia (PSD 510101) appears in
+the register at the wage-tax rates DCED reports; its fiscal-year (July 1)
+changes, like the handful of municipalities whose register row carries a
+mid-year effective date, are carried at the register's current figure for
+the whole year — the register prints current rates only. An in-year
+re-import (the watcher sees the spreadsheet change) replaces both files in
+place with a PR whose body lists every changed row.
+
 ---
 
 ## 4. Method registry
@@ -274,11 +310,13 @@ Expected Tier 1 registry (~10 methods covers ~45 jurisdictions):
 | `federal_percentage_2020` | US federal, 2020+ W-4 |
 | `federal_percentage_pre2020` | US federal, legacy W-4 |
 | `flat_rate` | PA, and locals (IN/MD/OH/PA counties & municipalities) |
+| `city_flat_rate` | Michigan's 24 Uniform-Ordinance cities: resident / nonresident rate + annual per-exemption deduction (`LocalElection.resident` selects the rate) |
 | `flat_rate_with_annual_allowance` | CO, IL, MI, UT-style |
 | `annualized_percentage` | ~25 bracket states |
 | `annualized_percentage_with_credits` | states using credits not deductions |
 | `wage_bracket_lookup` | optional alternative where a state only prints tables |
 | `custom/us_ct`, `custom/us_ar`, `custom/us_ms`, `custom/us_pr` | escape hatch |
+| `resident_nonresident_flat_rate` | PA Act 32 PSDs (register-expanded, §3.6): resident vs nonresident flat rate |
 
 **Escape-hatch discipline:** if the `custom/` list grows past ~10, the
 method decomposition is wrong — stop and refactor rather than adding an
@@ -519,6 +557,18 @@ triage issue — never a silent failure:
    (old → new), source URL + pages, golden-test results, the model's page
    citations, and a checklist for the reviewer.
 
+**Deterministic register imports.** A source published as a spreadsheet
+rather than a document (`importer: pa_act32` in the registry) skips the
+model passes: `pipeline/registry_import.py` reads the cells, converts
+percents to fractions exactly (a cell the conversion cannot represent fails
+the run), collapses the register's two-county duplicate rows, refuses an
+unpopulated edition (DCED opens next year's register as all zeros), writes
+the CSV + sidecar (§3.6), expands it through the engine, and writes sampled
+regression pins as goldens — one resident pin per distinct rate pair, one
+nonresident pin per distinct nonresident rate. The PR body carries the
+row-level diff against the superseded register, which is what the reviewer
+reads.
+
 Cost note: this corpus is ~120 documents/year; even generous multi-pass
 extraction is cents-to-a-dollar per document. Optimize for reviewer
 minutes, not tokens.
@@ -612,7 +662,7 @@ Government publications are public domain — redistribution is fine.
 2. Wage-bracket tables (the printed lookup grids) as data: skip entirely
    (percentage method suffices) or include for states whose guides *only*
    publish grids?
-3. Local tax identifiers: PA PSD codes are official; **Ohio school
+3. Local tax identifiers: PA PSD codes are official (`US-PA-PSD-<6 digits>`, §3.6); **Ohio school
    districts use the Department of Taxation's four-digit school district
    number** (`US-OH-SD-0505`, the code employers already put on W-2s);
    OH municipalities and KY still need a chosen scheme.

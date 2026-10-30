@@ -80,6 +80,20 @@ _PARAMS_BY_METHOD = {
         "required": ["rate"],
         "properties": {"rate": DECIMAL},
     },
+    "city_flat_rate": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["resident_rate", "nonresident_rate", "exemption_amount"],
+        "description": "Michigan Uniform City Income Tax Ordinance city: resident and nonresident "
+        "rates (nonresident is half the resident rate by statute - transcribe both as printed) "
+        "and the ANNUAL deduction per exemption from the city's employer withholding guide.",
+        "properties": {
+            "resident_rate": DECIMAL,
+            "nonresident_rate": DECIMAL,
+            "exemption_amount": {**DECIMAL, "description": "Annual dollar deduction per exemption "
+                                 "(e.g. 600)"},
+        },
+    },
     "flat_rate_with_annual_allowance": {
         "type": "object",
         "additionalProperties": False,

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-withholding.org/schema/registry.schema.json",
+  "title": "Open Withholding registry-backed locals (sidecar)",
+  "description": "A centrally-published register of local rates (Pennsylvania's DCED Act 32 EIT register) kept as a CSV next to this sidecar. The engine expands every CSV row into one parameter file (DESIGN §3.6); the sidecar carries the provenance, the method and rounding every expansion shares, and the CSV's own hash so a hand edit to the CSV fails validation.",
+  "type": "object",
+  "required": ["schema_version", "kind", "registry", "jurisdiction", "tax", "effective_from", "source", "method", "expansion"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"type": "string", "pattern": "^\\d+\\.\\d+$"},
+    "kind": {"const": "registry"},
+    "registry": {"type": "string", "enum": ["pa_act32"], "description": "Importer that produced the CSV (pipeline/registry_import.py)"},
+    "jurisdiction": {"type": "string", "pattern": "^US-[A-Z]{2}$", "description": "Parent state of every expanded jurisdiction"},
+    "tax": {"const": "local_income_withholding"},
+    "effective_from": {"type": "string", "format": "date"},
+    "effective_to": {"type": ["string", "null"], "format": "date"},
+    "supersedes": {"type": "string"},
+    "source": {
+      "type": "object",
+      "required": ["document", "url", "retrieved", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "document": {"type": "string", "minLength": 3},
+        "url": {"type": "string", "format": "uri"},
+        "retrieved": {"type": "string", "format": "date"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Hash of the archived register bytes as downloaded (the .xls)"},
+        "notes": {"type": "string"}
+      }
+    },
+    "method": {"const": "resident_nonresident_flat_rate"},
+    "rounding": {"type": "object"},
+    "expansion": {
+      "type": "object",
+      "required": ["file", "sha256", "key", "jurisdiction", "params", "rows", "expanded_rows"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {"type": "string", "pattern": "^[a-z0-9_-]+\\.csv$", "description": "CSV in the same directory as this sidecar"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Hash of the CSV bytes; validation fails on mismatch"},
+        "key": {"type": "string", "description": "CSV column holding the local identifier (psd_code)"},
+        "jurisdiction": {"type": "string", "pattern": "^US-[A-Z]{2}-[A-Z]+-\\{[a-z_]+\\}$", "description": "Jurisdiction template, e.g. US-PA-PSD-{psd_code}"},
+        "params": {
+          "type": "object",
+          "required": ["resident_rate", "nonresident_rate"],
+          "additionalProperties": false,
+          "properties": {
+            "resident_rate": {"type": "string", "description": "CSV column for the resident rate"},
+            "nonresident_rate": {"type": "string", "description": "CSV column for the nonresident rate"}
+          }
+        },
+        "rows": {"type": "integer", "minimum": 1, "description": "Data rows in the CSV (the complete register, zero-rate rows included)"},
+        "expanded_rows": {"type": "integer", "minimum": 0, "description": "Rows with a nonzero rate, each becoming one parameter file; both-zero rows produce none (no file = no tax)"}
+      }
+    }
+  }
+}

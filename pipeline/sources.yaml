@@ -1413,6 +1413,374 @@
   maps_to:
     - data/us/va/{year}/sui.yaml
 
+- id: us-ct-sui
+  document: "CT DOL — Information on Unemployment Tax Rate for the calendar year + tax rates and taxable wage base"
+  jurisdiction: US-CT
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://portal.ct.gov/dol/divisions/unemployment-insurance-tax"
+  documents:
+    - name: "CTDOL information on unemployment tax rate for the calendar year (HTML)"
+      kind: html
+      url: "https://portal.ct.gov/dol/divisions/unemployment-insurance-tax/information-on-unemployment-tax-rate-for-calendar-year-{year}"
+    - name: "CTDOL knowledge base: tax rates and taxable wage base by year (HTML)"
+      kind: html
+      url: "https://portal.ct.gov/dol/knowledge-base/articles/unemployment-taxes/tax-rates-and-taxable-wage-base"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($27,000 for 2026); new_employer_rate = the new employer rate (1.9% for 2026); rate_range = the minimum and maximum CONTRIBUTION rates stated for the year (1.1% and 9.9% for 2026 - note the separate statement that CHARGED rates are reduced so the maximum charged rate is 8.9%, and that the 1.0% fund solvency tax is bundled into the noticed rate; surtaxes null).
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/ct/{year}/sui.yaml
+
+- id: us-ia-sui
+  document: "Iowa Workforce Development — Unemployment Insurance Taxes (employer handbook) and the year's handbook PDF"
+  jurisdiction: US-IA
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://workforce.iowa.gov/employers/unemployment-insurance"
+  documents:
+    - name: "IWD Unemployment Insurance Employer Handbook for the year (PDF)"
+      kind: pdf
+      url: "https://workforce.iowa.gov/media/3040/download?inline="
+    - name: "IWD Unemployment Insurance Taxes page (HTML)"
+      kind: html
+      url: "https://workforce.iowa.gov/employers/unemployment-insurance/unemployment-insurance-employer-handbook/unemployment-insurance-taxes"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($20,400 for 2026); new_employer_rate = the new non-construction employer rate (Rank 4 of the table in effect but not less than 1.000%; 1.000% for 2026); new_employer_rate_construction = the new construction employer rate (Rank 9; 5.400% for 2026); rate_range = the minimum and maximum of the contribution rate table in effect (Table D: 0.000% to 5.400%), naming the table in notes; surtaxes null.
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/ia/{year}/sui.yaml
+
+- id: us-md-sui
+  document: "Maryland DOL — Tax Rates and Quarterly Reporting + Tax Rate Table for the year"
+  jurisdiction: US-MD
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://labor.maryland.gov/unemployment-insurance/employer-agent/"
+  documents:
+    - name: "Maryland DOL tax rates and quarterly reporting page (HTML)"
+      kind: html
+      url: "https://labor.maryland.gov/unemployment-insurance/employer-agent/tax-rate.shtml"
+    - name: "Maryland DOL tax rate table for the year (HTML)"
+      kind: html
+      url: "https://labor.maryland.gov/unemployment-insurance/employer-agent/tax-rate-table.shtml"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the first $8,500 of wages; new_employer_rate = the new-employer rate (2.60%); new_employer_rate_construction = the construction rate if the pages state one, else null; rate_range = the minimum and maximum of the tax table in effect for the year (Table A: 0.30% to 7.50%), naming the table in notes; surtaxes null.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/md/{year}/sui.yaml
+
+- id: us-de-sui
+  document: "Delaware DOL — Unemployment Insurance Employer Services (merit rate table, taxable wage base)"
+  jurisdiction: US-DE
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://labor.delaware.gov/divisions/unemployment-insurance/"
+  documents:
+    - name: "Delaware DOL UI Employer Services page (HTML)"
+      kind: html
+      url: "https://labor.delaware.gov/divisions/unemployment-insurance/employer-services/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year from the merit rate table ($14,500 for 2026); new_employer_rate = the New Employer Rate column for the year (1.0%); new_employer_rate_construction = the New Construction Rate for the year if stated; rate_range = the minimum and maximum assessment rates the page states for the year (the table's lowest and highest rate rows, or the stated range) - if only the new-employer and construction rates are printed, say so in notes and use the page's stated range; surtaxes null unless a separately billed assessment (e.g. training tax) is printed.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/de/{year}/sui.yaml
+
+- id: us-hi-sui
+  document: "Hawaii DLIR — Tax Rate Schedule and Weekly Benefit Amount + Contribution Rates Explained"
+  jurisdiction: US-HI
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://labor.hawaii.gov/ui/"
+  documents:
+    - name: "DLIR Tax Rate Schedule and Weekly Benefit Amount (HTML)"
+      kind: html
+      url: "https://labor.hawaii.gov/ui/tax-rate-schedule-and-weekly-benefit-amount/"
+    - name: "DLIR Contribution Rates Explained (HTML)"
+      kind: html
+      url: "https://labor.hawaii.gov/ui/contribution-rates-explained/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base per employee for the target year ($64,500 for 2026); new_employer_rate = the Tax Rate for New Employers for the year (2.40%); rate_range = from the minimum rate of the schedule in effect to the Maximum Tax Rate stated for the year (Schedule C: 0.0% / lowest printed to 5.60%), naming the schedule in notes; the Employment & Training (E&T) assessment is a SEPARATE flat rate on taxable wages (0.01%) - transcribe it as a surtaxes entry on the same wage base.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/hi/{year}/sui.yaml
+
+- id: us-id-sui
+  document: "Idaho DOL — Unemployment tax rates page and the year's tax-rate class array"
+  jurisdiction: US-ID
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://www.labor.idaho.gov/businesses/unemployment-tax-rates/"
+  documents:
+    - name: "Idaho DOL tax rate class array for the year (PDF)"
+      kind: pdf
+      landing: "https://www.labor.idaho.gov/businesses/unemployment-tax-rates/"
+      link_pattern: 'Class[-_ ]array|Rate_Class_Array|TaxArray'
+      url: "https://www.labor.idaho.gov/wp-content/uploads/2024/12/Tax-rate_Class-array_2026.pdf"
+    - name: "Idaho DOL unemployment tax rates page (HTML)"
+      kind: html
+      url: "https://www.labor.idaho.gov/businesses/unemployment-tax-rates/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($58,300 for 2026); new_employer_rate = the standard rate for new employers (1.000%); rate_range = the lowest and highest TOTAL UI contribution rate across the positive and deficit classes in the array (e.g. 0.208% to 5.400%) - the array also lists administrative and workforce development components: if they are separately stated flat percentages on the same base, transcribe them as surtaxes, otherwise note how they combine.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/id/{year}/sui.yaml
+
+- id: us-ky-sui
+  document: "Kentucky OUI — Employer Guide to Kentucky Unemployment Insurance for the year"
+  jurisdiction: US-KY
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://ui.ky.gov/"
+  document_url_pattern: "https://ui.ky.gov/Documents/KY-OUI_Employer%20Guide_{year}.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($12,000 for 2026); new_employer_rate = the new-employer rate (2.7%); new_employer_rate_construction = the new construction rate (9.0%); rate_range = the minimum and maximum of the rate schedule in effect (Schedule A: 0.3% to 9.0%), naming the schedule in notes; the Service Capacity Upgrade Fund (SCUF) assessment, if the guide states it applies for the year, is a separately stated flat rate - transcribe it as a surtaxes entry, else note it is not in effect.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ky/{year}/sui.yaml
+
+- id: us-me-sui
+  document: "Maine DOL — Employer Unemployment Tax Schedule news release for the year + Employers FAQ"
+  jurisdiction: US-ME
+  tax: state_unemployment_insurance
+  method: sui
+  authority: release
+  landing: "https://www.maine.gov/unemployment/employers/"
+  documents:
+    - name: "MDOL news release: employer unemployment tax schedule for the year (HTML; year-specific URL, bump annually)"
+      kind: html
+      url: "https://www.maine.gov/labor/news_events/article.shtml?id=13331230"
+    - name: "MDOL Unemployment: Employers Frequently Asked Questions (HTML)"
+      kind: html
+      url: "https://www.maine.gov/unemployment/employersfaq/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base ($12,000); Maine assigns new employers the state average contribution rate, which these documents do not print as a figure: new_employer_rate null and note it; rate_range = the minimum and maximum contribution rates of the schedule in effect (Schedule A) if either document prints them - if neither does, STOP and say so in notes rather than inventing values. The Competitive Skills Scholarship Fund (CSSF) and Unemployment Program Administrative Fund (UPAF) assessments are separately stated flat rates on the same base - transcribe each as a surtaxes entry if its rate is printed.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/me/{year}/sui.yaml
+
+- id: us-mo-sui
+  document: "Missouri DES — Tax Rates (taxable wage limitation, new employer rates by industry)"
+  jurisdiction: US-MO
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://labor.mo.gov/des/employers"
+  documents:
+    - name: "Missouri DES Tax Rates page (HTML)"
+      kind: html
+      url: "https://labor.mo.gov/des/employers/tax-rates"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the Taxable Wage Limitation for the target year ($9,000 for 2026); new_employer_rate = the 'All Others' new employer rate for the year (2.376%); new_employer_rate_construction = the Construction rate for the year; rate_range = the stated range of experience rates (0.0% to 6.0% plus any applicable maximum rate surcharge and contribution rate adjustment - state the base range and note the surcharges); surtaxes null.
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/mo/{year}/sui.yaml
+
+- id: us-mt-sui
+  document: "Montana DLI UID — Rate Explanation (taxable wage base, rate schedule, administrative fund tax)"
+  jurisdiction: US-MT
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://uid.dli.mt.gov/employers/"
+  documents:
+    - name: "Montana UID Rate Explanation (PDF)"
+      kind: pdf
+      url: "https://uid.dli.mt.gov/_docs/contributions-bureau/Rate-Explanation.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($47,300 for 2026); new employers are rated by industry (1% to 2%): new_employer_rate null unless one default figure is printed; rate_range = the lowest and highest rates in the Rate Schedule in effect for the year (Schedule 1: 0.00% to 6.12%), naming the schedule; the Administrative Fund Tax (AFT) is a separately stated flat rate on the same base (0.18%, 0.13% for eligible rate classes 01-02) - transcribe the standard 0.18% as a surtaxes entry and note the reduced rate.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/mt/{year}/sui.yaml
+
+- id: us-nd-sui
+  document: "Job Service North Dakota — Unemployment Insurance Tax Rate Schedules for the year"
+  jurisdiction: US-ND
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://www.jobsnd.com/unemployment-business-tax"
+  document_url_pattern: "https://www.jobsnd.com/sites/www/files/documents/jsnd-documents/uitaxrateschedules{year}.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($46,600 for 2026); new_employer_rate = the new non-construction employer rate for a positive-balance employer (1.00%); new_employer_rate_construction = the construction new-employer rate (9.67%); rate_range = from the lowest positive-balance rate to the highest negative-balance rate on the schedules (0.07% to 9.67%); surtaxes null.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/nd/{year}/sui.yaml
+
+- id: us-ne-sui
+  document: "Nebraska DOL — A Guide to Understanding Nebraska's Unemployment Insurance Combined Tax Rates for the year"
+  jurisdiction: US-NE
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://dol.nebraska.gov/UITax"
+  document_url_pattern: "https://dol.nebraska.gov/webdocs/Resources/Items/{year}%20UI%20guide%20to%20understanding.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for categories 1-19 ($9,000) - note separately that category 20 (the highest, maximum-rate category) uses a $24,000 base; new_employer_rate = the new non-construction employer rate (1.25%); new_employer_rate_construction = the new construction employer rate if stated; rate_range = category 1's rate to category 20's rate (the combined tax rates); surtaxes null (the State Unemployment Insurance Tax component is bundled in the combined rate - note it).
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ne/{year}/sui.yaml
+
+- id: us-sd-sui
+  document: "South Dakota DLR — Reemployment Assistance Tax FAQ (wage base, new employer rates, investment and administrative fees)"
+  jurisdiction: US-SD
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://dlr.sd.gov/ra/businesses/default.aspx"
+  documents:
+    - name: "SD DLR Reemployment Assistance Tax FAQ (HTML)"
+      kind: html
+      url: "https://dlr.sd.gov/ra/businesses/faq.aspx"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($15,000 for 2026); new_employer_rate = the year-1 non-construction RA tax rate (1.2%); new_employer_rate_construction = the year-1 construction RA tax rate; rate_range = the minimum and maximum RA tax rates of the schedule in effect (0.0% to 9.45% unless the page states otherwise); the investment fee (0.55% for new employers, varies for experience-rated) and the administrative fee (0.08% from 2026) are separately stated flat percentages on the same base - transcribe the administrative fee as a surtaxes entry and note the investment fee's rate rule.
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/sd/{year}/sui.yaml
+
+- id: us-ut-sui
+  document: "Utah DWS — Employer Advisor newsletter (taxable wage base, minimum rate) + Employer Handbook"
+  jurisdiction: US-UT
+  tax: state_unemployment_insurance
+  method: sui
+  authority: publication
+  landing: "https://jobs.utah.gov/ui/employer/employerhome.aspx"
+  documents:
+    - name: "Utah DWS Employer Advisor, Summer edition for the year (PDF; year-specific URL, bump annually)"
+      kind: pdf
+      url: "https://jobs.utah.gov/ui/employer/Public/Empadv/Summer_2026.pdf"
+    - name: "Utah DWS Employer Handbook (PDF)"
+      kind: pdf
+      url: "https://jobs.utah.gov/ui/employer/public/handbook/Employer_Handbook.pdf"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base cap for the target year ($50,700 for 2026); new employers are rated by industry average: new_employer_rate null and note it; rate_range = the minimum contribution rate stated for the year (0.1% for stable employers) to the maximum overall rate the documents state (the handbook's maximum including social cost) - if no maximum is printed, STOP and say so in notes rather than guessing; surtaxes null (social cost is bundled into the noticed rate - note it).
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/ut/{year}/sui.yaml
+
+- id: us-vt-sui
+  document: "Vermont DOL — taxable wage base press release for the year + Unemployment Tax Rates page"
+  jurisdiction: US-VT
+  tax: state_unemployment_insurance
+  method: sui
+  authority: release
+  landing: "https://labor.vermont.gov/unemployment-insurance/ui-employers"
+  documents:
+    - name: "VDOL press release: taxable wage base for the year (HTML; year-specific URL, bump annually)"
+      kind: html
+      url: "https://labor.vermont.gov/press-release/vermont-department-labor-announces-unemployment-insurance-taxable-wage-base-2026"
+    - name: "VDOL Unemployment Tax Rates page (HTML)"
+      kind: html
+      url: "https://labor.vermont.gov/unemployment-insurance/ui-employers/unemployment-tax-rates"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year ($15,400 for 2026); new_employer_rate = the new employer rate for most employers (1% beginning July 1, 2026 - note the effective date and the prior rate); new_employer_rate_construction = the NAICS 238 specialty trade contractors new-employer rate if that is the construction figure stated; rate_range = the lowest and highest of the twenty-one rates in the rate schedule in effect (name the schedule) - if the page does not print the schedule's rates, STOP and say so; surtaxes null.
+  check: [content_hash]
+  expected_window: "11-01..01-31"
+  maps_to:
+    - data/us/vt/{year}/sui.yaml
+
+- id: us-wy-sui
+  document: "Wyoming DWS — Unemployment Taxable Wage Base + Unemployment Tax Rates pages"
+  jurisdiction: US-WY
+  tax: state_unemployment_insurance
+  method: sui
+  authority: agency_page
+  landing: "https://dws.wyo.gov/dws-division/unemployment-insurance/employers/"
+  documents:
+    - name: "WY DWS Unemployment Taxable Wage Base page (HTML)"
+      kind: html
+      url: "https://dws.wyo.gov/dws-division/unemployment-insurance/wyui/unemployment-taxable-wage-base/"
+    - name: "WY DWS Unemployment Tax Rates page (HTML)"
+      kind: html
+      url: "https://dws.wyo.gov/dws-division/unemployment-insurance/employers/unemployment-tax-rates/"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the taxable wage base for the target year from the year table ($33,800 for 2026); new employers are assigned an industry base rate plus four rate factors: new_employer_rate null and note it; rate_range = from the lowest total rate the page states to the highest base rate possible (8.5%) plus factors if stated - if the page prints no minimum, STOP and say so rather than inventing one; surtaxes null (the four rate factors are bundled into the noticed total rate - note them).
+  check: [content_hash]
+  expected_window: "12-01..01-31"
+  maps_to:
+    - data/us/wy/{year}/sui.yaml
+
+- id: us-or-sui
+  document: "Oregon Employment Department — Current Tax and Contribution Rates + the year's tax-rate press release"
+  jurisdiction: US-OR
+  tax: state_unemployment_insurance
+  method: sui
+  authority: release
+  landing: "https://www.oregon.gov/employ/businesses/pages/current-tax-rate.aspx"
+  documents:
+    - name: "OED press release: UI tax and Paid Leave Oregon rates for the target year (PDF; year-specific URL, bump annually)"
+      kind: pdf
+      url: "https://www.oregon.gov/employ/NewsAndMedia/Documents/2025-11-18_Tax_Rate_2026_Press_Release.pdf"
+    - name: "OED Current Tax and Contribution Rates page (HTML)"
+      kind: html
+      url: "https://www.oregon.gov/employ/businesses/pages/current-tax-rate.aspx"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the UI taxable wage base for the target year ($56,700 for 2026); new_employer_rate = the taxable base tax rate / new employer rate (2.4%); rate_range = the taxable minimum and maximum rates of the Tax Schedule in effect (Schedule 3: 0.9% to 5.4%), naming the schedule; the special payroll tax offset is informational (a portion of the rate, not an add-on) - note it; surtaxes null.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/or/{year}/sui.yaml
+
+- id: us-ri-sui
+  document: "Rhode Island DLT — Employer Tax Unit page + press release on the year's UI and TDI tax rates"
+  jurisdiction: US-RI
+  tax: state_unemployment_insurance
+  method: sui
+  authority: release
+  landing: "https://dlt.ri.gov/employers/employer-tax-unit"
+  documents:
+    - name: "RI DLT press release: Tax Rates for Unemployment Insurance and Temporary Disability Insurance for the target year (HTML; year-specific URL, bump annually)"
+      kind: html
+      url: "https://dlt.ri.gov/press-releases/2026-tax-rates-unemployment-insurance-and-temporary-disability-insurance"
+    - name: "RI DLT Employer Tax Unit page (HTML)"
+      kind: html
+      url: "https://dlt.ri.gov/employers/employer-tax-unit"
+  no_printed_examples: true
+  extraction_hint: >-
+    The employer's own experience rate is ALWAYS user input, never data: transcribe only what the documents publish for everyone, for the target year; a new-employer rate that is industry-based with no single published figure is null (say so in notes). wage_base = the Employment Security taxable wage base for most employers for the target year ($30,800 for 2026; note the higher base for employers at the maximum rate); new_employer_rate = the new employer rate for the year (1.00%); rate_range = the minimum and maximum Employment Security tax rates of the schedule in effect as stated; the Job Development Fund assessment (0.21%) is a separately stated flat rate on the same base - transcribe it as a surtaxes entry and note the matching 0.21% reduction of the ES rate. TDI is a separate source (us-ri-tdi) - exclude it.
+  check: [content_hash]
+  expected_window: "11-15..01-31"
+  maps_to:
+    - data/us/ri/{year}/sui.yaml
+
 - id: us-il-sui
   document: "IDES Annual Unemployment Insurance Tax Rate Summary"
   jurisdiction: US-IL
@@ -1783,6 +2151,31 @@
   maps_to:
     - data/us/oh/{year}/locals/
 
+# --- Registry-backed locals (deterministic import; DESIGN §3.6 / §8.2) -------
+
+- id: us-pa-act32
+  document: "Pennsylvania DCED Municipal Statistics — Official EIT / PIT Tax Register (Act 32), all municipalities with collectors (Excel export)"
+  jurisdiction: US-PA
+  tax: local_income_withholding
+  method: resident_nonresident_flat_rate
+  # The register DCED is required to keep under Act 32 (53 P.S. § 6924.511):
+  # the formal instrument for PSD codes and EIT rates. Read deterministically
+  # by pipeline/registry_import.py — no model — into data/us/pa/{year}/locals/
+  # act32.csv + a `kind: registry` sidecar. `type=O` is the Official register
+  # (employers withhold from it); `R` is the real-time working copy.
+  authority: publication
+  importer: pa_act32
+  no_printed_examples: true
+  landing: "https://dced.pa.gov/local-government/local-income-tax-information/"
+  documents:
+    - name: "Official EIT/PIT register with collectors (Excel, all municipalities)"
+      kind: xls
+      url: "https://apps.dced.pa.gov/munstats-public/ReportToPdf.aspx?report=EitWithCollector_Dyn_Excel&paramList=O;{year}"
+  # DCED opens next year's register as all zeros in autumn and fills it as
+  # municipalities certify; the importer refuses an unpopulated edition.
+  maps_to:
+    - data/us/pa/{year}/locals/act32.yaml
+    - data/us/pa/{year}/locals/act32.csv
 # --- Michigan cities (Uniform City Income Tax Ordinance; method city_flat_rate) ---
 # Each city publishes on its own site; the Grand Rapids "Other Michigan Cities
 # with Income Tax" page is a cross-check only. Where the city prints rates and

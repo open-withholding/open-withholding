@@ -11,6 +11,7 @@ from engine.methods import (
     annualized_percentage_phaseout,
     federal_percentage_2020,
     flat_rate,
+    resident_nonresident_flat_rate,
     elective_flat_rate,
     flat_rate_with_annual_allowance,
     per_period_credit_phaseout,
@@ -26,11 +27,13 @@ from engine.methods import futa
 from engine.methods import rate_schedule_percentage
 from engine.methods import sui
 from engine.methods import sdi
+from engine.methods import city_flat_rate
 from engine.methods.custom import us_ny as custom_us_ny
 from engine.methods.custom import us_or as custom_us_or
 
 REGISTRY = {
     "flat_rate": flat_rate.compute,
+    "resident_nonresident_flat_rate": resident_nonresident_flat_rate.compute,
     "flat_rate_with_annual_allowance": flat_rate_with_annual_allowance.compute,
     "annualized_percentage": annualized_percentage.compute,
     "annualized_percentage_phaseout": annualized_percentage_phaseout.compute,
@@ -45,6 +48,7 @@ REGISTRY = {
     "futa": futa.compute,
     "sui": sui.compute,
     "sdi": sdi.compute,
+    "city_flat_rate": city_flat_rate.compute,
     "custom/us_ca": custom_us_ca.compute,
     "custom/us_ct": custom_us_ct.compute,
     "custom/us_ny": custom_us_ny.compute,

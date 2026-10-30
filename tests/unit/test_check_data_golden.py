@@ -53,3 +53,16 @@ def test_federal_slug():
     changed = ["data/us/federal/2026/withholding.yaml", "tests/golden/us-federal-2026-1.yaml"]
     us = {"jurisdiction": "US", "tax": "federal_income_withholding", "effective_from": "2026-01-01"}
     assert missing_golden(changed, _reader({changed[0]: us})) == []
+
+
+def test_registry_sidecar_requires_pins_named_after_expanded_jurisdictions():
+    # A `kind: registry` sidecar (PA Act 32) expands to US-PA-PSD-<code> files;
+    # the guard accepts any changed golden for one of those in the same year.
+    registry = {"kind": "registry", "jurisdiction": "US-PA", "tax": "local_income_withholding",
+                "effective_from": "2026-01-01", "expansion": {"jurisdiction": "US-PA-PSD-{psd_code}"}}
+    changed = ["data/us/pa/2026/locals/act32.yaml", "data/us/pa/2026/locals/act32.csv"]
+    errors = missing_golden(changed, _reader({changed[0]: registry}))
+    assert len(errors) == 1 and "us-pa-psd-*-2026-*" in errors[0]
+    assert missing_golden(changed + ["tests/golden/us-pa-psd-510101-2026-1.yaml"], _reader({changed[0]: registry})) == []
+    # The state's own golden does not satisfy the register.
+    assert len(missing_golden(changed + ["tests/golden/us-pa-2026-1.yaml"], _reader({changed[0]: registry}))) == 1

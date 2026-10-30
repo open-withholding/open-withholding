@@ -20,6 +20,7 @@ import yaml  # noqa: E402
 from engine.errors import EngineError  # noqa: E402
 from engine.golden import load_golden_case  # noqa: E402
 from engine.loader import load_parameter_dict  # noqa: E402
+from engine.registry import is_registry, load_registry  # noqa: E402
 from engine.taxability import TaxabilityMatrix  # noqa: E402
 
 WITHHOLDING_TAXES = (
@@ -52,7 +53,17 @@ def main() -> int:
             errors.append(f"{rel}: not a mapping")
             continue
         tax = raw.get("tax")
-        if tax in WITHHOLDING_TAXES:
+        if is_registry(raw):
+            # Registry sidecar + CSV (PA Act 32): validate the sidecar, the
+            # CSV hash, and every expanded row as a parameter file.
+            try:
+                expanded = load_registry(raw, path=path)
+                loaded_files.extend(expanded)
+                checked += 1
+                notes.append(f"{rel}: registry expanded to {len(expanded)} local parameter file(s)")
+            except EngineError as exc:
+                errors.append(str(exc))
+        elif tax in WITHHOLDING_TAXES:
             try:
                 loaded_files.append(load_parameter_dict(raw, path=path))
                 checked += 1
