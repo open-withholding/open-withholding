@@ -1,0 +1,23 @@
+schema_version: '0.1'
+jurisdiction: US-ND
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Job Service North Dakota — Unemployment Insurance Tax Rate Schedules for the year (2026)
+  url: https://www.jobsnd.com/sites/www/files/documents/jsnd-documents/uitaxrateschedules2026.pdf
+  retrieved: '2026-10-30'
+  sha256: 073ab5c57391f83c66e56ca44e15cd78d77e0785198a2e3ed4c4541cfb78fbf7
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '46600'
+  new_employer_rate: '0.0100'
+  rate_range:
+    min: '0.0007'
+    max: '0.0967'
+  new_employer_rate_construction: '0.0967'
