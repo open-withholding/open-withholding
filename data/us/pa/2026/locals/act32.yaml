@@ -1,0 +1,31 @@
+schema_version: '0.1'
+kind: registry
+registry: pa_act32
+jurisdiction: US-PA
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Pennsylvania DCED Municipal Statistics — Official EIT / PIT Tax Register (Act 32), all municipalities
+    with collectors (Excel export) (2026)
+  url: https://apps.dced.pa.gov/munstats-public/ReportToPdf.aspx?report=EitWithCollector_Dyn_Excel&paramList=O;2026
+  retrieved: '2026-10-30'
+  sha256: debf9d13b1dfdf819015f5dc1b699e4fe9d6d14e8598e2f09181e4e748168823
+  notes: Imported by pipeline/registry_import.py (deterministic read of the DCED register; percents converted
+    to fractions); rows carry DCED's own effective dates — the register prints current rates only, so
+    a row effective mid-year reflects its post-change rate for the whole year
+method: resident_nonresident_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+expansion:
+  file: act32.csv
+  sha256: f66226c431e7a0a05e9c80689e80757f40a85b1e6be8defdef63c7ef24c9a15e
+  key: psd_code
+  jurisdiction: US-PA-PSD-{psd_code}
+  params:
+    resident_rate: total_resident_rate
+    nonresident_rate: municipal_nonresident_eit
+  rows: 2619
+  expanded_rows: 2544
