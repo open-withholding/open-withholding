@@ -131,3 +131,19 @@ def test_single_document_list_collapses_to_source_block():
     assert raw["schema_version"] == "0.1"
     from engine.loader import load_parameter_dict
     load_parameter_dict(raw)
+
+
+def test_multi_source_candidate_carries_the_placeholder_note_on_first_entry():
+    """Single-source files got the 'Extracted by pipeline' note; multi-source
+    files silently had none (every SUI/SDI page source). Parity."""
+    from pipeline import assemble
+    blocks = [{"document": "Fixture document A", "url": "https://x.gov/a", "retrieved": "2026-01-01", "sha256": "0" * 64},
+              {"document": "Fixture document B", "url": "https://x.gov/b", "retrieved": "2026-01-01", "sha256": "1" * 64}]
+    raw = assemble.assemble_parameter_file(
+        jurisdiction="US-ZZ", tax="state_income_withholding", method="flat_rate",
+        extraction={"effective_from": "2026-01-01", "rounding": {"to": "0.01", "mode": "nearest", "intermediate": "none", "intermediate_to": None},
+                    "params": {"rate": "0.01"}},
+        source={"sources": [{**blocks[0], "notes": "Extracted by pipeline; pages per PR body"}, blocks[1]]})
+    assert raw["sources"][0]["notes"].startswith("Extracted by pipeline") and "notes" not in raw["sources"][1]
+    from engine.loader import load_parameter_dict
+    load_parameter_dict(raw)
