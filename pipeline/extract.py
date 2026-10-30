@@ -756,8 +756,12 @@ def main() -> int:
             tax=tax,
             method=method,
             extraction=extraction,
+            # The provenance placeholder note rides on the single source block,
+            # or on the FIRST entry of a multi-document `sources` list (the
+            # schema allows notes per entry; maintainers extend that one).
             source=(
-                source_block
+                {"sources": [{**source_block["sources"][0], "notes": "Extracted by pipeline; pages per PR body"},
+                             *source_block["sources"][1:]]}
                 if "sources" in source_block
                 else {**source_block, "notes": "Extracted by pipeline; pages per PR body"}
             ),
