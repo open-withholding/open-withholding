@@ -251,6 +251,8 @@ def _transform_params(method: str, params: dict) -> dict:
                 e["jurisdiction"]: e["rate"] for e in params["credit_reductions"]
             }
         return out
+    if method == "city_flat_rate":
+        return {k: params[k] for k in ("resident_rate", "nonresident_rate", "exemption_amount")}
     if method == "sdi":
         return {
             "wage_definition": params["wage_definition"],

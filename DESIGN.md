@@ -274,6 +274,7 @@ Expected Tier 1 registry (~10 methods covers ~45 jurisdictions):
 | `federal_percentage_2020` | US federal, 2020+ W-4 |
 | `federal_percentage_pre2020` | US federal, legacy W-4 |
 | `flat_rate` | PA, and locals (IN/MD/OH/PA counties & municipalities) |
+| `city_flat_rate` | Michigan's 24 Uniform-Ordinance cities: resident / nonresident rate + annual per-exemption deduction (`LocalElection.resident` selects the rate) |
 | `flat_rate_with_annual_allowance` | CO, IL, MI, UT-style |
 | `annualized_percentage` | ~25 bracket states |
 | `annualized_percentage_with_credits` | states using credits not deductions |
