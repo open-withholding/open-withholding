@@ -1,0 +1,27 @@
+schema_version: '0.2'
+jurisdiction: US-IA
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: IWD Unemployment Insurance Employer Handbook for the year (PDF)
+  url: https://workforce.iowa.gov/media/3040/download?inline=
+  retrieved: '2026-10-30'
+  sha256: df348cf8bda80717757a8be74c79726169dc5410bc414eb878fbcf509cd6ba25
+  notes: Extracted by pipeline; pages per PR body
+- document: IWD Unemployment Insurance Taxes page (HTML)
+  url: https://workforce.iowa.gov/employers/unemployment-insurance/unemployment-insurance-employer-handbook/unemployment-insurance-taxes
+  retrieved: '2026-10-30'
+  sha256: b059c56792d35b5e7b3487fd8fe979f8d8e0856cdd5f9d48e327157550bbaf19
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '20400'
+  new_employer_rate: '0.0100'
+  rate_range:
+    min: '0.0000'
+    max: '0.0540'
+  new_employer_rate_construction: '0.0540'
