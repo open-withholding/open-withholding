@@ -1,0 +1,16 @@
+source:
+  document: Pennsylvania DCED Municipal Statistics — Official EIT / PIT Tax Register (Act 32), all municipalities
+    with collectors (Excel export) (2026)
+  page: 0
+  example: 'pipeline-constructed regression pin (deterministic register import, no printed examples exist):
+    engine-computed on weekly $1,000 gross, resident of PSD 210105 NORTH NEWTON TWP / BIG SPRING S D (CUMBERLAND);
+    rates from the register row'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '1000.00'
+  locals:
+  - jurisdiction: US-PA-PSD-210105
+    resident: true
+expect:
+  local_withholding: '16.50'
