@@ -1,0 +1,25 @@
+schema_version: '0.2'
+jurisdiction: US-NJ
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: NJ DOL Unemployment Insurance Contribution Rates table for the fiscal year in effect (PDF)
+  url: https://www.nj.gov/labor/ea/assets/PDFs/FY20262027%20TABLE%20C.pdf
+  retrieved: '2026-10-30'
+  sha256: b01ed65394d38650c0ae4253d0443744c21ec30284ec8b0ea26b676915ad9cd8
+- document: NJ Division of Employer Accounts rate information page (HTML)
+  url: https://www.nj.gov/labor/ea/employer-services/rate-info/
+  retrieved: '2026-10-30'
+  sha256: 6d782090a710b118d24890c0adf52766ca5326100b51fca018523958b923f047
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '44800'
+  new_employer_rate: '0.028'
+  rate_range:
+    min: '0.005'
+    max: '0.058'
