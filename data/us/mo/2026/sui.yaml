@@ -1,0 +1,23 @@
+schema_version: '0.1'
+jurisdiction: US-MO
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Missouri DES Tax Rates page (HTML) (2026)
+  url: https://labor.mo.gov/des/employers/tax-rates
+  retrieved: '2026-10-30'
+  sha256: 86bda85056bfa0233b81473c1827795b51df9641c5a093e8409265c6e38bcd94
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '9000'
+  new_employer_rate: '0.02376'
+  rate_range:
+    min: '0.0000'
+    max: '0.0600'
+  new_employer_rate_construction: '0.02376'
