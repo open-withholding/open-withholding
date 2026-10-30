@@ -1,0 +1,26 @@
+schema_version: '0.2'
+jurisdiction: US-PA
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: UC-748 Contribution Rates effective January 1 (PDF)
+  url: https://www.pa.gov/content/dam/copapwp-pagov/en/dli/documents/uc/employer/uc-tax-rates/uc-748%20rev%2009-25.pdf
+  retrieved: '2026-10-29'
+  sha256: 354c4f23b9e689843696218171f17a7b9c1dad61d06ec4af16a654e580daf463
+- document: L&I Yearly Tax Highlights (HTML)
+  url: https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights
+  retrieved: '2026-10-29'
+  sha256: 998e6e312fbc73130a8c821879165e84906233671e054899f2c85559bcbf3ba8
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '10000'
+  new_employer_rate: '0.038220'
+  rate_range:
+    min: '0.014190'
+    max: '0.103734'
+  new_employer_rate_construction: '0.105924'
