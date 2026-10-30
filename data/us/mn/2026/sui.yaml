@@ -1,0 +1,32 @@
+schema_version: '0.2'
+jurisdiction: US-MN
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: uimn.org Unemployment Tax Rates page (HTML)
+  url: https://www.uimn.org/employers/wages-taxes/tax-rates/index.jsp
+  retrieved: '2026-10-29'
+  sha256: 5a7ceb60698fa1ac4a56f5d19c6441913330705f98d2c82a51d81dc89d20074a
+- document: uimn.org New employer tax rates page (HTML)
+  url: https://www.uimn.org/employers/wages-taxes/tax-rates/new-employer-rates.jsp
+  retrieved: '2026-10-29'
+  sha256: 5e32d000a9b604e55bd654a5c89fbb158d3c4a54613cdf4ae1452d229bea8ab7
+method: sui
+rounding:
+  to: '1.00'
+  mode: down
+  intermediate: none
+params:
+  wage_base: '44000'
+  new_employer_rate: null
+  rate_range:
+    min: '0.0040'
+    max: '0.0930'
+  surtaxes:
+  - name: Additional Assessment
+    rate: '0.1400'
+    wage_base: '44000'
+  - name: Special Assessment (Federal Loan Interest Assessment)
+    rate: '0.0000'
+    wage_base: '44000'
