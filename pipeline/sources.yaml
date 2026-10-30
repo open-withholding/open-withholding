@@ -2176,3 +2176,434 @@
   maps_to:
     - data/us/pa/{year}/locals/act32.yaml
     - data/us/pa/{year}/locals/act32.csv
+# --- Michigan cities (Uniform City Income Tax Ordinance; method city_flat_rate) ---
+# Each city publishes on its own site; the Grand Rapids "Other Michigan Cities
+# with Income Tax" page is a cross-check only. Where the city prints rates and
+# the exemption in different documents, both are registered. Lansing (site is
+# JS-rendered) and Grayling (prints rates but no exemption) are not registered.
+# City documents are mostly undated or old editions (rates are fixed by
+# ordinance and rarely change): fixed URLs, content-hash watched.
+
+- id: us-mi-detroit
+  document: "Michigan Treasury Form 5469, City of Detroit Income Tax Withholding Guide"
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  landing: "https://www.michigan.gov/taxes/citytax/detroit/forms/2026/2026-employer-withholding-tax"
+  document_url_pattern: "https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/City-Withholding/TY{year}/5469_ty{year}.pdf"
+  extraction_hint: >-
+    Transcribe the resident rate (2.4%), the nonresident rate (1.2%) and the
+    ANNUAL exemption value per exemption; the guide also prints per-period
+    exemption values (weekly, biweekly, ...) which are the annual amount
+    divided by the periods — do not transcribe those. Transcribe any printed
+    withholding example with its resident flag.
+  maps_to:
+    - data/us/mi/{year}/locals/detroit.yaml
+
+- id: us-mi-albion
+  document: "City of Albion — Income Tax (Finance and Treasury) page"
+  jurisdiction: US-MI-ALBION
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.cityofalbionmi.gov/departments/finance_and_treasury/income_tax/"
+  documents:
+    - name: "Albion Income Tax page (rates 1% / .5%, $600 exemption)"
+      kind: html
+      url: "https://www.cityofalbionmi.gov/departments/finance_and_treasury/income_tax/"
+  extraction_hint: &mi_city_hint >-
+    Michigan Uniform City Income Tax Ordinance city. Transcribe the resident
+    rate, the nonresident rate, and the ANNUAL dollar exemption allowed for
+    the taxpayer, spouse and each dependent (e.g. "$600 exemption"); ignore
+    filing thresholds, penalty/interest rates, convenience fees and
+    corporate rates. effective_from is January 1 of the tax year of the
+    newest document (an undated page: the current year). Rounding: cents,
+    nearest.
+  maps_to:
+    - data/us/mi/{year}/locals/albion.yaml
+
+- id: us-mi-battle-creek
+  document: "City of Battle Creek — City Income Tax Ordinance (Chapter 1-D) + 2024 BC-1040 instructions"
+  jurisdiction: US-MI-BATTLE-CREEK
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: statute
+  no_printed_examples: true
+  landing: "https://www.battlecreekmi.gov/206/Income-Tax"
+  documents:
+    - name: "City Income Tax Ordinance (§141.611 rates 1% / 1/2%; §141.631 $750 exemption)"
+      kind: pdf
+      url: "https://www.battlecreekmi.gov/DocumentCenter/View/155/City-Income-Tax-Ordinance-PDF"
+    - name: "2024 BC-1040 Instructions (Exemptions are $750.00 per person)"
+      kind: pdf
+      url: "https://www.battlecreekmi.gov/DocumentCenter/View/18508/2024-Instructions---English-PDF"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/battle-creek.yaml
+
+- id: us-mi-benton-harbor
+  document: "City of Benton Harbor — Income Tax page (Rates / Exemptions)"
+  jurisdiction: US-MI-BENTON-HARBOR
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.bhcity.us/pview.aspx?id=55010&catid=292"
+  documents:
+    - name: "Benton Harbor Income Tax page (1% / 1/2%, exemptions $750)"
+      kind: html
+      url: "https://www.bhcity.us/pview.aspx?id=55010&catid=292"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/benton-harbor.yaml
+
+- id: us-mi-big-rapids
+  document: "City of Big Rapids — BR-1040 Individual Instructions (tax rates, exemption value)"
+  jurisdiction: US-MI-BIG-RAPIDS
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.cityofbr.org/department/income_tax/index.php"
+  documents:
+    - name: "2025 BR-1040 Individual Instructions (Resident 1%, Nonresident 0.5%, exemption $600)"
+      kind: pdf
+      url: "https://www.cityofbr.org/Document%20Center/Departments/Income%20Tax/Forms/Big%20Rapids%20Tax%20Forms/2025/2025%20BR-1040%20Individual%20Instructions.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/big-rapids.yaml
+
+- id: us-mi-east-lansing
+  document: "City of East Lansing — Income Tax page + Income Tax Fact Sheets"
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.cityofeastlansing.com/1812/Income-Tax"
+  documents:
+    - name: "East Lansing Income Tax page (residents 1%, nonresidents 0.5%)"
+      kind: html
+      url: "https://www.cityofeastlansing.com/1812/Income-Tax"
+    - name: "Income Tax Fact Sheets (Exemptions allowed - $600 each)"
+      kind: pdf
+      url: "https://www.cityofeastlansing.com/DocumentCenter/View/8032/Income-Tax-Fact-Sheets-PDF"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/east-lansing.yaml
+
+- id: us-mi-flint
+  document: "City of Flint — F-1040 Complete Booklet (resident/nonresident rates, $600 exemption) + Employer Withholding booklet"
+  jurisdiction: US-MI-FLINT
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.cityofflint.com/income-tax-division/"
+  documents:
+    - name: "2025 F-1040 Complete Booklet (1% / 0.5%, $600 per exemption)"
+      kind: pdf
+      url: "https://www.cityofflint.com/wp-content/uploads/2026/01/2025-F-1040-Complete-Booklet.pdf"
+    - name: "City of Flint Employers Withholding Forms and Instruction Booklet (Use 1% / Use 0.5%)"
+      kind: pdf
+      url: "https://www.cityofflint.com/wp-content/uploads/2026/01/2025-City-of-Flint-Employers-Withholding-Forms-and-Instruction-Booklet.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/flint.yaml
+
+- id: us-mi-grand-rapids
+  document: "City of Grand Rapids — Income Tax Guide for Withholders + Withholding Tax Tables effective 07-01-10"
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.grandrapidsmi.gov/departments/fiscal-services/income-tax/employers-and-withholders/income-tax-guide-for-withholders/"
+  documents:
+    - name: "Withholding Tax Tables effective July 1, 2010 (1.5% / 0.75%, $600 exemption allowance)"
+      kind: pdf
+      url: "https://media-002-us.cdn.govstack.com/grandrapidsmi-us/media/rjtig3c0/13264_withholding-tax-tables-effective-07-01-10.pdf"
+    - name: "Income Tax Guide for Withholders (HTML; current rates 1.5% / 0.75%)"
+      kind: html
+      url: "https://www.grandrapidsmi.gov/departments/fiscal-services/income-tax/employers-and-withholders/income-tax-guide-for-withholders/"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/grand-rapids.yaml
+
+- id: us-mi-hamtramck
+  document: "City of Hamtramck — H-1040 Individual Tax Booklet + H-SS-4 Employer Withholding Registration"
+  jurisdiction: US-MI-HAMTRAMCK
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://hamtramckcity.gov/departments/income-tax/"
+  documents:
+    - name: "2020 H-1040 Individual Tax Booklet with Instructions (Resident 1%, Nonresident 0.5%, exemption $600)"
+      kind: pdf
+      url: "https://hamtramckcity.gov/wp-content/uploads/2024/07/2020-H-1040-Individual-Tax-Booklet-with-Instructions.pdf"
+    - name: "H-SS-4 New Business Withholding Registration and Instructions (rates)"
+      kind: pdf
+      url: "https://hamtramckcity.gov/wp-content/uploads/2024/06/H-SS-4-Hamtramck-New-Business-Withholding-Registration-Form-and-Instructions.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/hamtramck.yaml
+
+- id: us-mi-highland-park
+  document: "City of Highland Park — HP-1040 Individual Tax Booklet with Instructions"
+  jurisdiction: US-MI-HIGHLAND-PARK
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.highlandparkmi.gov/incometax/"
+  documents:
+    - name: "2024 HP-1040 Individual Tax Booklet (Resident 2%, Nonresident 1%, exemption $600)"
+      kind: pdf
+      url: "https://www.highlandparkmi.gov/media/otocfr0s/hp-1040-individual-tax-booklet-with-instructions-2024.pdf"
+    - name: "Highland Park Income Tax page (2.0% / 1.0%)"
+      kind: html
+      url: "https://www.highlandparkmi.gov/incometax/"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/highland-park.yaml
+
+- id: us-mi-hudson
+  document: "City of Hudson — HU-1040 Instruction Booklet + Income Tax General Information"
+  jurisdiction: US-MI-HUDSON
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.ci.hudson.mi.us/copy-of-codes-forms-and-permits-1"
+  documents:
+    - name: "HU-1040 Instruction Booklet (1% / 1/2%; exemption $1,000.00)"
+      kind: pdf
+      url: "https://www.ci.hudson.mi.us/_files/ugd/6c24f6_925fb86ab9e54e01a576bb6cd82f0e30.pdf"
+    - name: "Income Tax General Information (1% residents, 0.5% nonresidents)"
+      kind: pdf
+      url: "https://www.ci.hudson.mi.us/_files/ugd/6c24f6_9dee134a5bb24cecbee1a773aaf17560.pdf"
+  # Hudson's exemption is $1,000, not the $600 most cities print — transcribe as printed.
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/hudson.yaml
+
+- id: us-mi-ionia
+  document: "City of Ionia — City Income Tax page + Employer Withholding Tax Forms and Instructions 2026"
+  jurisdiction: US-MI-IONIA
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.ci.ionia.mi.us/229/City-Income-Tax"
+  documents:
+    - name: "Ionia City Income Tax page (1% / 1/2%; $700 per exemption)"
+      kind: html
+      url: "https://www.ci.ionia.mi.us/229/City-Income-Tax"
+    - name: "Employer Withholding Tax Forms and Instructions 2026 (Use 1% / Use 1/2%)"
+      kind: pdf
+      url: "https://www.ci.ionia.mi.us/DocumentCenter/View/2311/Employer-Withholding-Tax-Forms-and-Instructions-2026-PDF"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/ionia.yaml
+
+- id: us-mi-jackson
+  document: "City of Jackson — J-1040 Individual Return Instructions"
+  jurisdiction: US-MI-JACKSON
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.cityofjackson.org/224/Income-Tax-Division"
+  documents:
+    - name: "J-1040 Instructions (1% resident, 1/2% nonresident, $600 per exemption)"
+      kind: pdf
+      url: "https://www.cityofjackson.org/DocumentCenter/View/14208"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/jackson.yaml
+
+- id: us-mi-lapeer
+  document: "City of Lapeer — Income Tax FAQ (rates) + L-1040 form (exemption amount)"
+  jurisdiction: US-MI-LAPEER
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.ci.lapeer.mi.us/finance/income_tax/index.php"
+  documents:
+    - name: "Lapeer Income Tax FAQ (Individual Resident 1%, Non-Resident .5%)"
+      kind: html
+      url: "https://www.ci.lapeer.mi.us/finance/income_tax/faqs/it.php"
+    - name: "2025 L-1040 pages 1 & 2 (exemption amount of $600.00)"
+      kind: pdf
+      url: "https://www.ci.lapeer.mi.us/Forms%20-%20Income%20Tax/2025%20L-1040%20page%201%20&%202.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/lapeer.yaml
+
+- id: us-mi-muskegon
+  document: "City of Muskegon — CF-M1040 Form and Instructions"
+  jurisdiction: US-MI-MUSKEGON
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://muskegon-mi.gov/city-services/finance-administrative/income-tax/"
+  documents:
+    - name: "2025 CF-M1040 Form and Instructions (1% / .5%; exemption value $600)"
+      kind: pdf
+      url: "https://muskegon-mi.gov/cresources/2025-CF-M1040-Form-and-Instructions-PROOF-3.pdf-final.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/muskegon.yaml
+
+- id: us-mi-muskegon-heights
+  document: "City of Muskegon Heights — Employer Withholding Booklet + Individual Tax Booklet"
+  jurisdiction: US-MI-MUSKEGON-HEIGHTS
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://muskegonheights.us/income-tax/"
+  # WordPress download manager: the PDF link carries rotating tokens, so each
+  # document is link-scanned from its download page every sweep.
+  documents:
+    - name: "2024 Employer Withholding Booklet (Use 1% residents / .5% nonresidents)"
+      kind: pdf
+      landing: "https://muskegonheights.us/downloads/2024-employer-withholding-booklet/"
+      link_pattern: "wpdmdl="
+      url: "https://muskegonheights.us/downloads/2024-employer-withholding-booklet/?wpdmdl=108764&ind=1707230145874&refresh=b5884283&filename=2024-Employer-withholding-booklet.pdf"
+    - name: "2025 Individual Tax Booklet ($600 per exemption)"
+      kind: pdf
+      landing: "https://muskegonheights.us/downloads/2025-individual-tax-booklet/"
+      link_pattern: "wpdmdl="
+      url: "https://muskegonheights.us/downloads/2025-individual-tax-booklet/?wpdmdl=140446&ind=1771537993248&refresh=b1529742&filename=2025-individual-tax-booklet.pdf"
+  extraction_hint: >-
+    Michigan Uniform City Income Tax Ordinance city. Transcribe the resident
+    rate (1%), the nonresident rate (.5%) and the ANNUAL $600 exemption. The
+    2025 individual booklet contains a stray template sentence "(The
+    resident tax rate is 1.5%. The nonresident rate is 0.75%.)" copied from
+    another city — Muskegon Heights' rates are the 1% / .5% stated in the
+    employer booklet and in the booklet's own tax computation lines; note
+    the defect. Ignore filing thresholds and penalty rates. effective_from
+    is January 1 of the newest document's tax year. Rounding: cents, nearest.
+  maps_to:
+    - data/us/mi/{year}/locals/muskegon-heights.yaml
+
+- id: us-mi-pontiac
+  document: "City of Pontiac — Income Tax FAQ (rates) + 1040R Instructions (exemption)"
+  jurisdiction: US-MI-PONTIAC
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.pontiacmi.gov/departments/finance/income_tax/index.php"
+  documents:
+    - name: "Pontiac Income Tax FAQ (1% residents, 1/2% nonresidents)"
+      kind: html
+      url: "https://www.pontiacmi.gov/departments/finance/income_tax/faqs.php"
+    - name: "2025 1040R Instructions (Each exemption is $600.00)"
+      kind: pdf
+      url: "https://www.pontiacmi.gov/1040r-2025-instructions.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/pontiac.yaml
+
+- id: us-mi-port-huron
+  document: "City of Port Huron — 1040 Instructions"
+  jurisdiction: US-MI-PORT-HURON
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "http://www.porthuron.org/government/departments/finance/income_tax.php"
+  documents:
+    - name: "2025 Port Huron 1040 Instructions (1% resident, 1/2 of 1% nonresident, $600 personal exemption)"
+      kind: pdf
+      url: "http://www.porthuron.org/Documents/Government/Departments/Finance/Income%20Tax/2025/1040%20instructions%202025.pdf"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/port-huron.yaml
+
+- id: us-mi-portland
+  document: "City of Portland — Employer Withholding Booklet + P-1040 Resident form"
+  jurisdiction: US-MI-PORTLAND
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.portland-michigan.org/153/Income-Tax-Office"
+  documents:
+    - name: "2026 Employer Withholding Booklet (Use 1% residents / 1/2% nonresidents)"
+      kind: pdf
+      url: "https://www.portland-michigan.org/DocumentCenter/View/5434"
+    - name: "2025 P-1040 Resident return (exemptions: multiply by 1000)"
+      kind: pdf
+      url: "https://www.portland-michigan.org/DocumentCenter/View/5461"
+  # Portland's exemption is $1,000 per the form's line 16 ("multiply by 1000").
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/portland.yaml
+
+- id: us-mi-saginaw
+  document: "City of Saginaw — Withholding Tax Guide"
+  jurisdiction: US-MI-SAGINAW
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  landing: "https://www.saginaw-mi.com/418/Employer-Withholding"
+  documents:
+    - name: "Saginaw Withholding Tax Guide (1.5% residents, 0.75% nonresidents, $750 per exemption)"
+      kind: pdf
+      url: "https://www.saginaw-mi.com/DocumentCenter/View/711/2020-Withholding-Tax-Guide-PDF"
+    - name: "Saginaw Income Tax page (1.50% / 0.75%)"
+      kind: html
+      url: "https://www.saginaw-mi.com/416/Income-Tax"
+  extraction_hint: >-
+    Michigan Uniform City Income Tax Ordinance city. Transcribe the resident
+    rate, the nonresident rate and the ANNUAL exemption ($750 per year);
+    transcribe the guide's withholding example (gross pay per week and
+    exemptions) with its resident flag if the arithmetic is complete. Ignore
+    the 60% vacation/holiday allocation discussion, filing thresholds and
+    penalty rates. effective_from is January 1 of the newest document's tax
+    year. Rounding: cents, nearest.
+  maps_to:
+    - data/us/mi/{year}/locals/saginaw.yaml
+
+- id: us-mi-springfield
+  document: "City of Springfield — Income Tax page"
+  jurisdiction: US-MI-SPRINGFIELD
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: agency_page
+  no_printed_examples: true
+  landing: "https://www.springfieldmich.com/departments/finance___administration/income_tax/index.php"
+  documents:
+    - name: "Springfield Income Tax page (1% / 0.5%; personal exemption $750)"
+      kind: html
+      url: "https://www.springfieldmich.com/departments/finance___administration/income_tax/index.php"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/springfield.yaml
+
+- id: us-mi-walker
+  document: "City of Walker — Withholding Tax Guide"
+  jurisdiction: US-MI-WALKER
+  tax: local_income_withholding
+  method: city_flat_rate
+  authority: publication
+  no_printed_examples: true
+  landing: "https://www.walker.city/316/Employer-Withholding"
+  documents:
+    - name: "Walker Withholding Tax Guide (1% / .5%; $600 per exemption)"
+      kind: pdf
+      url: "https://www.walker.city/DocumentCenter/View/751"
+    - name: "Walker Income Tax FAQ (cross-check)"
+      kind: html
+      url: "https://www.walker.city/FAQ.aspx?TID=20"
+  extraction_hint: *mi_city_hint
+  maps_to:
+    - data/us/mi/{year}/locals/walker.yaml
