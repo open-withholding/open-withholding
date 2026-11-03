@@ -1,0 +1,14 @@
+source:
+  document: Maryland DOL tax rates and quarterly reporting page (HTML)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.0260, first paycheck
+    (YTD 0; wage base 8500)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-MD
+    sui_experience_rate: '0.0260'
+expect:
+  sui_tax: '52.00'
