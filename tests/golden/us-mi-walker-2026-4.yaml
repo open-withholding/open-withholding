@@ -1,0 +1,18 @@
+source:
+  document: City of Walker — Withholding Tax Guide
+  page: 4
+  example: 'Nonresidents Example No. 1: employee resides in non-taxing city, works full time in Walker;
+    $110/week, 3 exemptions; less exemptions times 1/2% = $.38'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '110'
+  locals:
+  - jurisdiction: US-MI-WALKER
+    resident: false
+    allowances: 3
+  state:
+  - jurisdiction: US-MI
+    filing_status: default
+expect:
+  local_withholding: '0.38'
