@@ -1393,12 +1393,14 @@ WORKED_EXAMPLE = {
         },
         "gross_wages": {**DECIMAL, "description": "The wages the example withholds on; for a "
                         "supplemental example, the supplemental payment itself"},
-        "concurrent_regular_wages": {**DECIMAL_OR_NULL, "description": "Supplemental examples "
+        # Plain decimals, "0" when not applicable: the API caps union-typed
+        # (nullable) parameters at 16 per request schema and this one sits at 15.
+        "concurrent_regular_wages": {**DECIMAL, "description": "Supplemental examples "
                                      "using the aggregate method: the regular wages of the same "
-                                     "(or most recent) period the example combines with; null otherwise"},
-        "ytd_supplemental_wages": {**DECIMAL_OR_NULL, "description": "Supplemental examples: "
+                                     "(or most recent) period the example combines with; \"0\" otherwise"},
+        "ytd_supplemental_wages": {**DECIMAL, "description": "Supplemental examples: "
                                    "calendar-year supplemental wages paid before this payment "
-                                   "(federal $1,000,000 tier); null otherwise"},
+                                   "(federal $1,000,000 tier); \"0\" otherwise"},
         "filing_status": {"type": "string"},
         "allowances": {"type": ["integer", "null"]},
         "secondary_allowances": {

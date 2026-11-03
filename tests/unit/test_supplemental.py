@@ -102,6 +102,28 @@ def test_assembled_file_validates_and_golden_assembles():
     load_parameter_dict(raw)
     g = assemble.assemble_golden_case(jurisdiction="US", tax="supplemental_wage_withholding", as_of="2026-06-15", document="Pub 15 (2026)",
                                       example={"page": 20, "description": "bonus", "pay_frequency": "biweekly", "gross_wages": "2000",
-                                               "filing_status": "n/a", "concurrent_regular_wages": None, "ytd_supplemental_wages": "0",
+                                               "filing_status": "n/a", "concurrent_regular_wages": "0", "ytd_supplemental_wages": "0",
                                                "expected_withholding": "440.00"})
     assert g["input"]["wage_type"] == "supplemental" and g["expect"] == {"supplemental_withholding": {"US": "440.00"}}
+
+
+def _union_params(schema, acc=None):
+    """Count parameters whose type is a union (type array or anyOf) — the
+    Anthropic structured-output limit is 16 per request schema."""
+    acc = [] if acc is None else acc
+    if isinstance(schema, dict):
+        if isinstance(schema.get("type"), list) or "anyOf" in schema:
+            acc.append(schema)
+        for v in schema.values():
+            _union_params(v, acc)
+    elif isinstance(schema, list):
+        for v in schema:
+            _union_params(v, acc)
+    return acc
+
+
+def test_request_schemas_stay_under_the_union_limit():
+    from pipeline.schemas import VERIFICATION_SCHEMA, _PARAMS_BY_METHOD, extraction_schema
+    assert len(_union_params(VERIFICATION_SCHEMA)) <= 16, "verification schema: the API rejects >16 union-typed params"
+    for method in _PARAMS_BY_METHOD:
+        assert len(_union_params(extraction_schema(method))) <= 16, f"extraction schema for {method}"
