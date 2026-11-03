@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-HUDSON
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: HU-1040 Instruction Booklet (1% / 1/2%; exemption $1,000.00)
+  url: https://www.ci.hudson.mi.us/_files/ugd/6c24f6_925fb86ab9e54e01a576bb6cd82f0e30.pdf
+  retrieved: '2026-10-30'
+  sha256: e202b99a584e2e3a6408a959c2043630381b6813038ffc4091b145cdc417e469
+  notes: Extracted by pipeline; pages per PR body
+- document: Income Tax General Information (1% residents, 0.5% nonresidents)
+  url: https://www.ci.hudson.mi.us/_files/ugd/6c24f6_9dee134a5bb24cecbee1a773aaf17560.pdf
+  retrieved: '2026-10-30'
+  sha256: e05cc4ff812b9699cca45d8fa8e5b14711c09a14e07046adab5b1bc98d8dc9b6
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '1000'
