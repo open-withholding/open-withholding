@@ -1,0 +1,14 @@
+source:
+  document: Idaho DOL tax rate class array for the year (PDF)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.01000, first
+    paycheck (YTD 0; wage base 58300)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-ID
+    sui_experience_rate: '0.01000'
+expect:
+  sui_tax: '20.00'
