@@ -1,0 +1,23 @@
+schema_version: '0.1'
+jurisdiction: US-DE
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Delaware DOL UI Employer Services page (HTML) (2026)
+  url: https://labor.delaware.gov/divisions/unemployment-insurance/employer-services/
+  retrieved: '2026-10-30'
+  sha256: 3e38b4712d6501e6513765a973d39c8a41247497d1bd1156d2fd0b3f23beed9f
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '14500.00'
+  new_employer_rate: '0.010'
+  rate_range:
+    min: '0.003'
+    max: '0.054'
+  new_employer_rate_construction: '0.010'
