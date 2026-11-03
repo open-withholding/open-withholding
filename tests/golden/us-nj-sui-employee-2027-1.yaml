@@ -1,0 +1,12 @@
+source:
+  document: NJ Division of Employer Accounts rate information page (HTML) (2027)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, first paycheck (YTD 0); employee share of U.I. 0.003825,
+    W.F./S.W.F. 0.000425'
+as_of: '2027-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+expect:
+  sui_employee_withholding:
+    US-NJ: '8.50'
