@@ -1,0 +1,15 @@
+source:
+  document: WY DWS Unemployment Taxable Wage Base page (HTML)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published illustrative 1.00% rate (the state
+    assigns industry-based new-employer rates and publishes no schedule bounds; the rate is a user input)
+    0.0100, first paycheck (YTD 0; wage base 33800)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-WY
+    sui_experience_rate: '0.0100'
+expect:
+  sui_tax: '20.00'
