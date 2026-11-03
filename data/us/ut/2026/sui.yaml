@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-UT
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Utah DWS Employer Advisor, Summer edition for the year (PDF; year-specific URL, bump annually)
+  url: https://jobs.utah.gov/ui/employer/Public/Empadv/Summer_2026.pdf
+  retrieved: '2026-10-30'
+  sha256: 6bc352959097b74d89bf88fd416a15aaacf70b9368cac10ccc38666a809e2e5f
+  notes: Extracted by pipeline; pages per PR body
+- document: Utah DWS Employer Handbook (PDF)
+  url: https://jobs.utah.gov/ui/employer/public/handbook/Employer_Handbook.pdf
+  retrieved: '2026-10-30'
+  sha256: dd937f056f8177f2e816e81e09aff3b0b63ed939475068d5e042e1214bbf296e
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '50700'
+  new_employer_rate: null
+  rate_range: null
