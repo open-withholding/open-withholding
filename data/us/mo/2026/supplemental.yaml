@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-MO
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Form 4282, Employer's Tax Guide — supplemental wage rule (2026)
+  url: https://dor.mo.gov/forms/4282_2026.pdf
+  retrieved: '2026-11-03'
+  sha256: 9b24eaa6b065f8bb932bdd2038960c3da20e19ba69cf9e3e98614600468fc93e
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.047'
