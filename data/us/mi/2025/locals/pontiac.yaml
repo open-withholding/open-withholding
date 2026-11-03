@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-PONTIAC
+tax: local_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+sources:
+- document: Pontiac Income Tax FAQ (1% residents, 1/2% nonresidents)
+  url: https://www.pontiacmi.gov/departments/finance/income_tax/faqs.php
+  retrieved: '2026-10-30'
+  sha256: 22e3f410d3dde2dba7eb35ca25996a0edf3997a043a351dd6bd6fda43b0cf4d1
+  notes: Extracted by pipeline; pages per PR body
+- document: 2025 1040R Instructions (Each exemption is $600.00)
+  url: https://www.pontiacmi.gov/1040r-2025-instructions.pdf
+  retrieved: '2026-10-30'
+  sha256: c106b49fa5974ce8b689b30be53aa22880f7d644c7c0bab4af20681a517ab46f
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
