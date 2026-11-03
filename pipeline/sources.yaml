@@ -940,11 +940,11 @@
   tax: state_unemployment_insurance
   method: sui
   authority: agency_page
-  landing: "https://dwd.wisconsin.gov/ui/employers/taxrates.htm"
+  landing: "https://dwd.wisconsin.gov/ui/employers/taxrates"
   documents:
     - name: "DWD UI Tax Rates page (HTML)"
       kind: html
-      url: "https://dwd.wisconsin.gov/ui/employers/taxrates.htm"
+      url: "https://dwd.wisconsin.gov/ui/employers/taxrates"
   no_printed_examples: true
   extraction_hint: >-
     Transcribe the target year's taxable wage base, the new-employer

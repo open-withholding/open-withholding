@@ -372,7 +372,8 @@ def test_main_persists_state_and_exits_nonzero_when_a_dispatch_fails(monkeypatch
     persisted = json.loads(state_path.read_text())
     assert persisted["us-aa-changed"]["sha256"] == "n" * 64, "the observed change is recorded"
     assert "checked_at" in persisted["us-bb-quiet"], "the sweep continued past the failure"
-    assert len(issues) == 1 and "dispatch_failed" in issues[0][issues[0].index("--title") + 1]
+    creates = [a for a in issues if a[:3] == ["gh", "issue", "create"]]
+    assert len(creates) == 1 and "dispatch_failed" in creates[0][creates[0].index("--title") + 1]
 
 
 # --- successor_pattern (#168): the agency publishes each edition under a NEW
@@ -521,6 +522,40 @@ def test_content_sha256_hashes_workbook_cells_not_bytes():
     # A non-workbook OLE2 prefix falls back to bytes too.
     assert content_sha256(OLE2_MAGIC + b"x") != content_sha256(OLE2_MAGIC + b"y")
     assert hasattr(xlrd, "open_workbook")  # real workbooks are exercised by the importer run
+
+
+def test_content_sha256_html_ignores_markup_noise():
+    from pipeline.watch import content_sha256
+    a = b"<!doctype html><html><head><script nonce='x1'>var t=1;</script><style>.a{}</style></head><body><p>Rate 1.5%</p><!-- built 10:00 --></body></html>"
+    b = b"<!doctype html><html><head><script nonce='y2'>var t=2;</script></head><body>\n<p>Rate   1.5%</p><!-- built 11:00 -->\n</body></html>"
+    c = b"<!doctype html><html><body><p>Rate 1.6%</p></body></html>"
+    assert content_sha256(a) == content_sha256(b)
+    assert content_sha256(a) != content_sha256(c)
+
+
+def test_changed_document_with_open_pr_is_not_redispatched(monkeypatch, capsys):
+    from pipeline import watch
+    monkeypatch.setattr(watch, "_open_bot_pr", lambda sid, year: 280)
+    opened = []
+    monkeypatch.setattr(watch, "_github_issue", lambda title, body, dry_run: opened.append(title))
+    dispatched = []
+    monkeypatch.setattr(watch.subprocess, "run", lambda *a, **k: dispatched.append(a))
+    src = {"id": "us-mi-highland-park", "document": "HP-1040", "no_printed_examples": True}
+    assert watch._dispatch_extract(src, 2026, dry_run=False) is True
+    assert dispatched == []
+    assert opened == ["Watcher: us-mi-highland-park changed while PR #280 is open"]
+
+
+def test_issue_titles_dedupe_within_a_sweep(monkeypatch):
+    from pipeline import watch
+    created = []
+    monkeypatch.setattr(watch.subprocess, "run",
+                        lambda args, **k: created.append(args) or type("R", (), {"returncode": 0, "stdout": "0"})())
+    watch._OPENED_THIS_SWEEP.clear()
+    watch._github_issue("Watcher: us-mi-saginaw url_404", "a", False)
+    watch._github_issue("Watcher: us-mi-saginaw url_404", "b", False)
+    assert sum(1 for a in created if a[:3] == ["gh", "issue", "create"]) == 1
+    watch._OPENED_THIS_SWEEP.clear()
 
 
 def test_html_state_from_older_hash_scheme_is_rebaselined_not_changed():
