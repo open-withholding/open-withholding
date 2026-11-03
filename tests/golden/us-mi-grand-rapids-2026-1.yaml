@@ -1,0 +1,15 @@
+source:
+  document: Withholding Tax Tables effective July 1, 2010 (1.5% / 0.75%, $600 exemption allowance)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, resident with 2 exemption(s) at 600 each, rate 0.015;
+    annualize x26, deduct exemptions, tax, divide by 26'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  locals:
+  - jurisdiction: US-MI-GRAND-RAPIDS
+    resident: true
+    allowances: 2
+expect:
+  local_withholding: '29.31'
