@@ -1,0 +1,24 @@
+schema_version: '0.2'
+jurisdiction: US-MI-BATTLE-CREEK
+tax: local_income_withholding
+effective_from: '2024-01-01'
+effective_to: null
+sources:
+- document: City Income Tax Ordinance (§141.611 rates 1% / 1/2%; §141.631 $750 exemption)
+  url: https://www.battlecreekmi.gov/DocumentCenter/View/155/City-Income-Tax-Ordinance-PDF
+  retrieved: '2026-10-30'
+  sha256: 5d2a866c0347ddbf545c2e685da3872c2a87bce02c5d7f032a1dc17cdffea1cf
+  notes: Extracted by pipeline; pages per PR body
+- document: 2024 BC-1040 Instructions (Exemptions are $750.00 per person)
+  url: https://www.battlecreekmi.gov/DocumentCenter/View/18508/2024-Instructions---English-PDF
+  retrieved: '2026-10-30'
+  sha256: b9ad66a4a481b4ec46c64e3d5bc8b14c619260b557b2689b5d235d67666566cc
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '750'

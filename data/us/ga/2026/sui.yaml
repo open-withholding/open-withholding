@@ -1,0 +1,28 @@
+schema_version: '0.2'
+jurisdiction: US-GA
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: Georgia DOL Employer Handbook DOL-224 (PDF)
+  url: https://dol.georgia.gov/documents/employer-handbook
+  retrieved: '2026-11-03'
+  sha256: 196737dff4530c1b1e57622cacf4b63167a35332ca72a3c0b76e29182dffca7c
+  notes: Extracted by pipeline; pages per PR body
+- document: 'Georgia DOL blog: 2026 Employer Tax Rates Available Now (HTML)'
+  url: https://dol.georgia.gov/blog-post/2025-12-23/2026-employer-tax-rates-available-now
+  retrieved: '2026-11-03'
+  sha256: ee84e3379f6a09cb9815d026b2c10f488f433230bc17c23550dbbff22fc5175f
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '9500'
+  new_employer_rate: '0.0270'
+  rate_range: null
+  surtaxes:
+  - name: Administrative Assessment
+    rate: '0.0008'
+    wage_base: '9500'

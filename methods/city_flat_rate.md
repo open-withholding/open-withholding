@@ -46,6 +46,16 @@ All arithmetic in Decimal; `r(x)` = the envelope rounding rule.
 
 ## Notes (normative)
 
+- **Residents predominantly employed in another Michigan city that levies an
+  income tax** are withheld by the home city at the nonresident rate: the
+  Uniform Ordinance credits the work city's nonresident tax, and the
+  withholding guides (Walker, Saginaw, Grand Rapids) print the resident's
+  home-city withholding at ½% for exactly that case. The engine has no
+  "works elsewhere" flag; callers — and transcribed worked examples — pass
+  `resident: false` for that employee's home-city file. Residents whose
+  predominant employment is in the home city, or in a city without an
+  income tax, are `resident: true`.
+
 - A file without a `resident` flag on the local election fails loud: the
   rate cannot be chosen. (The state-level methods ignore residency.)
 - Michigan cities publish withholding TABLES derived from this formula;

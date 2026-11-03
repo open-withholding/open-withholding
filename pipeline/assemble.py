@@ -273,7 +273,7 @@ def _transform_params(method: str, params: dict) -> dict:
     if method == "sui":
         out = {"wage_base": params["wage_base"],
                "new_employer_rate": params["new_employer_rate"],
-               "rate_range": dict(params["rate_range"])}
+               "rate_range": None if params.get("rate_range") is None else dict(params["rate_range"])}
         if params.get("new_employer_rate_construction") is not None:
             out["new_employer_rate_construction"] = params["new_employer_rate_construction"]
         if params.get("surtaxes"):

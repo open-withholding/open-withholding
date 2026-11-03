@@ -1,0 +1,27 @@
+schema_version: '0.2'
+jurisdiction: US-VT
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+sources:
+- document: 'VDOL press release: taxable wage base for the year (HTML; year-specific URL, bump annually)'
+  url: https://labor.vermont.gov/press-release/vermont-department-labor-announces-unemployment-insurance-taxable-wage-base-2026
+  retrieved: '2026-10-30'
+  sha256: 1ce06041d650686284a0882830afc70bc1c1683ad04a94222de2f129d7dec4f4
+  notes: Extracted by pipeline; pages per PR body
+- document: VDOL Unemployment Tax Rates page (HTML)
+  url: https://labor.vermont.gov/unemployment-insurance/ui-employers/unemployment-tax-rates
+  retrieved: '2026-10-30'
+  sha256: 6a6d38d689cfec3dc87587c244bca56ffe9eee0ea1a144da63e030a1bba00814
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '15400'
+  new_employer_rate: '0.01'
+  rate_range:
+    min: '0.004'
+    max: '0.084'
+  new_employer_rate_construction: '0.027'

@@ -1,0 +1,15 @@
+source:
+  document: 2026 Employer Withholding Booklet (Use 1% residents / 1/2% nonresidents)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, resident with 2 exemption(s) at 1000 each, rate 0.01;
+    annualize x26, deduct exemptions, tax, divide by 26'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  locals:
+  - jurisdiction: US-MI-PORTLAND
+    resident: true
+    allowances: 2
+expect:
+  local_withholding: '19.23'

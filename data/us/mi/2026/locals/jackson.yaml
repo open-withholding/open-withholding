@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US-MI-JACKSON
+tax: local_income_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: J-1040 Instructions (1% resident, 1/2% nonresident, $600 per exemption) (2026)
+  url: https://www.cityofjackson.org/DocumentCenter/View/14208
+  retrieved: '2026-10-30'
+  sha256: d3e84e00ca2e0dff97d5908964bb17dbabb37a4d5ccd6008005e91821109e5f6
+  notes: Extracted by pipeline; pages per PR body
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'

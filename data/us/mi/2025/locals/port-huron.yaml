@@ -1,0 +1,21 @@
+schema_version: '0.1'
+jurisdiction: US-MI-PORT-HURON
+tax: local_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+source:
+  document: 2025 Port Huron 1040 Instructions (1% resident, 1/2 of 1% nonresident, $600 personal exemption)
+    (2025)
+  url: http://www.porthuron.org/Documents/Government/Departments/Finance/Income%20Tax/2025/1040%20instructions%202025.pdf
+  retrieved: '2026-10-30'
+  sha256: 5d4280d2cfee1efdf26253428dcee7c7c842477065da1d03bc0de91474aebf32
+  notes: Extracted by pipeline; pages per PR body
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'

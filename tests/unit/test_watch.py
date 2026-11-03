@@ -116,7 +116,7 @@ def test_multi_document_baseline_per_document():
 
 def test_multi_document_single_changed_event_when_both_move():
     prior = {"documents": {
-        "guide": {"sha256": "0" * 64, "changed_at": "2025-12-20"},
+        "guide": {"sha256": "0" * 64, "hash_scheme": "text-v1", "changed_at": "2025-12-20"},
         "tables": {"sha256": "1" * 64, "changed_at": "2025-12-20"},
     }}
     fetch = _multi_fetcher({"https://x.gov/guide": "a" * 64,
@@ -130,7 +130,7 @@ def test_multi_document_single_changed_event_when_both_move():
 
 def test_multi_document_one_changed_one_quiet():
     prior = {"documents": {
-        "guide": {"sha256": "a" * 64, "changed_at": "2025-12-20"},
+        "guide": {"sha256": "a" * 64, "hash_scheme": "text-v1", "changed_at": "2025-12-20"},
         "tables": {"sha256": "1" * 64, "changed_at": "2025-12-20"},
     }}
     fetch = _multi_fetcher({"https://x.gov/guide": "a" * 64,
@@ -155,8 +155,8 @@ def test_multi_document_html_bytes_are_not_an_anomaly():
 
 def test_multi_document_stale_uses_latest_document_change():
     prior = {"documents": {
-        "guide": {"sha256": "a" * 64, "changed_at": "2025-11-01"},
-        "tables": {"sha256": "b" * 64, "changed_at": "2025-11-15"},
+        "guide": {"sha256": "a" * 64, "hash_scheme": "text-v1", "changed_at": "2025-11-01"},
+        "tables": {"sha256": "b" * 64, "hash_scheme": "text-v1", "changed_at": "2025-11-15"},
     }}
     fetch = _multi_fetcher({"https://x.gov/guide": "a" * 64,
                             "https://x.gov/tables_2026.pdf": "b" * 64})
@@ -372,7 +372,8 @@ def test_main_persists_state_and_exits_nonzero_when_a_dispatch_fails(monkeypatch
     persisted = json.loads(state_path.read_text())
     assert persisted["us-aa-changed"]["sha256"] == "n" * 64, "the observed change is recorded"
     assert "checked_at" in persisted["us-bb-quiet"], "the sweep continued past the failure"
-    assert len(issues) == 1 and "dispatch_failed" in issues[0][issues[0].index("--title") + 1]
+    creates = [a for a in issues if a[:3] == ["gh", "issue", "create"]]
+    assert len(creates) == 1 and "dispatch_failed" in creates[0][creates[0].index("--title") + 1]
 
 
 # --- successor_pattern (#168): the agency publishes each edition under a NEW
@@ -483,7 +484,7 @@ def test_multi_document_entry_discovered_by_link_scan(monkeypatch):
            "documents": [{"name": "release", "kind": "html", "landing": "https://esd.x.gov/news",
                           "link_pattern": "rate-", "url": "https://esd.x.gov/release/2025/rate-113-2026"}]}
     prior = {"documents": {"release": {"url": "https://esd.x.gov/release/2025/rate-113-2026",
-                                       "sha256": "a" * 64, "changed_at": "2025-12-01"}}}
+                                       "sha256": "a" * 64, "hash_scheme": "text-v1", "changed_at": "2025-12-01"}}}
     seen = []
 
     def fetcher(url):
@@ -521,3 +522,61 @@ def test_content_sha256_hashes_workbook_cells_not_bytes():
     # A non-workbook OLE2 prefix falls back to bytes too.
     assert content_sha256(OLE2_MAGIC + b"x") != content_sha256(OLE2_MAGIC + b"y")
     assert hasattr(xlrd, "open_workbook")  # real workbooks are exercised by the importer run
+
+
+def test_content_sha256_html_ignores_markup_noise():
+    from pipeline.watch import content_sha256
+    a = b"<!doctype html><html><head><script nonce='x1'>var t=1;</script><style>.a{}</style></head><body><p>Rate 1.5%</p><!-- built 10:00 --></body></html>"
+    b = b"<!doctype html><html><head><script nonce='y2'>var t=2;</script></head><body>\n<p>Rate   1.5%</p><!-- built 11:00 -->\n</body></html>"
+    c = b"<!doctype html><html><body><p>Rate 1.6%</p></body></html>"
+    assert content_sha256(a) == content_sha256(b)
+    assert content_sha256(a) != content_sha256(c)
+
+
+def test_changed_document_with_open_pr_is_not_redispatched(monkeypatch, capsys):
+    from pipeline import watch
+    monkeypatch.setattr(watch, "_open_bot_pr", lambda sid, year: 280)
+    opened = []
+    monkeypatch.setattr(watch, "_github_issue", lambda title, body, dry_run: opened.append(title))
+    dispatched = []
+    monkeypatch.setattr(watch.subprocess, "run", lambda *a, **k: dispatched.append(a))
+    src = {"id": "us-mi-highland-park", "document": "HP-1040", "no_printed_examples": True}
+    assert watch._dispatch_extract(src, 2026, dry_run=False) is True
+    assert dispatched == []
+    assert opened == ["Watcher: us-mi-highland-park changed while PR #280 is open"]
+
+
+def test_issue_titles_dedupe_within_a_sweep(monkeypatch):
+    from pipeline import watch
+    created = []
+    monkeypatch.setattr(watch.subprocess, "run",
+                        lambda args, **k: created.append(args) or type("R", (), {"returncode": 0, "stdout": "0"})())
+    watch._OPENED_THIS_SWEEP.clear()
+    watch._github_issue("Watcher: us-mi-saginaw url_404", "a", False)
+    watch._github_issue("Watcher: us-mi-saginaw url_404", "b", False)
+    assert sum(1 for a in created if a[:3] == ["gh", "issue", "create"]) == 1
+    watch._OPENED_THIS_SWEEP.clear()
+
+
+def test_html_state_from_older_hash_scheme_is_rebaselined_not_changed():
+    """After the text-hash change (#311), every stored HTML hash would differ
+    from the new hash and the next sweep would re-dispatch ~60 sources (the
+    2026-11-03 sweep dispatched 31 on render noise alone). An entry without
+    the current hash_scheme is re-recorded silently."""
+    from pipeline.watch import HASH_SCHEME
+    src = {"id": "us-xx-test", "document": "page", "landing": "https://x.gov",
+           "documents": [{"name": "page", "kind": "html", "url": "https://x.gov/rates"},
+                         {"name": "pdf", "kind": "pdf", "url": "https://x.gov/rates.pdf"}]}
+    prior = {"documents": {"page": {"url": "https://x.gov/rates", "sha256": "a" * 64, "changed_at": "2026-01-05"},
+                           "pdf": {"url": "https://x.gov/rates.pdf", "sha256": "b" * 64, "changed_at": "2026-01-05"}}}
+
+    def fetcher(url):
+        return {"status": 200, "sha256": "c" * 64, "etag": None, "last_modified": None, "is_pdf": url.endswith(".pdf")}
+
+    events, state = check_source(src, prior, fetcher, TODAY)
+    kinds = [e["type"] for e in events]
+    assert "baseline" in kinds and "changed" in kinds        # html rehashed; the PDF really changed
+    assert state["documents"]["page"]["hash_scheme"] == HASH_SCHEME
+    # Second sweep under the same scheme: a differing html hash is a change again.
+    events2, _ = check_source(src, state, lambda u: {"status": 200, "sha256": "d" * 64, "etag": None, "last_modified": None, "is_pdf": u.endswith(".pdf")}, TODAY)
+    assert [e["type"] for e in events2] == ["changed"]

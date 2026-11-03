@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US-MI-BIG-RAPIDS
+tax: local_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+source:
+  document: 2025 BR-1040 Individual Instructions (Resident 1%, Nonresident 0.5%, exemption $600) (2025)
+  url: https://www.cityofbr.org/Document%20Center/Departments/Income%20Tax/Forms/Big%20Rapids%20Tax%20Forms/2025/2025%20BR-1040%20Individual%20Instructions.pdf
+  retrieved: '2026-10-30'
+  sha256: 238531a169277f6e0a49fcb9e71c1c425f3c1b0baa5f1feba72601b44c213e3e
+  notes: Extracted by pipeline; pages per PR body
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'

@@ -1,0 +1,18 @@
+source:
+  document: Michigan Treasury Form 5469, City of Detroit Income Tax Withholding Guide (2026)
+  page: 2
+  example: 'Resident, weekly gross pay $200.00 with 3 exemptions: adjustment 3 x $11.54 = $34.62; taxable
+    $165.38; x 0.024 resident rate = $3.97 withheld.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: weekly
+  gross_wages: '200'
+  locals:
+  - jurisdiction: US-MI-DETROIT
+    resident: true
+    allowances: 3
+  state:
+  - jurisdiction: US-MI
+    filing_status: resident
+expect:
+  local_withholding: '3.97'

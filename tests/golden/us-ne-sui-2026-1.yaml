@@ -1,0 +1,15 @@
+source:
+  document: "Nebraska DOL \u2014 A Guide to Understanding Nebraska's Unemployment Insurance Combined Tax\
+    \ Rates for the year (2026)"
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.0125, first paycheck
+    (YTD 0; wage base 9000)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-NE
+    sui_experience_rate: '0.0125'
+expect:
+  sui_tax: '25.00'

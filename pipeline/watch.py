@@ -34,6 +34,7 @@ import datetime as dt
 import functools
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import urllib.error
@@ -52,14 +53,28 @@ REPO = "open-withholding/open-withholding"
 
 
 OLE2_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+# Bump when content_sha256 changes how it hashes a kind of document; state
+# entries recorded under another scheme are re-baselined, not compared.
+HASH_SCHEME = "text-v1"
 
 
 def content_sha256(data: bytes) -> str:
-    """sha256 of the document as watched. Legacy Excel exports (PA DCED's
+    """sha256 of the document as watched. HTML pages hash by their visible
+    text — scripts, styles, comments and markup stripped — because nonces,
+    timestamps and menus change on every render while the figures do not
+    (the 2026-11-01 sweep re-extracted four Michigan pages that had not
+    changed). Legacy Excel exports (PA DCED's
     Act 32 register) embed a generation timestamp, so their bytes differ on
     every download while the cells do not; for an OLE2 workbook the hash is
     of the cell values instead (xlrd; falls back to bytes when xlrd is not
     installed)."""
+    head = data[:512].lstrip().lower()
+    if head.startswith((b"<!doctype html", b"<html")) or b"<html" in head:
+        text = re.sub(rb"<(script|style|noscript)[^>]*>.*?</\1>", b" ", data, flags=re.S | re.I)
+        text = re.sub(rb"<!--.*?-->", b" ", text, flags=re.S)
+        text = re.sub(rb"<[^>]+>", b" ", text)
+        text = re.sub(rb"\s+", b" ", text).strip()
+        return hashlib.sha256(text).hexdigest()
     if data[:8] == OLE2_MAGIC:
         try:
             import io
@@ -220,10 +235,16 @@ def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tupl
             continue
         entry = {"url": url, "sha256": result["sha256"], "etag": result.get("etag"),
                  "last_modified": result.get("last_modified"),
-                 "changed_at": old.get("changed_at")}
+                 "changed_at": old.get("changed_at"), "hash_scheme": HASH_SCHEME}
         if old.get("sha256") is None:
             events.append({"type": "baseline",
                            "detail": prefix + f"{url} sha256={result['sha256'][:12]}..."})
+        elif old.get("hash_scheme") != HASH_SCHEME and kind != "pdf":
+            # The stored hash was taken under an older scheme (raw bytes for
+            # HTML / workbooks); comparing it would report every such page as
+            # changed. Re-record under the current scheme, silently.
+            events.append({"type": "baseline",
+                           "detail": prefix + f"{url} rehashed under {HASH_SCHEME}"})
         elif result["sha256"] != old["sha256"]:
             changed_details.append(
                 prefix + f"{url}: {old['sha256'][:12]}... -> {result['sha256'][:12]}...")
@@ -320,6 +341,7 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
                        "detail": f"{url} returned non-PDF bytes (HTML error page?)"})
         return events, new
 
+    new["hash_scheme"] = HASH_SCHEME
     if state.get("sha256") is None:
         # First sighting: record a baseline silently — the data for already-
         # extracted sources came from these same bytes.
@@ -346,7 +368,14 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
     return events, new
 
 
+_OPENED_THIS_SWEEP: set[str] = set()
+
+
 def _github_issue(title: str, body: str, dry_run: bool) -> None:
+    if title in _OPENED_THIS_SWEEP:
+        print(f"  issue already opened this sweep, skipping: {title}")
+        return
+    _OPENED_THIS_SWEEP.add(title)
     if dry_run:
         print(f"  [dry-run] would open issue: {title}")
         return
@@ -361,6 +390,18 @@ def _github_issue(title: str, body: str, dry_run: bool) -> None:
     subprocess.run(["gh", "issue", "create", "-R", REPO, "--title", title, "--body", body],
                    check=True, capture_output=True, text=True)
     print(f"  opened issue: {title}")
+
+
+def _open_bot_pr(source_id: str, year: int) -> int | None:
+    """Number of the open PR on the Extract workflow's branch for this
+    source and year (data/<id>-<year>), or None."""
+    result = subprocess.run(
+        ["gh", "pr", "list", "-R", REPO, "--state", "open", "--head", f"data/{source_id}-{year}",
+         "--json", "number", "--jq", ".[0].number"],
+        capture_output=True, text=True,
+    )
+    out = result.stdout.strip()
+    return int(out) if result.returncode == 0 and out.isdigit() else None
 
 
 def _dispatch_extract(source: dict, year: int, dry_run: bool) -> bool:
@@ -378,6 +419,20 @@ def _dispatch_extract(source: dict, year: int, dry_run: bool) -> bool:
         args += ["-f", "no_examples_ok=true"]
     if dry_run:
         print(f"  [dry-run] would dispatch: {' '.join(args[3:])}")
+        return True
+    open_pr = _open_bot_pr(source["id"], year)
+    if open_pr:
+        print(f"  not dispatching {source['id']}: PR #{open_pr} is open on its branch")
+        _github_issue(
+            f"Watcher: {source['id']} changed while PR #{open_pr} is open",
+            f"**Source:** `{source['id']}` — {source['document']}\n\n"
+            f"The watched document changed, but PR #{open_pr} from the previous extraction is "
+            f"still open. Re-running the extraction would reset that branch and drop any "
+            f"maintainer goldens on it, so nothing was dispatched.\n\n"
+            f"Merge or close #{open_pr}, then run:\n\n```\n{' '.join(args)}\n```\n\n"
+            f"Opened automatically by the watcher (DESIGN §8.1).",
+            dry_run,
+        )
         return True
     result = subprocess.run(args, capture_output=True, text=True)
     if result.returncode == 0:
@@ -415,6 +470,7 @@ def main() -> int:
 
     summary: dict[str, int] = {}
     failures = 0
+    _OPENED_THIS_SWEEP.clear()
     for source in sources:
         entry = state.get(source["id"], {})
         source_fetcher = functools.partial(
