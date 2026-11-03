@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-NM
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: FYI-104, New Mexico Withholding Tax — supplemental wage rule (2026)
+  url: https://realfile.tax.newmexico.gov/FYI-104.pdf
+  retrieved: '2026-11-03'
+  sha256: 400f141e3cc28d352712cd0cb94f80d7c2dc1c40463fcdcf31561247b5889a82
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.059'
