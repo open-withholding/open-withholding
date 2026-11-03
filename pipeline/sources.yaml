@@ -2657,8 +2657,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2682,8 +2682,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2708,8 +2708,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2733,8 +2733,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2758,8 +2758,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2786,8 +2786,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2811,8 +2811,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2836,8 +2836,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2862,8 +2862,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2887,8 +2887,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2913,8 +2913,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2939,8 +2939,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2965,8 +2965,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -2990,8 +2990,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3015,8 +3015,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3041,8 +3041,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3066,8 +3066,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3091,8 +3091,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3117,8 +3117,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3143,8 +3143,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3169,8 +3169,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3194,8 +3194,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3225,8 +3225,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3250,8 +3250,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3276,8 +3276,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3302,8 +3302,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3327,8 +3327,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3354,8 +3354,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3380,8 +3380,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3406,8 +3406,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3432,8 +3432,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3458,8 +3458,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3484,8 +3484,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3510,8 +3510,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3536,8 +3536,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3568,8 +3568,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3600,8 +3600,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3640,8 +3640,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3666,8 +3666,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3691,8 +3691,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3717,8 +3717,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:
@@ -3742,8 +3742,8 @@
     combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
     wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
     the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
-    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
-    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    a cumulative threshold is printed. effective_from is January 1 of the expected year unless the document
+    states a later effective date for the supplemental rule. Transcribe any printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
     is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
     the regular percentage-method tables.
   maps_to:

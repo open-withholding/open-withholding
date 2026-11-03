@@ -47,7 +47,7 @@ def substitute_year(pattern: str, year: int) -> str:
     return pattern.replace("{year}", str(year)).replace("{yy}", f"{year % 100:02d}")
 
 
-def fetch(url: str, *, timeout: int = 120, insecure: bool = False) -> bytes:
+def fetch(url: str, *, timeout: int = 120, insecure: bool = False, _retries: int = 2) -> bytes:
     """`insecure` disables TLS verification for the handful of agencies that
     serve incomplete certificate chains (dor.ms.gov). The sha256 archive and
     human review still gate what the bytes are used for. A 403 on the
@@ -64,6 +64,14 @@ def fetch(url: str, *, timeout: int = 120, insecure: bool = False) -> bytes:
         with urllib.request.urlopen(request, timeout=timeout, context=context) as resp:
             return resp.read()
     except urllib.error.HTTPError as exc:
+        if exc.code in (429, 503) and _retries > 0:
+            # Rate limited / briefly unavailable (a batch of dispatches hits
+            # one agency host at once): wait as asked, or 30 s, and retry.
+            import time
+
+            wait = exc.headers.get("Retry-After") if exc.headers else None
+            time.sleep(min(int(wait), 120) if wait and str(wait).isdigit() else 30)
+            return fetch(url, timeout=timeout, insecure=insecure, _retries=_retries - 1)
         if exc.code != 403:
             raise
         request = urllib.request.Request(url, headers={"User-Agent": HONEST_UA})
