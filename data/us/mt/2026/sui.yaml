@@ -1,0 +1,27 @@
+schema_version: '0.1'
+jurisdiction: US-MT
+tax: state_unemployment_insurance
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Montana UID Rate Explanation (PDF) (2026)
+  url: https://uid.dli.mt.gov/_docs/contributions-bureau/Rate-Explanation.pdf
+  retrieved: '2026-10-30'
+  sha256: da35682033adef2ce3fd92e00abcc35b79566c30dc5457cc8d57bfd72d543167
+  notes: Extracted by pipeline; pages per PR body
+method: sui
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  wage_base: '47300'
+  new_employer_rate: null
+  rate_range:
+    min: '0.0000'
+    max: '0.0612'
+  new_employer_rate_construction: '0.0200'
+  surtaxes:
+  - name: Administrative Fund Tax (AFT)
+    rate: '0.0018'
+    wage_base: '47300'

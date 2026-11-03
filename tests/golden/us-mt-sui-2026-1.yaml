@@ -1,0 +1,14 @@
+source:
+  document: Montana UID Rate Explanation (PDF) (2026)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate_construction 0.0200
+    + Administrative Fund Tax (AFT) 0.0018, first paycheck (YTD 0; wage base 47300)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-MT
+    sui_experience_rate: '0.0200'
+expect:
+  sui_tax: '43.60'
