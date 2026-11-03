@@ -1,0 +1,20 @@
+schema_version: '0.1'
+jurisdiction: US-MI-MUSKEGON
+tax: local_income_withholding
+effective_from: '2025-01-01'
+effective_to: null
+source:
+  document: 2025 CF-M1040 Form and Instructions (1% / .5%; exemption value $600) (2025)
+  url: https://muskegon-mi.gov/cresources/2025-CF-M1040-Form-and-Instructions-PROOF-3.pdf-final.pdf
+  retrieved: '2026-10-30'
+  sha256: c33aa28f9dc5ba4a6f8b9bb21f8c4a72c1a51aa07802e61c9786a73d626d7e70
+  notes: Extracted by pipeline; pages per PR body
+method: city_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  resident_rate: '0.01'
+  nonresident_rate: '0.005'
+  exemption_amount: '600'
