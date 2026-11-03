@@ -1,0 +1,15 @@
+source:
+  document: Ionia City Income Tax page (1% / 1/2%; $700 per exemption)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, nonresident with 0 exemption(s) at 700 each, rate
+    0.005; annualize x26, deduct exemptions, tax, divide by 26'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  locals:
+  - jurisdiction: US-MI-IONIA
+    resident: false
+    allowances: 0
+expect:
+  local_withholding: '10.00'
