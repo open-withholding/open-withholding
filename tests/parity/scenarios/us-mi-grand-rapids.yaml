@@ -1,0 +1,104 @@
+- id: us-mi-grand-rapids-p01
+  tier: core
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: true
+      allowances: 2
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '29.31'
+- id: us-mi-grand-rapids-p02
+  tier: extended
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $900.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: true
+      allowances: 2
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '13.15'
+- id: us-mi-grand-rapids-p03
+  tier: extended
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: true
+      allowances: 2
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '167.70'
+- id: us-mi-grand-rapids-p04
+  tier: extended
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'semimonthly gross $4500.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: true
+      allowances: 2
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '66.75'
+- id: us-mi-grand-rapids-p05
+  tier: extended
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: true
+      allowances: 2
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '27.51'
+- id: us-mi-grand-rapids-p06
+  tier: extended
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $15000.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: true
+      allowances: 2
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '224.65'
+- id: us-mi-grand-rapids-p07
+  tier: core
+  jurisdiction: US-MI-GRAND-RAPIDS
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=False; allowances=0'
+  input:
+    locals:
+    - jurisdiction: US-MI-GRAND-RAPIDS
+      resident: false
+      allowances: 0
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '15.00'

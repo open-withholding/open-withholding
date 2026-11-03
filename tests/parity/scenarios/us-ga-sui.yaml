@@ -1,0 +1,28 @@
+- id: us-ga-sui-p01
+  tier: core
+  jurisdiction: US-GA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0270
+  input:
+    employer:
+      sui_jurisdiction: US-GA
+      sui_experience_rate: '0.0270'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '55.60'
+- id: us-ga-sui-p02
+  tier: core
+  jurisdiction: US-GA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $8500 | employer rate 0.0270
+  input:
+    employer:
+      sui_jurisdiction: US-GA
+      sui_experience_rate: '0.0270'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '8500'
+  ours: '27.80'

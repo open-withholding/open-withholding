@@ -102,12 +102,26 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-ct-p01 | biweekly gross $2000.00 | filing_status=a | 80.47 |  |
 | us-ct-p07 | biweekly gross $2000.00 | filing_status=b | 59.37 |  |
 
+### US-CT — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ct-sui-p01 | biweekly gross $2000.00 | employer rate 0.019 | 38.00 |  |
+| us-ct-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $26000 | employer rate 0.019 | 19.00 |  |
+
 ### US-DE — state disability insurance
 
 | id | scenario | ours | expected |
 |---|---|---|---|
 | us-de-sdi-p01 | biweekly gross $2000.00 | 8.00 |  |
 | us-de-sdi-p02 | biweekly gross $2000.00 | YTD sdi_wages $183500 | 4.00 |  |
+
+### US-DE — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-de-sui-p01 | biweekly gross $2000.00 | employer rate 0.010 | 20.00 |  |
+| us-de-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $13500.00 | employer rate 0.010 | 10.00 |  |
 
 ### US-FL — state unemployment insurance
 
@@ -124,6 +138,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-ga-p01 | biweekly gross $2000.00 | filing_status=married_joint; allowances=1 | 32.63 |  |
 | us-ga-p07 | biweekly gross $2000.00 | filing_status=head_of_household; allowances=2 | 51.82 |  |
 
+### US-GA — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ga-sui-p01 | biweekly gross $2000.00 | employer rate 0.0270 | 55.60 |  |
+| us-ga-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $8500 | employer rate 0.0270 | 27.80 |  |
+
 ### US-HI — state disability insurance
 
 | id | scenario | ours | expected |
@@ -137,6 +158,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-hi-p01 | biweekly gross $2000.00 | filing_status=single; allowances=3; secondary_allowances=1 | 87.18 |  |
 | us-hi-p07 | biweekly gross $2000.00 | filing_status=single; allowances=1 | 106.00 |  |
 
+### US-HI — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-hi-sui-p01 | biweekly gross $2000.00 | employer rate 0.0240 | 48.20 |  |
+| us-hi-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $63500 | employer rate 0.0240 | 24.10 |  |
+
 ### US-IA — state income withholding
 
 | id | scenario | ours | expected |
@@ -144,12 +172,26 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-ia-p01 | biweekly gross $2000.00 | filing_status=other_married_spouse_earns; elected_annual_amount=40 | 55.46 |  |
 | us-ia-p07 | biweekly gross $2000.00 | filing_status=married_pre2024; allowances=2 | 34.92 |  |
 
+### US-IA — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ia-sui-p01 | biweekly gross $2000.00 | employer rate 0.0100 | 20.00 |  |
+| us-ia-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $19400 | employer rate 0.0100 | 10.00 |  |
+
 ### US-ID — state income withholding
 
 | id | scenario | ours | expected |
 |---|---|---|---|
 | us-id-p01 | biweekly gross $2000.00 | filing_status=single; allowances=4 | 44.00 |  |
 | us-id-p07 | biweekly gross $2000.00 | filing_status=married; allowances=4 | 13.00 |  |
+
+### US-ID — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-id-sui-p01 | biweekly gross $2000.00 | employer rate 0.01000 | 20.00 |  |
+| us-id-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $57300 | employer rate 0.01000 | 10.00 |  |
 
 ### US-IL — state income withholding
 
@@ -177,6 +219,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 | id | scenario | ours | expected |
 |---|---|---|---|
 | us-ky-p01 | biweekly gross $2000.00 | 65.48 |  |
+
+### US-KY — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ky-sui-p01 | biweekly gross $2000.00 | employer rate 0.027 | 54.00 |  |
+| us-ky-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $11000 | employer rate 0.027 | 27.00 |  |
 
 ### US-LA — state income withholding
 
@@ -214,12 +263,26 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-md-p01 | biweekly gross $2000.00 | filing_status=married_joint; allowances=1; rate_schedule=0.0320 | 138.82 |  |
 | us-md-p07 | biweekly gross $2000.00 | filing_status=married_joint; rate_schedule=0.0275 | 140.19 |  |
 
+### US-MD — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-md-sui-p01 | biweekly gross $2000.00 | employer rate 0.0260 | 52.00 |  |
+| us-md-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $7500 | employer rate 0.0260 | 26.00 |  |
+
 ### US-ME — state income withholding
 
 | id | scenario | ours | expected |
 |---|---|---|---|
 | us-me-p01 | biweekly gross $2000.00 | filing_status=single; allowances=2 | 65.00 |  |
 | us-me-p07 | biweekly gross $2000.00 | filing_status=married; allowances=2 | 30.00 |  |
+
+### US-ME — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-me-sui-p01 | biweekly gross $2000.00 | employer rate 0.0100 | 20.00 |  |
+| us-me-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $11000 | employer rate 0.0100 | 10.00 |  |
 
 ### US-MI — state income withholding
 
@@ -235,6 +298,40 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-mi-sui-p01 | biweekly gross $2000.00 | employer rate 0.027 | 54.00 |  |
 | us-mi-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $8000 | employer rate 0.027 | 27.00 |  |
 | us-mi-sui-p03 | biweekly gross $2000.00 | employer rate 0.0006 | 1.20 |  |
+
+### US-MI-ALBION — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-albion-p01 | biweekly gross $2000.00 | local: resident=True; allowances=2 | 19.54 |  |
+| us-mi-albion-p07 | biweekly gross $2000.00 | local: resident=False; allowances=0 | 10.00 |  |
+
+### US-MI-BENTON-HARBOR — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-benton-harbor-p01 | biweekly gross $2000.00 | local: resident=True; allowances=2 | 19.42 |  |
+| us-mi-benton-harbor-p07 | biweekly gross $2000.00 | local: resident=False; allowances=0 | 10.00 |  |
+
+### US-MI-DETROIT — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-detroit-p01 | biweekly gross $2000.00 | local: resident=True; allowances=3 | state cert: filing_status=resident | 46.34 |  |
+
+### US-MI-EAST-LANSING — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-east-lansing-p01 | biweekly gross $2000.00 | local: resident=True; allowances=2 | 19.54 |  |
+| us-mi-east-lansing-p07 | biweekly gross $2000.00 | local: resident=False; allowances=0 | 10.00 |  |
+
+### US-MI-GRAND-RAPIDS — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-grand-rapids-p01 | biweekly gross $2000.00 | local: resident=True; allowances=2 | 29.31 |  |
+| us-mi-grand-rapids-p07 | biweekly gross $2000.00 | local: resident=False; allowances=0 | 15.00 |  |
 
 ### US-MN — state income withholding
 
@@ -258,6 +355,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-mo-p01 | biweekly gross $2000.00 | filing_status=married_spouse_works | 58.00 |  |
 | us-mo-p07 | biweekly gross $2000.00 | filing_status=single | 58.00 |  |
 
+### US-MO — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mo-sui-p01 | biweekly gross $2000.00 | employer rate 0.02376 | 47.52 |  |
+| us-mo-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $8000 | employer rate 0.02376 | 23.76 |  |
+
 ### US-MS — state income withholding
 
 | id | scenario | ours | expected |
@@ -271,6 +375,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 |---|---|---|---|
 | us-mt-p01 | biweekly gross $2000.00 | filing_status=single | 65.00 |  |
 | us-mt-p07 | biweekly gross $2000.00 | filing_status=married_jointly | 36.00 |  |
+
+### US-MT — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mt-sui-p01 | biweekly gross $2000.00 | employer rate 0.0200 | 43.60 |  |
+| us-mt-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $46300 | employer rate 0.0200 | 21.80 |  |
 
 ### US-NC — state income withholding
 
@@ -293,12 +404,26 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-nd-p01 | biweekly gross $2000.00 | filing_status=single | 0.00 |  |
 | us-nd-p07 | biweekly gross $2000.00 | filing_status=married_joint | 0.00 |  |
 
+### US-ND — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-nd-sui-p01 | biweekly gross $2000.00 | employer rate 0.0100 | 20.00 |  |
+| us-nd-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $45600 | employer rate 0.0100 | 10.00 |  |
+
 ### US-NE — state income withholding
 
 | id | scenario | ours | expected |
 |---|---|---|---|
 | us-ne-p01 | biweekly gross $2000.00 | filing_status=single; allowances=1 | 67.92 |  |
 | us-ne-p07 | biweekly gross $2000.00 | filing_status=married; allowances=2; additional_withholding=10.00 | 62.04 |  |
+
+### US-NE — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ne-sui-p01 | biweekly gross $2000.00 | employer rate 0.0125 | 25.00 |  |
+| us-ne-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $8000 | employer rate 0.0125 | 12.50 |  |
 
 ### US-NJ — state disability insurance
 
@@ -405,6 +530,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-or-p01 | biweekly gross $2000.00 | filing_status=single | 123.00 |  |
 | us-or-p07 | biweekly gross $2000.00 | filing_status=single | 146.00 |  |
 
+### US-OR — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-or-sui-p01 | biweekly gross $2000.00 | employer rate 0.024 | 48.00 |  |
+| us-or-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $55700 | employer rate 0.024 | 24.00 |  |
+
 ### US-PA — state unemployment insurance
 
 | id | scenario | ours | expected |
@@ -446,12 +578,26 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-ri-p01 | biweekly gross $2000.00 | filing_status=all; allowances=1 | 73.56 |  |
 | us-ri-p07 | biweekly gross $2000.00 | allowances=10 | 60.58 |  |
 
+### US-RI — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ri-sui-p01 | biweekly gross $2000.00 | employer rate 0.0100 | 24.20 |  |
+| us-ri-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $29800 | employer rate 0.0100 | 12.10 |  |
+
 ### US-SC — state income withholding
 
 | id | scenario | ours | expected |
 |---|---|---|---|
 | us-sc-p01 | biweekly gross $2000.00 | filing_status=all; allowances=3 | 48.15 |  |
 | us-sc-p07 | biweekly gross $2000.00 | 94.77 |  |
+
+### US-SD — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-sd-sui-p01 | biweekly gross $2000.00 | employer rate 0.0120 | 25.60 |  |
+| us-sd-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $14000 | employer rate 0.0120 | 12.80 |  |
 
 ### US-TX — state unemployment insurance
 
@@ -468,6 +614,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-ut-p01 | biweekly gross $2000.00 | filing_status=single | 89.00 |  |
 | us-ut-p07 | biweekly gross $2000.00 | filing_status=married | 69.00 |  |
 
+### US-UT — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-ut-sui-p01 | biweekly gross $2000.00 | employer rate 0.0100 | 20.00 |  |
+| us-ut-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $49700 | employer rate 0.0100 | 10.00 |  |
+
 ### US-VA — state unemployment insurance
 
 | id | scenario | ours | expected |
@@ -482,6 +635,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 |---|---|---|---|
 | us-vt-p01 | biweekly gross $2000.00 | filing_status=married; allowances=2 | 37.91 |  |
 | us-vt-p07 | biweekly gross $2000.00 | filing_status=single; allowances=1 | 54.98 |  |
+
+### US-VT — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-vt-sui-p01 | biweekly gross $2000.00 | employer rate 0.01 | 20.00 |  |
+| us-vt-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $14400 | employer rate 0.01 | 10.00 |  |
 
 ### US-WA — state disability insurance
 
@@ -512,6 +672,13 @@ Type each scenario into the external calculator and record its answer in `tests/
 |---|---|---|---|
 | us-wv-p01 | biweekly gross $2000.00 | filing_status=married_both_working_two_jobs; allowances=1 | 65.07 |  |
 | us-wv-p07 | biweekly gross $2000.00 | filing_status=single_hoh_married_one_income; allowances=2 | 55.54 |  |
+
+### US-WY — state unemployment insurance
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-wy-sui-p01 | biweekly gross $2000.00 | employer rate 0.0100 | 20.00 |  |
+| us-wy-sui-p02 | biweekly gross $2000.00 | YTD sui_wages $32800 | employer rate 0.0100 | 10.00 |  |
 
 ## Extended scenarios
 
@@ -704,6 +871,56 @@ Type each scenario into the external calculator and record its answer in `tests/
 | us-mi-p04 | semimonthly gross $4500.00 | allowances=2 | 170.35 |  |
 | us-mi-p05 | biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | allowances=2 | 60.61 |  |
 | us-mi-p06 | weekly gross $15000.00 | allowances=2 | 627.86 |  |
+
+### US-MI-ALBION — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-albion-p02 | weekly gross $900.00 | local: resident=True; allowances=2 | 8.77 |  |
+| us-mi-albion-p03 | monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=2 | 111.80 |  |
+| us-mi-albion-p04 | semimonthly gross $4500.00 | local: resident=True; allowances=2 | 44.50 |  |
+| us-mi-albion-p05 | biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=2 | 18.34 |  |
+| us-mi-albion-p06 | weekly gross $15000.00 | local: resident=True; allowances=2 | 149.77 |  |
+
+### US-MI-BENTON-HARBOR — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-benton-harbor-p02 | weekly gross $900.00 | local: resident=True; allowances=2 | 8.71 |  |
+| us-mi-benton-harbor-p03 | monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=2 | 111.55 |  |
+| us-mi-benton-harbor-p04 | semimonthly gross $4500.00 | local: resident=True; allowances=2 | 44.38 |  |
+| us-mi-benton-harbor-p05 | biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=2 | 18.22 |  |
+| us-mi-benton-harbor-p06 | weekly gross $15000.00 | local: resident=True; allowances=2 | 149.71 |  |
+
+### US-MI-DETROIT — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-detroit-p02 | weekly gross $900.00 | local: resident=True; allowances=3 | state cert: filing_status=resident | 20.77 |  |
+| us-mi-detroit-p03 | monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=3 | state cert: filing_status=resident | 267.12 |  |
+| us-mi-detroit-p04 | semimonthly gross $4500.00 | local: resident=True; allowances=3 | state cert: filing_status=resident | 106.20 |  |
+| us-mi-detroit-p05 | biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=3 | state cert: filing_status=resident | 43.46 |  |
+| us-mi-detroit-p06 | weekly gross $15000.00 | local: resident=True; allowances=3 | state cert: filing_status=resident | 359.17 |  |
+
+### US-MI-EAST-LANSING — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-east-lansing-p02 | weekly gross $900.00 | local: resident=True; allowances=2 | 8.77 |  |
+| us-mi-east-lansing-p03 | monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=2 | 111.80 |  |
+| us-mi-east-lansing-p04 | semimonthly gross $4500.00 | local: resident=True; allowances=2 | 44.50 |  |
+| us-mi-east-lansing-p05 | biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=2 | 18.34 |  |
+| us-mi-east-lansing-p06 | weekly gross $15000.00 | local: resident=True; allowances=2 | 149.77 |  |
+
+### US-MI-GRAND-RAPIDS — local income withholding
+
+| id | scenario | ours | expected |
+|---|---|---|---|
+| us-mi-grand-rapids-p02 | weekly gross $900.00 | local: resident=True; allowances=2 | 13.15 |  |
+| us-mi-grand-rapids-p03 | monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=2 | 167.70 |  |
+| us-mi-grand-rapids-p04 | semimonthly gross $4500.00 | local: resident=True; allowances=2 | 66.75 |  |
+| us-mi-grand-rapids-p05 | biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=2 | 27.51 |  |
+| us-mi-grand-rapids-p06 | weekly gross $15000.00 | local: resident=True; allowances=2 | 224.65 |  |
 
 ### US-MN — state income withholding
 
