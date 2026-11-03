@@ -1,0 +1,17 @@
+source:
+  document: North Dakota Income Tax Withholding Rates & Instructions — supplemental wage rule (2026)
+  page: 57
+  example: 'Example 1 (Option 1 flat-rate supplemental method): bonus of $1,000 paid separately; amount
+    to withhold = $1,000 x 1.50% = $15.00.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '1000'
+  wage_type: supplemental
+  state:
+  - jurisdiction: US-ND
+    filing_status: single
+    allowances: 1
+expect:
+  supplemental_withholding:
+    US-ND: '15.00'
