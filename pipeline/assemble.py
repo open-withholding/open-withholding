@@ -697,9 +697,9 @@ def assemble_golden_case(
         expect_key = "sui_tax"  # employer liability; jurisdiction from input.employer
     elif tax == "supplemental_wage_withholding":
         record["wage_type"] = "supplemental"
-        if example.get("concurrent_regular_wages") is not None:
+        if example.get("concurrent_regular_wages") not in (None, "0", "0.00"):
             record["concurrent_regular_wages"] = example["concurrent_regular_wages"]
-        if example.get("ytd_supplemental_wages") is not None:
+        if example.get("ytd_supplemental_wages") not in (None, "0", "0.00"):
             record["ytd"] = {"supplemental_wages": example["ytd_supplemental_wages"]}
         if jurisdiction == "US":
             record["federal"] = {"w4_version": 2020, "filing_status": snake(example["filing_status"]) if example.get("filing_status") and example["filing_status"] != "n/a" else "single"}
