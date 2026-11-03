@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-ND
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: North Dakota Income Tax Withholding Rates & Instructions — supplemental wage rule (2026)
+  url: https://www.tax.nd.gov/sites/www/files/documents/forms/individual/2026-iit/2026-income-tax-withholding-rates-booklet.pdf
+  retrieved: '2026-11-03'
+  sha256: b265477a04e5932a79efc5bbc1be6db812febbe018a4f8b7018b7a72553f0415
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0150'
