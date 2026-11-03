@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-OR
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: 150-206-436, Oregon Withholding Tax Formulas — supplemental wage rule (2026)
+  url: https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_2026.pdf
+  retrieved: '2026-11-03'
+  sha256: 5beea1190b4072da8fb027d211665a4899ffd43d4488ab9e910bde57261ed37d
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.08'
