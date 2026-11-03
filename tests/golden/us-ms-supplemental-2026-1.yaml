@@ -1,0 +1,21 @@
+source:
+  document: "Pub 89-700, Mississippi Withholding Income Tax Tables and Employer Instructions \u2014 supplemental\
+    \ wage rule (2026)"
+  page: 1
+  example: 'maintainer-approved engine-computed pin: $5,000 biweekly bonus combined with $2,000 regular
+    wages under the regular method, minus the regular withholding on $2,000 (aggregate method; the document
+    publishes no flat rate and no example)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '5000.00'
+  wage_type: supplemental
+  state:
+  - jurisdiction: US-MS
+    filing_status: single
+    elected_annual_amount: '6000.00'
+    additional_withholding: '0'
+  concurrent_regular_wages: '2000.00'
+expect:
+  supplemental_withholding:
+    US-MS: '200.00'
