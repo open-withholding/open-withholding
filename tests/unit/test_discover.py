@@ -114,3 +114,27 @@ def test_extract_links_percent_encodes_spaces_in_hrefs():
     from pipeline.discover import extract_links
     links = extract_links('<a href="/labor/ea/assets/PDFs/FY20262027 TABLE C.pdf">Table C</a>', "https://www.nj.gov/x/")
     assert links == [("https://www.nj.gov/labor/ea/assets/PDFs/FY20262027%20TABLE%20C.pdf", "Table C")]
+
+
+def test_fetch_backs_off_on_429_then_succeeds(monkeypatch):
+    """A batch of dispatches hits one agency host at once; a 429 is retried
+    after the Retry-After (capped) instead of failing the run."""
+    import io
+    import urllib.error
+    from pipeline import discover
+    calls = []
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    def fake_urlopen(request, timeout=None, context=None):
+        calls.append(request.full_url)
+        if len(calls) == 1:
+            raise urllib.error.HTTPError(request.full_url, 429, "Too Many Requests", {"Retry-After": "1"}, None)
+        return Resp(b"%PDF-ok")
+
+    monkeypatch.setattr(discover.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(discover, "time", __import__("time"), raising=False)
+    assert discover.fetch("https://x.gov/a.pdf") == b"%PDF-ok"
+    assert len(calls) == 2

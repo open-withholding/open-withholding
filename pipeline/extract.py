@@ -757,6 +757,7 @@ def main() -> int:
             "params": extraction["params"],
         })
     else:
+      try:
         param_dict = assemble.assemble_parameter_file(
             jurisdiction=jurisdiction,
             tax=tax,
@@ -773,7 +774,18 @@ def main() -> int:
             ),
             supersedes=str(prev_path.relative_to(REPO_ROOT)) if prev_path else None,
         )
-        candidate_yaml = dump_yaml(param_dict)
+      except ValueError as exc:
+        # The transcription contradicts itself (a supplemental source that
+        # states neither a flat rate nor the aggregate rule): the extractor's
+        # own notes say what the document contains — that is the triage.
+        (OUT_DIR / f"{args.source_id}-{args.year}-triage.md").write_text(
+            f"# Triage: {args.source_id} {args.year}\n\n**Failure:** {exc}\n\n"
+            f"## Extractor notes\n\n{extraction.get('notes', '').strip() or '(none)'}\n\n"
+            f"## Extraction\n\n```json\n{json.dumps(extraction, indent=2)}\n```\n"
+        )
+        print(f"      FAILED — {exc}")
+        return 1
+      candidate_yaml = dump_yaml(param_dict)
 
     print(f"[3/5] independent verification pass (separate context) ...")
     verification = call_model(
