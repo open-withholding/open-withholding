@@ -1,0 +1,15 @@
+source:
+  document: Publication 15 (Circular E), Employer's Tax Guide — supplemental wages (section 7) (2026)
+  page: 24
+  example: 'Example 3: flat rate method on Sharon Warren''s $1,000 bonus — withhold 22% of $1,000 = $220.'
+as_of: '2026-06-15'
+input:
+  pay_frequency: monthly
+  gross_wages: '1000'
+  wage_type: supplemental
+  federal:
+    w4_version: 2020
+    filing_status: single
+expect:
+  supplemental_withholding:
+    US: '220'
