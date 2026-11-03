@@ -1,0 +1,19 @@
+schema_version: '0.1'
+jurisdiction: US-MN
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Minnesota Income Tax Withholding Instruction Booklet and Tax Tables — supplemental wage rule
+    (2026)
+  url: https://www.revenue.state.mn.us/sites/default/files/2025-12/wh-inst-26.pdf
+  retrieved: '2026-11-03'
+  sha256: 47c22acd256bcb85fe6fd49a8012835acc5e97b1ebaec99362e6a154e1795da9
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0625'
