@@ -294,6 +294,29 @@ the whole year — the register prints current rates only. An in-year
 re-import (the watcher sees the spreadsheet change) replaces both files in
 place with a PR whose body lists every changed row.
 
+### 3.7 Supplemental wages
+
+Bonuses, commissions, severance and other supplemental wages are withheld
+under a rule published separately from the regular percentage method, so
+each jurisdiction has a supplemental file:
+
+```
+data/us/federal/2026/supplemental.yaml   tax: supplemental_wage_withholding
+data/us/co/2026/supplemental.yaml
+```
+
+Two methods (`methods/supplemental.md`): `supplemental_flat_rate` — the
+published flat rate (`rate`), plus for federal the mandatory `excess_rate`
+above `excess_threshold` of cumulative supplemental wages — and
+`supplemental_aggregate`, for jurisdictions whose only rule is to combine
+the payment with regular wages and withhold under the regular method. The
+registry extracts both under the method name `supplemental`; the document
+decides which applies and the assembler names the concrete method. The
+employee input carries `wage_type: supplemental` (gross_wages is then the
+payment), `concurrent_regular_wages` for the aggregate method and
+`ytd.supplemental_wages` for the federal tier. Goldens expect
+`supplemental_withholding: {US: "440.00"}`.
+
 ---
 
 ## 4. Method registry
@@ -317,6 +340,7 @@ Expected Tier 1 registry (~10 methods covers ~45 jurisdictions):
 | `wage_bracket_lookup` | optional alternative where a state only prints tables |
 | `custom/us_ct`, `custom/us_ar`, `custom/us_ms`, `custom/us_pr` | escape hatch |
 | `resident_nonresident_flat_rate` | PA Act 32 PSDs (register-expanded, §3.6): resident vs nonresident flat rate |
+| `supplemental_flat_rate`, `supplemental_aggregate` | bonuses / commissions (§3.7): every jurisdiction's supplemental file |
 
 **Escape-hatch discipline:** if the `custom/` list grows past ~10, the
 method decomposition is wrong — stop and refactor rather than adding an

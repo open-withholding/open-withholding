@@ -31,6 +31,7 @@ _WITHHOLDING_TAXES = (
     "state_unemployment_insurance",
     "state_disability_insurance",
     "state_unemployment_insurance_employee",
+    "supplemental_wage_withholding",
 )
 
 
@@ -104,6 +105,10 @@ def _expected_pairs(case: GoldenCase, employee: EmployeeInput, key: str, expecte
         if not isinstance(expected, dict):
             raise DataError(f"{case.path}: sui_employee_withholding must be a jurisdiction-keyed mapping")
         return [(jur, "state_unemployment_insurance_employee", amount) for jur, amount in expected.items()]
+    if key == "supplemental_withholding":
+        if not isinstance(expected, dict):
+            raise DataError(f"{case.path}: supplemental_withholding must be a jurisdiction-keyed mapping")
+        return [(jur, "supplemental_wage_withholding", amount) for jur, amount in expected.items()]
     if key == "sdi_withholding":
         # No election names the state, so the expectation is always a
         # jurisdiction-keyed mapping: {US-CA: "26.00"}.
@@ -140,6 +145,14 @@ def run_golden_case(
     results = []
     for key, expected in case.expect.items():
         for jurisdiction, tax, amount in _expected_pairs(case, employee, key, expected):
+            if tax == "supplemental_wage_withholding":
+                from engine.pipeline import compute_supplemental_withholding
+                results.append(GoldenResult(
+                    expect_key=key, jurisdiction=jurisdiction,
+                    expected=D(amount, context=f"{case.path}: expect.{key}"),
+                    actual=compute_supplemental_withholding(files, employee, taxability, case.as_of, jurisdiction),
+                ))
+                continue
             param_file = select_effective(files, case.as_of, jurisdiction=jurisdiction, tax=tax)
             if tax in ("futa", "state_unemployment_insurance"):
                 actual = compute_employer_tax(param_file, employee, taxability)

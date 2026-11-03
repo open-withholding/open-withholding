@@ -190,6 +190,10 @@ class EmployeeInput:
     period_federal_income_withholding: Decimal | None = None
     period_fica_withholding: Decimal | None = None
     employer: EmployerContext | None = None
+    # Supplemental pay (methods/supplemental.md): gross_wages is then the
+    # supplemental payment; concurrent_regular_wages feeds the aggregate method.
+    wage_type: str = "regular"
+    concurrent_regular_wages: Decimal = Decimal("0")
 
     @property
     def pay_periods_per_year(self) -> int:
@@ -223,8 +227,13 @@ class EmployeeInput:
         if raw.get("period_fica_withholding") is not None:
             pfica = _money(raw, "period_fica_withholding", None, context="input")
         employer = raw.get("employer")
+        wage_type = raw.get("wage_type", "regular")
+        if wage_type not in ("regular", "supplemental"):
+            raise InputError(f"wage_type {wage_type!r} not one of ['regular', 'supplemental']")
         return cls(
             pay_frequency=frequency,
+            wage_type=wage_type,
+            concurrent_regular_wages=_money(raw, "concurrent_regular_wages", "0", context="input"),
             gross_wages=_money(raw, "gross_wages", None, context="input"),
             period_federal_income_withholding=pfw,
             period_fica_withholding=pfica,

@@ -21,6 +21,7 @@ WITHHOLDING_TAXES = (
     "state_unemployment_insurance",
     "state_disability_insurance",
     "state_unemployment_insurance_employee",
+    "supplemental_wage_withholding",
 )
 
 
@@ -31,7 +32,8 @@ def data_path(
     filename = {"fica": "fica.yaml", "futa": "futa.yaml",
                 "state_unemployment_insurance": "sui.yaml",
                 "state_disability_insurance": "sdi.yaml",
-                "state_unemployment_insurance_employee": "sui-employee.yaml"}.get(tax, "withholding.yaml")
+                "state_unemployment_insurance_employee": "sui-employee.yaml",
+                "supplemental_wage_withholding": "supplemental.yaml"}.get(tax, "withholding.yaml")
     parts = jurisdiction.split("-")
     if jurisdiction == "US":
         return PurePosixPath(f"data/us/federal/{year}/{filename}")
@@ -49,7 +51,8 @@ def golden_slug(jurisdiction: str, tax: str = "state_income_withholding") -> str
     suffix = {"fica": "-fica", "futa": "-futa",
               "state_unemployment_insurance": "-sui",
               "state_disability_insurance": "-sdi",
-              "state_unemployment_insurance_employee": "-sui-employee"}.get(tax, "")
+              "state_unemployment_insurance_employee": "-sui-employee",
+              "supplemental_wage_withholding": "-supplemental"}.get(tax, "")
     return base + suffix
 
 
@@ -114,7 +117,31 @@ def _sdi_wage_base(value):
     return amount
 
 
+def supplemental_method(params: dict) -> str:
+    """Registry method `supplemental` -> the concrete method the document
+    supports: a printed flat rate -> supplemental_flat_rate; 'add to regular
+    wages' with no rate -> supplemental_aggregate. A transcription that says
+    neither (no rate, not aggregate-only) is a contradiction the assembler
+    refuses rather than guesses."""
+    if params.get("flat_rate") is not None:
+        return "supplemental_flat_rate"
+    if params.get("aggregate_only"):
+        return "supplemental_aggregate"
+    raise ValueError("supplemental: no flat rate transcribed and aggregate_only is false — "
+                     "the document must state one rule or the other")
+
+
 def _transform_params(method: str, params: dict) -> dict:
+    if method == "supplemental":
+        if supplemental_method(params) == "supplemental_aggregate":
+            return {}
+        out = {"rate": params["flat_rate"]}
+        if params.get("excess_rate") is not None or params.get("excess_threshold") is not None:
+            if params.get("excess_rate") is None or params.get("excess_threshold") is None:
+                raise ValueError("supplemental: excess_rate and excess_threshold must both be given")
+            out["excess_rate"] = params["excess_rate"]
+            out["excess_threshold"] = params["excess_threshold"]
+        return out
     if method == "flat_rate":
         return {"rate": params["rate"]}
     if method == "flat_rate_with_annual_allowance":
@@ -448,6 +475,9 @@ def assemble_parameter_file(
         rounding.pop("intermediate_to", None)
     if method.startswith("custom/"):
         method_field = {"method": "custom", "custom_implementation": method}
+    elif method == "supplemental":
+        # The document decides which published rule applies (methods/supplemental.md).
+        method_field = {"method": supplemental_method(extraction["params"])}
     else:
         method_field = {"method": method}
     provenance = (
@@ -665,6 +695,23 @@ def assemble_golden_case(
         expect_key = "futa_tax"  # employer liability
     elif tax == "state_unemployment_insurance":
         expect_key = "sui_tax"  # employer liability; jurisdiction from input.employer
+    elif tax == "supplemental_wage_withholding":
+        record["wage_type"] = "supplemental"
+        if example.get("concurrent_regular_wages") is not None:
+            record["concurrent_regular_wages"] = example["concurrent_regular_wages"]
+        if example.get("ytd_supplemental_wages") is not None:
+            record["ytd"] = {"supplemental_wages": example["ytd_supplemental_wages"]}
+        if jurisdiction == "US":
+            record["federal"] = {"w4_version": 2020, "filing_status": snake(example["filing_status"]) if example.get("filing_status") and example["filing_status"] != "n/a" else "single"}
+        elif example.get("filing_status") and example["filing_status"] != "n/a":
+            record["state"] = [{"jurisdiction": jurisdiction, "filing_status": snake(example["filing_status"]),
+                                "allowances": example.get("allowances") or 0}]
+        return {
+            "source": {"document": document, "page": example["page"], "example": example["description"]},
+            "as_of": as_of,
+            "input": record,
+            "expect": {"supplemental_withholding": {jurisdiction: example["expected_withholding"]}},
+        }
     elif tax in ("state_disability_insurance", "state_unemployment_insurance_employee"):
         # No election names the state: the expectation is jurisdiction-keyed.
         key = "sdi_withholding" if tax == "state_disability_insurance" else "sui_employee_withholding"
