@@ -1,0 +1,22 @@
+schema_version: '0.2'
+jurisdiction: US-ID
+tax: supplemental_wage_withholding
+effective_from: '2026-07-23'
+effective_to: null
+sources:
+- document: EPB00744, Idaho Table for Percentage Computation Method of Withholding
+  url: https://tax.idaho.gov/document-mngr/pubs_EPB00744
+  retrieved: '2026-11-03'
+  sha256: c52b383684af433b12eb3b712fbb0de6b61326b5061562440b43464b332cb3d8
+  notes: Extracted by pipeline; pages per PR body
+- document: Computing withholding page with Idaho Child Tax Credit Allowance Table (ICTCAT)
+  url: https://tax.idaho.gov/taxes/income-tax/withholding/computing/
+  retrieved: '2026-11-03'
+  sha256: 5d731018ce02df3a9fef71e0e1b35adba121de1203397784f8b148678d34ebf5
+method: supplemental_flat_rate
+rounding:
+  to: '1.00'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.053'
