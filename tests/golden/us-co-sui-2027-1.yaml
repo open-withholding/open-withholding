@@ -1,0 +1,14 @@
+source:
+  document: CDLE Premium Rates page (HTML)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.0170, first paycheck
+    (YTD 0; wage base 32100)'
+as_of: '2027-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-CO
+    sui_experience_rate: '0.0170'
+expect:
+  sui_tax: '34.00'
