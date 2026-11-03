@@ -32,7 +32,8 @@
         "futa",
         "state_unemployment_insurance",
         "state_disability_insurance",
-        "state_unemployment_insurance_employee"
+        "state_unemployment_insurance_employee",
+        "supplemental_wage_withholding"
       ]
     },
     "effective_from": {
@@ -115,6 +116,8 @@
         "sui",
         "sdi",
         "resident_nonresident_flat_rate",
+        "supplemental_aggregate",
+        "supplemental_flat_rate",
         "wage_bracket_lookup",
         "custom"
       ]
@@ -239,6 +242,70 @@
                 "$ref": "#/$defs/rate"
               }
             }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "supplemental_flat_rate"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "required": [
+              "rate"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "excess_rate": {
+                "$ref": "#/$defs/rate"
+              },
+              "excess_threshold": {
+                "$ref": "#/$defs/money",
+                "description": "Cumulative calendar-year supplemental wages above which excess_rate applies (federal: 1000000)"
+              }
+            },
+            "dependentRequired": {
+              "excess_rate": [
+                "excess_threshold"
+              ],
+              "excess_threshold": [
+                "excess_rate"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "method": {
+            "const": "supplemental_aggregate"
+          }
+        },
+        "required": [
+          "method"
+        ]
+      },
+      "then": {
+        "properties": {
+          "params": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {}
           }
         }
       }

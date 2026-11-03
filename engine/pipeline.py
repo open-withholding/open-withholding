@@ -66,6 +66,9 @@ def compute_withholding(
 ) -> Decimal:
     if param_file.tax in ("state_disability_insurance", "state_unemployment_insurance_employee"):
         wage_base = param_file.params.get("wage_definition", "fica")
+    elif param_file.tax == "supplemental_wage_withholding":
+        # Supplemental pay follows the jurisdiction's income column.
+        wage_base = "federal_income" if param_file.jurisdiction == "US" else "state_income"
     else:
         wage_base = _WAGE_BASE_BY_TAX.get(param_file.tax)
     if wage_base is None:
@@ -164,6 +167,38 @@ def compute_withholding(
 
 
 _EMPLOYER_TAXES = ("futa", "state_unemployment_insurance")
+
+
+def compute_supplemental_withholding(
+    files: list[ParameterFile],
+    employee: EmployeeInput,
+    taxability: TaxabilityMatrix,
+    as_of,
+    jurisdiction: str,
+) -> Decimal:
+    """Withholding on a supplemental payment (methods/supplemental.md).
+    `employee.gross_wages` is the supplemental amount. A flat-rate file
+    computes alone; an aggregate file runs the jurisdiction's REGULAR file on
+    concurrent_regular_wages + the payment and subtracts the regular
+    withholding on concurrent_regular_wages alone."""
+    import dataclasses
+
+    from engine.loader import select_effective
+
+    supplemental = select_effective(files, as_of, jurisdiction=jurisdiction, tax="supplemental_wage_withholding")
+    if supplemental.method == "supplemental_flat_rate":
+        return compute_withholding(supplemental, employee, taxability)
+    if supplemental.method != "supplemental_aggregate":
+        raise EngineError(f"{jurisdiction}: unknown supplemental method {supplemental.method!r}")
+    regular_tax = "federal_income_withholding" if jurisdiction == "US" else "state_income_withholding"
+    regular = select_effective(files, as_of, jurisdiction=jurisdiction, tax=regular_tax)
+    combined = dataclasses.replace(
+        employee, wage_type="regular",
+        gross_wages=employee.concurrent_regular_wages + employee.gross_wages)
+    base = dataclasses.replace(employee, wage_type="regular", gross_wages=employee.concurrent_regular_wages,
+                               pretax_deductions=())
+    amount = compute_withholding(regular, combined, taxability) - compute_withholding(regular, base, taxability)
+    return max(ZERO, amount)
 
 
 def compute_employer_tax(

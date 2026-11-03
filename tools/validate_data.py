@@ -32,6 +32,7 @@ WITHHOLDING_TAXES = (
     "state_unemployment_insurance",
     "state_disability_insurance",
     "state_unemployment_insurance_employee",
+    "supplemental_wage_withholding",
 )
 
 

@@ -1,0 +1,18 @@
+# ILLUSTRATIVE FIXTURE — federal supplemental rule shape. Fake figures.
+schema_version: "0.1"
+jurisdiction: US
+tax: supplemental_wage_withholding
+effective_from: 2026-01-01
+effective_to: null
+source:
+  document: "FIXTURE — illustrative Pub 15 stand-in"
+  url: "https://example.gov/fixtures/p15.pdf"
+  retrieved: 2025-12-15
+  sha256: "0000000000000000000000000000000000000000000000000000000000000000"
+  notes: "Test fixture; all values invented"
+method: supplemental_flat_rate
+rounding: { to: "0.01", mode: nearest }
+params:
+  rate: "0.22"
+  excess_rate: "0.37"
+  excess_threshold: "1000000"

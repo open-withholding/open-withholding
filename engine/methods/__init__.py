@@ -12,6 +12,8 @@ from engine.methods import (
     federal_percentage_2020,
     flat_rate,
     resident_nonresident_flat_rate,
+    supplemental_flat_rate,
+    supplemental_aggregate,
     elective_flat_rate,
     flat_rate_with_annual_allowance,
     per_period_credit_phaseout,
@@ -34,6 +36,8 @@ from engine.methods.custom import us_or as custom_us_or
 REGISTRY = {
     "flat_rate": flat_rate.compute,
     "resident_nonresident_flat_rate": resident_nonresident_flat_rate.compute,
+    "supplemental_flat_rate": supplemental_flat_rate.compute,
+    "supplemental_aggregate": supplemental_aggregate.compute,
     "flat_rate_with_annual_allowance": flat_rate_with_annual_allowance.compute,
     "annualized_percentage": annualized_percentage.compute,
     "annualized_percentage_phaseout": annualized_percentage_phaseout.compute,

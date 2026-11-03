@@ -74,6 +74,29 @@ ROUNDING = {
 }
 
 _PARAMS_BY_METHOD = {
+    "supplemental": {
+        "type": "object",
+        "additionalProperties": False,
+        "required": ["flat_rate", "aggregate_only", "excess_rate", "excess_threshold"],
+        "description": "Supplemental wages (bonuses, commissions, severance, overtime paid "
+        "separately): the jurisdiction's published rule. EITHER a flat supplemental "
+        "withholding rate OR 'aggregate with regular wages' - never both inferred.",
+        "properties": {
+            "flat_rate": {**DECIMAL_OR_NULL, "description": "The published flat supplemental "
+                          "withholding rate as a decimal fraction (federal 0.22; a state's "
+                          "'supplemental wage rate'). Null when the document prints none."},
+            "aggregate_only": {"type": "boolean", "description": "True when the document says "
+                               "supplemental wages are withheld by adding them to regular wages "
+                               "(the aggregate / combined method) and prints NO flat rate. False "
+                               "when a flat rate is printed (even if aggregation is also allowed)."},
+            "excess_rate": {**DECIMAL_OR_NULL, "description": "Mandatory higher rate on cumulative "
+                            "supplemental wages above excess_threshold (federal 0.37 over "
+                            "$1,000,000); null where none is published"},
+            "excess_threshold": {**DECIMAL_OR_NULL, "description": "Calendar-year cumulative "
+                                 "supplemental wage threshold for excess_rate (federal 1000000); null "
+                                 "where none"},
+        },
+    },
     "flat_rate": {
         "type": "object",
         "additionalProperties": False,
@@ -1352,6 +1375,8 @@ WORKED_EXAMPLE = {
         "elected_annual_amount",
         "period_federal_income_withholding",
         "resident",
+        "concurrent_regular_wages",
+        "ytd_supplemental_wages",
         "expected_withholding",
     ],
     "properties": {
@@ -1366,7 +1391,14 @@ WORKED_EXAMPLE = {
         "pay_frequency": {
             "enum": ["daily", "weekly", "biweekly", "semimonthly", "monthly", "quarterly", "semiannually", "annually"]
         },
-        "gross_wages": DECIMAL,
+        "gross_wages": {**DECIMAL, "description": "The wages the example withholds on; for a "
+                        "supplemental example, the supplemental payment itself"},
+        "concurrent_regular_wages": {**DECIMAL_OR_NULL, "description": "Supplemental examples "
+                                     "using the aggregate method: the regular wages of the same "
+                                     "(or most recent) period the example combines with; null otherwise"},
+        "ytd_supplemental_wages": {**DECIMAL_OR_NULL, "description": "Supplemental examples: "
+                                   "calendar-year supplemental wages paid before this payment "
+                                   "(federal $1,000,000 tier); null otherwise"},
         "filing_status": {"type": "string"},
         "allowances": {"type": ["integer", "null"]},
         "secondary_allowances": {

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/open-withholding/schema/employee-input.schema.json",
   "title": "Employee input record",
-  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 — org URL in $id is a placeholder.",
+  "description": "Normalized per-paycheck input the engine consumes. The consuming application maps its employee master onto this. Draft v0.1 \u2014 org URL in $id is a placeholder.",
   "type": "object",
   "required": [
     "pay_frequency",
@@ -48,11 +48,11 @@
     },
     "period_federal_income_withholding": {
       "$ref": "#/$defs/money",
-      "description": "Federal income tax withheld this period — an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
+      "description": "Federal income tax withheld this period \u2014 an inter-tax input consumed by states that deduct it (OR, AL). Not FICA."
     },
     "period_fica_withholding": {
       "$ref": "#/$defs/money",
-      "description": "FICA/Medicare/retirement-system withholdings this period — consumed by MA's capped deduction"
+      "description": "FICA/Medicare/retirement-system withholdings this period \u2014 consumed by MA's capped deduction"
     },
     "ytd": {
       "type": "object",
@@ -78,6 +78,10 @@
         "futa_wages": {
           "$ref": "#/$defs/money",
           "description": "FUTA-taxable wages paid in prior periods this calendar year"
+        },
+        "supplemental_wages": {
+          "$ref": "#/$defs/money",
+          "description": "Calendar-year supplemental wages paid before this payment (federal 37% tier above $1,000,000)"
         }
       }
     },
@@ -269,6 +273,20 @@
           "description": "Always user-entered from the state rate notice; never data"
         }
       }
+    },
+    "wage_type": {
+      "type": "string",
+      "enum": [
+        "regular",
+        "supplemental"
+      ],
+      "default": "regular",
+      "description": "supplemental: gross_wages is a supplemental payment (bonus, commission, severance) withheld under the jurisdiction's supplemental rule (methods/supplemental.md)"
+    },
+    "concurrent_regular_wages": {
+      "$ref": "#/$defs/money",
+      "default": "0",
+      "description": "Supplemental pay only: regular wages of the current or most recent payroll period, used by the aggregate method"
     }
   },
   "$defs": {

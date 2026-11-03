@@ -2615,3 +2615,1136 @@
   extraction_hint: *mi_city_hint
   maps_to:
     - data/us/mi/{year}/locals/walker.yaml
+
+# --- Supplemental wages (methods/supplemental.md): the same guides, read for
+# the bonus / commission rule only. One file per jurisdiction:
+# data/us/<st>/<year>/supplemental.yaml. The document decides flat vs aggregate.
+
+- id: us-federal-p15-supplemental
+  document: Publication 15 (Circular E), Employer's Tax Guide — supplemental wages (section 7)
+  jurisdiction: US
+  tax: supplemental_wage_withholding
+  method: supplemental
+  authority: publication
+  landing: https://www.irs.gov/forms-pubs/about-publication-15
+  document_url_pattern: https://www.irs.gov/pub/irs-pdf/p15.pdf
+  extraction_hint: 'Transcribe ONLY section 7, Supplemental Wages: the optional flat withholding rate
+    on supplemental wages (when income tax was withheld from regular wages) as flat_rate, aggregate_only
+    false, and the mandatory rate on supplemental wages exceeding $1,000,000 in the calendar year as excess_rate
+    with excess_threshold 1000000. Transcribe the section''s worked examples (bonus amounts, the withholding
+    computed, and for aggregate examples the regular wages combined with) with filing_status ''n/a'' unless
+    the example states one. FICA, FUTA and deposit rules are out of scope for this entry.'
+  check:
+  - content_hash
+  maps_to:
+  - data/us/federal/{year}/supplemental.yaml
+
+- id: us-mo-supplemental
+  document: Form 4282, Employer's Tax Guide — supplemental wage rule
+  jurisdiction: US-MO
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://dor.mo.gov/taxation/business/tax-types/withholding/
+  document_url_pattern: https://dor.mo.gov/forms/4282_{year}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/mo/{year}/supplemental.yaml
+
+- id: us-sc-supplemental
+  document: WH-1603F, Formula for Computing South Carolina Withholding Tax — supplemental wage rule
+  jurisdiction: US-SC
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://dor.sc.gov/tax/withholding/forms
+  document_url_pattern: https://dor.sc.gov/sites/dor/files/forms/WH1603F_{year}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/sc/{year}/supplemental.yaml
+
+- id: us-ri-supplemental
+  document: Rhode Island Employer's Income Tax Withholding Tables — supplemental wage rule
+  jurisdiction: US-RI
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.ri.gov/forms/business-tax-forms/withholding-tax-forms
+  link_pattern: (?i)20\d{2}[-%20 ]*withholding[-%20 ]*(tax[-%20 ]*)?booklet[^"]*\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ri/{year}/supplemental.yaml
+
+- id: us-az-supplemental
+  document: Arizona Form A-4, Employee's Arizona Withholding Election — supplemental wage rule
+  jurisdiction: US-AZ
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://azdor.gov/forms/withholding-forms/arizona-withholding-percentage-election
+  document_url_pattern: https://azdor.gov/sites/default/files/document/FORMS_WITHHOLDING_{year}_A-4_f.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/az/{year}/supplemental.yaml
+
+- id: us-ia-supplemental
+  document: Iowa Individual Income Tax Withholding Formula — supplemental wage rule
+  jurisdiction: US-IA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://revenue.iowa.gov/taxes/tax-guidance/withholding-tax/iowa-withholding-tax-information
+  document_url_pattern: https://revenue.iowa.gov/media/53/download?inline=
+  check:
+  - content_hash
+  authority: agency_page
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ia/{year}/supplemental.yaml
+
+- id: us-ms-supplemental
+  document: Pub 89-700, Mississippi Withholding Income Tax Tables and Employer Instructions — supplemental
+    wage rule
+  jurisdiction: US-MS
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.dor.ms.gov/business/withholding-tax
+  link_pattern: 89700\d{3}[a-z0-9.]*\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  insecure_tls: true
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ms/{year}/supplemental.yaml
+
+- id: us-ut-supplemental
+  document: Publication 14, Utah Withholding Tax Guide — supplemental wage rule
+  jurisdiction: US-UT
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.utah.gov/forms-pubs/pubs/pub-14/
+  document_url_pattern: https://files.tax.utah.gov/tax/forms/pubs/pub-14.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ut/{year}/supplemental.yaml
+
+- id: us-ar-supplemental
+  document: Arkansas Withholding Tax Formula Method — supplemental wage rule
+  jurisdiction: US-AR
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.dfa.arkansas.gov/office/taxes/income-tax-administration/withholding-tax-branch/withholding-tax-forms-instructions/
+  document_url_pattern: https://www.dfa.arkansas.gov/wp-content/uploads/Withholding-Tax-Formula.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ar/{year}/supplemental.yaml
+
+- id: us-ct-supplemental
+  document: TPG-211, Connecticut Withholding Calculation Rules — supplemental wage rule
+  jurisdiction: US-CT
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://portal.ct.gov/drs/drs-forms/current-year-forms/withholding-forms
+  link_pattern: tpg-211[^"]*\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ct/{year}/supplemental.yaml
+
+- id: us-or-supplemental
+  document: 150-206-436, Oregon Withholding Tax Formulas — supplemental wage rule
+  jurisdiction: US-OR
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.oregon.gov/dor/forms/Pages/default.aspx
+  document_url_pattern: https://www.oregon.gov/dor/forms/FormsPubs/withholding-tax-formulas_206-436_{year}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/or/{year}/supplemental.yaml
+
+- id: us-al-supplemental
+  document: Alabama Withholding Tax Tables and Instructions for Employers — supplemental wage rule
+  jurisdiction: US-AL
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.revenue.alabama.gov/forms/withholding-tax-tables-and-instructions-for-employers-and-withholding-agents-2/
+  link_pattern: whbooklet[^"]*\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/al/{year}/supplemental.yaml
+
+- id: us-ma-supplemental
+  document: Circular M, Massachusetts Income Tax Withholding Tables — supplemental wage rule
+  jurisdiction: US-MA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.mass.gov/lists/massachusetts-dor-withholding-tax-forms
+  link_pattern: /doc/[^"]*circular-m[^"]*/download
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ma/{year}/supplemental.yaml
+
+- id: us-mn-supplemental
+  document: Minnesota Income Tax Withholding Instruction Booklet and Tax Tables — supplemental wage rule
+  jurisdiction: US-MN
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.revenue.state.mn.us/withholding-tax
+  link_pattern: /sites/default/files/\d{4}-\d{2}/wh[-_]inst[-_]?\d{2}(_\d+)?\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/mn/{year}/supplemental.yaml
+
+- id: us-oh-supplemental
+  document: 'Ohio Employer Withholding: Optional Computer Formula — supplemental wage rule'
+  jurisdiction: US-OH
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.ohio.gov/business/ohio-business-taxes/employer-withholding/employer-withholding-tables
+  document_url_pattern: https://dam.assets.ohio.gov/image/upload/tax.ohio.gov/employer_withholding/2025%20Withholding%20Tables/WHT_OptionalComputerFormula_2025.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/oh/{year}/supplemental.yaml
+
+- id: us-ok-supplemental
+  document: Packet OW-2, Oklahoma Income Tax Withholding Tables — supplemental wage rule
+  jurisdiction: US-OK
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://oklahoma.gov/tax/reporting-resources/publications.html
+  document_url_pattern: https://oklahoma.gov/content/dam/ok/en/tax/documents/resources/publications/businesses/withholding-tables/WHTables-{year}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ok/{year}/supplemental.yaml
+
+- id: us-mt-supplemental
+  document: Montana Employer and Information Agent Guide with Tax Tables — supplemental wage rule
+  jurisdiction: US-MT
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://revenue.mt.gov/publications/montana-employer-and-information-agent-guide
+  document_url_pattern: https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/mt/{year}/supplemental.yaml
+
+- id: us-la-supplemental
+  document: R-1306, Louisiana Withholding Tables and Formulas — supplemental wage rule
+  jurisdiction: US-LA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://revenue.louisiana.gov/tax-policy/tax-manuals
+  document_url_pattern: https://dam.ldr.la.gov/taxforms/1306-1-{yy}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/la/{year}/supplemental.yaml
+
+- id: us-me-supplemental
+  document: Maine Withholding Tables for Individual Income Tax — supplemental wage rule
+  jurisdiction: US-ME
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.maine.gov/revenue/tax-return-forms/employment-tax-returns-2026
+  document_url_pattern: https://www.maine.gov/revenue/sites/maine.gov.revenue/files/inline-files/{yy}_wh_tab_instr.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/me/{year}/supplemental.yaml
+
+- id: us-vt-supplemental
+  document: GB-1210, Vermont Income Tax Withholding Instructions, Tables and Charts — supplemental wage
+    rule
+  jurisdiction: US-VT
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.vermont.gov/business/withholding
+  document_url_pattern: https://tax.vermont.gov/sites/tax/files/documents/GB-1210-{year}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/vt/{year}/supplemental.yaml
+
+- id: us-hi-supplemental
+  document: Booklet A, Hawaii Employer's Tax Guide — supplemental wage rule
+  jurisdiction: US-HI
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.hawaii.gov/forms/a1_b1_5whhold/
+  link_pattern: \d{2}BkltA\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/hi/{year}/supplemental.yaml
+
+- id: us-ga-supplemental
+  document: Georgia Employer's Withholding Tax Guide — supplemental wage rule
+  jurisdiction: US-GA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://dor.georgia.gov/employers-tax-guide
+  link_pattern: 20\d{2}-employers-tax-guide[^"]*download
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ga/{year}/supplemental.yaml
+
+- id: us-nm-supplemental
+  document: FYI-104, New Mexico Withholding Tax — supplemental wage rule
+  jurisdiction: US-NM
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.tax.newmexico.gov/businesses/wage-withholding-tax/
+  document_url_pattern: https://realfile.tax.newmexico.gov/FYI-104.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/nm/{year}/supplemental.yaml
+
+- id: us-id-supplemental
+  document: EPB00744 (percentage computation) + ICTCAT allowance table (HTML) — supplemental wage rule
+  jurisdiction: US-ID
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.idaho.gov/taxes/income-tax/withholding/computing/
+  documents:
+  - name: EPB00744, Idaho Table for Percentage Computation Method of Withholding
+    kind: pdf
+    url: https://tax.idaho.gov/document-mngr/pubs_EPB00744
+  - name: Computing withholding page with Idaho Child Tax Credit Allowance Table (ICTCAT)
+    kind: html
+    url: https://tax.idaho.gov/taxes/income-tax/withholding/computing/
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/id/{year}/supplemental.yaml
+
+- id: us-ky-supplemental
+  document: 42A003(TCF), Kentucky Withholding Tax Formula — supplemental wage rule
+  jurisdiction: US-KY
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://revenue.ky.gov/Software-Developer/Pages/default.aspx
+  document_url_pattern: https://revenue.ky.gov/Forms/{year}%20Withholding%20Formula.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ky/{year}/supplemental.yaml
+
+- id: us-nc-supplemental
+  document: NC-30, North Carolina Income Tax Withholding Tables and Instructions for Employers — supplemental
+    wage rule
+  jurisdiction: US-NC
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.ncdor.gov/taxes-forms/withholding-tax/withholding-tax-forms-and-instructions
+  document_url_pattern: https://www.ncdor.gov/income-tax-withholding-tables-and-instructions-employers/open
+  check:
+  - content_hash
+  authority: agency_page
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/nc/{year}/supplemental.yaml
+
+- id: us-va-supplemental
+  document: Virginia Income Tax Withholding Guide for Employers — supplemental wage rule
+  jurisdiction: US-VA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.tax.virginia.gov/withholding-tax
+  document_url_pattern: https://www.tax.virginia.gov/sites/default/files/vatax-pdf/employer-withholding-instructions.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/va/{year}/supplemental.yaml
+
+- id: us-mi-supplemental
+  document: Form 446, Michigan Income Tax Withholding Guide — supplemental wage rule
+  jurisdiction: US-MI
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.michigan.gov/taxes/business-taxes/withholding/calendar-year-tax-information
+  document_url_pattern: https://www.michigan.gov/taxes/-/media/Project/Websites/taxes/Forms/SUW/TY{year}/446_Withholding-Guide_{year}.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/mi/{year}/supplemental.yaml
+
+- id: us-wv-supplemental
+  document: IT-100.2.A, West Virginia Tables for Percentage Method of Withholding — supplemental wage
+    rule
+  jurisdiction: US-WV
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.wv.gov/business/withholding/pages/withholdingtaxforms.aspx
+  document_url_pattern: https://tax.wv.gov/Documents/Withholding/it100.2a.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/wv/{year}/supplemental.yaml
+
+- id: us-il-supplemental
+  document: Booklet IL-700-T, Illinois Withholding Income Tax Tables — supplemental wage rule
+  jurisdiction: US-IL
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.illinois.gov/forms/withholding/currentyear.html
+  document_url_pattern: https://tax.illinois.gov/content/dam/soi/en/web/tax/forms/withholding/documents/currentyear/il-700-t.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/il/{year}/supplemental.yaml
+
+- id: us-wi-supplemental
+  document: Publication W-166, Wisconsin Withholding Tax Guide — supplemental wage rule
+  jurisdiction: US-WI
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.revenue.wi.gov/Pages/HTML/withhold.aspx
+  document_url_pattern: https://www.revenue.wi.gov/DOR%20Publications/pb166.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/wi/{year}/supplemental.yaml
+
+- id: us-ks-supplemental
+  document: KW-100, Kansas Withholding Tax Guide — supplemental wage rule
+  jurisdiction: US-KS
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.ksrevenue.gov/bustaxtypeswh.html
+  document_url_pattern: https://www.ksrevenue.gov/pdf/kw100.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ks/{year}/supplemental.yaml
+
+- id: us-ne-supplemental
+  document: Circular EN, Nebraska Income Tax Withholding — supplemental wage rule
+  jurisdiction: US-NE
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://revenue.nebraska.gov/businesses/circular-en-nebraska-income-tax-withholding-wages-pensions-and-annuities-and-gambling
+  link_pattern: 20\d{2}cir_en_whole\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ne/{year}/supplemental.yaml
+
+- id: us-pa-supplemental
+  document: REV-415, Employer Withholding Information Guide — supplemental wage rule
+  jurisdiction: US-PA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.pa.gov/agencies/revenue.html
+  document_url_pattern: https://www.pa.gov/content/dam/copapwp-pagov/en/revenue/documents/formsandpublications/formsforbusinesses/employerwithholding/documents/rev-415.pdf
+  check:
+  - etag
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/pa/{year}/supplemental.yaml
+
+- id: us-nd-supplemental
+  document: North Dakota Income Tax Withholding Rates & Instructions — supplemental wage rule
+  jurisdiction: US-ND
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.tax.nd.gov/business/income-tax-withholding
+  link_pattern: 20\d{2}-income-tax-withholding-rates-booklet\.pdf
+  discovery: link_scan
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/nd/{year}/supplemental.yaml
+
+- id: us-co-supplemental
+  document: DR 1098, Colorado Withholding Worksheet for Employers — supplemental wage rule
+  jurisdiction: US-CO
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://tax.colorado.gov/DR1098
+  document_url_pattern: https://tax.colorado.gov/sites/tax/files/documents/DR_1098_2024.pdf
+  check:
+  - content_hash
+  successor_pattern: https://tax.colorado.gov/sites/tax/files/documents/DR_1098_{year}.pdf
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/co/{year}/supplemental.yaml
+
+- id: us-de-supplemental
+  document: Delaware Employer's Guide (Withholding Regulations) + withholding tables — supplemental wage
+    rule
+  jurisdiction: US-DE
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/
+  documents:
+  - name: Employer's Guide, Section 17 Percentage Method Formula (HTML)
+    kind: html
+    url: https://revenue.delaware.gov/employers-guide-withholding-regulations-employers-duties/
+  - name: Weekly payroll period withholding table
+    kind: pdf
+    url: https://revenuefiles.delaware.gov/docs/weekly16.pdf
+  check:
+  - content_hash
+  authority: agency_page
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/de/{year}/supplemental.yaml
+
+- id: us-nj-supplemental
+  document: NJ-WT Income Tax Withholding Instructions + Percentage Method Rate Tables A-E — supplemental
+    wage rule
+  jurisdiction: US-NJ
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.nj.gov/treasury/taxation/businesses/payroll/index.shtml
+  documents:
+  - name: NJ-WT, New Jersey Income Tax Withholding Instructions
+    kind: pdf
+    url: https://www.nj.gov/treasury/taxation/pdf/current/njwt.pdf
+  - name: Percentage Method Withholding Rate Tables A-E
+    kind: pdf
+    url: https://www.nj.gov/treasury/taxation/pdf/withholdingtables.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/nj/{year}/supplemental.yaml
+
+- id: us-dc-supplemental
+  document: FR-230 (2018 mechanics) + OTR Notice 2022-08 + TY2022 rate schedule + Pub 15-T 2022 allowance
+    — supplemental wage rule
+  jurisdiction: US-DC
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://otr.cfo.dc.gov/page/income-tax-withholding-instructions-and-tables
+  documents:
+  - name: FR-230, Income Tax Withholding Instructions and Tables (2018)
+    kind: pdf
+    url: https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/publication/attachments/2018%20FR-230_12.13.17.pdf
+  - name: OTR Tax Notice 2022-08, District of Columbia Withholding for Tax Year 2022 (updated 10/17/2022)
+    kind: pdf
+    url: https://otr.cfo.dc.gov/sites/default/files/dc/sites/otr/release_content/attachments/Important_Information_Regarding_the_District_of_Columbia_Withholding_for_Tax_Year_2022_updated_10_17_2022.pdf
+  - name: 'OTR release: District of Columbia Tax Changes Take Effect October 1 (TY2022 rate schedule;
+      Wayback snapshot)'
+    kind: html
+    url: https://web.archive.org/web/20250616055422/https://otr.cfo.dc.gov/release/district-columbia-tax-changes-take-effect-october-1-real-property-individual-income-and
+    watch: false
+  - name: Publication 15-T (2022), Federal Income Tax Withholding Methods
+    kind: pdf
+    url: https://www.irs.gov/pub/irs-prior/p15t--2022.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/dc/{year}/supplemental.yaml
+
+- id: us-in-supplemental
+  document: 'Departmental Notice #1, How to Compute Withholding for State and County Income Tax — supplemental
+    wage rule'
+  jurisdiction: US-IN
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.in.gov/dor/business-tax/withholding-income-tax/
+  document_url_pattern: https://www.in.gov/dor/files/dn01.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/in/{year}/supplemental.yaml
+
+- id: us-md-supplemental
+  document: Maryland Employer Withholding Guide — supplemental wage rule
+  jurisdiction: US-MD
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.marylandcomptroller.gov/taxes/business/withholding.html
+  document_url_pattern: https://www.marylandcomptroller.gov/content/dam/mdcomp/tax/instructions/withholding/{year}/withholding-guide.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/md/{year}/supplemental.yaml
+
+- id: us-ca-supplemental
+  document: California Withholding Schedules, Method B — Exact Calculation (DE 44 excerpt) — supplemental
+    wage rule
+  jurisdiction: US-CA
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://edd.ca.gov/en/payroll_taxes/rates_and_withholding/
+  document_url_pattern: https://edd.ca.gov/siteassets/files/pdf_pub_ctr/{yy}methb.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ca/{year}/supplemental.yaml
+
+- id: us-ny-supplemental
+  document: NYS-50-T-NYS, New York State Withholding Tax Tables and Methods — supplemental wage rule
+  jurisdiction: US-NY
+  tax: supplemental_wage_withholding
+  method: supplemental
+  no_printed_examples: true
+  landing: https://www.tax.ny.gov/forms/withholding_cur_forms.htm
+  document_url_pattern: https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_nys.pdf
+  check:
+  - content_hash
+  authority: publication
+  extraction_hint: Transcribe ONLY the jurisdiction's SUPPLEMENTAL WAGE withholding rule (bonuses, commissions,
+    overtime paid separately, severance). If the document prints a flat supplemental withholding rate,
+    set flat_rate to it as a decimal fraction and aggregate_only false. If the only published rule is
+    to add supplemental wages to regular wages and withhold under the regular method (the aggregate /
+    combined method), set flat_rate null and aggregate_only true. If the document is silent on supplemental
+    wages, set flat_rate null, aggregate_only false, and say so in notes (the run will fail, which is
+    the correct outcome). excess_rate / excess_threshold are null unless a higher mandatory rate above
+    a cumulative threshold is printed. effective_from is the document's effective date. Transcribe any
+    printed supplemental-wage example with the supplemental amount as gross_wages, the regular wages it
+    is combined with (if any) as concurrent_regular_wages, and its stated withholding. Do not transcribe
+    the regular percentage-method tables.
+  maps_to:
+  - data/us/ny/{year}/supplemental.yaml
