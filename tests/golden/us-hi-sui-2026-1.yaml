@@ -1,0 +1,14 @@
+source:
+  document: DLIR Tax Rate Schedule and Weekly Benefit Amount (HTML)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.0240 + Employment
+    & Training (E&T) Assessment 0.0001, first paycheck (YTD 0; wage base 64500)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-HI
+    sui_experience_rate: '0.0240'
+expect:
+  sui_tax: '48.20'
