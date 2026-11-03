@@ -1,0 +1,13 @@
+source:
+  document: "FYI-104, New Mexico Withholding Tax \u2014 supplemental wage rule (2026)"
+  page: 1
+  example: 'maintainer-constructed: $5,000 biweekly bonus at the published supplemental rate 0.059 (YTD
+    supplemental 0)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '5000.00'
+  wage_type: supplemental
+expect:
+  supplemental_withholding:
+    US-NM: '295.00'
