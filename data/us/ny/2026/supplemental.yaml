@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-NY
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: NYS-50-T-NYS, New York State Withholding Tax Tables and Methods — supplemental wage rule (2026)
+  url: https://www.tax.ny.gov/pdf/publications/withholding/nys50_t_nys.pdf
+  retrieved: '2026-11-03'
+  sha256: e1c2b3440572a10019efe8d8e4d727474c55afb37dd5d18a6a73b94463baf3e8
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.1170'
