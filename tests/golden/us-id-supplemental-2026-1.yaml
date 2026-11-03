@@ -1,0 +1,13 @@
+source:
+  document: EPB00744, Idaho Table for Percentage Computation Method of Withholding
+  page: 1
+  example: 'maintainer-constructed: $5,000 biweekly bonus at the published supplemental rate 0.053 (YTD
+    supplemental 0)'
+as_of: '2026-07-23'
+input:
+  pay_frequency: biweekly
+  gross_wages: '5000.00'
+  wage_type: supplemental
+expect:
+  supplemental_withholding:
+    US-ID: '265.00'
