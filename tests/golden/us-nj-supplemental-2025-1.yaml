@@ -1,0 +1,20 @@
+source:
+  document: NJ-WT, New Jersey Income Tax Withholding Instructions
+  page: 1
+  example: 'maintainer-approved engine-computed pin: $5,000 biweekly bonus combined with $2,000 regular
+    wages under the regular method, minus the regular withholding on $2,000 (aggregate method; the document
+    publishes no flat rate and no example)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '5000.00'
+  wage_type: supplemental
+  state:
+  - jurisdiction: US-NJ
+    filing_status: rate_a
+    allowances: 1
+    additional_withholding: '0'
+  concurrent_regular_wages: '2000.00'
+expect:
+  supplemental_withholding:
+    US-NJ: '341.52'
