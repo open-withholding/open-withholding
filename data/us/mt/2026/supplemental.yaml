@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-MT
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Montana Employer and Information Agent Guide with Tax Tables — supplemental wage rule (2026)
+  url: https://revenuefiles.mt.gov/files/Forms/Montana_Employer_and_Information_Agent_Guide_with_Tax_Tables.pdf
+  retrieved: '2026-11-03'
+  sha256: be5e53a31b7175ed17fd2457ef40dff1224e4e9737ac18248f1434c6d4b578eb
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '1.00'
+  mode: up
+  intermediate: none
+params:
+  rate: '0.05'
