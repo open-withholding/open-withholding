@@ -1,0 +1,15 @@
+source:
+  document: 2024 HP-1040 Individual Tax Booklet (Resident 2%, Nonresident 1%, exemption $600)
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000, resident with 2 exemption(s) at 600 each, rate 0.02;
+    annualize x26, deduct exemptions, tax, divide by 26'
+as_of: '2024-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  locals:
+  - jurisdiction: US-MI-HIGHLAND-PARK
+    resident: true
+    allowances: 2
+expect:
+  local_withholding: '39.08'
