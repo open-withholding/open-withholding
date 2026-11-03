@@ -1,0 +1,15 @@
+source:
+  document: 'RI DLT press release: Tax Rates for Unemployment Insurance and Temporary Disability Insurance
+    for the target year (HTML; year-specific URL, bump annually)'
+  page: 1
+  example: 'maintainer-constructed: biweekly $2,000 at the published new_employer_rate 0.0100 + Job Development
+    Fund Assessment 0.0021, first paycheck (YTD 0; wage base 30800)'
+as_of: '2026-06-15'
+input:
+  pay_frequency: biweekly
+  gross_wages: '2000.00'
+  employer:
+    sui_jurisdiction: US-RI
+    sui_experience_rate: '0.0100'
+expect:
+  sui_tax: '24.20'
