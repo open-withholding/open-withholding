@@ -1,0 +1,18 @@
+schema_version: '0.1'
+jurisdiction: US-RI
+tax: supplemental_wage_withholding
+effective_from: '2026-01-01'
+effective_to: null
+source:
+  document: Rhode Island Employer's Income Tax Withholding Tables — supplemental wage rule (2026)
+  url: https://tax.ri.gov/sites/g/files/xkgbur541/files/2025-12/2026%20Withholding%20Tax%20Booklet.pdf
+  retrieved: '2026-11-03'
+  sha256: 1e6883fa1a02cc03eaa0be3a62a8e8bf34b2a02ed5246fc8bcc7c54b0bab37c1
+  notes: Extracted by pipeline; pages per PR body
+method: supplemental_flat_rate
+rounding:
+  to: '0.01'
+  mode: nearest
+  intermediate: none
+params:
+  rate: '0.0599'
