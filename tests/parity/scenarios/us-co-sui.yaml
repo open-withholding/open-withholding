@@ -1,0 +1,41 @@
+- id: us-co-sui-p01
+  tier: core
+  jurisdiction: US-CO
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0305
+  input:
+    employer:
+      sui_jurisdiction: US-CO
+      sui_experience_rate: '0.0305'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '61.00'
+- id: us-co-sui-p02
+  tier: core
+  jurisdiction: US-CO
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $29600 | employer rate 0.0305
+  input:
+    employer:
+      sui_jurisdiction: US-CO
+      sui_experience_rate: '0.0305'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '29600'
+  ours: '30.50'
+- id: us-co-sui-p03
+  tier: core
+  jurisdiction: US-CO
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0058
+  input:
+    employer:
+      sui_jurisdiction: US-CO
+      sui_experience_rate: '0.0058'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '11.60'

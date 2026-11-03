@@ -1,0 +1,41 @@
+- id: us-fl-sui-p01
+  tier: core
+  jurisdiction: US-FL
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0270
+  input:
+    employer:
+      sui_jurisdiction: US-FL
+      sui_experience_rate: '0.0270'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '54.00'
+- id: us-fl-sui-p02
+  tier: core
+  jurisdiction: US-FL
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $6000 | employer rate 0.0270
+  input:
+    employer:
+      sui_jurisdiction: US-FL
+      sui_experience_rate: '0.0270'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '6000'
+  ours: '27.00'
+- id: us-fl-sui-p03
+  tier: core
+  jurisdiction: US-FL
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0540
+  input:
+    employer:
+      sui_jurisdiction: US-FL
+      sui_experience_rate: '0.0540'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '108.00'

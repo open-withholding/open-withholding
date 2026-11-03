@@ -1,0 +1,111 @@
+- id: us-mo-p01
+  tier: core
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=married_spouse_works
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: married_spouse_works
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '58.00'
+- id: us-mo-p02
+  tier: extended
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00 | filing_status=married_spouse_works
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: married_spouse_works
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '24.00'
+- id: us-mo-p03
+  tier: extended
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | filing_status=married_spouse_works
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: married_spouse_works
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '452.00'
+- id: us-mo-p04
+  tier: extended
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00 | filing_status=married_spouse_works
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: married_spouse_works
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '172.00'
+- id: us-mo-p05
+  tier: extended
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | filing_status=married_spouse_works
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: married_spouse_works
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '52.00'
+- id: us-mo-p06
+  tier: extended
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00 | filing_status=married_spouse_works
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: married_spouse_works
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '687.00'
+- id: us-mo-p07
+  tier: core
+  jurisdiction: US-MO
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=single
+  input:
+    state:
+    - jurisdiction: US-MO
+      filing_status: single
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '58.00'

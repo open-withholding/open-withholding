@@ -1,0 +1,41 @@
+- id: us-pa-sui-p01
+  tier: core
+  jurisdiction: US-PA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.038220
+  input:
+    employer:
+      sui_jurisdiction: US-PA
+      sui_experience_rate: '0.038220'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '76.44'
+- id: us-pa-sui-p02
+  tier: core
+  jurisdiction: US-PA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $9000 | employer rate 0.038220
+  input:
+    employer:
+      sui_jurisdiction: US-PA
+      sui_experience_rate: '0.038220'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '9000'
+  ours: '38.22'
+- id: us-pa-sui-p03
+  tier: core
+  jurisdiction: US-PA
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.014190
+  input:
+    employer:
+      sui_jurisdiction: US-PA
+      sui_experience_rate: '0.014190'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '28.38'

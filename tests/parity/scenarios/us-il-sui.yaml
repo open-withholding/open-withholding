@@ -1,0 +1,41 @@
+- id: us-il-sui-p01
+  tier: core
+  jurisdiction: US-IL
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.03350
+  input:
+    employer:
+      sui_jurisdiction: US-IL
+      sui_experience_rate: '0.03350'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '67.00'
+- id: us-il-sui-p02
+  tier: core
+  jurisdiction: US-IL
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $13250 | employer rate 0.03350
+  input:
+    employer:
+      sui_jurisdiction: US-IL
+      sui_experience_rate: '0.03350'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '13250'
+  ours: '33.50'
+- id: us-il-sui-p03
+  tier: core
+  jurisdiction: US-IL
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.00750
+  input:
+    employer:
+      sui_jurisdiction: US-IL
+      sui_experience_rate: '0.00750'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '15.00'

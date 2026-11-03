@@ -1,0 +1,41 @@
+- id: us-nc-sui-p01
+  tier: core
+  jurisdiction: US-NC
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0100
+  input:
+    employer:
+      sui_jurisdiction: US-NC
+      sui_experience_rate: '0.0100'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '20.00'
+- id: us-nc-sui-p02
+  tier: core
+  jurisdiction: US-NC
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $33200 | employer rate 0.0100
+  input:
+    employer:
+      sui_jurisdiction: US-NC
+      sui_experience_rate: '0.0100'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '33200'
+  ours: '10.00'
+- id: us-nc-sui-p03
+  tier: core
+  jurisdiction: US-NC
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0006
+  input:
+    employer:
+      sui_jurisdiction: US-NC
+      sui_experience_rate: '0.0006'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '1.20'

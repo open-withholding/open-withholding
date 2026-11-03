@@ -1,0 +1,104 @@
+- id: us-mi-east-lansing-p01
+  tier: core
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: true
+      allowances: 2
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '19.54'
+- id: us-mi-east-lansing-p02
+  tier: extended
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $900.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: true
+      allowances: 2
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '8.77'
+- id: us-mi-east-lansing-p03
+  tier: extended
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: true
+      allowances: 2
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '111.80'
+- id: us-mi-east-lansing-p04
+  tier: extended
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'semimonthly gross $4500.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: true
+      allowances: 2
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '44.50'
+- id: us-mi-east-lansing-p05
+  tier: extended
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: true
+      allowances: 2
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '18.34'
+- id: us-mi-east-lansing-p06
+  tier: extended
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $15000.00 | local: resident=True; allowances=2'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: true
+      allowances: 2
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '149.77'
+- id: us-mi-east-lansing-p07
+  tier: core
+  jurisdiction: US-MI-EAST-LANSING
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=False; allowances=0'
+  input:
+    locals:
+    - jurisdiction: US-MI-EAST-LANSING
+      resident: false
+      allowances: 0
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '10.00'

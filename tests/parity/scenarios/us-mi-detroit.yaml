@@ -1,0 +1,110 @@
+- id: us-mi-detroit-p01
+  tier: core
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=True; allowances=3 | state cert: filing_status=resident'
+  input:
+    locals:
+    - jurisdiction: US-MI-DETROIT
+      resident: true
+      allowances: 3
+    state:
+    - jurisdiction: US-MI
+      filing_status: resident
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '46.34'
+- id: us-mi-detroit-p02
+  tier: extended
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $900.00 | local: resident=True; allowances=3 | state cert: filing_status=resident'
+  input:
+    locals:
+    - jurisdiction: US-MI-DETROIT
+      resident: true
+      allowances: 3
+    state:
+    - jurisdiction: US-MI
+      filing_status: resident
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '20.77'
+- id: us-mi-detroit-p03
+  tier: extended
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True; allowances=3 | state
+    cert: filing_status=resident'
+  input:
+    locals:
+    - jurisdiction: US-MI-DETROIT
+      resident: true
+      allowances: 3
+    state:
+    - jurisdiction: US-MI
+      filing_status: resident
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '267.12'
+- id: us-mi-detroit-p04
+  tier: extended
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'semimonthly gross $4500.00 | local: resident=True; allowances=3 | state cert: filing_status=resident'
+  input:
+    locals:
+    - jurisdiction: US-MI-DETROIT
+      resident: true
+      allowances: 3
+    state:
+    - jurisdiction: US-MI
+      filing_status: resident
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '106.20'
+- id: us-mi-detroit-p05
+  tier: extended
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True; allowances=3 | state
+    cert: filing_status=resident'
+  input:
+    locals:
+    - jurisdiction: US-MI-DETROIT
+      resident: true
+      allowances: 3
+    state:
+    - jurisdiction: US-MI
+      filing_status: resident
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '43.46'
+- id: us-mi-detroit-p06
+  tier: extended
+  jurisdiction: US-MI-DETROIT
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $15000.00 | local: resident=True; allowances=3 | state cert: filing_status=resident'
+  input:
+    locals:
+    - jurisdiction: US-MI-DETROIT
+      resident: true
+      allowances: 3
+    state:
+    - jurisdiction: US-MI
+      filing_status: resident
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '359.17'

@@ -1,0 +1,111 @@
+- id: us-ny-p01
+  tier: core
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=single; allowances=3
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 3
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '80.04'
+- id: us-ny-p02
+  tier: extended
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00 | filing_status=single; allowances=3
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 3
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '34.65'
+- id: us-ny-p03
+  tier: extended
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | filing_status=single; allowances=3
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 3
+      additional_withholding: '0'
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '600.78'
+- id: us-ny-p04
+  tier: extended
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00 | filing_status=single; allowances=3
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 3
+      additional_withholding: '0'
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '216.66'
+- id: us-ny-p05
+  tier: extended
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | filing_status=single; allowances=3
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 3
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '73.56'
+- id: us-ny-p06
+  tier: extended
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00 | filing_status=single; allowances=3
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 3
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '1079.78'
+- id: us-ny-p07
+  tier: core
+  jurisdiction: US-NY
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=single; allowances=2
+  input:
+    state:
+    - jurisdiction: US-NY
+      filing_status: single
+      allowances: 2
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '82.12'

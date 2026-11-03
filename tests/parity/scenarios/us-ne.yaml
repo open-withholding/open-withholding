@@ -1,0 +1,111 @@
+- id: us-ne-p01
+  tier: core
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=single; allowances=1
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: single
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '67.92'
+- id: us-ne-p02
+  tier: extended
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00 | filing_status=single; allowances=1
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: single
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '29.48'
+- id: us-ne-p03
+  tier: extended
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | filing_status=single; allowances=1
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: single
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '464.13'
+- id: us-ne-p04
+  tier: extended
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00 | filing_status=single; allowances=1
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: single
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '179.63'
+- id: us-ne-p05
+  tier: extended
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | filing_status=single; allowances=1
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: single
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '62.55'
+- id: us-ne-p06
+  tier: extended
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00 | filing_status=single; allowances=1
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: single
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '677.37'
+- id: us-ne-p07
+  tier: core
+  jurisdiction: US-NE
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=married; allowances=2; additional_withholding=10.00
+  input:
+    state:
+    - jurisdiction: US-NE
+      filing_status: married
+      allowances: 2
+      additional_withholding: '10.00'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '62.04'

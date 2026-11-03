@@ -1,0 +1,97 @@
+- id: us-pa-psd-010101-p01
+  tier: core
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=True'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: true
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '34.00'
+- id: us-pa-psd-010101-p02
+  tier: extended
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $900.00 | local: resident=True'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: true
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '15.30'
+- id: us-pa-psd-010101-p03
+  tier: extended
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | local: resident=True'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: true
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '204.00'
+- id: us-pa-psd-010101-p04
+  tier: extended
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'semimonthly gross $4500.00 | local: resident=True'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: true
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '76.50'
+- id: us-pa-psd-010101-p05
+  tier: extended
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | local: resident=True'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: true
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '34.00'
+- id: us-pa-psd-010101-p06
+  tier: extended
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'weekly gross $15000.00 | local: resident=True'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: true
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '255.00'
+- id: us-pa-psd-010101-p07
+  tier: core
+  jurisdiction: US-PA-PSD-010101
+  tax: local_income_withholding
+  as_of: '2026-06-15'
+  describe: 'biweekly gross $2000.00 | local: resident=False'
+  input:
+    locals:
+    - jurisdiction: US-PA-PSD-010101
+      resident: false
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '20.00'

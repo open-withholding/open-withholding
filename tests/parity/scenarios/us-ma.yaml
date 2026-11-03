@@ -1,0 +1,111 @@
+- id: us-ma-p01
+  tier: core
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | allowances=1
+  input:
+    period_fica_withholding: '61.20'
+    state:
+    - jurisdiction: US-MA
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '88.49'
+- id: us-ma-p02
+  tier: extended
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00 | allowances=1
+  input:
+    period_fica_withholding: '61.20'
+    state:
+    - jurisdiction: US-MA
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '37.69'
+- id: us-ma-p03
+  tier: extended
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | allowances=1
+  input:
+    period_fica_withholding: '61.20'
+    state:
+    - jurisdiction: US-MA
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '542.59'
+- id: us-ma-p04
+  tier: extended
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00 | allowances=1
+  input:
+    period_fica_withholding: '61.20'
+    state:
+    - jurisdiction: US-MA
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '212.79'
+- id: us-ma-p05
+  tier: extended
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | allowances=1
+  input:
+    period_fica_withholding: '61.20'
+    state:
+    - jurisdiction: US-MA
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '82.49'
+- id: us-ma-p06
+  tier: extended
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00 | allowances=1
+  input:
+    period_fica_withholding: '61.20'
+    state:
+    - jurisdiction: US-MA
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '742.69'
+- id: us-ma-p07
+  tier: core
+  jurisdiction: US-MA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00
+  input:
+    period_fica_withholding: '2000.00'
+    state:
+    - jurisdiction: US-MA
+      allowances: 0
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '0.00'

@@ -1,0 +1,111 @@
+- id: us-ga-p01
+  tier: core
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=married_joint; allowances=1
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: married_joint
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '32.63'
+- id: us-ga-p02
+  tier: extended
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00 | filing_status=married_joint; allowances=1
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: married_joint
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '11.32'
+- id: us-ga-p03
+  tier: extended
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | filing_status=married_joint; allowances=1
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: married_joint
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '417.33'
+- id: us-ga-p04
+  tier: extended
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00 | filing_status=married_joint; allowances=1
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: married_joint
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '151.78'
+- id: us-ga-p05
+  tier: extended
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | filing_status=married_joint; allowances=1
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: married_joint
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '26.64'
+- id: us-ga-p06
+  tier: extended
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00 | filing_status=married_joint; allowances=1
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: married_joint
+      allowances: 1
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '714.91'
+- id: us-ga-p07
+  tier: core
+  jurisdiction: US-GA
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=head_of_household; allowances=2
+  input:
+    state:
+    - jurisdiction: US-GA
+      filing_status: head_of_household
+      allowances: 2
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '51.82'

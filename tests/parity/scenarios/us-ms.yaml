@@ -1,0 +1,110 @@
+- id: us-ms-p01
+  tier: core
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=single; elected_annual_amount=6000.00
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      elected_annual_amount: '6000.00'
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '52.00'
+- id: us-ms-p02
+  tier: extended
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $900.00 | filing_status=single; elected_annual_amount=6000.00
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      elected_annual_amount: '6000.00'
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '900.00'
+  ours: '22.00'
+- id: us-ms-p03
+  tier: extended
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: monthly gross $12000.00 | pre-tax 401k_traditional $720.00 | filing_status=single; elected_annual_amount=6000.00
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      elected_annual_amount: '6000.00'
+      additional_withholding: '0'
+    pay_frequency: monthly
+    gross_wages: '12000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '720.00'
+  ours: '390.00'
+- id: us-ms-p04
+  tier: extended
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: semimonthly gross $4500.00 | filing_status=single; elected_annual_amount=6000.00
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      elected_annual_amount: '6000.00'
+      additional_withholding: '0'
+    pay_frequency: semimonthly
+    gross_wages: '4500.00'
+  ours: '150.00'
+- id: us-ms-p05
+  tier: extended
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | pre-tax 401k_traditional $120.00 | filing_status=single; elected_annual_amount=6000.00
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      elected_annual_amount: '6000.00'
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    pretax_deductions:
+    - type: 401k_traditional
+      amount: '120.00'
+  ours: '47.00'
+- id: us-ms-p06
+  tier: extended
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: weekly gross $15000.00 | filing_status=single; elected_annual_amount=6000.00
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      elected_annual_amount: '6000.00'
+      additional_withholding: '0'
+    pay_frequency: weekly
+    gross_wages: '15000.00'
+  ours: '586.00'
+- id: us-ms-p07
+  tier: core
+  jurisdiction: US-MS
+  tax: state_income_withholding
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | filing_status=single
+  input:
+    state:
+    - jurisdiction: US-MS
+      filing_status: single
+      additional_withholding: '0'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '61.00'

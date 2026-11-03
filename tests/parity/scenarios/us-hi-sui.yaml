@@ -1,0 +1,28 @@
+- id: us-hi-sui-p01
+  tier: core
+  jurisdiction: US-HI
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | employer rate 0.0240
+  input:
+    employer:
+      sui_jurisdiction: US-HI
+      sui_experience_rate: '0.0240'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+  ours: '48.20'
+- id: us-hi-sui-p02
+  tier: core
+  jurisdiction: US-HI
+  tax: state_unemployment_insurance
+  as_of: '2026-06-15'
+  describe: biweekly gross $2000.00 | YTD sui_wages $63500 | employer rate 0.0240
+  input:
+    employer:
+      sui_jurisdiction: US-HI
+      sui_experience_rate: '0.0240'
+    pay_frequency: biweekly
+    gross_wages: '2000.00'
+    ytd:
+      sui_wages: '63500'
+  ours: '24.10'
