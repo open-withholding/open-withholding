@@ -52,6 +52,9 @@ REPO = "open-withholding/open-withholding"
 
 
 OLE2_MAGIC = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+# Bump when content_sha256 changes how it hashes a kind of document; state
+# entries recorded under another scheme are re-baselined, not compared.
+HASH_SCHEME = "text-v1"
 
 
 def content_sha256(data: bytes) -> str:
@@ -220,10 +223,16 @@ def _check_documents(source: dict, state: dict, fetcher, today: dt.date) -> tupl
             continue
         entry = {"url": url, "sha256": result["sha256"], "etag": result.get("etag"),
                  "last_modified": result.get("last_modified"),
-                 "changed_at": old.get("changed_at")}
+                 "changed_at": old.get("changed_at"), "hash_scheme": HASH_SCHEME}
         if old.get("sha256") is None:
             events.append({"type": "baseline",
                            "detail": prefix + f"{url} sha256={result['sha256'][:12]}..."})
+        elif old.get("hash_scheme") != HASH_SCHEME and kind != "pdf":
+            # The stored hash was taken under an older scheme (raw bytes for
+            # HTML / workbooks); comparing it would report every such page as
+            # changed. Re-record under the current scheme, silently.
+            events.append({"type": "baseline",
+                           "detail": prefix + f"{url} rehashed under {HASH_SCHEME}"})
         elif result["sha256"] != old["sha256"]:
             changed_details.append(
                 prefix + f"{url}: {old['sha256'][:12]}... -> {result['sha256'][:12]}...")
@@ -320,6 +329,7 @@ def check_source(source: dict, state: dict, fetcher, today: dt.date) -> tuple[li
                        "detail": f"{url} returned non-PDF bytes (HTML error page?)"})
         return events, new
 
+    new["hash_scheme"] = HASH_SCHEME
     if state.get("sha256") is None:
         # First sighting: record a baseline silently — the data for already-
         # extracted sources came from these same bytes.

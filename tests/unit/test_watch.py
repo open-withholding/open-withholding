@@ -116,7 +116,7 @@ def test_multi_document_baseline_per_document():
 
 def test_multi_document_single_changed_event_when_both_move():
     prior = {"documents": {
-        "guide": {"sha256": "0" * 64, "changed_at": "2025-12-20"},
+        "guide": {"sha256": "0" * 64, "hash_scheme": "text-v1", "changed_at": "2025-12-20"},
         "tables": {"sha256": "1" * 64, "changed_at": "2025-12-20"},
     }}
     fetch = _multi_fetcher({"https://x.gov/guide": "a" * 64,
@@ -130,7 +130,7 @@ def test_multi_document_single_changed_event_when_both_move():
 
 def test_multi_document_one_changed_one_quiet():
     prior = {"documents": {
-        "guide": {"sha256": "a" * 64, "changed_at": "2025-12-20"},
+        "guide": {"sha256": "a" * 64, "hash_scheme": "text-v1", "changed_at": "2025-12-20"},
         "tables": {"sha256": "1" * 64, "changed_at": "2025-12-20"},
     }}
     fetch = _multi_fetcher({"https://x.gov/guide": "a" * 64,
@@ -155,8 +155,8 @@ def test_multi_document_html_bytes_are_not_an_anomaly():
 
 def test_multi_document_stale_uses_latest_document_change():
     prior = {"documents": {
-        "guide": {"sha256": "a" * 64, "changed_at": "2025-11-01"},
-        "tables": {"sha256": "b" * 64, "changed_at": "2025-11-15"},
+        "guide": {"sha256": "a" * 64, "hash_scheme": "text-v1", "changed_at": "2025-11-01"},
+        "tables": {"sha256": "b" * 64, "hash_scheme": "text-v1", "changed_at": "2025-11-15"},
     }}
     fetch = _multi_fetcher({"https://x.gov/guide": "a" * 64,
                             "https://x.gov/tables_2026.pdf": "b" * 64})
@@ -483,7 +483,7 @@ def test_multi_document_entry_discovered_by_link_scan(monkeypatch):
            "documents": [{"name": "release", "kind": "html", "landing": "https://esd.x.gov/news",
                           "link_pattern": "rate-", "url": "https://esd.x.gov/release/2025/rate-113-2026"}]}
     prior = {"documents": {"release": {"url": "https://esd.x.gov/release/2025/rate-113-2026",
-                                       "sha256": "a" * 64, "changed_at": "2025-12-01"}}}
+                                       "sha256": "a" * 64, "hash_scheme": "text-v1", "changed_at": "2025-12-01"}}}
     seen = []
 
     def fetcher(url):
@@ -521,3 +521,27 @@ def test_content_sha256_hashes_workbook_cells_not_bytes():
     # A non-workbook OLE2 prefix falls back to bytes too.
     assert content_sha256(OLE2_MAGIC + b"x") != content_sha256(OLE2_MAGIC + b"y")
     assert hasattr(xlrd, "open_workbook")  # real workbooks are exercised by the importer run
+
+
+def test_html_state_from_older_hash_scheme_is_rebaselined_not_changed():
+    """After the text-hash change (#311), every stored HTML hash would differ
+    from the new hash and the next sweep would re-dispatch ~60 sources (the
+    2026-11-03 sweep dispatched 31 on render noise alone). An entry without
+    the current hash_scheme is re-recorded silently."""
+    from pipeline.watch import HASH_SCHEME
+    src = {"id": "us-xx-test", "document": "page", "landing": "https://x.gov",
+           "documents": [{"name": "page", "kind": "html", "url": "https://x.gov/rates"},
+                         {"name": "pdf", "kind": "pdf", "url": "https://x.gov/rates.pdf"}]}
+    prior = {"documents": {"page": {"url": "https://x.gov/rates", "sha256": "a" * 64, "changed_at": "2026-01-05"},
+                           "pdf": {"url": "https://x.gov/rates.pdf", "sha256": "b" * 64, "changed_at": "2026-01-05"}}}
+
+    def fetcher(url):
+        return {"status": 200, "sha256": "c" * 64, "etag": None, "last_modified": None, "is_pdf": url.endswith(".pdf")}
+
+    events, state = check_source(src, prior, fetcher, TODAY)
+    kinds = [e["type"] for e in events]
+    assert "baseline" in kinds and "changed" in kinds        # html rehashed; the PDF really changed
+    assert state["documents"]["page"]["hash_scheme"] == HASH_SCHEME
+    # Second sweep under the same scheme: a differing html hash is a change again.
+    events2, _ = check_source(src, state, lambda u: {"status": 200, "sha256": "d" * 64, "etag": None, "last_modified": None, "is_pdf": u.endswith(".pdf")}, TODAY)
+    assert [e["type"] for e in events2] == ["changed"]
