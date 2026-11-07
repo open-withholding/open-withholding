@@ -436,17 +436,17 @@
     "documents": {
       "Florida DOR Reemployment Tax Rate Information page (HTML)": {
         "changed_at": "2026-11-04",
-        "etag": "\"1794065917:dtagent103452608101703309e9R\"",
+        "etag": "\"1794066068:dtagent103452608101703309e9R\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:36 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:41:07 GMT",
         "sha256": "2c6cf501ca182554de79728fab4e4e10b216600d4ad6f55f080a2aef3db83ba8",
         "url": "https://floridarevenue.com/taxes/taxesfees/Pages/rt_rate.aspx"
       },
       "Florida DOR reemployment tax page (HTML)": {
         "changed_at": "2026-11-03",
-        "etag": "\"1794065916:dtagent103452608101703309e9R\"",
+        "etag": "\"1794066067:dtagent103452608101703309e9R\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:35 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:41:06 GMT",
         "sha256": "29476df868f999a3e2b18aeb104e581df83f28640235ea85a4d65648b7f7d2a9",
         "url": "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
       }
@@ -510,7 +510,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:23 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:40:55 GMT",
         "sha256": "a3202287cefff7cfcd396c5eb53cf33060003ab98795fcc6d4828799c0c0d3b1",
         "url": "https://labor.hawaii.gov/ui/contribution-rates-explained/"
       },
@@ -518,7 +518,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:22 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:40:54 GMT",
         "sha256": "71a090b7ced0bcdbe6963a43708a66f117f098fba78c6c72b7ad950da9338992",
         "url": "https://labor.hawaii.gov/ui/tax-rate-schedule-and-weekly-benefit-amount/"
       }
@@ -1950,7 +1950,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:33 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:41:04 GMT",
         "sha256": "4b248c82b6ac367c95222e8c316758016eb62d6fd5cefdcd15801896432f3be8",
         "url": "https://www.oregon.gov/employ/businesses/pages/current-tax-rate.aspx"
       },
@@ -2025,17 +2025,17 @@
     "documents": {
       "L&I Employee Withholding page (HTML)": {
         "changed_at": "2026-11-03",
-        "etag": "W/\"3a81b-65fb1847698dd\"",
+        "etag": "\"3a81b-65fb019f41732\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:16 GMT",
+        "last_modified": "Sat, 07 Nov 2026 13:56:54 GMT",
         "sha256": "a35b7ac1ccf857fa7c3d3209d3da6551812c1070147ff0873882dd987685b557",
         "url": "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/employee-withholding"
       },
       "L&I Yearly Tax Highlights (HTML)": {
         "changed_at": null,
-        "etag": "\"48199-65fb02526cd40\"",
+        "etag": "W/\"48199-65fb18d78375d\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 14:00:02 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:40:47 GMT",
         "sha256": "d2ad0b72a89ab1219f2d34227e970200adf5e8a8ced6e4ffbbbb531dd4497364",
         "url": "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights"
       }
@@ -2262,7 +2262,7 @@
         "changed_at": null,
         "etag": "W/\"be03ece2988cf434ffecaa5e82a1bd51-gzip\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:06:40 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:38:32 GMT",
         "sha256": "ec2bd33789e688f341786d792c32a39512ab0ae39f744b57a334ff684f6e5478",
         "url": "https://labor.vermont.gov/unemployment-insurance/ui-employers/unemployment-tax-rates"
       },
@@ -2398,7 +2398,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:33 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:41:04 GMT",
         "sha256": "cbbd36c02fa37eeb06b68ba531213d7a40531e0152f76e358ff23cc869f3300f",
         "url": "https://dws.wyo.gov/dws-division/unemployment-insurance/employers/unemployment-tax-rates/"
       },
@@ -2406,7 +2406,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Sat, 07 Nov 2026 15:38:33 GMT",
+        "last_modified": "Sat, 07 Nov 2026 15:41:04 GMT",
         "sha256": "272f0ec9e7fe391632c8c44069ca168970d2c39ebd69aa338641b46df4731572",
         "url": "https://dws.wyo.gov/dws-division/unemployment-insurance/wyui/unemployment-taxable-wage-base/"
       }
