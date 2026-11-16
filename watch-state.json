@@ -436,9 +436,9 @@
     "documents": {
       "Florida DOR Reemployment Tax Rate Information page (HTML)": {
         "changed_at": "2026-11-08",
-        "etag": "\"1794797222:dtagent103432607151238119aTX\"",
+        "etag": "\"1794826932:dtagent103432607151238119aTX\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:47:01 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:02:11 GMT",
         "sha256": "2c6cf501ca182554de79728fab4e4e10b216600d4ad6f55f080a2aef3db83ba8",
         "url": "https://floridarevenue.com/taxes/taxesfees/Pages/rt_rate.aspx"
       },
@@ -446,7 +446,7 @@
         "changed_at": "2026-11-08",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:47:00 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:02:11 GMT",
         "sha256": "29476df868f999a3e2b18aeb104e581df83f28640235ea85a4d65648b7f7d2a9",
         "url": "https://floridarevenue.com/taxes/taxesfees/Pages/reemployment.aspx"
       }
@@ -510,7 +510,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:46:47 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:02:00 GMT",
         "sha256": "a3202287cefff7cfcd396c5eb53cf33060003ab98795fcc6d4828799c0c0d3b1",
         "url": "https://labor.hawaii.gov/ui/contribution-rates-explained/"
       },
@@ -518,7 +518,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:46:46 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:01:58 GMT",
         "sha256": "71a090b7ced0bcdbe6963a43708a66f117f098fba78c6c72b7ad950da9338992",
         "url": "https://labor.hawaii.gov/ui/tax-rate-schedule-and-weekly-benefit-amount/"
       }
@@ -570,7 +570,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 01:22:21 GMT",
+        "last_modified": "Mon, 16 Nov 2026 09:54:07 GMT",
         "sha256": "9d9b85cc29846cf969ab9665dd746964ef6272dcae2031a98d7e30b563d43665",
         "url": "https://workforce.iowa.gov/employers/unemployment-insurance/unemployment-insurance-employer-handbook/unemployment-insurance-taxes"
       }
@@ -852,7 +852,7 @@
         "etag": null,
         "hash_scheme": "text-v1",
         "last_modified": null,
-        "sha256": "2da5004df6cf427220fa04e84b6daec1b1e6da52f801d61ac94d59151be46c15",
+        "sha256": "e3060472702ebbc8927ba038cb4d56af4be2bf230b7753324ea4abf13819bd61",
         "url": "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXXI/Chapter151A/Section14"
       },
       "Mass.gov Employers that need to pay unemployment insurance (HTML)": {
@@ -1400,11 +1400,11 @@
     "checked_at": "2026-11-16",
     "documents": {
       "Walker Income Tax FAQ (cross-check)": {
-        "changed_at": null,
+        "changed_at": "2026-11-16",
         "etag": null,
         "hash_scheme": "text-v1",
         "last_modified": null,
-        "sha256": "adf1fe961115fef4a09aefb13343d1d7a48ffbecb012ec7af11aecf00552fbad",
+        "sha256": "7a7dd3739251603f7e4c252b36bc8c237deac26449b6c8568843f5505ef9cb31",
         "url": "https://www.walker.city/FAQ.aspx?TID=20"
       },
       "Walker Withholding Tax Guide (1% / .5%; $600 per exemption)": {
@@ -1423,9 +1423,9 @@
     "documents": {
       "pl.mn.gov premium rate and contributions page (HTML)": {
         "changed_at": null,
-        "etag": "W/\"1794515625-gzip\"",
+        "etag": "W/\"1794589675-gzip\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Thu, 12 Nov 2026 20:33:45 GMT",
+        "last_modified": "Fri, 13 Nov 2026 17:07:55 GMT",
         "sha256": "d5a19aa791de1ecfc51e4d23ce1f44020d1dfe3fa4682b242d01c16cc2556e4a",
         "url": "https://pl.mn.gov/resources/calculators/premium-rate-and-contributions"
       }
@@ -1783,7 +1783,7 @@
         "changed_at": "2026-11-10",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 05:03:26 GMT",
+        "last_modified": "Mon, 16 Nov 2026 06:11:02 GMT",
         "sha256": "4f42ec42f581bca49a6242538f46d0d3ccf4b1a63306a01251437e4a33f99d85",
         "url": "https://www.dfs.ny.gov/apps-and-licensing/health-insurers/pfl-rate-decision-2026-page"
       },
@@ -1959,7 +1959,7 @@
         "changed_at": "2026-11-10",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:46:58 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:02:09 GMT",
         "sha256": "6bb3c41dade9552c9f5206daa218eb5cd370a6c15000acfb69eb6cd6e2823163",
         "url": "https://www.oregon.gov/employ/businesses/pages/current-tax-rate.aspx"
       },
@@ -2012,9 +2012,9 @@
     "documents": {
       "L&I Yearly Tax Highlights (HTML)": {
         "changed_at": null,
-        "etag": "\"48199-6604c5ff29744\"",
+        "etag": "\"48199-66061390866ef\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 08:23:23 GMT",
+        "last_modified": "Mon, 16 Nov 2026 09:15:45 GMT",
         "sha256": "d2ad0b72a89ab1219f2d34227e970200adf5e8a8ced6e4ffbbbb531dd4497364",
         "url": "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights"
       },
@@ -2034,17 +2034,17 @@
     "documents": {
       "L&I Employee Withholding page (HTML)": {
         "changed_at": "2026-11-03",
-        "etag": "\"3a81b-6605199008940\"",
+        "etag": "W/\"3a81b-66062b46d885c\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 14:37:15 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:01:50 GMT",
         "sha256": "a35b7ac1ccf857fa7c3d3209d3da6551812c1070147ff0873882dd987685b557",
         "url": "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/employee-withholding"
       },
       "L&I Yearly Tax Highlights (HTML)": {
         "changed_at": null,
-        "etag": "\"48199-6604c5ff29744\"",
+        "etag": "\"48199-66061390866ef\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 08:23:23 GMT",
+        "last_modified": "Mon, 16 Nov 2026 09:15:45 GMT",
         "sha256": "d2ad0b72a89ab1219f2d34227e970200adf5e8a8ced6e4ffbbbb531dd4497364",
         "url": "https://www.pa.gov/agencies/dli/resources/for-employers-and-educators/how-to-file/uc-tax/yearly-tax-highlights"
       }
@@ -2068,7 +2068,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:46:27 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:58:11 GMT",
         "sha256": "c7e308ce204b839254fe80c86070ba51d271de34b941f21c92d02043de5a4fa0",
         "url": "https://dlt.ri.gov/employers/employer-tax-unit"
       },
@@ -2076,7 +2076,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:38:56 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:01:33 GMT",
         "sha256": "d69f7a80c075edf6c2e9dd3860066b96f42af887d8a80d3cfe72e2e60e151dd1",
         "url": "https://dlt.ri.gov/press-releases/2026-tax-rates-unemployment-insurance-and-temporary-disability-insurance"
       }
@@ -2100,7 +2100,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:46:27 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:58:11 GMT",
         "sha256": "c7e308ce204b839254fe80c86070ba51d271de34b941f21c92d02043de5a4fa0",
         "url": "https://dlt.ri.gov/employers/employer-tax-unit"
       },
@@ -2108,7 +2108,7 @@
         "changed_at": "2026-11-03",
         "etag": null,
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:38:56 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:01:33 GMT",
         "sha256": "d69f7a80c075edf6c2e9dd3860066b96f42af887d8a80d3cfe72e2e60e151dd1",
         "url": "https://dlt.ri.gov/press-releases/2026-tax-rates-unemployment-insurance-and-temporary-disability-insurance"
       }
@@ -2172,9 +2172,9 @@
       },
       "TWC Your Tax Rates page (HTML)": {
         "changed_at": null,
-        "etag": "W/\"1794529228-gzip\"",
+        "etag": "W/\"1794614028-gzip\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Fri, 13 Nov 2026 00:20:28 GMT",
+        "last_modified": "Fri, 13 Nov 2026 23:53:48 GMT",
         "sha256": "96834baff80a40e4bcfca14a915643550cd55334ff1a8a6e893740db71f32967",
         "url": "https://www.twc.texas.gov/programs/unemployment-tax/your-tax-rates"
       }
@@ -2236,25 +2236,25 @@
     "documents": {
       "VEC FAQ: How are tax rates assigned (HTML)": {
         "changed_at": "2026-11-03",
-        "etag": "\"1794782746\"",
+        "etag": "\"1794824624\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 22:45:46 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:23:44 GMT",
         "sha256": "1a5f7e3b92703d8b18c95858f3d614ad279fbb8d259840937b2a66c48161602c",
         "url": "https://www.vec.virginia.gov/FAQs/employers/how-are-tax-rates-assigned"
       },
       "VEC FAQ: What factors determine my tax rate (HTML)": {
         "changed_at": "2026-11-03",
-        "etag": "\"1794782747\"",
+        "etag": "\"1794826913\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 22:45:47 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:01:53 GMT",
         "sha256": "d8ef5ac215d5267a5f86aa241992ed2dbdfafcf05f3b5e1f6801f2734f44734c",
         "url": "https://vec.virginia.gov/FAQs/employers/what-factors-determine-my-tax-rate"
       },
       "VEC FAQ: What is the wage base for each employee (HTML)": {
         "changed_at": "2026-11-03",
-        "etag": "\"1794782746\"",
+        "etag": "\"1794826725\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Sun, 15 Nov 2026 22:45:46 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:58:45 GMT",
         "sha256": "d4a7068382d9bcd7c54905fb79cf4b294dfcc6c06ff9ea114a610ab58a3efc2a",
         "url": "https://www.vec.virginia.gov/FAQs/employers/what-wage-base-each-employee-i-will-pay-taxes"
       }
@@ -2288,7 +2288,7 @@
         "changed_at": null,
         "etag": "W/\"be03ece2988cf434ffecaa5e82a1bd51-gzip\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:41:39 GMT",
+        "last_modified": "Mon, 16 Nov 2026 11:02:06 GMT",
         "sha256": "ec2bd33789e688f341786d792c32a39512ab0ae39f744b57a334ff684f6e5478",
         "url": "https://labor.vermont.gov/unemployment-insurance/ui-employers/unemployment-tax-rates"
       },
@@ -2296,7 +2296,7 @@
         "changed_at": null,
         "etag": "W/\"ff70f55cbf23eefe2add086f3addc550-gzip\"",
         "hash_scheme": "text-v1",
-        "last_modified": "Mon, 16 Nov 2026 02:46:56 GMT",
+        "last_modified": "Mon, 16 Nov 2026 10:57:09 GMT",
         "sha256": "c51f379855154bb5a3df2371f495e5e0a1d0299af28ae1afa64ae2d3998a658c",
         "url": "https://labor.vermont.gov/press-release/vermont-department-labor-announces-unemployment-insurance-taxable-wage-base-2026"
       }
